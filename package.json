@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "sing-code",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -18,6 +18,12 @@
     "node": ">=18"
   },
   "dependencies": {
-    "tamagui": "^1.125.23"
+    "@tamagui/config": "^1.125.25",
+    "@tamagui/core": "^1.125.25",
+    "@tamagui/next-plugin": "^1.125.25",
+    "@tamagui/web": "^1.125.25",
+    "react-native-svg": "^15.11.2",
+    "react-native-web": "~0.19.13",
+    "tamagui": "^1.125.25"
   }
 }

@@ -1,6 +1,8 @@
 'use client';
 import styles from './page.module.css';
 
+import { Button } from 'tamagui';
+
 import { getComposer } from '@repo/api';
 import { useEffect } from 'react';
 
@@ -19,6 +21,7 @@ export default function Home() {
       </main>
       <footer className={styles.footer}>
         <h1>fotter</h1>
+        <Button onPress={() => alert('Hello Tamagui!')}>Click Me</Button>
       </footer>
     </div>
   );
