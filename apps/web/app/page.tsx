@@ -1,23 +1,18 @@
 'use client';
-import styles from './page.module.css';
+// import styles from './page.module.css';
 
-import { getComposer } from '@repo/api';
-import { useEffect } from 'react';
+import { useSong } from '@repo/query';
 
 export default function Home() {
-  const testAPI = async () => {
-    const response = await getComposer({ composer: '아이유' });
-    console.log(response);
-  };
-  useEffect(() => {
-    testAPI();
-  }, []);
+  const { data } = useSong({ title: '불나방' });
+  console.log(data);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
+    <div>
+      <main>
         <h1>Hello World</h1>
       </main>
-      <footer className={styles.footer}>
+      <footer>
         <h1>fotter</h1>
       </footer>
     </div>
