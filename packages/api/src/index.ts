@@ -5,3 +5,4 @@ export { default as getLyricist } from './getLyricist';
 export { default as getNo } from './getNo';
 export { default as getRelease } from './getRelease';
 export { default as getPopular } from './getPopular';
+export type { Brand, Period, ResponseType, InstanceResponse } from './types';
