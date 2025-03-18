@@ -10,9 +10,12 @@ interface GetComposerProps {
 const useComposer = (props: GetComposerProps): UseQueryReturn => {
   const { composer, brand } = props;
 
+  // queryKey를 위한 brandKey 생성 (없으면 'all' 사용)
+  const brandKey = brand || 'all';
+
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['composer', { composer, brand }],
-    queryFn: () => getComposer(props),
+    queryKey: ['composer', composer, brandKey],
+    queryFn: () => getComposer({ composer, brand }),
   });
 
   return {

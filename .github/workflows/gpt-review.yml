@@ -10,7 +10,8 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    
+    if: ${{ contains(github.event.head_commit.message, '#gpt') || contains(github.event.head_commit.message, '#gpt-review') }}    runs-on: ubuntu-latest
     steps:
       - uses: anc95/ChatGPT-CodeReview@main
         env:
@@ -18,5 +19,8 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.GPT_KEY }}
           # optional
           LANGUAGE: Korean
-          PROMPT:
-          IGNORE_PATTERNS: /node_modules,*.md # Regex pattern to ignore files, separated by comma
+          max_tokens: 10000
+          MAX_PATCH_LENGTH: 10000
+
+          IGNORE_PATTERNS: /dist, /node_modules,*.md # Regex pattern to ignore files, separated by comma
+          INCLUDE_PATTERNS: "*.js, *.ts, *.jsx, *.tsx" # glob pattern or regex pattern to include files, separated by comma

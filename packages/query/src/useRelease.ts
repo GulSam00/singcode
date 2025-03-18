@@ -10,9 +10,12 @@ interface GetReleaseProps {
 const useRelease = (props: GetReleaseProps): UseQueryReturn => {
   const { release, brand } = props;
 
+  // queryKey를 위한 brandKey 생성 (없으면 'all' 사용)
+  const brandKey = brand || 'all';
+
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['release', { release, brand }],
-    queryFn: () => getRelease(props),
+    queryKey: ['release', release, brandKey],
+    queryFn: () => getRelease({ release, brand }),
   });
 
   return {

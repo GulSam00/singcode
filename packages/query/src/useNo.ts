@@ -10,9 +10,12 @@ interface GetNoProps {
 const useNo = (props: GetNoProps): UseQueryReturn => {
   const { no, brand } = props;
 
+  // queryKey를 위한 brandKey 생성 (없으면 'all' 사용)
+  const brandKey = brand || 'all';
+
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['no', { no, brand }],
-    queryFn: () => getNo(props),
+    queryKey: ['no', no, brandKey],
+    queryFn: () => getNo({ no, brand }),
   });
 
   return {

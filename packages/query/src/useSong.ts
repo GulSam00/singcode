@@ -10,9 +10,12 @@ interface GetSongProps {
 const useSong = (props: GetSongProps): UseQueryReturn => {
   const { title, brand } = props;
 
+  // queryKey를 위한 brandKey 생성 (없으면 'all' 사용)
+  const brandKey = brand || 'all';
+
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['song', { title, brand }],
-    queryFn: () => getSong(props),
+    queryKey: ['song', title, brandKey],
+    queryFn: () => getSong({ title, brand }),
   });
 
   return {

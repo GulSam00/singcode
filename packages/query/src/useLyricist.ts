@@ -10,9 +10,12 @@ interface GetLyricistProps {
 const useLyricist = (props: GetLyricistProps): UseQueryReturn => {
   const { lyricist, brand } = props;
 
+  // queryKey를 위한 brandKey 생성 (없으면 'all' 사용)
+  const brandKey = brand || 'all';
+
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['lyricist', { lyricist, brand }],
-    queryFn: () => getLyricist(props),
+    queryKey: ['lyricist', lyricist, brandKey],
+    queryFn: () => getLyricist({ lyricist, brand }),
   });
 
   return {

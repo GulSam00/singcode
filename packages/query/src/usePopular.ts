@@ -11,8 +11,9 @@ const usePopular = (props: GetPopularProps): UseQueryReturn => {
   const { brand, period } = props;
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['popular', { brand, period }],
-    queryFn: () => getPopular(props),
+    queryKey: ['popular', brand, period],
+    queryFn: () => getPopular({ brand, period }),
+    enabled: Boolean(brand) && Boolean(period),
   });
 
   return {
