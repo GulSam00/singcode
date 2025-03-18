@@ -16,7 +16,7 @@ export function SearchForm({ initialSinger = '' }: SearchFormProps) {
 
     // URL 쿼리 파라미터 업데이트
     if (singer) {
-      router.push(`/test?singer=${encodeURIComponent(singer)}`);
+      router.push(`/test?search=${encodeURIComponent(singer)}`);
     } else {
       router.push('/test');
     }
