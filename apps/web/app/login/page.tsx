@@ -1,6 +1,17 @@
+import { redirect } from 'next/navigation';
+import { createClient } from '@/supabase/server';
 import { login, register } from './actions';
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const supabase = await createClient();
+
+  const { data } = await supabase.auth.getUser();
+  // data 있으면 라우팅
+  if (data) {
+    console.log('data : ', data);
+    redirect('/');
+  }
+
   return (
     <form>
       <label htmlFor="email">Email:</label>
