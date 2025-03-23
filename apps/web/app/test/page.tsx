@@ -1,32 +1,32 @@
-import { getSinger, getNo, getPopular } from '@repo/api';
-import { SearchForm } from './SearchForm';
+import { getSinger, getNo, getPopular } from '@repo/api'
+import { SearchForm } from './SearchForm'
 
 // 서버 컴포넌트 (기본적으로 서버에서 실행됨)
 export default async function TestPage({ searchParams }: { searchParams: { search?: string } }) {
   // URL 쿼리 파라미터에서 singer 값을 가져옴
 
-  const search = searchParams.search;
+  const search = searchParams.search
 
   // 검색어가 있을 때만 API 호출
-  let data = null;
-  let error = null;
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  let data = null
+  let error = null
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
   if (search) {
     try {
       // TJ, 금영의 경우 해외(일본)곡 검색 못 함
       // 크롤링 돌려서 DB에다가 집어넣어야 할 듯
-      data = await getSinger({ singer: search, brand: 'tj' });
-      const other = await getSinger({ singer: search, brand: 'kumyoung' });
+      data = await getSinger({ singer: search, brand: 'tj' })
+      const other = await getSinger({ singer: search, brand: 'kumyoung' })
       // data = await getPopular({ brand: 'tj', period: 'weekly' });
       // const other = await fetch(`http://localhost:3000/api/songs/singer?singer=아이유`);
       // const other = await fetch(`${baseUrl}/api/songs/singer/IU?brand=tj`);
       // const otherData = await other.json();
-      console.log('other : ', other);
-      console.log('datajson : ', JSON.stringify(data, null, 2));
+      console.log('other : ', other)
+      console.log('datajson : ', JSON.stringify(data, null, 2))
     } catch (err) {
-      error = err instanceof Error ? err.message : '알 수 없는 오류';
-      console.error('API 호출 오류:', err);
+      error = err instanceof Error ? err.message : '알 수 없는 오류'
+      console.error('API 호출 오류:', err)
     }
   }
 
@@ -48,5 +48,5 @@ export default async function TestPage({ searchParams }: { searchParams: { searc
         </div>
       )}
     </div>
-  );
+  )
 }
