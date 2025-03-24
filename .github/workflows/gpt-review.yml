@@ -1,105 +1,26 @@
-name: PR Blog Summarizer
+name: Code Review
+
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   pull_request:
-    types: [opened, synchronize]
-
-permissions:
-  issues: write
-  pull-requests: write
+    types: [opened, reopened, synchronize]
 
 jobs:
-  process:
+  test:
     runs-on: ubuntu-latest
-
+    if: ${{ contains(github.event.head_commit.message, '#gpt') || contains(github.event.head_commit.message, '#gpt-review') }}
     steps:
-      # Step 1: Check out the code
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      # Step 2: Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
-
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install openai requests
-
-      # Step 4: Get Changed Files
-      - name: Get Changed Files
-        id: get_files
-        run: |
-          CHANGED_FILES=$(git diff --name-only origin/main ${{ github.sha }})
-
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "changed_files=" >> $GITHUB_ENV
-          else
-            # .md 파일만 필터링
-            MD_FILES=$(echo "$CHANGED_FILES" | grep -E '^week[0-9]+/.*\.md$')
-            echo $MD_FILES
-
-            if [ -z "$MD_FILES" ]; then
-              echo "changed_files=" >> $GITHUB_ENV
-            else
-              # 환경 변수에 저장
-              echo "changed_files=$MD_FILES" >> $GITHUB_ENV
-            fi
-          fi
-
-      # Step 5: Process Changed Files
-      - name: Process Changed Files
+      - uses: anc95/ChatGPT-CodeReview@main
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.GPT_KEY }}
-          changed_files: ${{ env.changed_files }}
-        run: |
-          if [ -z "$changed_files" ]; then
-            echo "No changed files to process."
-            exit 0
-          fi
+          # optional
+          LANGUAGE: Korean
+          max_tokens: 10000
+          MAX_PATCH_LENGTH: 10000
 
-          SUMMARY_MESSAGE="### Automated Review\n"
-          IFS=$'\n'
-          for file_path in $changed_files; do
-            # Skip link.md files
-            if [[ "$file_path" == *link.md ]]; then
-              continue
-            fi
-
-            # Process non-link.md files
-            echo "Processing file: $file_path"
-            FILE_CONTENT=$(cat "$file_path" || echo "")
-            if [ -z "$FILE_CONTENT" ]; then
-              SUMMARY_MESSAGE+="Error: Could not read content of $file_path\n"
-              continue
-            fi
-
-            # Run feedback.py
-            FEEDBACK=$(python feedback.py --content "$FILE_CONTENT" || echo "Error: feedback.py failed for $file_path")
-            SUMMARY_MESSAGE+="Feedback for file: $file_path\n"
-            SUMMARY_MESSAGE+="$FEEDBACK\n"
-          done
-
-          echo "summary_message<<EOF" >> $GITHUB_ENV
-          echo -e "$SUMMARY_MESSAGE" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      # Step 6: Post Comment on Pull Request
-      - name: Post Comment on Pull Request
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const summary = process.env.summary_message;
-            if (summary && summary.trim().length > 0) {
-              await github.rest.issues.createComment({
-                ...context.repo,
-                issue_number: context.payload.pull_request.number,
-                body: summary
-              });
-            }
+          IGNORE_PATTERNS: /dist, /node_modules,*.md # Regex pattern to ignore files, separated by comma
+          INCLUDE_PATTERNS: '*.js, *.ts, *.jsx, *.tsx' # glob pattern or regex pattern to include files, separated by comma

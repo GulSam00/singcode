@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["ESNext", "esnext.asynciterable"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationDir": "./dist/types", // 디버깅 편의를 위해 추가
+    "declarationMap": true // 디버깅 편의를 위해 추가
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
