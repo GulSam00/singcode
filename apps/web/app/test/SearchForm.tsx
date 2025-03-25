@@ -1,26 +1,26 @@
-'use client'
+'use client';
 
-import { useState, FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface SearchFormProps {
-  initialSinger?: string
+  initialSinger?: string;
 }
 
 export function SearchForm({ initialSinger = '' }: SearchFormProps) {
-  const router = useRouter()
-  const [singer, setSinger] = useState(initialSinger)
+  const router = useRouter();
+  const [singer, setSinger] = useState(initialSinger);
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // URL 쿼리 파라미터 업데이트
     if (singer) {
-      router.push(`/test?search=${encodeURIComponent(singer)}`)
+      router.push(`/test?search=${encodeURIComponent(singer)}`);
     } else {
-      router.push('/test')
+      router.push('/test');
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
@@ -40,5 +40,5 @@ export function SearchForm({ initialSinger = '' }: SearchFormProps) {
         </button>
       </div>
     </form>
-  )
+  );
 }

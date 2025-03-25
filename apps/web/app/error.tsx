@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
 type ErrorPageProps = {
-  error: Error
-  reset: () => void
-}
+  error: Error;
+  reset: () => void;
+};
 
 interface AuthError {
-  code: string
-  message: string
-  type: string
+  code: string;
+  message: string;
+  type: string;
 }
 
 export default function Error({ error, reset }: ErrorPageProps) {
-  const errorMessage = error.message
-  let errorDetails: AuthError | null = null
+  const errorMessage = error.message;
+  let errorDetails: AuthError | null = null;
 
   // 에러 메시지 파싱 시도
   try {
-    errorDetails = JSON.parse(error.message) as AuthError
+    errorDetails = JSON.parse(error.message) as AuthError;
   } catch {
     // 파싱 실패 시 기본 메시지 사용
   }
@@ -43,5 +43,5 @@ export default function Error({ error, reset }: ErrorPageProps) {
         <button onClick={() => (window.location.href = '/')}>홈으로 돌아가기</button>
       </div>
     </div>
-  )
+  );
 }

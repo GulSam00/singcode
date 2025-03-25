@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation';
 
 export default function ErrorPage() {
-  const searchParams = useSearchParams()
-  const errorMessage = searchParams.get('message')
+  const searchParams = useSearchParams();
+  const errorMessage = searchParams.get('message');
 
   return (
     <div className="error-container">
@@ -23,5 +23,5 @@ export default function ErrorPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

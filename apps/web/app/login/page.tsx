@@ -1,15 +1,15 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/supabase/server'
-import { login, register } from './actions'
-import KakaoLoginButton from './KakaoLoginButton' // 새로운 클라이언트 컴포넌트
+import { redirect } from 'next/navigation';
+import { createClient } from '@/supabase/server';
+import { login, register } from './actions';
+import KakaoLoginButton from './KakaoLoginButton'; // 새로운 클라이언트 컴포넌트
 
 export default async function LoginPage() {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
-  const { data } = await supabase.auth.getUser()
+  const { data } = await supabase.auth.getUser();
 
   if (data) {
-    console.log('data : ', data)
+    console.log('data : ', data);
     // redirect('/');
   }
 
@@ -23,5 +23,5 @@ export default async function LoginPage() {
       <button formAction={register}>Sign up</button>
       <KakaoLoginButton />
     </form>
-  )
+  );
 }
