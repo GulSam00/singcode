@@ -1,5 +1,4 @@
 module.exports = {
-  plugins: ['prettier-plugin-tailwindcss'], // Tailwind 클래스 정렬 (문자열로 변경)
   printWidth: 100, // 한 줄 최대 길이
   tabWidth: 2, // 탭 크기 (스페이스 2칸)
   singleQuote: true, // 작은따옴표 사용
@@ -8,4 +7,8 @@ module.exports = {
   bracketSpacing: true, // 중괄호 간격 유지 (ex: { foo: bar })
   jsxSingleQuote: false, // JSX에서 작은따옴표 사용 안 함
   endOfLine: 'lf', // 줄바꿈 형식 (LF 고정)
+  importOrder: ['<THIRD_PARTY_MODULES>', '^@repo/(.*)$', '^@/(.*)$', '^../(.*)$', '^./(.*)$'],
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true,
+  plugins: ['prettier-plugin-tailwindcss', '@trivago/prettier-plugin-sort-imports'], // Tailwind 클래스 정렬 (문자열로 변경)
 };

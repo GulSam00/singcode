@@ -1,4 +1,5 @@
 import { createClient } from '@/supabase/server';
+
 import Button from './button';
 
 export default async function Instruments() {

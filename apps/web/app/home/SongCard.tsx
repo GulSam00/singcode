@@ -2,7 +2,8 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Mic, Trash, ChevronsUp, ChevronsDown, GripVertical } from 'lucide-react';
+import { ChevronsDown, ChevronsUp, GripVertical, Mic, Trash } from 'lucide-react';
+
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 

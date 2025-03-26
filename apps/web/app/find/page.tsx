@@ -1,7 +1,8 @@
 'use client';
 
-import { getComposer } from '@repo/api';
 import { useState } from 'react';
+
+import { getComposer } from '@repo/api';
 
 export default function Home() {
   const [search, setSearch] = useState('');

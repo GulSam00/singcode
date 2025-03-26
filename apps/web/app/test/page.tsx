@@ -1,4 +1,5 @@
-import { getSinger, getNo, getPopular } from '@repo/api';
+import { getNo, getPopular, getSinger } from '@repo/api';
+
 import { SearchForm } from './SearchForm';
 
 // 서버 컴포넌트 (기본적으로 서버에서 실행됨)

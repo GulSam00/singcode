@@ -1,15 +1,16 @@
 // app/api/songs/[type]/[param]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+
 import {
-  getSong,
-  getSinger,
+  Brand,
+  Period,
   getComposer,
   getLyricist,
   getNo,
-  getRelease,
   getPopular,
-  Brand,
-  Period,
+  getRelease,
+  getSinger,
+  getSong,
 } from '@repo/api';
 
 export async function GET(

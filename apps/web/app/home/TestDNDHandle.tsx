@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
-  verticalListSortingStrategy,
+  arrayMove,
   useSortable,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
+import { useState } from 'react';
 
 const defaultItems = ['Apple', 'Banana', 'Cherry', 'Date'];
 

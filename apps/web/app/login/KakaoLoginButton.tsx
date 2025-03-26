@@ -1,6 +1,8 @@
 'use client';
 
-import { createClient } from '@/supabase/client'; // 클라이언트용 Supabase 클라이언트
+import { createClient } from '@/supabase/client';
+
+// 클라이언트용 Supabase 클라이언트
 
 export default function KakaoLoginButton() {
   const handleKakaoLogin = async () => {

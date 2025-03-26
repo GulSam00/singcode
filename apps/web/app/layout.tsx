@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import QueryProvider from './query';
+
 import ErrorWrapper from './ErrorWrapper';
 import Footer from './footer';
-
 import './globals.css';
+import QueryProvider from './query';
 
 export const metadata: Metadata = {
   title: 'Singcode',

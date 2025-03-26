@@ -1,7 +1,11 @@
 import { redirect } from 'next/navigation';
+
 import { createClient } from '@/supabase/server';
+
+import KakaoLoginButton from './KakaoLoginButton';
 import { login, register } from './actions';
-import KakaoLoginButton from './KakaoLoginButton'; // 새로운 클라이언트 컴포넌트
+
+// 새로운 클라이언트 컴포넌트
 
 export default async function LoginPage() {
   const supabase = await createClient();
