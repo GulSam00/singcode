@@ -35,3 +35,10 @@ export const parseJapaneseText = (text) => {
 
   return result;
 };
+
+export const parseText = (text) => {
+  return text
+    .replace(/\[[^\]]*\]/g, '')
+    .replace(/[※★☆○●◎◇◆□■△▲▽▼→←↑↓↔]/g, '')
+    .trim();
+};
