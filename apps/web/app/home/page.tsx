@@ -8,8 +8,8 @@ export default function Home() {
       <h1 className="mb-6 text-2xl font-bold">노래방 플레이리스트</h1>
       <SongList />
 
-      <TestDND />
-      <TestDNDHandle />
+      {/* <TestDND />
+      <TestDNDHandle /> */}
     </div>
   );
 }

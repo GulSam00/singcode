@@ -26,7 +26,7 @@ export default function Footer() {
             key={item.name}
             className={cn(
               'w-[90px] flex-auto',
-              isActive ? 'bg-secondary text-primary' : 'text-text-secondary hover:text-primary',
+              isActive ? 'bg-accent text-primary' : 'text-text-secondary hover:text-primary',
             )}
             variant="ghost"
           >
