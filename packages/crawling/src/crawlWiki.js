@@ -40,3 +40,39 @@ export async function scrapeSongs(dst) {
     return [];
   }
 }
+
+export async function scrapeAllSongs(dst) {
+  try {
+    const titleIndex = 2;
+    const artistIndex = 3;
+    const tjIndex = 0;
+    const kyIndex = 1;
+
+    const baseUrl = process.env.NAMU_KARAOKE_URL;
+    const url = '애니메이션%20음악/노래방%20수록%20목록/전체곡%20일람';
+    const fullURL = baseUrl + url;
+    console.log(fullURL);
+    const { data } = await axios.get(fullURL);
+    // const { data } = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+    const $ = cheerio.load(data);
+
+    let songs = [];
+
+    $('table tbody tr').each((index, element) => {
+      const cols = $(element).find('td');
+
+      const title = $(cols[titleIndex]).text();
+      const artist = $(cols[artistIndex]).text();
+      const num_tj = parseNumber($(cols[tjIndex]).text().trim().slice(0, 5));
+      const num_ky = parseNumber($(cols[kyIndex]).text().trim().slice(0, 5));
+      if (num_tj || num_ky) {
+        songs.push({ title, artist, num_tj, num_ky });
+      }
+    });
+
+    return songs;
+  } catch (error) {
+    console.error('크롤링 실패:', error);
+    return [];
+  }
+}

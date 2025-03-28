@@ -1,8 +1,8 @@
-import { scrapeSongs } from './CrawlWiki.js';
+import { scrapeAllSongs, scrapeSongs } from './CrawlWiki.js';
 import { postDB } from './postDB.js';
 import { argList } from './argList.js';
 
-const main = async () => {
+const postSongs = async () => {
   const postPromises = argList.map(async (arg) => {
     const songs = await scrapeSongs(arg);
 
@@ -14,6 +14,14 @@ const main = async () => {
   await Promise.all(postPromises);
 };
 
-main();
+const postAllSongs = async () => {
+  const allSongs = await scrapeAllSongs();
+  const postPromises = allSongs.map(async (song) => {
+    await postDB(song);
+  });
+  await Promise.all(postPromises);
+};
 
+// postSongs();
+postAllSongs();
 // 크롤링 후 데이터 확인

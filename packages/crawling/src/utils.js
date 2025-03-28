@@ -25,6 +25,10 @@ export const parseJapaneseText = (text) => {
   // 특수 기호 제거
   result = result.replace(/[ⓢⓗⓕⓛ]/g, '');
 
+  if (result.length === 0 && koreanText.length > 0) {
+    return koreanText;
+  }
+
   if (koreanText.length > 0) {
     result += ` (${koreanText})`;
   }
