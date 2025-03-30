@@ -2,6 +2,7 @@
 
 import {
   DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
@@ -50,10 +51,10 @@ export default function SongList() {
     }),
   );
 
-  function handleDragEnd(event: any) {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       setSongs(items => {
         const oldIndex = items.findIndex(item => item.id === active.id);
         const newIndex = items.findIndex(item => item.id === over.id);
@@ -61,13 +62,13 @@ export default function SongList() {
         return arrayMove(items, oldIndex, newIndex);
       });
     }
-  }
+  };
 
-  function handleDelete(id: string) {
+  const handleDelete = (id: string) => {
     setSongs(songs.filter(song => song.id !== id));
-  }
+  };
 
-  function handleMoveToTop(id: string) {
+  const handleMoveToTop = (id: string) => {
     setSongs(prev => {
       const songIndex = prev.findIndex(song => song.id === id);
       if (songIndex <= 0) return prev;
@@ -78,9 +79,9 @@ export default function SongList() {
 
       return newSongs;
     });
-  }
+  };
 
-  function handleMoveToBottom(id: string) {
+  const handleMoveToBottom = (id: string) => {
     setSongs(prev => {
       const songIndex = prev.findIndex(song => song.id === id);
       if (songIndex === -1 || songIndex === prev.length - 1) return prev;
@@ -91,13 +92,11 @@ export default function SongList() {
 
       return newSongs;
     });
-  }
+  };
 
-  function handleToggleSung(id: string) {
-    setSongs(prev =>
-      prev.map(song => (song.id === id ? { ...song, sung: song.sung ? !song.sung : true } : song)),
-    );
-  }
+  const handleSung = (id: string) => {
+    console.log('handleSung', id);
+  };
 
   return (
     <DndContext
@@ -112,10 +111,10 @@ export default function SongList() {
             <SongCard
               key={song.id}
               song={song}
+              onSung={() => handleSung(song.id)}
               onDelete={() => handleDelete(song.id)}
               onMoveToTop={() => handleMoveToTop(song.id)}
               onMoveToBottom={() => handleMoveToBottom(song.id)}
-              onToggleSung={() => handleToggleSung(song.id)}
             />
           ))}
         </div>

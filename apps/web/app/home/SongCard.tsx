@@ -5,7 +5,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { ChevronsDown, ChevronsUp, GripVertical, Mic, Trash } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 
 interface Song {
   id: string;
@@ -13,23 +12,22 @@ interface Song {
   artist: string;
   kumyoungNumber: string;
   tjNumber: string;
-  sung?: boolean;
 }
 
 interface SongCardProps {
   song: Song;
+  onSung: () => void;
   onDelete: () => void;
   onMoveToTop: () => void;
   onMoveToBottom: () => void;
-  onToggleSung: () => void;
 }
 
 export default function SongCard({
   song,
+  onSung,
   onDelete,
   onMoveToTop,
   onMoveToBottom,
-  onToggleSung,
 }: SongCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: song.id });
 
@@ -39,21 +37,14 @@ export default function SongCard({
   };
 
   return (
-    <Card ref={setNodeRef} style={style} className={cn('relative', song.sung && 'bg-muted')}>
+    <Card ref={setNodeRef} style={style} className={'relative'}>
       {/* 메인 콘텐츠 영역 */}
       <div className="flex h-[120px] w-full gap-4">
         {/* 노래 정보 */}
         <div className="flex flex-1 items-center justify-between p-8 pl-4">
           {/* 제목 및 가수 */}
           <div className="mb-1">
-            <h3
-              className={cn(
-                'truncate text-base font-medium',
-                song.sung && 'text-muted-foreground line-through',
-              )}
-            >
-              {song.title}
-            </h3>
+            <h3 className={'truncate text-base font-medium'}>{song.title}</h3>
             <p className="text-muted-foreground truncate text-sm">{song.artist}</p>
           </div>
 
@@ -72,17 +63,16 @@ export default function SongCard({
         {/* 버튼 영역 - 우측 하단에 고정 */}
         <div className="absolute right-10 bottom-3 flex space-x-1">
           <button
-            onClick={onToggleSung}
-            className={cn(
-              'hover:bg-accent rounded-full p-1.5',
-              song.sung && 'text-primary bg-primary/10',
-            )}
+            type="button"
+            onClick={onSung}
+            className={'hover:bg-accent rounded-full p-1.5'}
             aria-label="노래 불렀음 표시"
           >
             <Mic className="h-4 w-4" />
           </button>
 
           <button
+            type="button"
             onClick={onDelete}
             className="hover:bg-accent text-destructive hover:text-destructive rounded-full p-1.5"
             aria-label="삭제"
@@ -91,6 +81,7 @@ export default function SongCard({
           </button>
 
           <button
+            type="button"
             onClick={onMoveToTop}
             className="hover:bg-accent rounded-full p-1.5"
             aria-label="맨 위로 이동"
@@ -99,6 +90,7 @@ export default function SongCard({
           </button>
 
           <button
+            type="button"
             onClick={onMoveToBottom}
             className="hover:bg-accent rounded-full p-1.5"
             aria-label="맨 아래로 이동"

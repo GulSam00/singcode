@@ -20,7 +20,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./app/*"]
+      "@/*": ["./app/*"],
+      "react": ["./node_modules/@types/react"] // lucide-react : cannot be used as a JSX component. 이슈 해결
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

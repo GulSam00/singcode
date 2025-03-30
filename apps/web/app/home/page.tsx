@@ -1,6 +1,7 @@
 import SongList from './SongList';
-import TestDND from './TestDND';
-import TestDNDHandle from './TestDNDHandle';
+
+// import TestDND from './TestDND';
+// import TestDNDHandle from './TestDNDHandle';
 
 export default function Home() {
   return (
