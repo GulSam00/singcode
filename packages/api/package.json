@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "test": "node --loader ts-node/esm",
+    "test": "node --experimental-specifier-resolution=node --loader ts-node/esm src/test.ts",
     "build": "tsup src/index.ts --format esm,cjs --dts"
   },
   "dependencies": {
