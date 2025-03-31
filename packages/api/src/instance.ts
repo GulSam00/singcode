@@ -27,7 +27,7 @@ const createApiRequest = (instance: AxiosInstance) => {
       // brand가 있는 경우 path 수정
       const finalPath = brand ? `${path}/${param}/${brand}.json` : `${path}/${param}.json`;
 
-      const response: AxiosResponse<ResponseType> = await instance.get(finalPath);
+      const response: AxiosResponse<ResponseType[]> = await instance.get(finalPath);
 
       return {
         data: response.data,

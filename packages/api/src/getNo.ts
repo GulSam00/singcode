@@ -7,7 +7,7 @@ interface GetNoProps {
   brand?: Brand;
 }
 
-const GetNo = async ({ no, brand }: GetNoProps): Promise<ResponseType | null> => {
+const GetNo = async ({ no, brand }: GetNoProps): Promise<ResponseType[] | null> => {
   const response = await apiRequest('/no', no, brand);
 
   if (!response.success) {

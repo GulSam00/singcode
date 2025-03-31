@@ -24,5 +24,3 @@ export async function postDB(songs) {
     console.error('❌ Supabase 저장 실패:', error);
   }
 }
-
-// postDB({ title: '아이묭dd', artist: '아이묭 (あいみょん)', num_tj: 1, num_ky: 1 });

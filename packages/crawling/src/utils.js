@@ -1,5 +1,3 @@
-//
-
 export const parseNumber = (str) => {
   if (str.length < 5 || !isNumber(str)) {
     return null;

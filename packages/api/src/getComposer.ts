@@ -7,7 +7,7 @@ interface GetComposerProps {
   brand?: Brand;
 }
 
-const getComposer = async ({ composer, brand }: GetComposerProps): Promise<ResponseType | null> => {
+const getComposer = async ({ composer, brand }: GetComposerProps): Promise<ResponseType[] | null> => {
   const response = await apiRequest('/composer', composer, brand);
 
   if (!response.success) {

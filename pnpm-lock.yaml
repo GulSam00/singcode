@@ -246,6 +246,9 @@ importers:
 
   packages/crawling:
     dependencies:
+      '@repo/api':
+        specifier: workspace:*
+        version: link:../api
       '@supabase/supabase-js':
         specifier: ^2.49.1
         version: 2.49.1
