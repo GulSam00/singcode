@@ -28,7 +28,7 @@ export const parseJapaneseText = (text) => {
   }
 
   if (koreanText.length > 0) {
-    result += ` (${koreanText})`;
+    result += `(${koreanText})`;
   }
 
   return result;

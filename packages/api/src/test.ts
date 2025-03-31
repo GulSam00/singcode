@@ -7,7 +7,7 @@ console.log('get song test');
 // const response = await getSong({ title: 'theworldsmallest' });
 // console.log('response', response);
 
-// const response2 = await getSong({ title: '아이유' });
+// const response2 = await getSong({ title: '반딧불' });
 // console.log('response2', response2);
 
 // console.log('get singer test');
@@ -34,22 +34,22 @@ console.log('get song test');
 // const response8 = await getLyricist({ lyricist: '아이유' });
 // console.log('response8', response8);
 
-console.log('get release test');
+// console.log('get release test');
 
-let year = 2024;
-let month = 1;
+// let year = 2025;
+// let month = 1;
 
-const parseMonth = (month: number) => {
-  return month < 10 ? `0${month}` : month;
-};
+// const parseMonth = (month: number) => {
+//   return month < 10 ? `0${month}` : month;
+// };
 
-while (year <= 2025) {
-  month = 1;
-  while (month <= 12) {
-    const response9 = await getRelease({ release: `${year}${parseMonth(month)}`, brand: 'kumyoung' });
-    console.log('response9', response9);
-    console.log('response9', `${year}${parseMonth(month)}`, response9?.length);
-    month++;
-  }
-  year++;
-}
+// while (year <= 2025) {
+//   month = 1;
+//   while (month <= 12) {
+//     const response9 = await getRelease({ release: `${year}${parseMonth(month)}`, brand: 'kumyoung' });
+//     console.log('response9', response9);
+//     console.log('response9', `${year}${parseMonth(month)}`, response9?.length);
+//     month++;
+//   }
+//   year++;
+// }
