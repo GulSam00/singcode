@@ -55,7 +55,7 @@ const sampleData: SearchResult[] = [
   { id: '10', title: '내 사람', artist: 'SG워너비', kumyoungNumber: '45872', tjNumber: '62427' },
 ];
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -103,13 +103,13 @@ export default function SearchPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="sticky top-0 bg-background z-10 p-3 pb-2 shadow-sm">
-        <h1 className="text-xl font-bold mb-3">노래 검색</h1>
+    <div className="bg-background min-h-screen">
+      <div className="bg-background sticky top-0 z-10 p-3 pb-2 shadow-sm">
+        <h1 className="mb-3 text-xl font-bold">노래 검색</h1>
 
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
             <Input
               type="text"
               placeholder="노래 제목 또는 가수 검색"
@@ -127,7 +127,7 @@ export default function SearchPage() {
 
       <div className="p-3 pt-2">
         {isSearching ? (
-          <div className="flex justify-center items-center h-40 text-muted-foreground">
+          <div className="text-muted-foreground flex h-40 items-center justify-center">
             검색 중...
           </div>
         ) : results.length > 0 ? (
@@ -137,11 +137,11 @@ export default function SearchPage() {
             ))}
           </div>
         ) : query ? (
-          <div className="flex justify-center items-center h-40 text-muted-foreground">
+          <div className="text-muted-foreground flex h-40 items-center justify-center">
             검색 결과가 없습니다
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
+          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
             <p className="mb-2">노래 제목이나 가수를 검색해보세요</p>
             <Mic className="h-8 w-8 opacity-50" />
           </div>
@@ -157,16 +157,16 @@ function SearchResultCard({ result }: { result: SearchResult }) {
     <Card className="overflow-hidden">
       <CardContent className="p-3">
         <div className="flex flex-col">
-          <h3 className="font-medium text-base truncate">{result.title}</h3>
-          <p className="text-sm text-muted-foreground truncate">{result.artist}</p>
+          <h3 className="truncate text-base font-medium">{result.title}</h3>
+          <p className="text-muted-foreground truncate text-sm">{result.artist}</p>
 
-          <div className="flex space-x-4 mt-2">
+          <div className="mt-2 flex space-x-4">
             <div className="flex items-center">
-              <span className="text-xs text-muted-foreground mr-1">금영</span>
+              <span className="text-muted-foreground mr-1 text-xs">금영</span>
               <span className="text-sm font-medium">{result.kumyoungNumber}</span>
             </div>
             <div className="flex items-center">
-              <span className="text-xs text-muted-foreground mr-1">TJ</span>
+              <span className="text-muted-foreground mr-1 text-xs">TJ</span>
               <span className="text-sm font-medium">{result.tjNumber}</span>
             </div>
           </div>

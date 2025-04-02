@@ -10,5 +10,5 @@ module.exports = {
   importOrder: ['<THIRD_PARTY_MODULES>', '^@repo/(.*)$', '^@/(.*)$', '^../(.*)$', '^./(.*)$'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
-  plugins: ['prettier-plugin-tailwindcss', '@trivago/prettier-plugin-sort-imports'], // Tailwind 클래스 정렬 (문자열로 변경)
+  plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
 };

@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/supabase/server';
 
-export async function login(email: string, password: string) {
+export async function register(email: string, password: string) {
   const supabase = await createClient();
 
   const data = {
@@ -13,8 +13,11 @@ export async function login(email: string, password: string) {
     password,
   };
 
-  const response = await supabase.auth.signInWithPassword(data);
+  const response = await supabase.auth.signUp(data);
+  console.log('response : ', response);
   if (response.error) {
+    // 에러를 클라이언트에 전달
+
     throw new Error(
       JSON.stringify({
         code: response.error.status || 500,
