@@ -1,14 +1,15 @@
-'use client'
+'use client';
 
-import { getComposer } from '@repo/api'
-import { useState } from 'react'
+import { useState } from 'react';
+
+import { getComposer } from '@repo/api';
 
 export default function Home() {
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState('');
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
-  }
+    setSearch(e.target.value);
+  };
 
   return (
     <div>
@@ -17,5 +18,5 @@ export default function Home() {
         <h1>fotter</h1>
       </footer>
     </div>
-  )
+  );
 }

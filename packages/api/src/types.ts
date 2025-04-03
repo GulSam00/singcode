@@ -13,7 +13,7 @@ export interface ResponseType {
 }
 
 export interface InstanceResponse {
-  data: ResponseType | null;
+  data: ResponseType[] | null;
   success: boolean;
   error?: string;
 }

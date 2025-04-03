@@ -1,0 +1,61 @@
+'use client';
+
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
+import { useState } from 'react';
+
+const defaultItems = ['Apple', 'Banana', 'Cherry', 'Date'];
+
+export default function DragDropList() {
+  const [items, setItems] = useState(defaultItems);
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      const oldIndex = items.indexOf(active.id);
+      const newIndex = items.indexOf(over.id);
+      setItems(arrayMove(items, oldIndex, newIndex));
+    }
+  };
+
+  return (
+    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={items} strategy={verticalListSortingStrategy}>
+        <ul className="space-y-2">
+          {items.map(item => (
+            <SortableItem key={item} id={item} />
+          ))}
+        </ul>
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+function SortableItem({ id }: { id: string }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      className="flex cursor-pointer items-center rounded border p-4"
+    >
+      <span {...listeners} className="mr-2 cursor-grab">
+        <GripVertical size={20} />
+      </span>
+      {id}
+    </li>
+  );
+}

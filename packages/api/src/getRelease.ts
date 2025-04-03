@@ -7,7 +7,7 @@ interface GetReleaseProps {
   brand?: Brand;
 }
 
-const getRelease = async ({ release, brand }: GetReleaseProps): Promise<ResponseType | null> => {
+const getRelease = async ({ release, brand }: GetReleaseProps): Promise<ResponseType[] | null> => {
   const response = await apiRequest('/release', release, brand);
 
   if (!response.success) {

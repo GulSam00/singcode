@@ -7,7 +7,7 @@ interface GetSingerProps {
   brand?: Brand;
 }
 
-const getSinger = async ({ singer, brand }: GetSingerProps): Promise<ResponseType | null> => {
+const getSinger = async ({ singer, brand }: GetSingerProps): Promise<ResponseType[] | null> => {
   const response = await apiRequest('/singer', singer, brand);
 
   if (!response.success) {

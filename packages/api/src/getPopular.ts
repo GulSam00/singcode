@@ -7,7 +7,7 @@ interface GetPopularProps {
   period: Period;
 }
 
-const getPopular = async ({ brand, period }: GetPopularProps): Promise<ResponseType | null> => {
+const getPopular = async ({ brand, period }: GetPopularProps): Promise<ResponseType[] | null> => {
   if (!isVaildBrand(brand)) {
     throw new Error('Invalid brand type');
   }

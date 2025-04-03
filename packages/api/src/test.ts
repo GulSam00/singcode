@@ -1,33 +1,55 @@
-import { getSong, getSinger, getComposer, getLyricist } from './index';
+import { getSong, getSinger, getComposer, getLyricist, getRelease } from './index.js';
 
 console.log('get song test');
 
-const response = await getSong({ title: '아이유', brand: 'kumyoung' });
-console.log('response', response);
+// 요청 시 공백 제거해서 보내져야 함
 
-const response2 = await getSong({ title: '아이유' });
-console.log('response2', response2);
+// const response = await getSong({ title: 'theworldsmallest' });
+// console.log('response', response);
 
-console.log('get singer test');
+// const response2 = await getSong({ title: '반딧불' });
+// console.log('response2', response2);
 
-const response3 = await getSinger({ singer: '아이유', brand: 'kumyoung' });
-console.log('response3', response3);
+// console.log('get singer test');
 
-const response4 = await getSinger({ singer: '아이유' });
-console.log('response4', response4);
+// const response3 = await getSinger({ singer: '아이유', brand: 'kumyoung' });
+// console.log('response3', response3);
 
-console.log('get composer test');
+// const response4 = await getSinger({ singer: 'PLAVE' });
+// console.log('response4', response4);
 
-const response5 = await getComposer({ composer: '아이유', brand: 'kumyoung' });
-console.log('response5', response5);
+// console.log('get composer test');
 
-const response6 = await getComposer({ composer: '아이유' });
-console.log('response6', response6);
+// const response5 = await getComposer({ composer: '아이유', brand: 'kumyoung' });
+// console.log('response5', response5);
 
-console.log('get lyricist test');
+// const response6 = await getComposer({ composer: '아이유' });
+// console.log('response6', response6);
 
-const response7 = await getLyricist({ lyricist: '아이유', brand: 'kumyoung' });
-console.log('response7', response7);
+// console.log('get lyricist test');
 
-const response8 = await getLyricist({ lyricist: '아이유' });
-console.log('response8', response8);
+// const response7 = await getLyricist({ lyricist: '아이유', brand: 'kumyoung' });
+// console.log('response7', response7);
+
+// const response8 = await getLyricist({ lyricist: '아이유' });
+// console.log('response8', response8);
+
+// console.log('get release test');
+
+// let year = 2025;
+// let month = 1;
+
+// const parseMonth = (month: number) => {
+//   return month < 10 ? `0${month}` : month;
+// };
+
+// while (year <= 2025) {
+//   month = 1;
+//   while (month <= 12) {
+//     const response9 = await getRelease({ release: `${year}${parseMonth(month)}`, brand: 'kumyoung' });
+//     console.log('response9', response9);
+//     console.log('response9', `${year}${parseMonth(month)}`, response9?.length);
+//     month++;
+//   }
+//   year++;
+// }

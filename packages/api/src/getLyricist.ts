@@ -7,7 +7,7 @@ interface GetLyricistProps {
   brand?: Brand;
 }
 
-const getLyricist = async ({ lyricist, brand }: GetLyricistProps): Promise<ResponseType | null> => {
+const getLyricist = async ({ lyricist, brand }: GetLyricistProps): Promise<ResponseType[] | null> => {
   const response = await apiRequest('/lyricist', lyricist, brand);
 
   if (!response.success) {
