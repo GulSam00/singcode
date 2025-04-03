@@ -25,8 +25,9 @@ export default function SignupPage() {
       return;
     }
 
-    await register(email, password);
-    redirect('/login');
+    const result = await register(email, password);
+    console.log('result : ', result);
+    if (result) redirect('/login');
   };
 
   return (

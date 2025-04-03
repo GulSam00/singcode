@@ -23,7 +23,7 @@ interface AuthState {
   authKaKaoLogin: () => Promise<boolean>;
 
   logout: () => Promise<void>;
-  checkAuth: () => Promise<void>;
+  checkAuth: () => Promise<boolean>;
   insertUser: (id: string) => Promise<void>;
 }
 
@@ -39,7 +39,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
 
-      console.log('data : ', data);
+      if (data.user?.identities?.length === 0) {
+        toast.error('회원가입 실패', {
+          description: '이미 가입된 이메일입니다.',
+        });
+        return false;
+      }
 
       toast.success('회원가입 성공', {
         description: '만나서 반가워요!',
@@ -115,8 +120,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   // 인증 상태 확인
   checkAuth: async () => {
-    set({ isLoading: true });
-
     try {
       const { data, error } = await supabase.auth.getUser();
 
@@ -135,10 +138,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           set({ user: existingUser, isAuthenticated: true });
         }
       }
+      return true;
     } catch (error) {
       console.error('checkAuth 오류:', error);
-    } finally {
-      set({ isLoading: false });
+      return false;
     }
   },
   insertUser: async (id: string) => {
