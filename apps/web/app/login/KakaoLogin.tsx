@@ -2,19 +2,15 @@
 
 import Image from 'next/image';
 
-import { createClient } from '@/supabase/client';
+import { useAuthStore } from '@/lib/store/useAuthStore';
 
 // 클라이언트용 Supabase 클라이언트
 
 export default function KakaoLogin() {
-  const handleKakaoLogin = async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'kakao',
-    });
+  const { authKaKaoLogin } = useAuthStore();
 
-    console.log('data : ', data);
-    console.log('error : ', error);
+  const handleKakaoLogin = async () => {
+    await authKaKaoLogin();
   };
 
   return (

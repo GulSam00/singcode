@@ -2,46 +2,43 @@
 
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-// import { redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/supabase/client';
+import { useAuthStore } from '@/lib/store/useAuthStore';
+import { createClient } from '@/lib/supabase/client';
 
 import KakaoLogin from './KakaoLogin';
-import { login } from './actions';
-
-// 새로운 클라이언트 컴포넌트
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { isLoading, isAuthenticated, login, checkAuth } = useAuthStore();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-    await login(email, password);
-    setIsLoading(false);
-  };
-
-  const getUser = async () => {
-    const supabase = createClient();
-    const { data } = await supabase.auth.getUser();
-
-    if (data) {
-      console.log('data : ', data);
+    const success = await login(email, password);
+    checkAuth();
+    if (success) {
       // redirect('/');
     }
   };
 
   useEffect(() => {
-    getUser();
-  }, []);
+    if (isAuthenticated) {
+      toast.success('로그인 확인', {
+        description: '이미 로그인 하셨어요!',
+      });
+      // redirect('/');
+    }
+  }, [isAuthenticated]);
 
   return (
     <div

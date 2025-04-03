@@ -1,20 +1,21 @@
 'use client';
 
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import type React from 'react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-import { register } from './actions';
+import { useAuthStore } from '@/lib/store/useAuthStore';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { register, isLoading } = useAuthStore();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,15 +25,8 @@ export default function SignupPage() {
       return;
     }
 
-    setIsLoading(true);
-
-    try {
-      await register(email, password);
-    } catch (error) {
-      console.error('회원가입 실패:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    await register(email, password);
+    redirect('/login');
   };
 
   return (
