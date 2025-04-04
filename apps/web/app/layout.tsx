@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 
+import { MessageDialog } from '@/components/messageDialog';
+
 import ErrorWrapper from './ErrorWrapper';
 import Footer from './Footer';
 import Header from './Header';
@@ -49,6 +51,8 @@ export default function RootLayout({
                   // },
                 }}
               />
+
+              <MessageDialog />
             </AuthProvider>
           </QueryProvider>
         </ErrorWrapper>

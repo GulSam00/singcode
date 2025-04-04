@@ -2,7 +2,7 @@
 
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/lib/store/useAuthStore';
+import { useModalStore } from '@/lib/store/useModalStore';
 
 import KakaoLogin from './KakaoLogin';
 
@@ -20,13 +21,21 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const { isLoading, isAuthenticated, login, checkAuth } = useAuthStore();
+  const { openMessage } = useModalStore();
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const success = await login(email, password);
-    checkAuth();
-    if (success) {
-      // redirect('/');
+    const { isSuccess, errorTitle, errorMessage } = await login(email, password);
+    if (isSuccess) {
+      checkAuth();
+      router.push('/');
+    } else {
+      openMessage({
+        title: errorTitle,
+        message: errorMessage || '로그인 실패',
+        variant: 'error',
+      });
     }
   };
 
@@ -35,9 +44,9 @@ export default function LoginPage() {
       toast.success('로그인 확인', {
         description: '이미 로그인 하셨어요!',
       });
-      // redirect('/');
     }
-  }, [isAuthenticated]);
+    router.push('/');
+  }, [isAuthenticated, router]);
 
   return (
     <div

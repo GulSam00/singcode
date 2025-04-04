@@ -11,12 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useMessageStore } from '@/lib/store/useModalStore';
+import { useModalStore } from '@/lib/store/useModalStore';
 import { cn } from '@/lib/utils';
 
 export function MessageDialog() {
   const { isOpen, title, message, variant, buttonText, onButtonClick, closeMessage } =
-    useMessageStore();
+    useModalStore();
 
   // 버튼 클릭 핸들러
   const handleButtonClick = () => {

@@ -1,7 +1,10 @@
+import { AuthError } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 
 import { createClient } from '@/lib/supabase/client';
+
+import { getErrorMessage } from '../utils';
 
 export const supabase = createClient();
 
@@ -18,13 +21,19 @@ interface AuthState {
   isAuthenticated: boolean;
 
   // 액션
-  register: (email: string, password: string) => Promise<boolean>; // 반환 타입 변경
-  login: (email: string, password: string) => Promise<boolean>; // 반환 타입 변경
+  register: (email: string, password: string) => Promise<ResponseState>; // 반환 타입 변경
+  login: (email: string, password: string) => Promise<ResponseState>; // 반환 타입 변경
   authKaKaoLogin: () => Promise<boolean>;
 
   logout: () => Promise<void>;
   checkAuth: () => Promise<boolean>;
   insertUser: (id: string) => Promise<void>;
+}
+
+interface ResponseState {
+  isSuccess: boolean;
+  errorTitle?: string;
+  errorMessage?: string;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -36,27 +45,35 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true });
       const supabase = createClient();
+
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
 
       if (data.user?.identities?.length === 0) {
-        toast.error('회원가입 실패', {
-          description: '이미 가입된 이메일입니다.',
-        });
-        return false;
+        return {
+          isSuccess: false,
+          errorTitle: '이메일 중복',
+          errorMessage: '이미 가입된 이메일입니다.',
+        };
       }
 
       toast.success('회원가입 성공', {
         description: '만나서 반가워요!',
       });
 
-      return true;
+      return {
+        isSuccess: true,
+      };
     } catch (error) {
-      console.error('회원가입 오류:', error);
-      toast.error('회원가입 실패', {
-        description: '회원 가입이 실패했어요...',
-      });
-      return false;
+      if (error instanceof AuthError) {
+        return getErrorMessage(error.code as string);
+      } else {
+        return {
+          isSuccess: false,
+          errorTitle: '회원가입 실패',
+          errorMessage: '회원 가입이 실패했어요.',
+        };
+      }
     } finally {
       set({ isLoading: false });
     }
@@ -67,27 +84,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ isLoading: true });
       const supabase = createClient();
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) throw error;
 
-      const { session } = data;
-      const uid = session.user.id;
-      console.log('uid : ', uid);
-
       toast.success('로그인 성공', {
         description: '다시 만나서 반가워요!',
       });
 
-      return true; // 성공 시 true 반환
+      return {
+        isSuccess: true,
+      }; // 성공 시 true 반환
     } catch (error) {
-      console.error('로그인 오류:', error);
-      toast.error('로그인 실패', {
-        description: '이메일 또는 비밀번호가 일치하지 않아요...',
-      });
-      return false; // 실패 시 false 반환
+      const { code } = error as AuthError;
+      return getErrorMessage(code as string);
     } finally {
       set({ isLoading: false });
     }
@@ -124,7 +136,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { data, error } = await supabase.auth.getUser();
 
       if (error) throw error;
-      console.log('checkAuth data : ', data);
       if (!get().user) {
         const id = data.user.id;
         const { data: existingUser } = await supabase

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 export type MessageVariant = 'default' | 'success' | 'error' | 'warning' | 'info';
 
-export interface MessageState {
+export interface ModalState {
   isOpen: boolean;
   title?: string;
   message: string;
@@ -21,13 +21,14 @@ export interface MessageState {
   closeMessage: () => void;
 }
 
-export const useMessageStore = create<MessageState>(set => ({
+export const useModalStore = create<ModalState>(set => ({
   isOpen: false,
   title: undefined,
   message: '',
   variant: 'default',
   buttonText: undefined,
   onButtonClick: undefined,
+  // onButtonClick 없어도 closeMessage는 기본적으로 호출 된다
 
   openMessage: ({ title, message, variant = 'default', buttonText, onButtonClick }) => {
     set({
