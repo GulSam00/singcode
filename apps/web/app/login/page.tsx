@@ -44,8 +44,8 @@ export default function LoginPage() {
       toast.success('로그인 확인', {
         description: '이미 로그인 하셨어요!',
       });
+      router.push('/');
     }
-    router.push('/');
   }, [isAuthenticated, router]);
 
   return (
