@@ -3,6 +3,7 @@
 import { LogOut, Mail, Menu, Pencil, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -20,7 +21,7 @@ import { Input } from './components/ui/input';
 
 const SideBar = () => {
   // 목업 인증 상태
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, changeNickname } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newNickname, setNewNickname] = useState(user?.nickname || '');
@@ -39,14 +40,22 @@ const SideBar = () => {
   };
 
   const handleEditSave = async () => {
-    // try {
-    //   // TODO: API 호출하여 닉네임 업데이트
-    //   // await updateNickname(newNickname);
-    //   setIsEditing(false);
-    //   toast.success('닉네임이 변경되었습니다.');
-    // } catch (error) {
-    //   toast.error('닉네임 변경에 실패했습니다.');
-    // }
+    if (newNickname.length < 2) {
+      toast.error('닉네임 수정 실패', {
+        description: '닉네임은 2자 이상이어야 합니다.',
+      });
+      return;
+    }
+
+    if (newNickname === user?.nickname) {
+      toast.error('닉네임 수정 실패', {
+        description: '이전과 동일한 닉네임입니다다.',
+      });
+      return;
+    }
+
+    const result = await changeNickname(newNickname);
+    console.log('result', result);
   };
 
   const handleLogin = () => {
@@ -82,27 +91,29 @@ const SideBar = () => {
             <div className="bg-primary text-primary-foreground flex h-16 w-16 items-center justify-center rounded-full text-xl font-bold">
               ?
             </div>
-            <div className="text-center">
-              <div className="relative flex items-center justify-center gap-2 font-medium">
+            <div className="w-full text-center">
+              <div className="relative flex w-full items-center justify-center gap-2 font-medium">
                 {isEditing ? (
                   // 수정 모드
-                  <div className="flex items-center gap-2">
+                  <>
                     <Input
                       value={newNickname}
                       onChange={e => setNewNickname(e.target.value)}
-                      className="h-8 w-32"
+                      className="h-8 w-32 text-center"
                       maxLength={10}
                     />
-                    <Button size="sm" onClick={handleEditSave}>
-                      저장
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={handleEditCancel}>
-                      취소
-                    </Button>
-                  </div>
+                    <div className="absolute right-0 flex items-center gap-1">
+                      <Button size="icon" onClick={handleEditSave}>
+                        저장
+                      </Button>
+                      <Button size="icon" variant="ghost" onClick={handleEditCancel}>
+                        취소
+                      </Button>
+                    </div>
+                  </>
                 ) : (
                   // 표시 모드
-                  <div className="flex items-center justify-center">
+                  <>
                     <span>{user ? user.nickname : '손님'}</span>
                     {user && (
                       <div className="absolute right-0">
@@ -111,7 +122,7 @@ const SideBar = () => {
                         </Button>
                       </div>
                     )}
-                  </div>
+                  </>
                 )}
               </div>
             </div>

@@ -24,10 +24,11 @@ interface AuthState {
   register: (email: string, password: string) => Promise<ResponseState>; // 반환 타입 변경
   login: (email: string, password: string) => Promise<ResponseState>; // 반환 타입 변경
   authKaKaoLogin: () => Promise<boolean>;
-
   logout: () => Promise<void>;
   checkAuth: () => Promise<boolean>;
   insertUser: (id: string) => Promise<void>;
+
+  changeNickname: (nickname: string) => Promise<void>;
 }
 
 interface ResponseState {
@@ -162,6 +163,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ user: user, isAuthenticated: true });
     } catch (error) {
       console.error('insertUser 오류:', error);
+    }
+  },
+  changeNickname: async (nickname: string) => {
+    try {
+      const { user } = get();
+      if (!user) throw new Error('User not found');
+
+      const result = await supabase.from('users').update({ nickname: nickname }).eq('id', user.id);
+      console.log('result : ', result);
+    } catch (error) {
+      console.error('changeNickname 오류:', error);
     }
   },
 }));
