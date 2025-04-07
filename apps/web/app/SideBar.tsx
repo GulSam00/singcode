@@ -3,7 +3,6 @@
 import { LogOut, Mail, Menu, Pencil, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -40,22 +39,8 @@ const SideBar = () => {
   };
 
   const handleEditSave = async () => {
-    if (newNickname.length < 2) {
-      toast.error('닉네임 수정 실패', {
-        description: '닉네임은 2자 이상이어야 합니다.',
-      });
-      return;
-    }
-
-    if (newNickname === user?.nickname) {
-      toast.error('닉네임 수정 실패', {
-        description: '이전과 동일한 닉네임입니다다.',
-      });
-      return;
-    }
-
     const result = await changeNickname(newNickname);
-    console.log('result', result);
+    if (result) setIsEditing(false);
   };
 
   const handleLogin = () => {
