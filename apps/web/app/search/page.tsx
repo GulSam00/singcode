@@ -7,6 +7,9 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+type SearchType = 'title' | 'artist';
 
 // 검색 결과 타입 정의
 interface SearchResult {
@@ -61,20 +64,23 @@ export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchType, setSearchType] = useState<SearchType>('title');
+
+  const handleSearchTypeChange = (value: string) => {
+    setSearchType(value as SearchType);
+    // 검색 유형이 변경되면 현재 쿼리로 다시 검색
+  };
 
   // 검색 기능
   const handleSearch = async () => {
     setIsSearching(true);
 
     console.log(query);
-    const response = await fetch(`api/search?q=${query}`);
+    const response = await fetch(`api/search?q=${query}&type=${searchType}`);
+
     const data = await response.json();
 
-    const other = await fetch(`/api/songs/title/${query}`);
-    const otherData = await other.json();
-
-    console.log(data);
-    console.log(otherData);
+    console.log('search ', data);
 
     // 실제로는 API 호출을 할 것이지만, 여기서는 샘플 데이터를 필터링
     const filtered = sampleData.filter(
@@ -107,12 +113,25 @@ export default function SearchPage() {
       <div className="bg-background sticky top-0 z-10 p-3 pb-2 shadow-sm">
         <h1 className="mb-3 text-xl font-bold">노래 검색</h1>
 
+        {/* 검색 유형 선택 탭 */}
+        <Tabs
+          defaultValue="all"
+          value={searchType}
+          onValueChange={handleSearchTypeChange}
+          className="mb-3"
+        >
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="title">제목</TabsTrigger>
+            <TabsTrigger value="artist">가수</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
             <Input
               type="text"
-              placeholder="노래 제목 또는 가수 검색"
+              placeholder={searchType === 'title' ? '노래 제목 검색' : '가수 이름 검색'}
               className="pl-8"
               value={query}
               onChange={e => setQuery(e.target.value)}
