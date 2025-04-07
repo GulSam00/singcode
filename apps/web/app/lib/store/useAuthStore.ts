@@ -32,6 +32,8 @@ interface AuthState {
   insertUser: (id: string) => Promise<void>;
 
   changeNickname: (nickname: string) => Promise<boolean>;
+  sendPasswordResetLink: (email: string) => Promise<void>;
+  changePassword: (password: string) => Promise<boolean>;
 }
 
 // useModalStore에서 사용할 데이터를 전달해줘야 할 때의 타입
@@ -161,14 +163,14 @@ export const useAuthStore = create(
 
           if (nickname.length < 2) {
             toast.error('닉네임 수정 실패', {
-              description: '닉네임은 2자 이상이어야 합니다.',
+              description: '닉네임은 2자 이상이어야 해요.',
             });
             return false;
           }
 
           if (nickname === user.nickname) {
             toast.error('닉네임 수정 실패', {
-              description: '이전과 동일한 닉네임입니다.',
+              description: '이전과 동일한 닉네임이에요.',
             });
             return false;
           }
@@ -191,6 +193,46 @@ export const useAuthStore = create(
           });
 
           console.error('changeNickname 오류:', error);
+          return false;
+        }
+      });
+    },
+    sendPasswordResetLink: async (email: string) => {
+      return await withLoading(set, get, async () => {
+        try {
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `http://localhost:3000/update-password`,
+          });
+          if (error) {
+            throw error;
+          }
+          toast.success('재설정 링크 발송 완료', {
+            description: `${email}로 비밀번호 재설정 링크를 발송했어요. 이메일을 확인해주세요.`,
+          });
+        } catch (error) {
+          console.error('비밀번호 재설정 링크 발송 실패:', error);
+          toast.error('링크 발송 실패', {
+            description: '비밀번호 재설정 링크 발송 중 오류가 발생했어요.',
+          });
+        }
+      });
+    },
+
+    changePassword: async (password: string) => {
+      return await withLoading(set, get, async () => {
+        try {
+          const { error } = await supabase.auth.updateUser({ password });
+          if (error) throw error;
+
+          toast.success('비밀번호 변경 완료', {
+            description: '비밀번호가 성공적으로 변경되었어요.',
+          });
+          return true;
+        } catch (error) {
+          console.error('비밀번호 변경 실패:', error);
+          toast.error('비밀번호 변경 실패', {
+            description: '비밀번호 변경 중 오류가 발생했어요.',
+          });
           return false;
         }
       });

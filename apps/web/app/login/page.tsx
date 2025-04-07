@@ -102,6 +102,12 @@ export default function LoginPage() {
               계정이 없으신가요? 회원가입
             </Link>
           </div>
+
+          <div className="text-center">
+            <Link href="/update-password" className="text-primary text-sm hover:underline">
+              비밀번호를 잊으셨나요? 비밀번호 재설정
+            </Link>
+          </div>
         </form>
 
         <div className="relative">
