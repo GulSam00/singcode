@@ -8,8 +8,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuthStore } from '@/lib/store/useAuthStore';
-import { useModalStore } from '@/lib/store/useModalStore';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useModalStore } from '@/store/useModalStore';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');

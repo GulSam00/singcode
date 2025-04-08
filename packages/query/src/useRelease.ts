@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getRelease, Brand } from '@repo/api';
+import { getRelease, Brand } from '@repo/open-api';
 import { UseQueryReturn } from './types';
 
 interface GetReleaseProps {

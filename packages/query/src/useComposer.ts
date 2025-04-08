@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getComposer, Brand } from '@repo/api';
+import { getComposer, Brand } from '@repo/open-api';
 import { UseQueryReturn } from './types';
 
 interface GetComposerProps {

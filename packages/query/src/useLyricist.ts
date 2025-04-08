@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getLyricist, Brand } from '@repo/api';
+import { getLyricist, Brand } from '@repo/open-api';
 import { UseQueryReturn } from './types';
 
 interface GetLyricistProps {

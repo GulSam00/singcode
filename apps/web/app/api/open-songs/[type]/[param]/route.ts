@@ -11,7 +11,7 @@ import {
   getRelease,
   getSinger,
   getSong,
-} from '@repo/api';
+} from '@repo/open-api';
 
 export async function GET(
   request: NextRequest,

@@ -11,8 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useModalStore } from '@/lib/store/useModalStore';
-import { cn } from '@/lib/utils';
+import { useModalStore } from '@/store/useModalStore';
+import { cn } from '@/utils/cn';
 
 export function MessageDialog() {
   const { isOpen, title, message, variant, buttonText, onButtonClick, closeMessage } =

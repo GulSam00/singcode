@@ -1,4 +1,4 @@
-import { ResponseType } from '@repo/api';
+import { ResponseType } from '@repo/open-api';
 
 export interface UseQueryReturn {
   data: ResponseType[] | null | undefined;

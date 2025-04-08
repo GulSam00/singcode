@@ -36,20 +36,20 @@ console.log('get song test');
 
 // console.log('get release test');
 
-// let year = 2025;
-// let month = 1;
+let year = 2025;
+let month = 1;
 
-// const parseMonth = (month: number) => {
-//   return month < 10 ? `0${month}` : month;
-// };
+const parseMonth = (month: number) => {
+  return month < 10 ? `0${month}` : month;
+};
 
-// while (year <= 2025) {
-//   month = 1;
-//   while (month <= 12) {
-//     const response9 = await getRelease({ release: `${year}${parseMonth(month)}`, brand: 'kumyoung' });
-//     console.log('response9', response9);
-//     console.log('response9', `${year}${parseMonth(month)}`, response9?.length);
-//     month++;
-//   }
-//   year++;
-// }
+while (year <= 2025) {
+  month = 1;
+  while (month <= 12) {
+    const response9 = await getRelease({ release: `${year}${parseMonth(month)}`, brand: 'tj' });
+    console.log('response9', response9);
+    console.log('response9', `${year}${parseMonth(month)}`, response9?.length);
+    month++;
+  }
+  year++;
+}

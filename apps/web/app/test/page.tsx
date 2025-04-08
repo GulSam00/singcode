@@ -1,4 +1,4 @@
-import { getNo, getPopular, getSinger } from '@repo/api';
+import { getNo, getPopular, getSinger } from '@repo/open-api';
 
 import { SearchForm } from './SearchForm';
 

@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@repo/api": "workspace:*",
+    "@repo/open-api": "workspace:*",
     "@tanstack/react-query": "^5.68.0"
   },
   "devDependencies": {

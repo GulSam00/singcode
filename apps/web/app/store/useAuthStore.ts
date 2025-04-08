@@ -4,8 +4,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import { createClient } from '@/lib/supabase/client';
-
-import { getErrorMessage } from '../utils';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 
 import { withLoading } from './middleware';
 

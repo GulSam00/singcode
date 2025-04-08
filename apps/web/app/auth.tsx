@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { useAuthStore } from '@/lib/store/useAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { checkAuth } = useAuthStore();

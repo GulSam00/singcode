@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSong, Brand, ResponseType } from '@repo/api';
+import { getSong, Brand, ResponseType } from '@repo/open-api';
 import { UseQueryReturn } from './types';
 
 interface GetSongProps {
