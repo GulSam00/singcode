@@ -21,7 +21,7 @@ export default function UpdatePasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [step, setStep] = useState<'email' | 'reset'>('reset');
+  const [step, setStep] = useState<'email' | 'reset'>('email');
 
   const { isLoading, sendPasswordResetLink, changePassword } = useAuthStore();
   const { openMessage } = useModalStore();
