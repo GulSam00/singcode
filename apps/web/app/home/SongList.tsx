@@ -16,9 +16,10 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 
-import SongCard from './SongCard';
+const SongCard = dynamic(() => import('./SongCard'), { ssr: false });
 
 // 초기 노래 데이터
 const initialSongs = [

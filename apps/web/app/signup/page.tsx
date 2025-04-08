@@ -1,37 +1,52 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type React from 'react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-import { register } from './actions';
+import { useAuthStore } from '@/lib/store/useAuthStore';
+import { useModalStore } from '@/lib/store/useModalStore';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { register, isLoading } = useAuthStore();
+  const { openMessage } = useModalStore();
+  const router = useRouter();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
+      openMessage({
+        title: '일치하지 않는 비밀번호',
+        message: '비밀번호가 일치하지 않습니다.',
+        variant: 'error',
+      });
       return;
     }
 
-    setIsLoading(true);
+    const { isSuccess, errorTitle, errorMessage } = await register(email, password);
 
-    try {
-      await register(email, password);
-    } catch (error) {
-      console.error('회원가입 실패:', error);
-    } finally {
-      setIsLoading(false);
+    if (isSuccess) {
+      openMessage({
+        title: '회원가입 성공',
+        message: '입력한 이메일로 인증 메일을 보냈어요.',
+        variant: 'success',
+        onButtonClick: () => router.push('/login'),
+      });
+    } else {
+      openMessage({
+        title: errorTitle,
+        message: errorMessage || '회원가입 실패',
+        variant: 'error',
+      });
     }
   };
 

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { createClient } from '@/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: Request) {
   // API KEY 노출을 막기 위해 미들웨어 역할을 할 API ROUTE 활용

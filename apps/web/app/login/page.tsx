@@ -2,46 +2,51 @@
 
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-// import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { createClient } from '@/supabase/client';
+import { useAuthStore } from '@/lib/store/useAuthStore';
+import { useModalStore } from '@/lib/store/useModalStore';
 
 import KakaoLogin from './KakaoLogin';
-import { login } from './actions';
-
-// 새로운 클라이언트 컴포넌트
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { isLoading, isAuthenticated, login, checkAuth } = useAuthStore();
+  const { openMessage } = useModalStore();
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-    await login(email, password);
-    setIsLoading(false);
-  };
-
-  const getUser = async () => {
-    const supabase = createClient();
-    const { data } = await supabase.auth.getUser();
-
-    if (data) {
-      console.log('data : ', data);
-      // redirect('/');
+    const { isSuccess, errorTitle, errorMessage } = await login(email, password);
+    if (isSuccess) {
+      checkAuth();
+      router.push('/');
+    } else {
+      openMessage({
+        title: errorTitle,
+        message: errorMessage || '로그인 실패',
+        variant: 'error',
+      });
     }
   };
 
   useEffect(() => {
-    getUser();
-  }, []);
+    if (isAuthenticated) {
+      toast.success('로그인 확인', {
+        description: '이미 로그인 하셨어요!',
+      });
+      router.push('/');
+    }
+  }, [isAuthenticated, router]);
 
   return (
     <div
@@ -95,6 +100,12 @@ export default function LoginPage() {
           <div className="text-center">
             <Link href="/signup" className="text-primary text-sm hover:underline">
               계정이 없으신가요? 회원가입
+            </Link>
+          </div>
+
+          <div className="text-center">
+            <Link href="/update-password" className="text-primary text-sm hover:underline">
+              비밀번호를 잊으셨나요? 비밀번호 재설정
             </Link>
           </div>
         </form>
