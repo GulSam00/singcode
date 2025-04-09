@@ -28,12 +28,13 @@ export default function SearchResultCard({ song, onToggleToSing, onToggleLike }:
           </div>
 
           {/* 노래방 번호 */}
+
           <div className="mt-1 flex space-x-4">
-            <div className="flex items-center">
+            <div className="flex w-[70px] items-center">
               <span className="text-brand-tj mr-1 text-xs">TJ</span>
               <span className="text-sm font-medium">{num_tj}</span>
             </div>
-            <div className="flex items-center">
+            <div className="flex w-[70px] items-center">
               <span className="text-brand-ky mr-1 text-xs">금영</span>
               <span className="text-sm font-medium">{num_ky}</span>
             </div>

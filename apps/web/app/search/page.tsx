@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAuthStore } from '@/store/useAuthStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
@@ -19,8 +18,6 @@ export default function SearchPage() {
   const [searchResults, setSearchResults] = useState<SearchSong[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchType, setSearchType] = useState<SearchType>('title');
-
-  const { user } = useAuthStore(); // store에서 user 정보 가져오기
 
   // 엔터 키 처리
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -40,12 +37,8 @@ export default function SearchPage() {
       return;
     }
     setIsSearching(true);
-    const response = await fetch(
-      `api/search?q=${query}&type=${searchType}&userId=${user?.id || ''}`,
-    );
+    const response = await fetch(`api/search?q=${query}&type=${searchType}`);
     const data = await response.json();
-
-    console.log('handleSearch data : ', data);
 
     if (data.success) {
       setSearchResults(data.songs);
@@ -57,30 +50,44 @@ export default function SearchPage() {
 
   const handleToggleToSing = async (songId: string, method: Method) => {
     const url = `/api/songs/tosing`;
-    const userId = user?.id ?? null;
     const response = await fetch(url, {
       method,
-      body: JSON.stringify({ songId, userId }),
+      body: JSON.stringify({ songId }),
       headers: { 'Content-Type': 'application/json' },
     });
 
     const { success } = await response.json();
     if (success) {
+      const newResults = searchResults.map(song => {
+        if (song.id === songId) {
+          return { ...song, isToSing: !song.isToSing };
+        }
+        return song;
+      });
+      setSearchResults(newResults);
+    } else {
       handleSearch();
     }
   };
 
   const handleToggleLike = async (songId: string, method: Method) => {
     const url = `/api/songs/like`;
-    const userId = user?.id ?? null;
     const response = await fetch(url, {
       method,
-      body: JSON.stringify({ songId, userId }),
+      body: JSON.stringify({ songId }),
       headers: { 'Content-Type': 'application/json' },
     });
 
     const { success } = await response.json();
     if (success) {
+      const newResults = searchResults.map(song => {
+        if (song.id === songId) {
+          return { ...song, isLiked: !song.isLiked };
+        }
+        return song;
+      });
+      setSearchResults(newResults);
+    } else {
       handleSearch();
     }
   };

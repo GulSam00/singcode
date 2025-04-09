@@ -17,33 +17,15 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const SongCard = dynamic(() => import('./SongCard'), { ssr: false });
+import { ToSing } from '@/types/song';
 
-// 초기 노래 데이터
-const initialSongs = [
-  { id: '1', title: '눈의 꽃', artist: '박효신', kumyoungNumber: '47251', tjNumber: '62867' },
-  { id: '2', title: '거리에서', artist: '성시경', kumyoungNumber: '84173', tjNumber: '48506' },
-  {
-    id: '3',
-    title: '벚꽃 엔딩',
-    artist: '버스커 버스커',
-    kumyoungNumber: '46079',
-    tjNumber: '30184',
-  },
-  { id: '4', title: '사랑했나봐', artist: '윤도현', kumyoungNumber: '41906', tjNumber: '35184' },
-  {
-    id: '5',
-    title: '너를 사랑하고 있어',
-    artist: '백지영',
-    kumyoungNumber: '38115',
-    tjNumber: '46009',
-  },
-];
+// const SongCard = dynamic(() => import('./SongCard'), { ssr: false });
+import SongCard from './SongCard';
 
 export default function SongList() {
-  const [songs, setSongs] = useState(initialSongs);
+  const [toSings, setToSings] = useState<ToSing[]>([]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -52,52 +34,133 @@ export default function SongList() {
     }),
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      setSongs(items => {
-        const oldIndex = items.findIndex(item => item.id === active.id);
-        const newIndex = items.findIndex(item => item.id === over.id);
+    if (!over || active.id === over.id) return;
 
-        return arrayMove(items, oldIndex, newIndex);
-      });
+    const oldIndex = toSings.findIndex(item => item.songs.id === active.id);
+    const newIndex = toSings.findIndex(item => item.songs.id === over.id);
+
+    if (oldIndex === newIndex) return;
+
+    const newItems = arrayMove(toSings, oldIndex, newIndex);
+    const prevItem = newItems[newIndex - 1];
+    const nextItem = newItems[newIndex + 1];
+
+    let newWeight;
+    console.log('prevItem : ', prevItem);
+    console.log('nextItem : ', nextItem);
+    if (!prevItem && nextItem) {
+      // 제일 앞으로 이동한 경우
+      newWeight = toSings[0].order_weight - 1;
+    } else if (prevItem && !nextItem) {
+      // 제일 뒤로 이동한 경우
+      newWeight = toSings[toSings.length - 1].order_weight + 1;
+    } else {
+      // 중간에 삽입
+      newWeight = (prevItem.order_weight + nextItem.order_weight) / 2;
+    }
+
+    const response = await fetch(`/api/songs/tosing`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        songId: active.id,
+        newWeight,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const { success } = await response.json();
+
+    if (success) {
+      setToSings(newItems);
+    } else {
+      handleSearch();
     }
   };
 
-  const handleDelete = (id: string) => {
-    setSongs(songs.filter(song => song.id !== id));
-  };
-
-  const handleMoveToTop = (id: string) => {
-    setSongs(prev => {
-      const songIndex = prev.findIndex(song => song.id === id);
-      if (songIndex <= 0) return prev;
-
-      const newSongs = [...prev];
-      const [movedSong] = newSongs.splice(songIndex, 1);
-      newSongs.unshift(movedSong);
-
-      return newSongs;
+  const handleDelete = async (songId: string) => {
+    const response = await fetch(`/api/songs/tosing`, {
+      method: 'DELETE',
+      body: JSON.stringify({ songId }),
+      headers: { 'Content-Type': 'application/json' },
     });
+
+    const newItem = toSings.filter(item => item.songs.id !== songId);
+    const { success } = await response.json();
+    if (success) {
+      setToSings(newItem);
+    } else {
+      handleSearch();
+    }
   };
 
-  const handleMoveToBottom = (id: string) => {
-    setSongs(prev => {
-      const songIndex = prev.findIndex(song => song.id === id);
-      if (songIndex === -1 || songIndex === prev.length - 1) return prev;
+  const handleMoveToTop = async (songId: string, oldIndex: number) => {
+    if (oldIndex === 0) return;
+    const newItems = arrayMove(toSings, oldIndex, 0);
 
-      const newSongs = [...prev];
-      const [movedSong] = newSongs.splice(songIndex, 1);
-      newSongs.push(movedSong);
+    const newWeight = toSings[0].order_weight - 1;
 
-      return newSongs;
+    const response = await fetch(`/api/songs/tosing`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        songId,
+        newWeight,
+      }),
+      headers: { 'Content-Type': 'application/json' },
     });
+    const { success } = await response.json();
+
+    if (success) {
+      setToSings(newItems);
+    } else {
+      handleSearch();
+    }
   };
 
-  const handleSung = (id: string) => {
+  const handleMoveToBottom = async (songId: string, oldIndex: number) => {
+    const lastIndex = toSings.length - 1;
+    if (oldIndex === lastIndex) return;
+
+    const newItems = arrayMove(toSings, oldIndex, lastIndex);
+    const newWeight = toSings[lastIndex].order_weight + 1;
+
+    const response = await fetch(`/api/songs/tosing`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        songId,
+        newWeight,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const { success } = await response.json();
+
+    if (success) {
+      setToSings(newItems);
+    } else {
+      handleSearch();
+    }
+  };
+
+  const handleSung = (songId: string) => {
     console.log('handleSung', id);
   };
+
+  const handleSearch = async () => {
+    const response = await fetch(`/api/songs/tosing`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const { data, success } = await response.json();
+    if (success) {
+      console.log('handleSearch data : ', data);
+      setToSings(data);
+    }
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, []);
 
   return (
     <DndContext
@@ -106,16 +169,19 @@ export default function SongList() {
       onDragEnd={handleDragEnd}
       modifiers={[restrictToVerticalAxis]}
     >
-      <SortableContext items={songs.map(song => song.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        items={toSings.map(item => item.songs.id)}
+        strategy={verticalListSortingStrategy}
+      >
         <div className="flex flex-col gap-4">
-          {songs.map(song => (
+          {toSings.map((item, index) => (
             <SongCard
-              key={song.id}
-              song={song}
-              onSung={() => handleSung(song.id)}
-              onDelete={() => handleDelete(song.id)}
-              onMoveToTop={() => handleMoveToTop(song.id)}
-              onMoveToBottom={() => handleMoveToBottom(song.id)}
+              key={item.songs.id}
+              song={item.songs}
+              onSung={() => handleSung(item.songs.id)}
+              onDelete={() => handleDelete(item.songs.id)}
+              onMoveToTop={() => handleMoveToTop(item.songs.id, index)}
+              onMoveToBottom={() => handleMoveToBottom(item.songs.id, index)}
             />
           ))}
         </div>
