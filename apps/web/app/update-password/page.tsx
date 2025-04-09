@@ -10,9 +10,9 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuthStore } from '@/lib/store/useAuthStore';
-import { useModalStore } from '@/lib/store/useModalStore';
 import { createClient } from '@/lib/supabase/client';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useModalStore } from '@/store/useModalStore';
 
 export default function UpdatePasswordPage() {
   // 상태 관리
@@ -21,7 +21,7 @@ export default function UpdatePasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [step, setStep] = useState<'email' | 'reset'>('reset');
+  const [step, setStep] = useState<'email' | 'reset'>('email');
 
   const { isLoading, sendPasswordResetLink, changePassword } = useAuthStore();
   const { openMessage } = useModalStore();

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getNo, Brand } from '@repo/api';
+import { getNo, Brand } from '@repo/open-api';
 import { UseQueryReturn } from './types';
 
 interface GetNoProps {

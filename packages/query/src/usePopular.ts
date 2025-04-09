@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getPopular, Brand, Period } from '@repo/api';
+import { getPopular, Brand, Period } from '@repo/open-api';
 import { UseQueryReturn } from './types';
 
 interface GetPopularProps {
