@@ -94,7 +94,7 @@ export default function SearchPage() {
 
   return (
     <div className="bg-background min-h-screen">
-      <div className="bg-background sticky top-0 z-10 p-3 pb-2 shadow-sm">
+      <div className="bg-background sticky top-0 p-2 shadow-sm">
         <h1 className="mb-3 text-xl font-bold">노래 검색</h1>
 
         <Tabs

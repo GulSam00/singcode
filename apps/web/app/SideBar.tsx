@@ -14,7 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 import { Input } from './components/ui/input';
 

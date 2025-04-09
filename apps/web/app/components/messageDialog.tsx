@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useModalStore } from '@/store/useModalStore';
+import { useModalStore } from '@/stores/useModalStore';
 import { cn } from '@/utils/cn';
 
 export function MessageDialog() {

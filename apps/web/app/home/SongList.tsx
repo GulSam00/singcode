@@ -16,13 +16,14 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
 import { ToSing } from '@/types/song';
 
-// const SongCard = dynamic(() => import('./SongCard'), { ssr: false });
 import SongCard from './SongCard';
+
+// import dynamic from 'next/dynamic';
+// const SongCard = dynamic(() => import('./SongCard'), { ssr: false });
 
 export default function SongList() {
   const [toSings, setToSings] = useState<ToSing[]>([]);
@@ -49,8 +50,7 @@ export default function SongList() {
     const nextItem = newItems[newIndex + 1];
 
     let newWeight;
-    console.log('prevItem : ', prevItem);
-    console.log('nextItem : ', nextItem);
+
     if (!prevItem && nextItem) {
       // 제일 앞으로 이동한 경우
       newWeight = toSings[0].order_weight - 1;
@@ -142,8 +142,36 @@ export default function SongList() {
     }
   };
 
-  const handleSung = (songId: string) => {
-    console.log('handleSung', id);
+  const handleSung = async (songId: string) => {
+    handleMoveToBottom(
+      songId,
+      toSings.findIndex(item => item.songs.id === songId),
+    );
+
+    await fetch(`/api/songs/total_stats`, {
+      method: 'POST',
+      body: JSON.stringify({
+        songId,
+        countType: 'sing_count',
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    await fetch(`/api/songs/user_stats`, {
+      method: 'POST',
+      body: JSON.stringify({
+        songId,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    await fetch('/api/sing_logs', {
+      method: 'POST',
+      body: JSON.stringify({
+        songId,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
   };
 
   const handleSearch = async () => {
@@ -153,7 +181,6 @@ export default function SongList() {
     });
     const { data, success } = await response.json();
     if (success) {
-      console.log('handleSearch data : ', data);
       setToSings(data);
     }
   };
