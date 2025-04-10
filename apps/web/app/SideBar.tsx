@@ -18,7 +18,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 
 import { Input } from './components/ui/input';
 
-const SideBar = () => {
+const Sidebar = () => {
   // 목업 인증 상태
   const { user, isAuthenticated, logout, changeNickname } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
@@ -144,4 +144,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default Sidebar;

@@ -15,3 +15,7 @@ export interface ToSing {
   order_weight: number;
   songs: Song;
 }
+
+export interface AddListModalSong extends Song {
+  isInToSingList: boolean;
+}

@@ -2,18 +2,22 @@ import { Heart, MinusCircle, PlusCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
 interface IProps {
   song: SearchSong;
-  onToggleToSing: (songId: string, method: Method) => void;
-  onToggleLike: (songId: string, method: Method) => void;
+  onToggleToSing: () => void;
+  onToggleLike: () => void;
+  onClickOpenPlaylistModal: () => void;
 }
 
-// 검색 결과 카드 컴포넌트
-export default function SearchResultCard({ song, onToggleToSing, onToggleLike }: IProps) {
-  const { id, title, artist, num_tj, num_ky, isToSing, isLiked } = song;
+export default function SearchResultCard({
+  song,
+  onToggleToSing,
+  onToggleLike,
+  // onClickOpenPlaylistModal,
+}: IProps) {
+  const { title, artist, num_tj, num_ky, isToSing, isLiked } = song;
 
   return (
     <Card className="relative overflow-hidden">
@@ -48,7 +52,7 @@ export default function SearchResultCard({ song, onToggleToSing, onToggleLike }:
             size="icon"
             className={`h-8 w-8 ${isToSing ? 'text-primary bg-primary/10' : ''}`}
             aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
-            onClick={() => onToggleToSing(id, isToSing ? 'DELETE' : 'POST')}
+            onClick={onToggleToSing}
           >
             {isToSing ? (
               <div className="relative">
@@ -66,10 +70,20 @@ export default function SearchResultCard({ song, onToggleToSing, onToggleLike }:
             size="icon"
             className={`h-8 w-8 ${isLiked ? 'text-red-500' : ''}`}
             aria-label={isLiked ? '좋아요 취소' : '좋아요'}
-            onClick={() => onToggleLike(id, isLiked ? 'DELETE' : 'POST')}
+            onClick={onToggleLike}
           >
             <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
           </Button>
+          {/* 
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            aria-label="재생목록에 추가"
+            onClick={onClickOpenPlaylistModal}
+          >
+            <ListPlus className="h-4 w-4" />
+          </Button> */}
         </div>
       </div>
     </Card>

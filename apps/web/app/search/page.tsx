@@ -1,23 +1,29 @@
 'use client';
 
 import { Mic, Search } from 'lucide-react';
-import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Method } from '@/types/common';
-import { SearchSong } from '@/types/song';
+import useSearch from '@/hooks/useSearch';
 
 import SearchResultCard from './SearchResultCard';
 
-type SearchType = 'title' | 'artist';
-
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchSong[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchType, setSearchType] = useState<SearchType>('title');
+  const {
+    search,
+    setSearch,
+    searchResults,
+    searchType,
+    handleSearchTypeChange,
+    handleSearch,
+    handleToggleToSing,
+    handleToggleLike,
+    handleOpenPlaylistModal,
+    // isModal,
+    // selectedSong,
+    // handleSavePlaylist,
+  } = useSearch();
 
   // 엔터 키 처리
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -26,75 +32,9 @@ export default function SearchPage() {
     }
   };
 
-  const handleSearchTypeChange = (value: string) => {
-    setSearchType(value as SearchType);
-    // 검색 유형이 변경되면 현재 쿼리로 다시 검색
-  };
-
-  // 검색 기능
-  const handleSearch = async () => {
-    if (!query) {
-      return;
-    }
-    setIsSearching(true);
-    const response = await fetch(`api/search?q=${query}&type=${searchType}`);
-    const data = await response.json();
-
-    if (data.success) {
-      setSearchResults(data.songs);
-    } else {
-      setSearchResults([]);
-    }
-    setIsSearching(false);
-  };
-
-  const handleToggleToSing = async (songId: string, method: Method) => {
-    const url = `/api/songs/tosing`;
-    const response = await fetch(url, {
-      method,
-      body: JSON.stringify({ songId }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    const { success } = await response.json();
-    if (success) {
-      const newResults = searchResults.map(song => {
-        if (song.id === songId) {
-          return { ...song, isToSing: !song.isToSing };
-        }
-        return song;
-      });
-      setSearchResults(newResults);
-    } else {
-      handleSearch();
-    }
-  };
-
-  const handleToggleLike = async (songId: string, method: Method) => {
-    const url = `/api/songs/like`;
-    const response = await fetch(url, {
-      method,
-      body: JSON.stringify({ songId }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    const { success } = await response.json();
-    if (success) {
-      const newResults = searchResults.map(song => {
-        if (song.id === songId) {
-          return { ...song, isLiked: !song.isLiked };
-        }
-        return song;
-      });
-      setSearchResults(newResults);
-    } else {
-      handleSearch();
-    }
-  };
-
   return (
-    <div className="bg-background min-h-screen">
-      <div className="bg-background sticky top-0 p-2 shadow-sm">
+    <div className="bg-background h-full">
+      <div className="bg-background sticky top-0 z-50 p-2 shadow-sm">
         <h1 className="mb-3 text-xl font-bold">노래 검색</h1>
 
         <Tabs
@@ -116,30 +56,27 @@ export default function SearchPage() {
               type="text"
               placeholder={searchType === 'title' ? '노래 제목 검색' : '가수 이름 검색'}
               className="pl-8"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
               onKeyDown={handleKeyDown}
             />
           </div>
-          <Button onClick={handleSearch} disabled={isSearching}>
-            검색
-          </Button>
+          <Button onClick={handleSearch}>검색</Button>
         </div>
       </div>
 
       <div className="p-3 pt-2">
-        {isSearching ? (
-          <div className="text-muted-foreground flex h-40 items-center justify-center">
-            검색 중...
-          </div>
-        ) : searchResults.length > 0 ? (
+        {searchResults.length > 0 ? (
           <div className="flex flex-col space-y-3">
             {searchResults.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
                 song={song}
-                onToggleToSing={handleToggleToSing}
-                onToggleLike={handleToggleLike}
+                onToggleToSing={() =>
+                  handleToggleToSing(song.id, song.isToSing ? 'DELETE' : 'POST')
+                }
+                onToggleLike={() => handleToggleLike(song.id, song.isLiked ? 'DELETE' : 'POST')}
+                onClickOpenPlaylistModal={() => handleOpenPlaylistModal(song)}
               />
             ))}
           </div>
@@ -150,6 +87,8 @@ export default function SearchPage() {
           </div>
         )}
       </div>
+
+      {/* {isModal && <PlaylistModal song={selectedSong} />} */}
     </div>
   );
 }

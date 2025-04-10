@@ -4,11 +4,10 @@ import { createClient } from '@/lib/supabase/server';
 
 // 유효한 카운트 타입 정의
 type CountType = 'sing_count' | 'like_count' | 'saved_count';
-
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
-    const { songId, countType } = await request.json();
+    const { songId, countType, isMinus } = await request.json();
 
     // countType 유효성 검사
     if (!['sing_count', 'like_count', 'saved_count'].includes(countType)) {
@@ -22,7 +21,7 @@ export async function POST(request: Request) {
       const { error: updateError } = await supabase
         .from('total_stats')
         .update({
-          [countType]: data[countType as CountType] + 1,
+          [countType]: data[countType as CountType] + (isMinus ? -1 : 1),
         })
         .eq('song_id', songId);
 
