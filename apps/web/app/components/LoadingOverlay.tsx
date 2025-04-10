@@ -1,8 +1,8 @@
 'use client';
 
-import { useLoadingStore } from '@/stores/useLoadingStore';
+import useLoadingStore from '@/stores/useLoadingStore';
 
-const LoadingOverlay = () => {
+export default function LoadingOverlay() {
   const isLoading = useLoadingStore(state => state.isLoading);
 
   if (!isLoading) return null;
@@ -12,6 +12,4 @@ const LoadingOverlay = () => {
       <div className="border-secondary border-t-primary h-12 w-12 animate-spin rounded-full border-4" />
     </div>
   );
-};
-
-export default LoadingOverlay;
+}

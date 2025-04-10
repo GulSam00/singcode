@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { createClient } from '@/lib/supabase/server';
+import createClient from '@/lib/supabase/server';
 
 // 유효한 카운트 타입 정의
 type CountType = 'sing_count' | 'like_count' | 'saved_count';

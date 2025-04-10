@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useLoadingStore } from '@/stores/useLoadingStore';
+import useLoadingStore from '@/stores/useLoadingStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 

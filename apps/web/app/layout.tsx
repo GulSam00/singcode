@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 
 import LoadingOverlay from '@/components/LoadingOverlay';
-import { MessageDialog } from '@/components/messageDialog';
+import MessageDialog from '@/components/messageDialog';
 
 import ErrorWrapper from './ErrorWrapper';
 import Footer from './Footer';

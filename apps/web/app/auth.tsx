@@ -4,9 +4,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-import { useAuthStore } from '@/stores/useAuthStore';
+import useAuthStore from '@/stores/useAuthStore';
 
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { checkAuth } = useAuthStore();
@@ -29,6 +29,4 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [pathname, router, checkAuth]);
 
   return <>{children}</>;
-};
-
-export default AuthProvider;
+}

@@ -11,10 +11,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useModalStore } from '@/stores/useModalStore';
+import useModalStore from '@/stores/useModalStore';
 import { cn } from '@/utils/cn';
 
-export function MessageDialog() {
+export default function MessageDialog() {
   const { isOpen, title, message, variant, buttonText, onButtonClick, closeMessage } =
     useModalStore();
 

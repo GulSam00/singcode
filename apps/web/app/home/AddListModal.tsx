@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useAddListModal } from '@/hooks/useAddListModal';
+import useAddListModal from '@/hooks/useAddListModal';
 
 import ModalSongItem from './ModalSongItem';
 

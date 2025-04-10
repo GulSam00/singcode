@@ -3,8 +3,8 @@ import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useEffect, useState } from 'react';
 
-import { useAuthStore } from '@/stores/useAuthStore';
-import { useLoadingStore } from '@/stores/useLoadingStore';
+import useAuthStore from '@/stores/useAuthStore';
+import useLoadingStore from '@/stores/useLoadingStore';
 import { ToSing } from '@/types/song';
 
 export default function useToSingList() {
