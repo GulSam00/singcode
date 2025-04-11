@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Loader2 } from 'lucide-react';
 
-import useToSingList from '@/hooks/useToSingList';
+import useSong from '@/hooks/useSong';
 import useLoadingStore from '@/stores/useLoadingStore';
 import useSongStore from '@/stores/useSongStore';
 import { ToSing } from '@/types/song';
@@ -25,7 +25,7 @@ import SongCard from './SongCard';
 
 export default function SongList() {
   const { handleDragEnd, handleDelete, handleMoveToTop, handleMoveToBottom, handleSung } =
-    useToSingList();
+    useSong();
   const { toSings } = useSongStore();
   const { isInitialLoading } = useLoadingStore();
 
