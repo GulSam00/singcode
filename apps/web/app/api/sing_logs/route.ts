@@ -9,11 +9,10 @@ export async function POST(request: Request) {
     const { songId } = await request.json();
     const userId = await getAuthenticatedUser(supabase); // userId 가져오기
 
-    const { data, error } = await supabase.from('sing_logs').insert({
+    const { error } = await supabase.from('sing_logs').insert({
       song_id: songId,
       user_id: userId, // userId 추가
     });
-    console.log(data);
     if (error) throw error;
 
     return NextResponse.json({ success: true });

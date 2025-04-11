@@ -45,8 +45,6 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       )
       .ilike(type, `%${query}%`);
 
-    // console.log(data);
-
     if (error) {
       return NextResponse.json(
         {

@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useAddListModal from '@/hooks/useAddListModal';
+import useSongStore from '@/stores/useSongStore';
 
 import ModalSongItem from './ModalSongItem';
 
@@ -22,13 +23,18 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
   const {
     activeTab,
     setActiveTab,
-    likedSongs,
-    recentSongs,
     songSelected,
     handleToggleSelect,
     handleConfirm,
     totalSelectedCount,
   } = useAddListModal();
+
+  const { likedSongs, recentSongs } = useSongStore();
+
+  const handleClickConfirm = () => {
+    handleConfirm();
+    onClose();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
@@ -53,27 +59,29 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
             <div className="flex-1 overflow-y-auto">
               <TabsContent value="liked" className="mt-0 h-full">
                 <div className="h-full pr-2">
-                  {likedSongs.map(song => (
-                    <ModalSongItem
-                      key={song.id}
-                      song={song}
-                      isSelected={songSelected.includes(song.id)}
-                      onToggleSelect={handleToggleSelect}
-                    />
-                  ))}
+                  {likedSongs &&
+                    likedSongs.map(song => (
+                      <ModalSongItem
+                        key={song.id}
+                        song={song}
+                        isSelected={songSelected.includes(song.id)}
+                        onToggleSelect={handleToggleSelect}
+                      />
+                    ))}
                 </div>
               </TabsContent>
 
               <TabsContent value="recent" className="mt-0 h-full">
                 <div className="h-full pr-2">
-                  {recentSongs.map(song => (
-                    <ModalSongItem
-                      key={song.id}
-                      song={song}
-                      isSelected={songSelected.includes(song.id)}
-                      onToggleSelect={handleToggleSelect}
-                    />
-                  ))}
+                  {recentSongs &&
+                    recentSongs.map(song => (
+                      <ModalSongItem
+                        key={song.id}
+                        song={song}
+                        isSelected={songSelected.includes(song.id)}
+                        onToggleSelect={handleToggleSelect}
+                      />
+                    ))}
                 </div>
               </TabsContent>
             </div>
@@ -84,7 +92,9 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
           <Button variant="outline" onClick={onClose}>
             취소
           </Button>
-          <Button onClick={handleConfirm}>{`${totalSelectedCount}곡 추가하기`}</Button>
+          <Button onClick={handleClickConfirm} disabled={totalSelectedCount === 0}>
+            {`${totalSelectedCount}곡 추가하기`}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

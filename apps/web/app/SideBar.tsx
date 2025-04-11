@@ -44,8 +44,6 @@ export default function Sidebar() {
   };
 
   const handleLogin = () => {
-    console.log('login');
-    console.log('isAuthenticated', isAuthenticated);
     router.push('/login');
     setIsOpen(false);
   };

@@ -14,15 +14,20 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { Loader2 } from 'lucide-react';
 
 import useToSingList from '@/hooks/useToSingList';
+import useLoadingStore from '@/stores/useLoadingStore';
+import useSongStore from '@/stores/useSongStore';
 import { ToSing } from '@/types/song';
 
 import SongCard from './SongCard';
 
 export default function SongList() {
-  const { toSings, handleDragEnd, handleDelete, handleMoveToTop, handleMoveToBottom, handleSung } =
+  const { handleDragEnd, handleDelete, handleMoveToTop, handleMoveToBottom, handleSung } =
     useToSingList();
+  const { toSings } = useSongStore();
+  const { isInitialLoading } = useLoadingStore();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -43,6 +48,16 @@ export default function SongList() {
         strategy={verticalListSortingStrategy}
       >
         <div className="flex flex-col gap-4">
+          {isInitialLoading && (
+            <div className="fixed inset-0 flex h-full items-center justify-center bg-white/90">
+              <Loader2 className="h-16 w-16 animate-spin" />
+            </div>
+          )}
+          {!isInitialLoading && toSings.length === 0 && (
+            <div className="flex h-full items-center justify-center">
+              <p className="text-muted-foreground text-sm">노래방 플레이리스트가 없습니다.</p>
+            </div>
+          )}
           {toSings.map((item: ToSing, index: number) => (
             <SongCard
               key={item.songs.id}

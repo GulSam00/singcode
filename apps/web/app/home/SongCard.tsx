@@ -37,7 +37,7 @@ export default function SongCard({
         {/* 노래 정보 */}
         <div className="mb-8 flex flex-col">
           {/* 제목 및 가수 */}
-          <div className="mb-1">
+          <div className="mb-1 w-[290px]">
             <h3 className="truncate text-base font-medium">{title}</h3>
             <p className="text-muted-foreground truncate text-sm">{artist}</p>
           </div>

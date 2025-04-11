@@ -1,9 +1,18 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import useLoadingStore from '@/stores/useLoadingStore';
 
 export default function LoadingOverlay() {
-  const isLoading = useLoadingStore(state => state.isLoading);
+  const { isLoading } = useLoadingStore();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
 
   if (!isLoading) return null;
 

@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react';
 
 import useLoadingStore from '@/stores/useLoadingStore';
-import { AddListModalSong } from '@/types/song';
+import useSongStore from '@/stores/useSongStore';
 
 export default function useAddListModal() {
   const [activeTab, setActiveTab] = useState('liked');
-  const [likedSongs, setLikedSongs] = useState<AddListModalSong[]>([]);
-  const [recentSongs, setRecentSongs] = useState<AddListModalSong[]>([]);
+
   const [songSelected, setSongSelected] = useState<string[]>([]);
-  const { startLoading, stopLoading } = useLoadingStore();
+  const { startLoading, stopLoading, initialLoading } = useLoadingStore();
+
+  const { refreshLikedSongs, refreshRecentSongs, postToSingSongs } = useSongStore();
 
   const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
     startLoading();
@@ -28,17 +29,13 @@ export default function useAddListModal() {
 
   const getLikedSongs = async () => {
     await handleApiCall(async () => {
-      const response = await fetch('/api/songs/like');
-      const { data } = await response.json();
-      setLikedSongs(data);
+      refreshLikedSongs();
     });
   };
 
   const getRecentSongs = async () => {
     await handleApiCall(async () => {
-      const response = await fetch('/api/songs/recent');
-      const { data } = await response.json();
-      setRecentSongs(data);
+      refreshRecentSongs();
     });
   };
 
@@ -49,7 +46,10 @@ export default function useAddListModal() {
   };
 
   const handleConfirm = async () => {
-    // TODO: API 호출 로직 구현
+    await handleApiCall(async () => {
+      await postToSingSongs(songSelected);
+      setSongSelected([]);
+    });
   };
 
   const totalSelectedCount = songSelected.length;
@@ -57,13 +57,12 @@ export default function useAddListModal() {
   useEffect(() => {
     getLikedSongs();
     getRecentSongs();
+    initialLoading();
   }, []);
 
   return {
     activeTab,
     setActiveTab,
-    likedSongs,
-    recentSongs,
     songSelected,
     handleToggleSelect,
     handleConfirm,

@@ -1,16 +1,17 @@
 // hooks/useToSingList.ts
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import useAuthStore from '@/stores/useAuthStore';
 import useLoadingStore from '@/stores/useLoadingStore';
-import { ToSing } from '@/types/song';
+import useSongStore from '@/stores/useSongStore';
 
 export default function useToSingList() {
-  const [toSings, setToSings] = useState<ToSing[]>([]);
-  const { startLoading, stopLoading } = useLoadingStore();
+  const { startLoading, stopLoading, initialLoading } = useLoadingStore();
   const { isAuthenticated } = useAuthStore();
+  const { toSings, swapToSings, refreshToSings, refreshLikedSongs, refreshRecentSongs } =
+    useSongStore();
 
   const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
     startLoading();
@@ -28,12 +29,7 @@ export default function useToSingList() {
 
   const handleSearch = async () => {
     await handleApiCall(async () => {
-      const response = await fetch('/api/songs/tosing');
-      const { success, data } = await response.json();
-      if (success) {
-        setToSings(data);
-      }
-      return success;
+      refreshToSings();
     });
   };
 
@@ -75,21 +71,21 @@ export default function useToSingList() {
       });
       const { success } = await response.json();
 
-      setToSings(newItems);
+      swapToSings(newItems);
       return success;
     }, handleSearch);
   };
 
   const handleDelete = async (songId: string) => {
     await handleApiCall(async () => {
-      const response = await fetch('/api/songs/tosing', {
+      await fetch('/api/songs/tosing', {
         method: 'DELETE',
         body: JSON.stringify({ songId }),
         headers: { 'Content-Type': 'application/json' },
       });
-      const { success } = await response.json();
-      setToSings(prev => prev.filter(item => item.songs.id !== songId));
-      return success;
+      swapToSings(toSings.filter(item => item.songs.id !== songId));
+      refreshLikedSongs();
+      refreshRecentSongs();
     }, handleSearch);
   };
 
@@ -106,7 +102,7 @@ export default function useToSingList() {
         headers: { 'Content-Type': 'application/json' },
       });
       const { success } = await response.json();
-      setToSings(newItems);
+      swapToSings(newItems);
       return success;
     }, handleSearch);
   };
@@ -125,7 +121,7 @@ export default function useToSingList() {
         headers: { 'Content-Type': 'application/json' },
       });
       const { success } = await response.json();
-      setToSings(newItems);
+      swapToSings(newItems);
       return success;
     }, handleSearch);
   };
@@ -153,6 +149,7 @@ export default function useToSingList() {
           body: JSON.stringify({ songId }),
           headers: { 'Content-Type': 'application/json' },
         }),
+        handleDelete(songId),
       ]);
     }, handleSearch);
   };
@@ -161,11 +158,11 @@ export default function useToSingList() {
   useEffect(() => {
     if (isAuthenticated) {
       handleSearch();
+      initialLoading();
     }
   }, [isAuthenticated]);
 
   return {
-    toSings,
     handleDragEnd,
     handleSearch,
     handleDelete,

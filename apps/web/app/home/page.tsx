@@ -4,15 +4,16 @@ import { AirplayIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 import AddListModal from './AddListModal';
 import SongList from './SongList';
 
-export default function Home() {
+export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="container mx-auto h-screen overflow-auto px-2 py-8">
+    <div className="bg-background px-2">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">노래방 플레이리스트</h1>
         <Button
@@ -25,8 +26,9 @@ export default function Home() {
           <span>곡 추가</span>
         </Button>
       </div>
-
-      <SongList />
+      <ScrollArea className="h-[calc(100vh-8rem)]">
+        <SongList />
+      </ScrollArea>
 
       <AddListModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>

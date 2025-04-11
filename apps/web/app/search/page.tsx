@@ -4,6 +4,7 @@ import { Mic, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSearch from '@/hooks/useSearch';
 
@@ -33,8 +34,8 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="bg-background h-full">
-      <div className="bg-background sticky top-0 z-50 p-2 shadow-sm">
+    <div className="bg-background">
+      <div className="bg-background p-2 shadow-sm">
         <h1 className="mb-3 text-xl font-bold">노래 검색</h1>
 
         <Tabs
@@ -64,10 +65,9 @@ export default function SearchPage() {
           <Button onClick={handleSearch}>검색</Button>
         </div>
       </div>
-
-      <div className="p-3 pt-2">
+      <ScrollArea className="h-[calc(100vh-15rem)]">
         {searchResults.length > 0 ? (
-          <div className="flex flex-col space-y-3">
+          <div className="flex w-[360px] flex-col gap-3 p-3">
             {searchResults.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
@@ -86,8 +86,7 @@ export default function SearchPage() {
             <Mic className="h-8 w-8 opacity-50" />
           </div>
         )}
-      </div>
-
+      </ScrollArea>
       {/* {isModal && <PlaylistModal song={selectedSong} />} */}
     </div>
   );

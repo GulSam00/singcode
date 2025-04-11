@@ -96,7 +96,6 @@ export async function PATCH(request: Request) {
       .from('tosings')
       .update({ order_weight: newWeight })
       .match({ user_id: userId, song_id: songId });
-    console.log(userId, songId, newWeight);
     if (error) throw error;
 
     return NextResponse.json({ success: true });

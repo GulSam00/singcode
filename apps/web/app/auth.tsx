@@ -16,7 +16,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       const allowPaths = ['/login', '/signup', 'update-password'];
 
       const isAuthenticated = await checkAuth();
-      console.log(pathname);
       if (!isAuthenticated && !allowPaths.includes(pathname)) {
         toast.error('로그인이 필요해요.', {
           description: '로그인 후 이용해주세요.',

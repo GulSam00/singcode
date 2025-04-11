@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import useLoadingStore from '@/stores/useLoadingStore';
 import { Method } from '@/types/common';
@@ -10,7 +10,7 @@ export default function useSearch() {
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState<SearchSong[]>([]);
   const [searchType, setSearchType] = useState<SearchType>('title');
-  const { startLoading, stopLoading } = useLoadingStore();
+  const { startLoading, stopLoading, initialLoading } = useLoadingStore();
   const [isModal, setIsModal] = useState(false);
   const [selectedSong, setSelectedSong] = useState<SearchSong | null>(null);
 
@@ -117,6 +117,10 @@ export default function useSearch() {
   };
 
   const handleSavePlaylist = async () => {};
+
+  useEffect(() => {
+    initialLoading();
+  }, []);
 
   return {
     search,
