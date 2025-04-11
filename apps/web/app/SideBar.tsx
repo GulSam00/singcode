@@ -14,11 +14,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { useAuthStore } from '@/store/useAuthStore';
+import useAuthStore from '@/stores/useAuthStore';
 
 import { Input } from './components/ui/input';
 
-const SideBar = () => {
+export default function Sidebar() {
   // 목업 인증 상태
   const { user, isAuthenticated, logout, changeNickname } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
@@ -44,8 +44,6 @@ const SideBar = () => {
   };
 
   const handleLogin = () => {
-    console.log('login');
-    console.log('isAuthenticated', isAuthenticated);
     router.push('/login');
     setIsOpen(false);
   };
@@ -142,6 +140,4 @@ const SideBar = () => {
       </SheetContent>
     </Sheet>
   );
-};
-
-export default SideBar;
+}

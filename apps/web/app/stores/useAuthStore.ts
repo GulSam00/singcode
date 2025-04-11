@@ -3,19 +3,15 @@ import { toast } from 'sonner';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import { createClient } from '@/lib/supabase/client';
+import createClient from '@/lib/supabase/client';
+import { User } from '@/types/user';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 
 import { withLoading } from './middleware';
 
-export const supabase = createClient();
+const supabase = createClient();
 
 // 사용자 타입 정의
-export interface User {
-  id: string;
-  nickname: string;
-  profile_image: string | null;
-}
 
 interface AuthState {
   user: User | null;
@@ -43,7 +39,7 @@ interface ModalResponseState {
   errorMessage?: string;
 }
 
-export const useAuthStore = create(
+const useAuthStore = create(
   immer<AuthState>((set, get) => ({
     user: null,
     isLoading: false,
@@ -238,3 +234,5 @@ export const useAuthStore = create(
     },
   })),
 );
+
+export default useAuthStore;

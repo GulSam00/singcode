@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
-export type MessageVariant = 'default' | 'success' | 'error' | 'warning' | 'info';
+type MessageVariant = 'default' | 'success' | 'error' | 'warning' | 'info';
 
-export interface ModalState {
+interface ModalState {
   isOpen: boolean;
   title?: string;
   message: string;
@@ -21,7 +21,7 @@ export interface ModalState {
   closeMessage: () => void;
 }
 
-export const useModalStore = create<ModalState>(set => ({
+const useModalStore = create<ModalState>(set => ({
   isOpen: false,
   title: undefined,
   message: '',
@@ -45,3 +45,5 @@ export const useModalStore = create<ModalState>(set => ({
     set({ isOpen: false });
   },
 }));
+
+export default useModalStore;

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 
-import { createClient } from '@/lib/supabase/server';
+import createClient from '@/lib/supabase/server';
 import { SearchSong } from '@/types/song';
+import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -15,7 +16,6 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
     const type = searchParams.get('type') || 'title';
-    const userId = searchParams.get('userId'); // userId를 쿼리에서 받기
 
     if (!query) {
       return NextResponse.json(
@@ -28,6 +28,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     }
 
     const supabase = await createClient();
+    const userId = await getAuthenticatedUser(supabase); // userId 가져오기
 
     const { data, error } = await supabase
       .from('songs')
@@ -43,8 +44,6 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       `,
       )
       .ilike(type, `%${query}%`);
-
-    // console.log(data);
 
     if (error) {
       return NextResponse.json(

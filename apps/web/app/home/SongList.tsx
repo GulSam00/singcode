@@ -2,7 +2,6 @@
 
 import {
   DndContext,
-  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
@@ -12,38 +11,23 @@ import {
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import {
   SortableContext,
-  arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
-const SongCard = dynamic(() => import('./SongCard'), { ssr: false });
+import useToSingList from '@/hooks/useToSingList';
+import useLoadingStore from '@/stores/useLoadingStore';
+import useSongStore from '@/stores/useSongStore';
+import { ToSing } from '@/types/song';
 
-// 초기 노래 데이터
-const initialSongs = [
-  { id: '1', title: '눈의 꽃', artist: '박효신', kumyoungNumber: '47251', tjNumber: '62867' },
-  { id: '2', title: '거리에서', artist: '성시경', kumyoungNumber: '84173', tjNumber: '48506' },
-  {
-    id: '3',
-    title: '벚꽃 엔딩',
-    artist: '버스커 버스커',
-    kumyoungNumber: '46079',
-    tjNumber: '30184',
-  },
-  { id: '4', title: '사랑했나봐', artist: '윤도현', kumyoungNumber: '41906', tjNumber: '35184' },
-  {
-    id: '5',
-    title: '너를 사랑하고 있어',
-    artist: '백지영',
-    kumyoungNumber: '38115',
-    tjNumber: '46009',
-  },
-];
+import SongCard from './SongCard';
 
 export default function SongList() {
-  const [songs, setSongs] = useState(initialSongs);
+  const { handleDragEnd, handleDelete, handleMoveToTop, handleMoveToBottom, handleSung } =
+    useToSingList();
+  const { toSings } = useSongStore();
+  const { isInitialLoading } = useLoadingStore();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -52,53 +36,6 @@ export default function SongList() {
     }),
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      setSongs(items => {
-        const oldIndex = items.findIndex(item => item.id === active.id);
-        const newIndex = items.findIndex(item => item.id === over.id);
-
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
-  };
-
-  const handleDelete = (id: string) => {
-    setSongs(songs.filter(song => song.id !== id));
-  };
-
-  const handleMoveToTop = (id: string) => {
-    setSongs(prev => {
-      const songIndex = prev.findIndex(song => song.id === id);
-      if (songIndex <= 0) return prev;
-
-      const newSongs = [...prev];
-      const [movedSong] = newSongs.splice(songIndex, 1);
-      newSongs.unshift(movedSong);
-
-      return newSongs;
-    });
-  };
-
-  const handleMoveToBottom = (id: string) => {
-    setSongs(prev => {
-      const songIndex = prev.findIndex(song => song.id === id);
-      if (songIndex === -1 || songIndex === prev.length - 1) return prev;
-
-      const newSongs = [...prev];
-      const [movedSong] = newSongs.splice(songIndex, 1);
-      newSongs.push(movedSong);
-
-      return newSongs;
-    });
-  };
-
-  const handleSung = (id: string) => {
-    console.log('handleSung', id);
-  };
-
   return (
     <DndContext
       sensors={sensors}
@@ -106,16 +43,29 @@ export default function SongList() {
       onDragEnd={handleDragEnd}
       modifiers={[restrictToVerticalAxis]}
     >
-      <SortableContext items={songs.map(song => song.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        items={toSings.map(item => item.songs.id)}
+        strategy={verticalListSortingStrategy}
+      >
         <div className="flex flex-col gap-4">
-          {songs.map(song => (
+          {isInitialLoading && (
+            <div className="fixed inset-0 flex h-full items-center justify-center bg-white/90">
+              <Loader2 className="h-16 w-16 animate-spin" />
+            </div>
+          )}
+          {!isInitialLoading && toSings.length === 0 && (
+            <div className="flex h-full items-center justify-center">
+              <p className="text-muted-foreground text-sm">노래방 플레이리스트가 없습니다.</p>
+            </div>
+          )}
+          {toSings.map((item: ToSing, index: number) => (
             <SongCard
-              key={song.id}
-              song={song}
-              onSung={() => handleSung(song.id)}
-              onDelete={() => handleDelete(song.id)}
-              onMoveToTop={() => handleMoveToTop(song.id)}
-              onMoveToBottom={() => handleMoveToBottom(song.id)}
+              key={item.songs.id}
+              song={item.songs}
+              onSung={() => handleSung(item.songs.id)}
+              onDelete={() => handleDelete(item.songs.id)}
+              onMoveToTop={() => handleMoveToTop(item.songs.id, index)}
+              onMoveToBottom={() => handleMoveToBottom(item.songs.id, index)}
             />
           ))}
         </div>

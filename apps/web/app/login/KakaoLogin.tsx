@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { useAuthStore } from '@/store/useAuthStore';
+import useAuthStore from '@/stores/useAuthStore';
 
 // 클라이언트용 Supabase 클라이언트
 

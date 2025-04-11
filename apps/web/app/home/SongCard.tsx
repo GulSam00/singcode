@@ -5,14 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { ChevronsDown, ChevronsUp, GripVertical, Mic, Trash } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
-
-interface Song {
-  id: string;
-  title: string;
-  artist: string;
-  kumyoungNumber: string;
-  tjNumber: string;
-}
+import { Song } from '@/types/song';
 
 interface SongCardProps {
   song: Song;
@@ -31,6 +24,7 @@ export default function SongCard({
 }: SongCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: song.id });
 
+  const { title, artist, num_tj, num_ky } = song;
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -39,27 +33,28 @@ export default function SongCard({
   return (
     <Card ref={setNodeRef} style={style} className={'relative'}>
       {/* 메인 콘텐츠 영역 */}
-      <div className="flex h-[120px] w-full gap-4">
+      <div className="flex h-[120px] w-full gap-4 p-3">
         {/* 노래 정보 */}
-        <div className="flex flex-1 items-center justify-between p-8 pl-4">
+        <div className="mb-8 flex flex-col">
           {/* 제목 및 가수 */}
-          <div className="mb-1">
-            <h3 className={'truncate text-base font-medium'}>{song.title}</h3>
-            <p className="text-muted-foreground truncate text-sm">{song.artist}</p>
+          <div className="mb-1 w-[290px]">
+            <h3 className="truncate text-base font-medium">{title}</h3>
+            <p className="text-muted-foreground truncate text-sm">{artist}</p>
           </div>
 
           {/* 노래방 번호 */}
-          <div className="mt-1 flex gap-4 space-x-4">
-            <div className="flex flex-col items-center">
+          <div className="mt-1 flex">
+            <div className="flex w-[70px] items-center">
               <span className="text-brand-tj mr-1 text-xs">TJ</span>
-              <span className="text-sm font-medium">{song.tjNumber}</span>
+              <span className="text-sm font-medium">{num_tj}</span>
             </div>
-            <div className="flex flex-col items-center">
+            <div className="flex w-[70px] items-center">
               <span className="text-brand-ky mr-1 text-xs">금영</span>
-              <span className="text-sm font-medium">{song.kumyoungNumber}</span>
+              <span className="text-sm font-medium">{num_ky}</span>
             </div>
           </div>
         </div>
+
         {/* 버튼 영역 - 우측 하단에 고정 */}
         <div className="absolute right-10 bottom-3 flex space-x-1">
           <button
