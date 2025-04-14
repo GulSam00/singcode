@@ -133,7 +133,7 @@ export default function useSong() {
 
       // 통계 업데이트
       await Promise.all([
-        postTotalStats(songId),
+        postTotalStats({ songId, countType: 'sing', isMinus: false }),
         postUserStats(songId),
         postSingLog(songId),
         handleDelete(songId),
