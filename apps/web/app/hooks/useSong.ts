@@ -7,7 +7,7 @@ import useAuthStore from '@/stores/useAuthStore';
 import useLoadingStore from '@/stores/useLoadingStore';
 import useSongStore from '@/stores/useSongStore';
 
-export default function useToSingList() {
+export default function useSong() {
   const { startLoading, stopLoading, initialLoading } = useLoadingStore();
   const { isAuthenticated } = useAuthStore();
   const { toSings, swapToSings, refreshToSings, refreshLikedSongs, refreshRecentSongs } =

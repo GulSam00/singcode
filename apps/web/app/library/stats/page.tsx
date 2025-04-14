@@ -19,7 +19,7 @@ export default function StatsPage() {
         <h1 className="text-2xl font-bold">노래방 통계</h1>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-8rem)]">
+      <ScrollArea className="h-[calc(100vh-10rem)]">
         <Card>
           <CardContent className="p-6">
             <div className="space-y-4">

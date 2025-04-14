@@ -1,13 +1,22 @@
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
-import { SearchSong } from '@/types/song';
+import { SearchSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
+}
+
+interface DBSong extends Song {
+  like_activities: {
+    user_id: string;
+  }[];
+  tosings: {
+    user_id: string;
+  }[];
 }
 
 export async function GET(request: Request): Promise<NextResponse<ApiResponse<SearchSong[]>>> {
@@ -30,15 +39,26 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase); // userId 가져오기
 
+    // .select(
+    //   `
+    //   *,
+    //   like_activities!left (
+    //     user_id
+    //   ),
+    //   tosings!left (
+    //     user_id
+    //   )
+    // `,
+    // )
     const { data, error } = await supabase
       .from('songs')
       .select(
         `
         *,
-        like_activities!left (
+        like_activities (
           user_id
         ),
-        tosings!left (
+        tosings (
           user_id
         )
       `,
@@ -56,7 +76,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     }
 
     // data를 Song 타입으로 파싱해야 함
-    const songs: SearchSong[] = data.map(song => ({
+    const songs: SearchSong[] = data.map((song: DBSong) => ({
       id: song.id,
       title: song.title,
       artist: song.artist,

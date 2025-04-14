@@ -12,7 +12,8 @@ export async function GET() {
     const { data: likedSongs, error: likedError } = await supabase
       .from('like_activities')
       .select('song_id')
-      .eq('user_id', userId);
+      .eq('user_id', userId)
+      .order('created_at');
 
     if (likedError) throw likedError;
 
@@ -29,11 +30,7 @@ export async function GET() {
     if (tosingError) throw tosingError;
 
     const tosingSongIds = new Set(tosingSongs.map(item => item.song_id));
-    const { data, error } = await supabase
-      .from('songs')
-      .select('*')
-      .in('id', songIds)
-      .order('created_at');
+    const { data, error } = await supabase.from('songs').select('*').in('id', songIds);
 
     if (error) throw error;
 

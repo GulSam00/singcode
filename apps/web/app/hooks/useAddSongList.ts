@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import useLoadingStore from '@/stores/useLoadingStore';
 import useSongStore from '@/stores/useSongStore';
 
-export default function useAddListModal() {
+export default function useAddSongList() {
   const [activeTab, setActiveTab] = useState('liked');
 
   const [songSelected, setSongSelected] = useState<string[]>([]);

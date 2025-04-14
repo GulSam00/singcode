@@ -11,6 +11,7 @@ interface SongStore {
   refreshLikedSongs: () => Promise<void>;
   refreshRecentSongs: () => Promise<void>;
   postToSingSongs: (songIds: string[]) => Promise<void>;
+  deleteLikedSongs: (songIds: string[]) => Promise<void>;
 }
 
 const useSongStore = create<SongStore>((set, get) => ({
@@ -55,6 +56,16 @@ const useSongStore = create<SongStore>((set, get) => ({
       get().refreshToSings();
       get().refreshLikedSongs();
       get().refreshRecentSongs();
+    }
+  },
+  deleteLikedSongs: async (songIds: string[]) => {
+    const response = await fetch('/api/songs/like/arr', {
+      method: 'DELETE',
+      body: JSON.stringify({ songIds }),
+    });
+    const { success } = await response.json();
+    if (success) {
+      get().refreshLikedSongs();
     }
   },
 }));

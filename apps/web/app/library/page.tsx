@@ -4,6 +4,7 @@ import { BarChart2, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import useAuthStore from '@/stores/useAuthStore';
 
 const menuItems = [
   {
@@ -15,17 +16,18 @@ const menuItems = [
   {
     id: 'stats',
     title: '노래방 통계',
-    description: '나의 노래방 이용 통계를 확인합니다',
+    description: '나의 노래 통계를 확인합니다',
     icon: <BarChart2 className="h-5 w-5" />,
   },
 ];
 
 export default function LibraryPage() {
   const router = useRouter();
+  const { user } = useAuthStore();
 
   return (
     <div className="bg-background h-full space-y-4 px-4 py-8">
-      <h1 className="text-2xl font-bold">반갑습니다, 홍길동님</h1>
+      <h1 className="text-2xl font-bold">반갑습니다, {user?.nickname}님</h1>
 
       {menuItems.map(item => (
         <Card

@@ -96,17 +96,14 @@ export default function useSearch() {
       });
 
       const { success } = await response.json();
-      if (success) {
-        const newResults = searchResults.map(song => {
-          if (song.id === songId) {
-            return { ...song, isLiked: !song.isLiked };
-          }
-          return song;
-        });
-        setSearchResults(newResults);
-      } else {
-        handleSearch();
-      }
+      const newResults = searchResults.map(song => {
+        if (song.id === songId) {
+          return { ...song, isLiked: !song.isLiked };
+        }
+        return song;
+      });
+      setSearchResults(newResults);
+
       return success;
     }, handleSearch);
   };
