@@ -25,14 +25,14 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
     setActiveTab,
     songSelected,
     handleToggleSelect,
-    handleConfirm,
+    handleConfirmAdd,
     totalSelectedCount,
   } = useAddListModal();
 
   const { likedSongs, recentSongs } = useSongStore();
 
   const handleClickConfirm = () => {
-    handleConfirm();
+    handleConfirmAdd();
     onClose();
   };
 

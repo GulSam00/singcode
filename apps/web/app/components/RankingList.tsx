@@ -1,15 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { UserSongStat } from '@/types/userStat';
 import { cn } from '@/utils/cn';
 
-interface RankingItemProps {
+interface RankingItemProps extends UserSongStat {
   rank: number;
-  title: string;
-  artist: string;
-
   className?: string;
 }
 
-export function RankingItem({ rank, title, artist, className }: RankingItemProps) {
+export function RankingItem({ rank, title, artist, singCount, className }: RankingItemProps) {
   // 등수에 따른 색상 및 스타일 결정
   const getRankStyle = (rank: number) => {
     switch (rank) {
@@ -34,9 +32,14 @@ export function RankingItem({ rank, title, artist, className }: RankingItemProps
       >
         {rank}
       </div>
-      <div className="min-w-0 flex-1">
-        <h4 className="truncate text-sm font-medium">{title}</h4>
-        <p className="text-muted-foreground truncate text-xs">{artist}</p>
+      <div className="flex w-full justify-between">
+        <div className="max-w-[200px] min-w-0 flex-1">
+          <h4 className="truncate text-sm font-medium">{title}</h4>
+          <p className="text-muted-foreground truncate text-xs">{artist}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <p className="truncate text-xs">{singCount}회</p>
+        </div>
       </div>
     </div>
   );
@@ -44,20 +47,20 @@ export function RankingItem({ rank, title, artist, className }: RankingItemProps
 
 interface RankingListProps {
   title: string;
-  items: Array<Omit<RankingItemProps, 'className'>>;
+  items: UserSongStat[];
   className?: string;
 }
 
 export default function RankingList({ title, items, className }: RankingListProps) {
   return (
-    <Card className={cn('w-full', className)}>
+    <Card className={cn('w-[360px]', className)}>
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">{title}</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
         <div className="space-y-0">
           {items.map((item, index) => (
-            <RankingItem key={index} {...item} />
+            <RankingItem key={index} {...item} rank={index + 1} />
           ))}
         </div>
       </CardContent>

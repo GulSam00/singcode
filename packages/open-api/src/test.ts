@@ -36,7 +36,7 @@ console.log('get song test');
 
 // console.log('get release test');
 
-let year = 2010;
+let year = 2025;
 let month = 1;
 
 const parseMonth = (month: number) => {
@@ -54,9 +54,7 @@ while (year <= 2025) {
     // console.log('response9', `${year}${parseMonth(month)}`, response9?.length);
     response9?.forEach((item: any) => {
       const { title, singer, composer, lyricist } = item;
-      if (singer === 'ヨルシカ') {
-        console.log('item', item);
-      }
+      console.log('item', item);
     });
 
     month++;

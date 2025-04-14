@@ -3,6 +3,30 @@ import { NextResponse } from 'next/server';
 import createClient from '@/lib/supabase/server';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
+export async function GET() {
+  const supabase = await createClient();
+  const userId = await getAuthenticatedUser(supabase);
+
+  const { data, error } = await supabase
+    .from('user_stats')
+    .select(`*, songs(*)`)
+    .eq('user_id', userId)
+    .order('sing_count', { ascending: false });
+
+  if (error) throw error;
+
+  const parsedData = data?.map(item => ({
+    userId: item.user_id,
+    songId: item.song_id,
+    singCount: item.sing_count,
+    lastSingAt: item.last_sing_at,
+    title: item.songs.title,
+    artist: item.songs.artist,
+  }));
+
+  return NextResponse.json({ success: true, data: parsedData });
+}
+
 export async function POST(request: Request) {
   try {
     const supabase = await createClient(); // Supabase 클라이언트 생성

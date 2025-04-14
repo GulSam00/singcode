@@ -26,6 +26,8 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const query = searchParams.get('q');
     const type = searchParams.get('type') || 'title';
 
+    console.log(query, type);
+
     if (!query) {
       return NextResponse.json(
         {
@@ -90,7 +92,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
 
     return NextResponse.json({
       success: true,
-      songs,
+      data: songs,
     });
   } catch (error) {
     console.error('Error in search API:', error);

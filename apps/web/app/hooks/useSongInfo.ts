@@ -6,12 +6,10 @@ import useLoadingStore from '@/stores/useLoadingStore';
 import useSongStore from '@/stores/useSongStore';
 
 export default function useAddSongList() {
-  const [activeTab, setActiveTab] = useState('liked');
-
-  const [songSelected, setSongSelected] = useState<string[]>([]);
+  const [deleteLikeSelected, setDeleteLikeSelected] = useState<string[]>([]);
   const { startLoading, stopLoading, initialLoading } = useLoadingStore();
 
-  const { refreshLikedSongs, refreshRecentSongs, postToSingSongs } = useSongStore();
+  const { refreshLikedSongs, refreshRecentSongs, deleteLikedSongs } = useSongStore();
 
   const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
     startLoading();
@@ -40,19 +38,19 @@ export default function useAddSongList() {
   };
 
   const handleToggleSelect = (songId: string) => {
-    setSongSelected(prev =>
+    setDeleteLikeSelected(prev =>
       prev.includes(songId) ? prev.filter(id => id !== songId) : [...prev, songId],
     );
   };
 
-  const handleConfirmAdd = async () => {
+  const handleDelete = async () => {
     await handleApiCall(async () => {
-      await postToSingSongs(songSelected);
-      setSongSelected([]);
+      await deleteLikedSongs(deleteLikeSelected);
+      setDeleteLikeSelected([]);
     });
   };
 
-  const totalSelectedCount = songSelected.length;
+  const totalSelectedCount = deleteLikeSelected.length;
 
   useEffect(() => {
     getLikedSongs();
@@ -61,11 +59,9 @@ export default function useAddSongList() {
   }, []);
 
   return {
-    activeTab,
-    setActiveTab,
-    songSelected,
-    handleToggleSelect,
-    handleConfirmAdd,
+    deleteLikeSelected,
     totalSelectedCount,
+    handleToggleSelect,
+    handleDelete,
   };
 }

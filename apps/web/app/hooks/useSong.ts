@@ -3,6 +3,10 @@ import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useEffect } from 'react';
 
+import { postSingLog } from '@/lib/api/sing_logs';
+import { patchToSingSongs } from '@/lib/api/tosings';
+import { postTotalStats } from '@/lib/api/total_stats';
+import { postUserStats } from '@/lib/api/user_stats';
 import useAuthStore from '@/stores/useAuthStore';
 import useLoadingStore from '@/stores/useLoadingStore';
 import useSongStore from '@/stores/useSongStore';
@@ -10,8 +14,7 @@ import useSongStore from '@/stores/useSongStore';
 export default function useSong() {
   const { startLoading, stopLoading, initialLoading } = useLoadingStore();
   const { isAuthenticated } = useAuthStore();
-  const { toSings, swapToSings, refreshToSings, refreshLikedSongs, refreshRecentSongs } =
-    useSongStore();
+  const { toSings, swapToSings, refreshToSings, deleteToSingSong } = useSongStore();
 
   const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
     startLoading();
@@ -61,13 +64,9 @@ export default function useSong() {
         newWeight = (prevItem.order_weight + nextItem.order_weight) / 2;
       }
 
-      const response = await fetch(`/api/songs/tosing`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          songId: active.id,
-          newWeight,
-        }),
-        headers: { 'Content-Type': 'application/json' },
+      const response = await patchToSingSongs({
+        songId: active.id as string,
+        newWeight,
       });
       const { success } = await response.json();
 
@@ -78,15 +77,17 @@ export default function useSong() {
 
   const handleDelete = async (songId: string) => {
     await handleApiCall(async () => {
-      await fetch('/api/songs/tosing', {
-        method: 'DELETE',
-        body: JSON.stringify({ songId }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      await deleteToSingSong(songId);
       swapToSings(toSings.filter(item => item.songs.id !== songId));
-      refreshLikedSongs();
-      refreshRecentSongs();
-    }, handleSearch);
+      // await fetch('/api/songs/tosing/arr', {
+      //   method: 'DELETE',
+      //   body: JSON.stringify({ songIds }),
+      //   headers: { 'Content-Type': 'application/json' },
+      // });
+      // swapToSings(toSings.filter(item => !songIds.includes(item.songs.id)));
+      // refreshLikedSongs();
+      // refreshRecentSongs();
+    });
   };
 
   const handleMoveToTop = async (songId: string, oldIndex: number) => {
@@ -96,10 +97,9 @@ export default function useSong() {
       const newItems = arrayMove(toSings, oldIndex, 0);
       const newWeight = toSings[0].order_weight - 1;
 
-      const response = await fetch('/api/songs/tosing', {
-        method: 'PATCH',
-        body: JSON.stringify({ songId, newWeight }),
-        headers: { 'Content-Type': 'application/json' },
+      const response = await patchToSingSongs({
+        songId: songId,
+        newWeight,
       });
       const { success } = await response.json();
       swapToSings(newItems);
@@ -115,10 +115,9 @@ export default function useSong() {
       const newItems = arrayMove(toSings, oldIndex, lastIndex);
       const newWeight = toSings[lastIndex].order_weight + 1;
 
-      const response = await fetch('/api/songs/tosing', {
-        method: 'PATCH',
-        body: JSON.stringify({ songId, newWeight }),
-        headers: { 'Content-Type': 'application/json' },
+      const response = await patchToSingSongs({
+        songId: songId,
+        newWeight,
       });
       const { success } = await response.json();
       swapToSings(newItems);
@@ -134,21 +133,9 @@ export default function useSong() {
 
       // 통계 업데이트
       await Promise.all([
-        fetch('/api/songs/total_stats', {
-          method: 'POST',
-          body: JSON.stringify({ songId, countType: 'sing_count' }),
-          headers: { 'Content-Type': 'application/json' },
-        }),
-        fetch('/api/songs/user_stats', {
-          method: 'POST',
-          body: JSON.stringify({ songId }),
-          headers: { 'Content-Type': 'application/json' },
-        }),
-        fetch('/api/sing_logs', {
-          method: 'POST',
-          body: JSON.stringify({ songId }),
-          headers: { 'Content-Type': 'application/json' },
-        }),
+        postTotalStats(songId),
+        postUserStats(songId),
+        postSingLog(songId),
         handleDelete(songId),
       ]);
     }, handleSearch);

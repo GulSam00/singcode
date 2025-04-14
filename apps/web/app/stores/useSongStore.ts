@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 
+import { deleteLikedSongsArray, getLikedSongs } from '@/lib/api/like_activites';
+import { getRecentSongs } from '@/lib/api/songs';
+import { deleteToSingSongs, getToSingSongs, postToSingSongsArray } from '@/lib/api/tosings';
 import { AddListModalSong, ToSing } from '@/types/song';
 
 interface SongStore {
@@ -11,6 +14,7 @@ interface SongStore {
   refreshLikedSongs: () => Promise<void>;
   refreshRecentSongs: () => Promise<void>;
   postToSingSongs: (songIds: string[]) => Promise<void>;
+  deleteToSingSong: (songId: string) => Promise<void>;
   deleteLikedSongs: (songIds: string[]) => Promise<void>;
 }
 
@@ -24,46 +28,45 @@ const useSongStore = create<SongStore>((set, get) => ({
   },
 
   refreshToSings: async () => {
-    const response = await fetch('/api/songs/tosing');
-    const { success, data } = await response.json();
+    const { success, data } = await getToSingSongs();
     if (success) {
       set({ toSings: data });
     }
   },
 
   refreshLikedSongs: async () => {
-    const response = await fetch('/api/songs/like');
-    const { success, data } = await response.json();
+    const { success, data } = await getLikedSongs();
     if (success) {
       set({ likedSongs: data });
     }
   },
   refreshRecentSongs: async () => {
-    const response = await fetch('/api/songs/recent');
-    const { success, data } = await response.json();
+    const { success, data } = await getRecentSongs();
     if (success) {
       set({ recentSongs: data });
     }
   },
 
   postToSingSongs: async (songIds: string[]) => {
-    const response = await fetch('/api/songs/tosing/array', {
-      method: 'POST',
-      body: JSON.stringify({ songIds }),
-    });
-    const { success } = await response.json();
+    const { success } = await postToSingSongsArray({ songIds });
     if (success) {
       get().refreshToSings();
       get().refreshLikedSongs();
       get().refreshRecentSongs();
     }
   },
+
+  deleteToSingSong: async (songId: string) => {
+    const { success } = await deleteToSingSongs({ songId });
+    if (success) {
+      get().refreshToSings();
+      get().refreshLikedSongs();
+      get().refreshRecentSongs();
+    }
+  },
+
   deleteLikedSongs: async (songIds: string[]) => {
-    const response = await fetch('/api/songs/like/arr', {
-      method: 'DELETE',
-      body: JSON.stringify({ songIds }),
-    });
-    const { success } = await response.json();
+    const { success } = await deleteLikedSongsArray({ songIds });
     if (success) {
       get().refreshLikedSongs();
     }
