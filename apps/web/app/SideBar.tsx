@@ -72,7 +72,7 @@ export default function Sidebar() {
         <div className="space-y-6">
           <div className="flex flex-col items-center space-y-2">
             <div className="bg-primary text-primary-foreground flex h-16 w-16 items-center justify-center rounded-full text-xl font-bold">
-              ?
+              {user?.nickname.slice(0, 3)}
             </div>
             <div className="w-full text-center">
               <div className="relative flex w-full items-center justify-center gap-2 font-medium">
