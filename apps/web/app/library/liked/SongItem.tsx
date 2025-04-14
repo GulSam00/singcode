@@ -13,17 +13,11 @@ export default function SongItem({
   onToggleSelect: (id: string) => void;
 }) {
   return (
-    <div
-      className={cn(
-        'border-border flex items-center space-x-3 border-b py-2 last:border-0',
-        song.isInToSingList && 'bg-muted/50 opacity-50',
-      )}
-    >
+    <div className={cn('border-border flex items-center space-x-3 border-b py-2 last:border-0')}>
       <Checkbox
         id={`song-${song.id}`}
         checked={isSelected}
         onCheckedChange={() => onToggleSelect(song.id)}
-        disabled={song.isInToSingList}
       />
       <div className="min-w-0 flex-1">
         <h4 className="truncate text-sm font-medium">{song.title}</h4>
