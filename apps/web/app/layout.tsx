@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Toaster } from 'sonner';
 
 import LoadingOverlay from '@/components/LoadingOverlay';
@@ -25,6 +26,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <Script id="jennifer-front" strategy="afterInteractive">
+          {`
+   (function(j,ennifer) {
+        j['dmndata']=[];j['jenniferFront']=function(args){window.dmndata.push(args)};
+        j['dmnaid']=ennifer;j['dmnatime']=new Date();j['dmnanocookie']=false;j['dmnajennifer']='JENNIFER_FRONT@INTG';
+    }(window, 'f42c6944'));
+          `}
+        </Script>
+        <Script
+          src="https://d-collect.jennifersoft.com/f42c6944/demian.js"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="m-0 flex h-[100dvh] w-full justify-center">
         <ErrorWrapper>
           <QueryProvider>
