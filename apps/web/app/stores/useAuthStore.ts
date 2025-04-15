@@ -89,9 +89,13 @@ const useAuthStore = create(
     },
     authKaKaoLogin: async () => {
       try {
-        const { error } = await supabase.auth.signInWithOAuth({
+        const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'kakao',
+          options: {
+            redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}`,
+          },
         });
+        console.log(data);
         if (error) throw error;
 
         return true;
@@ -196,7 +200,7 @@ const useAuthStore = create(
       return await withLoading(set, get, async () => {
         try {
           const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `http://localhost:3000/update-password`,
+            redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/update-password`,
           });
           if (error) {
             throw error;

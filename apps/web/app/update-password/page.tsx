@@ -60,11 +60,38 @@ export default function UpdatePasswordPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.onAuthStateChange(async event => {
-      if (event == 'PASSWORD_RECOVERY') {
-        setStep('reset'); // 비밀번호 재설정 단계로 이동
+
+    // 현재 세션 상태 확인
+    const checkCurrentSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.user.email) {
+        console.log('Current session:', session);
+        setStep('reset');
+      }
+    };
+
+    // 초기 상태 확인
+    checkCurrentSession();
+
+    // 인증 상태 변경 감지
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth event:', event); // 디버깅용
+      console.log('Session:', session); // 디버깅용
+
+      if (event === 'SIGNED_IN') {
+        console.log('Password recovery detected');
+        setStep('reset');
       }
     });
+
+    // 클린업 함수
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
