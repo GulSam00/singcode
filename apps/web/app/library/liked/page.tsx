@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import useAddSongList from '@/hooks/useAddSongList';
+import useSongInfo from '@/hooks/useSongInfo';
 import useSongStore from '@/stores/useSongStore';
 
 import SongItem from './SongItem';
@@ -14,7 +14,7 @@ import SongItem from './SongItem';
 export default function LikedPage() {
   const router = useRouter();
   const { likedSongs } = useSongStore();
-  const { songSelected, handleToggleSelect, deleteLikedSongs } = useAddSongList();
+  const { deleteLikeSelected, handleToggleSelect, handleDelete } = useSongInfo();
 
   return (
     <div className="bg-background h-full px-4">
@@ -27,12 +27,12 @@ export default function LikedPage() {
 
       <div className="mb-4 flex items-center justify-between">
         <p className="text-muted-foreground text-sm">
-          {songSelected.length > 0
-            ? `${songSelected.length}곡 선택됨`
+          {deleteLikeSelected.length > 0
+            ? `${deleteLikeSelected.length}곡 선택됨`
             : `총 ${likedSongs.length}곡`}
         </p>
-        {songSelected.length > 0 && (
-          <Button variant="destructive" size="sm" className="gap-2">
+        {deleteLikeSelected.length > 0 && (
+          <Button variant="destructive" size="sm" className="gap-2" onClick={handleDelete}>
             삭제
           </Button>
         )}
@@ -45,7 +45,7 @@ export default function LikedPage() {
           <SongItem
             key={song.id}
             song={song}
-            isSelected={songSelected.includes(song.id)}
+            isSelected={deleteLikeSelected.includes(song.id)}
             onToggleSelect={handleToggleSelect}
           />
         ))}

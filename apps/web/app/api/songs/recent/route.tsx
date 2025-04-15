@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
-import { SingLog } from '@/types/sing_log';
+import { SingLog } from '@/types/singLog';
 import { Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 

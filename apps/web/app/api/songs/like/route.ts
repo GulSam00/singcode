@@ -1,21 +1,43 @@
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
+import { LikeLog } from '@/types/likeLog';
+import { Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
+interface ResponseLikeLog extends LikeLog {
+  songs: Song;
+}
 export async function GET() {
   try {
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
     // like_activities에서 song_id 목록을 가져옴
-    const { data: likedSongs, error: likedError } = await supabase
+    const { data, error: likedError } = await supabase
       .from('like_activities')
-      .select('song_id')
+      .select(
+        `*,
+        songs (
+          *
+        )
+    `,
+      )
       .eq('user_id', userId)
-      .order('created_at');
+      .order('created_at', { ascending: false });
 
     if (likedError) throw likedError;
+
+    const likedSongs = data?.map((item: ResponseLikeLog) => ({
+      id: item.user_id + item.song_id,
+      user_id: item.user_id,
+      song_id: item.songs.id,
+      created_at: item.created_at,
+      title: item.songs.title,
+      artist: item.songs.artist,
+      num_tj: item.songs.num_tj,
+      num_ky: item.songs.num_ky,
+    }));
 
     // 가져온 song_id 목록을 사용하여 songs 테이블에서 정보를 가져옴
     const songIds = likedSongs.map(item => item.song_id);
@@ -30,14 +52,11 @@ export async function GET() {
     if (tosingError) throw tosingError;
 
     const tosingSongIds = new Set(tosingSongs.map(item => item.song_id));
-    const { data, error } = await supabase.from('songs').select('*').in('id', songIds);
-
-    if (error) throw error;
 
     // tosingSongIds에 포함된 song_id를 가진 노래에 isInToSingList: true 추가
-    const processedData = data.map(song => ({
+    const processedData = likedSongs.map(song => ({
       ...song,
-      isInToSingList: tosingSongIds.has(song.id),
+      isInToSingList: tosingSongIds.has(song.song_id),
     }));
 
     return NextResponse.json({ success: true, data: processedData });

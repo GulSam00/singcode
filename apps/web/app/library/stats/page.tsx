@@ -3,15 +3,20 @@
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import RankingList from '@/components/RankingList';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import useUserStat from '@/hooks/useUserStat';
 
 export default function StatsPage() {
   const router = useRouter();
 
+  const { userStat } = useUserStat();
+
+  console.log('userStat', userStat);
+
   return (
-    <div className="bg-background h-full px-4 py-8">
+    <div className="bg-background h-full py-8">
       <div className="mb-6 flex items-center">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
@@ -19,16 +24,8 @@ export default function StatsPage() {
         <h1 className="text-2xl font-bold">노래방 통계</h1>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-10rem)]">
-        <Card>
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              <p className="text-muted-foreground text-center">
-                노래방 통계 콘텐츠가 여기에 표시됩니다
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+      <ScrollArea className="h-[calc(100vh-40rem)] w-[360px]">
+        <RankingList title="가장 많이 부른 곡" items={userStat.slice(0, 10)} />
       </ScrollArea>
     </div>
   );

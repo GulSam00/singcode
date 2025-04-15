@@ -13,12 +13,12 @@ import {
   getSong,
 } from '@repo/open-api';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { type: string; param: string } },
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { type, param } = params;
+    const segments = request.nextUrl.pathname.split('/');
+    const type = segments[segments.length - 2];
+    const param = segments[segments.length - 1];
+
     const searchParams = request.nextUrl.searchParams;
     const brand = searchParams.get('brand') as Brand | undefined;
 

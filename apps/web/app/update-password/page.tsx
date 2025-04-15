@@ -60,7 +60,7 @@ export default function UpdatePasswordPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    supabase.auth.onAuthStateChange(async event => {
       if (event == 'PASSWORD_RECOVERY') {
         setStep('reset'); // 비밀번호 재설정 단계로 이동
       }

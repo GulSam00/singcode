@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { deleteLikedSongs, postLikedSongs } from '@/lib/api/like_activites';
+import { getSearch } from '@/lib/api/search';
+import { deleteToSingSongs, postToSingSongs } from '@/lib/api/tosings';
+import { postTotalStats } from '@/lib/api/total_stats';
 import useLoadingStore from '@/stores/useLoadingStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
@@ -37,15 +41,13 @@ export default function useSearch() {
 
     await handleApiCall(
       async () => {
-        const response = await fetch(`api/search?q=${search}&type=${searchType}`);
-        const data = await response.json();
-
-        if (data.success) {
-          setSearchResults(data.songs);
+        const { success, data } = await getSearch(search, searchType);
+        if (success) {
+          setSearchResults(data);
         } else {
           setSearchResults([]);
         }
-        return data.success;
+        return success;
       },
       () => {
         setSearchResults([]);
@@ -55,13 +57,14 @@ export default function useSearch() {
 
   const handleToggleToSing = async (songId: string, method: Method) => {
     await handleApiCall(async () => {
-      const response = await fetch('/api/songs/tosing', {
-        method,
-        body: JSON.stringify({ songId }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      let response;
+      if (method === 'POST') {
+        response = await postToSingSongs({ songId });
+      } else {
+        response = await deleteToSingSongs({ songId });
+      }
 
-      const { success } = await response.json();
+      const { success } = response;
       if (success) {
         const newResults = searchResults.map(song => {
           if (song.id === songId) {
@@ -79,23 +82,20 @@ export default function useSearch() {
 
   const handleToggleLike = async (songId: string, method: Method) => {
     await handleApiCall(async () => {
-      await fetch('/api/songs/total_stats', {
-        method: 'POST',
-        body: JSON.stringify({
-          songId,
-          countType: 'like_count',
-          isMinus: method === 'DELETE',
-        }),
-        headers: { 'Content-Type': 'application/json' },
+      await postTotalStats({
+        songId,
+        countType: 'like_count',
+        isMinus: method === 'DELETE',
       });
 
-      const response = await fetch(`/api/songs/like`, {
-        method,
-        body: JSON.stringify({ songId }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      let response;
+      if (method === 'POST') {
+        response = await postLikedSongs({ songId });
+      } else {
+        response = await deleteLikedSongs({ songId });
+      }
 
-      const { success } = await response.json();
+      const { success } = response;
       const newResults = searchResults.map(song => {
         if (song.id === songId) {
           return { ...song, isLiked: !song.isLiked };

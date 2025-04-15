@@ -22,6 +22,7 @@ jobs:
           LANGUAGE: Korean
           max_tokens: 10000
           MAX_PATCH_LENGTH: 10000
+          ACTIONS_STEP_DEBUG: true
 
           IGNORE_PATTERNS: /dist, /node_modules,*.md # Regex pattern to ignore files, separated by comma
-          INCLUDE_PATTERNS: '*.js, *.ts, *.jsx, *.tsx' # glob pattern or regex pattern to include files, separated by comma
+          # INCLUDE_PATTERNS: '*.js, *.ts, *.jsx, *.tsx' # glob pattern or regex pattern to include files, separated by comma
