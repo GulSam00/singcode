@@ -14,7 +14,6 @@ export async function register(email: string, password: string) {
   };
 
   const response = await supabase.auth.signUp(data);
-  console.log('response : ', response);
   if (response.error) {
     // 에러를 클라이언트에 전달
 

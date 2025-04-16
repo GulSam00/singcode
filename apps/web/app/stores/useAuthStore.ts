@@ -5,7 +5,7 @@ import { immer } from 'zustand/middleware/immer';
 
 import createClient from '@/lib/supabase/client';
 import { User } from '@/types/user';
-import { getErrorMessage } from '@/utils/getErrorMessage';
+import { getSupabaseErrorMessage } from '@/utils/getErrorMessage';
 
 import { withLoading } from './middleware';
 
@@ -28,15 +28,15 @@ interface AuthState {
 
   changeNickname: (nickname: string) => Promise<boolean>;
   sendPasswordResetLink: (email: string) => Promise<void>;
-  changePassword: (password: string) => Promise<boolean>;
+  changePassword: (password: string) => Promise<ModalResponseState>;
 }
 
 // useModalStore에서 사용할 데이터를 전달해줘야 할 때의 타입
 // 기본적인 toast 제어는 store 단에서 처리할 계획
 interface ModalResponseState {
   isSuccess: boolean;
-  errorTitle?: string;
-  errorMessage?: string;
+  title: string;
+  message: string;
 }
 
 const useAuthStore = create(
@@ -54,21 +54,24 @@ const useAuthStore = create(
           if (data.user?.identities?.length === 0) {
             return {
               isSuccess: false,
-              errorTitle: '이메일 중복',
-              errorMessage: '이미 가입된 이메일입니다.',
+              title: '이메일 중복',
+              message: '이미 가입된 이메일입니다.',
             };
           }
 
-          toast.success('회원가입 성공', { description: '만나서 반가워요!' });
-          return { isSuccess: true };
+          return {
+            isSuccess: true,
+            title: '회원가입 성공',
+            message: '입력한 이메일로 인증 메일을 보냈어요.',
+          };
         } catch (error) {
           if (error instanceof AuthError) {
-            return getErrorMessage(error.code as string);
+            return getSupabaseErrorMessage(error.code as string);
           }
           return {
             isSuccess: false,
-            errorTitle: '회원가입 실패',
-            errorMessage: '회원 가입이 실패했어요.',
+            title: '회원가입 실패',
+            message: '회원 가입이 실패했어요.',
           };
         }
       });
@@ -80,10 +83,10 @@ const useAuthStore = create(
           const { error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) throw error;
           toast.success('로그인 성공', { description: '다시 만나서 반가워요!' });
-          return { isSuccess: true };
+          return { isSuccess: true, title: '로그인 성공', message: '다시 만나서 반가워요!' };
         } catch (error) {
           const { code } = error as AuthError;
-          return getErrorMessage(code as string);
+          return getSupabaseErrorMessage(code as string);
         }
       });
     },
@@ -223,16 +226,16 @@ const useAuthStore = create(
           const { error } = await supabase.auth.updateUser({ password });
           if (error) throw error;
 
-          toast.success('비밀번호 변경 완료', {
-            description: '비밀번호가 성공적으로 변경되었어요.',
-          });
-          return true;
+          return {
+            isSuccess: true,
+            title: '비밀번호 변경 완료',
+            message: '비밀번호가 성공적으로 변경되었어요.',
+          };
         } catch (error) {
-          console.error('비밀번호 변경 실패:', error);
-          toast.error('비밀번호 변경 실패', {
-            description: '비밀번호 변경 중 오류가 발생했어요.',
-          });
-          return false;
+          // console.log(error);
+          // console.log(Object.entries(error));
+          const { code } = error as AuthError;
+          return getSupabaseErrorMessage(code as string);
         }
       });
     },

@@ -46,14 +46,19 @@ export default function UpdatePasswordPage() {
       return;
     }
 
-    const result = await changePassword(password);
-
-    if (result) {
+    const { isSuccess, title, message } = await changePassword(password);
+    if (isSuccess) {
       openMessage({
-        title: '비밀번호 변경 성공',
-        message: '비밀번호가 성공적으로 변경되었어요.',
+        title: title,
+        message: message,
         variant: 'success',
         onButtonClick: () => router.push('/login'),
+      });
+    } else {
+      openMessage({
+        title: title,
+        message: message,
+        variant: 'error',
       });
     }
   };
@@ -69,6 +74,7 @@ export default function UpdatePasswordPage() {
       if (session?.user.email) {
         console.log('Current session:', session);
         setStep('reset');
+        toast.success('이메일 인증 확인', { description: '비밀번호를 재설정 해주세요.' });
       }
     };
 
@@ -85,6 +91,7 @@ export default function UpdatePasswordPage() {
       if (event === 'SIGNED_IN') {
         console.log('Password recovery detected');
         setStep('reset');
+        toast.success('이메일 인증 확인', { description: '비밀번호를 재설정 해주세요.' });
       }
     });
 
