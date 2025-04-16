@@ -62,9 +62,9 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
                   {likedSongs &&
                     likedSongs.map(song => (
                       <ModalSongItem
-                        key={song.id}
+                        key={song.song_id}
                         song={song}
-                        isSelected={songSelected.includes(song.id)}
+                        isSelected={songSelected.includes(song.song_id)}
                         onToggleSelect={handleToggleSelect}
                       />
                     ))}
@@ -76,9 +76,9 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
                   {recentSongs &&
                     recentSongs.map(song => (
                       <ModalSongItem
-                        key={song.id}
+                        key={song.song_id}
                         song={song}
-                        isSelected={songSelected.includes(song.id)}
+                        isSelected={songSelected.includes(song.song_id)}
                         onToggleSelect={handleToggleSelect}
                       />
                     ))}

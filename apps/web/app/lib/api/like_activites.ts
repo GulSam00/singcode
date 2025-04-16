@@ -30,7 +30,7 @@ export async function deleteLikedSongs(body: { songId: string }) {
 }
 
 export async function deleteLikedSongsArray(body: { songIds: string[] }) {
-  const response = await fetch('/api/songs/like/arr', {
+  const response = await fetch('/api/songs/like/array', {
     method: 'DELETE',
     body: JSON.stringify(body),
     headers: { 'Content-Type': 'application/json' },

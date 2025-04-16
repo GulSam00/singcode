@@ -18,4 +18,7 @@ export interface ToSing {
 
 export interface AddListModalSong extends Song {
   isInToSingList: boolean;
+  id: string;
+  song_id: string;
+  user_id: string;
 }

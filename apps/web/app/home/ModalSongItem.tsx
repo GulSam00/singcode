@@ -20,9 +20,9 @@ export default function ModalSongItem({
       )}
     >
       <Checkbox
-        id={`song-${song.id}`}
+        id={`song-${song.song_id}`}
         checked={isSelected}
-        onCheckedChange={() => onToggleSelect(song.id)}
+        onCheckedChange={() => onToggleSelect(song.song_id)}
         disabled={song.isInToSingList}
       />
       <div className="min-w-0 flex-1">
