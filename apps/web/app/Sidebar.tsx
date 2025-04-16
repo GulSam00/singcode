@@ -1,6 +1,7 @@
 'use client';
 
 import { LogOut, Mail, Menu, Pencil, User } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -124,6 +125,7 @@ export default function Sidebar() {
             </Button>
           </div>
         </div>
+
         <SheetFooter>
           {isAuthenticated ? (
             <Button variant="destructive" className="w-full" onClick={handleLogout}>
@@ -136,6 +138,20 @@ export default function Sidebar() {
               로그인
             </Button>
           )}
+
+          <div className="text-muted-foreground flex flex-col items-center gap-2 border-t pt-2">
+            <div className="flex w-full flex-col items-center gap-2">
+              <span className="text-xs">© 2025 singcode - Released under the MIT License.</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => window.open('https://github.com/GulSam00/sing-code', '_blank')}
+              >
+                <Image src="/github_mark.svg" alt="github" width={32} height={32} />
+              </Button>
+            </div>
+          </div>
         </SheetFooter>
       </SheetContent>
     </Sheet>
