@@ -32,19 +32,19 @@ export default function SignupPage() {
       return;
     }
 
-    const { isSuccess, errorTitle, errorMessage } = await register(email, password);
+    const { isSuccess, title, message } = await register(email, password);
 
     if (isSuccess) {
       openMessage({
-        title: '회원가입 성공',
-        message: '입력한 이메일로 인증 메일을 보냈어요.',
+        title: title,
+        message: message,
         variant: 'success',
         onButtonClick: () => router.push('/login'),
       });
     } else {
       openMessage({
-        title: errorTitle,
-        message: errorMessage || '회원가입 실패',
+        title: title,
+        message: message || '회원가입 실패',
         variant: 'error',
       });
     }

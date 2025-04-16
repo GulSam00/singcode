@@ -12,13 +12,13 @@ export default function ErrorContent({ children }: { children: React.ReactNode }
     const errorDescription = searchParams.get('error_description');
 
     if (error) {
-      const errorMessage = {
+      const message = {
         code: errorCode || 'unknown',
         message: errorDescription?.replace(/\+/g, ' ') || '인증 오류가 발생했습니다.',
         type: error,
       };
 
-      throw new Error(JSON.stringify(errorMessage));
+      throw new Error(JSON.stringify(message));
     }
   }, [searchParams]);
 
