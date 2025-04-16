@@ -68,8 +68,7 @@ export default function useSong() {
         songId: active.id as string,
         newWeight,
       });
-      const { success } = await response.json();
-
+      const { success } = response;
       swapToSings(newItems);
       return success;
     }, handleSearch);
@@ -79,7 +78,7 @@ export default function useSong() {
     await handleApiCall(async () => {
       await deleteToSingSong(songId);
       swapToSings(toSings.filter(item => item.songs.id !== songId));
-      // await fetch('/api/songs/tosing/arr', {
+      // await fetch('/api/songs/tosing/array', {
       //   method: 'DELETE',
       //   body: JSON.stringify({ songIds }),
       //   headers: { 'Content-Type': 'application/json' },
@@ -101,7 +100,7 @@ export default function useSong() {
         songId: songId,
         newWeight,
       });
-      const { success } = await response.json();
+      const { success } = response;
       swapToSings(newItems);
       return success;
     }, handleSearch);
@@ -119,7 +118,7 @@ export default function useSong() {
         songId: songId,
         newWeight,
       });
-      const { success } = await response.json();
+      const { success } = response;
       swapToSings(newItems);
       return success;
     }, handleSearch);
@@ -133,7 +132,7 @@ export default function useSong() {
 
       // 통계 업데이트
       await Promise.all([
-        postTotalStats({ songId, countType: 'sing', isMinus: false }),
+        postTotalStats({ songId, countType: 'sing_count', isMinus: false }),
         postUserStats(songId),
         postSingLog(songId),
         handleDelete(songId),

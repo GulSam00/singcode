@@ -55,7 +55,7 @@ export async function deleteToSingSongs(body: { songId: string }) {
 }
 
 export async function deleteToSingSongsArray(body: { songIds: string[] }) {
-  const response = await fetch(`/api/songs/tosing/arr`, {
+  const response = await fetch(`/api/songs/tosing/array`, {
     method: 'DELETE',
     body: JSON.stringify(body),
     headers: { 'Content-Type': 'application/json' },
