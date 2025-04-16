@@ -26,14 +26,14 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { isSuccess, errorTitle, errorMessage } = await login(email, password);
+    const { isSuccess, title, message } = await login(email, password);
     if (isSuccess) {
       checkAuth();
       router.push('/');
     } else {
       openMessage({
-        title: errorTitle,
-        message: errorMessage || '로그인 실패',
+        title: title,
+        message: message || '로그인 실패',
         variant: 'error',
       });
     }

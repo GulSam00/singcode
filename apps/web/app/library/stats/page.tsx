@@ -13,8 +13,6 @@ export default function StatsPage() {
 
   const { userStat } = useUserStat();
 
-  console.log('userStat', userStat);
-
   return (
     <div className="bg-background h-full py-8">
       <div className="mb-6 flex items-center">

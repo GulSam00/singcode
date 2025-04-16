@@ -26,7 +26,7 @@ interface AuthError {
 }
 
 export default function Error({ error }: ErrorPageProps) {
-  const errorMessage = error.message;
+  const message = error.message;
   let errorDetails: AuthError | null = null;
   let isAuthError = false;
 
@@ -66,7 +66,7 @@ export default function Error({ error }: ErrorPageProps) {
             <AlertDescription>
               {errorDetails
                 ? decodeURIComponent(errorDetails.message)
-                : errorMessage || '서버에서 오류가 발생했습니다.'}
+                : message || '서버에서 오류가 발생했습니다.'}
             </AlertDescription>
           </Alert>
 

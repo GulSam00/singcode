@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 
-import ErrorContent from '@/components/ErrorContnet';
+import ErrorContent from '@/components/ErrorContent';
 
 export default function ErrorWrapper({ children }: { children: React.ReactNode }) {
   return (
