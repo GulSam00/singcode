@@ -22,10 +22,10 @@ export async function POST(request: Request) {
     const newWeight = lastWeight + 1;
 
     const { error } = await supabase.from('tosings').insert(
-      songIds.map((songId: string) => ({
+      songIds.map((songId: string, index: number) => ({
         user_id: userId,
         song_id: songId,
-        order_weight: newWeight,
+        order_weight: newWeight + index,
       })),
     );
 

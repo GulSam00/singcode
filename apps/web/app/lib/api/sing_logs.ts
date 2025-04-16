@@ -1,5 +1,5 @@
 export async function postSingLog(songId: string) {
-  const response = await fetch(`/api/songs/sing_logs`, {
+  const response = await fetch(`/api/sing_logs`, {
     method: 'POST',
     body: JSON.stringify({ songId }),
     headers: { 'Content-Type': 'application/json' },
