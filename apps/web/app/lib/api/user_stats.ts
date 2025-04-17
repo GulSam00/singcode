@@ -1,19 +1,14 @@
+import { ApiResponse } from '@/types/apiRoute';
+import { UserSongStat } from '@/types/userStat';
+
+import { instance } from './client';
+
 export async function getUserStats() {
-  const response = await fetch(`/api/user_stats`);
-  if (!response.ok) {
-    throw new Error('Failed to get user stats');
-  }
-  return response.json();
+  const response = await instance.get<ApiResponse<UserSongStat[]>>('/user_stats');
+  return response.data;
 }
 
 export async function postUserStats(songId: string) {
-  const response = await fetch(`/api/user_stats`, {
-    method: 'POST',
-    body: JSON.stringify({ songId }),
-    headers: { 'Content-Type': 'application/json' },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to post user stats');
-  }
-  return response.json();
+  const response = await instance.post<ApiResponse<void>>('/user_stats', { songId });
+  return response.data;
 }

@@ -3,13 +3,18 @@ import { create } from 'zustand';
 import { deleteLikedSongsArray, getLikedSongs } from '@/lib/api/like_activites';
 import { getRecentSongs } from '@/lib/api/songs';
 import { deleteToSingSongs, getToSingSongs, postToSingSongsArray } from '@/lib/api/tosings';
-import { AddListModalSong, ToSing } from '@/types/song';
+import { ApiResponse, ApiSuccessResponse } from '@/types/apiRoute';
+import { AddListModalSong, ToSingSong } from '@/types/song';
+
+function isSuccessResponse<T>(response: ApiResponse<T>): response is ApiSuccessResponse<T> {
+  return response.success === true;
+}
 
 interface SongStore {
-  toSings: ToSing[];
+  toSings: ToSingSong[];
   likedSongs: AddListModalSong[];
   recentSongs: AddListModalSong[];
-  swapToSings: (toSings: ToSing[]) => void;
+  swapToSings: (toSings: ToSingSong[]) => void;
   refreshToSings: () => Promise<void>;
   refreshLikedSongs: () => Promise<void>;
   refreshRecentSongs: () => Promise<void>;
@@ -23,33 +28,34 @@ const useSongStore = create<SongStore>((set, get) => ({
   likedSongs: [],
   recentSongs: [],
 
-  swapToSings: (toSings: ToSing[]) => {
+  swapToSings: (toSings: ToSingSong[]) => {
     set({ toSings });
   },
 
   refreshToSings: async () => {
-    const { success, data } = await getToSingSongs();
-    if (success) {
-      set({ toSings: data });
+    const response = await getToSingSongs();
+    if (isSuccessResponse(response) && response.data) {
+      set({ toSings: response.data });
     }
   },
 
   refreshLikedSongs: async () => {
-    const { success, data } = await getLikedSongs();
-    if (success) {
-      set({ likedSongs: data });
+    const response = await getLikedSongs();
+    if (isSuccessResponse(response) && response.data) {
+      set({ likedSongs: response.data });
     }
   },
+
   refreshRecentSongs: async () => {
-    const { success, data } = await getRecentSongs();
-    if (success) {
-      set({ recentSongs: data });
+    const response = await getRecentSongs();
+    if (isSuccessResponse(response) && response.data) {
+      set({ recentSongs: response.data });
     }
   },
 
   postToSingSongs: async (songIds: string[]) => {
-    const { success } = await postToSingSongsArray({ songIds });
-    if (success) {
+    const response = await postToSingSongsArray({ songIds });
+    if (isSuccessResponse(response)) {
       get().refreshToSings();
       get().refreshLikedSongs();
       get().refreshRecentSongs();
@@ -57,8 +63,8 @@ const useSongStore = create<SongStore>((set, get) => ({
   },
 
   deleteToSingSong: async (songId: string) => {
-    const { success } = await deleteToSingSongs({ songId });
-    if (success) {
+    const response = await deleteToSingSongs({ songId });
+    if (isSuccessResponse(response)) {
       get().refreshToSings();
       get().refreshLikedSongs();
       get().refreshRecentSongs();
@@ -66,8 +72,8 @@ const useSongStore = create<SongStore>((set, get) => ({
   },
 
   deleteLikedSongs: async (songIds: string[]) => {
-    const { success } = await deleteLikedSongsArray({ songIds });
-    if (success) {
+    const response = await deleteLikedSongsArray({ songIds });
+    if (isSuccessResponse(response)) {
       get().refreshLikedSongs();
     }
   },

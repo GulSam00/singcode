@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
+import { ApiResponse } from '@/types/apiRoute';
+import { UserSongStat } from '@/types/userStat';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
-export async function GET() {
+export async function GET(): Promise<NextResponse<ApiResponse<UserSongStat[]>>> {
   const supabase = await createClient();
   const userId = await getAuthenticatedUser(supabase);
 
@@ -27,7 +29,7 @@ export async function GET() {
   return NextResponse.json({ success: true, data: parsedData });
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
     const supabase = await createClient(); // Supabase 클라이언트 생성
     const { songId } = await request.json();

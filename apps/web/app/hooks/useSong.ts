@@ -78,14 +78,6 @@ export default function useSong() {
     await handleApiCall(async () => {
       await deleteToSingSong(songId);
       swapToSings(toSings.filter(item => item.songs.id !== songId));
-      // await fetch('/api/songs/tosing/array', {
-      //   method: 'DELETE',
-      //   body: JSON.stringify({ songIds }),
-      //   headers: { 'Content-Type': 'application/json' },
-      // });
-      // swapToSings(toSings.filter(item => !songIds.includes(item.songs.id)));
-      // refreshLikedSongs();
-      // refreshRecentSongs();
     });
   };
 

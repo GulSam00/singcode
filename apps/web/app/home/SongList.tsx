@@ -19,7 +19,7 @@ import { Loader2 } from 'lucide-react';
 import useSong from '@/hooks/useSong';
 import useLoadingStore from '@/stores/useLoadingStore';
 import useSongStore from '@/stores/useSongStore';
-import { ToSing } from '@/types/song';
+import { ToSingSong } from '@/types/song';
 
 import SongCard from './SongCard';
 
@@ -58,7 +58,7 @@ export default function SongList() {
               <p className="text-muted-foreground text-sm">노래방 플레이리스트가 없습니다.</p>
             </div>
           )}
-          {toSings.map((item: ToSing, index: number) => (
+          {toSings.map((item: ToSingSong, index: number) => (
             <SongCard
               key={item.songs.id}
               song={item.songs}

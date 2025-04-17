@@ -1,7 +1,9 @@
+import { ApiResponse } from '@/types/apiRoute';
+import { PersonalSong } from '@/types/song';
+
+import { instance } from './client';
+
 export async function getRecentSongs() {
-  const response = await fetch('/api/songs/recent');
-  if (!response.ok) {
-    throw new Error('Failed to fetch recent songs');
-  }
-  return response.json();
+  const response = await instance.get<ApiResponse<PersonalSong[]>>('/songs/recent');
+  return response.data;
 }

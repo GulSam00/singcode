@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
+import { ApiResponse } from '@/types/apiRoute';
 import { SearchSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
-
-// interface ApiResponse<T> {
-//   success: boolean;
-//   data?: T;
-//   error?: string;
-// }
 
 interface DBSong extends Song {
   like_activities: {
@@ -18,8 +13,8 @@ interface DBSong extends Song {
     user_id: string;
   }[];
 }
-// export async function GET(request: Request): Promise<NextResponse<ApiResponse<SearchSong[]>>> {
-export async function GET(request: Request) {
+
+export async function GET(request: Request): Promise<NextResponse<ApiResponse<SearchSong[]>>> {
   // API KEY 노출을 막기 위해 미들웨어 역할을 할 API ROUTE 활용
   try {
     const { searchParams } = new URL(request.url);
@@ -39,17 +34,6 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase); // userId 가져오기
 
-    // .select(
-    //   `
-    //   *,
-    //   like_activities!left (
-    //     user_id
-    //   ),
-    //   tosings!left (
-    //     user_id
-    //   )
-    // `,
-    // )
     const { data, error } = await supabase
       .from('songs')
       .select(

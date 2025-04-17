@@ -1,3 +1,8 @@
+export interface ToSingSong {
+  order_weight: number;
+  songs: Song;
+}
+
 export interface Song {
   id: string;
   title: string;
@@ -6,14 +11,16 @@ export interface Song {
   num_ky: string;
 }
 
+export interface PersonalSong extends Song {
+  user_id: string;
+  song_id: string;
+  created_at: string;
+  isInToSingList: boolean;
+}
+
 export interface SearchSong extends Song {
   isLiked: boolean;
   isToSing: boolean;
-}
-
-export interface ToSing {
-  order_weight: number;
-  songs: Song;
 }
 
 export interface AddListModalSong extends Song {

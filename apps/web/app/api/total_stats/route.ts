@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
+import { ApiResponse } from '@/types/apiRoute';
 
 // 유효한 카운트 타입 정의
 type CountType = 'sing_count' | 'like_count' | 'saved_count';
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
     const supabase = await createClient();
     const { songId, countType, isMinus } = await request.json();

@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
-import { LikeLog } from '@/types/likeLog';
-import { Song } from '@/types/song';
+import { ApiResponse } from '@/types/apiRoute';
+import { PersonalSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
-interface ResponseLikeLog extends LikeLog {
+interface ResponseLikeLog extends PersonalSong {
   songs: Song;
 }
-export async function GET() {
+
+export async function GET(): Promise<NextResponse<ApiResponse<PersonalSong[]>>> {
   try {
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
@@ -69,10 +70,10 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
-    const supabase = await createClient(); // Supabase 클라이언트 생성
-    const userId = await getAuthenticatedUser(supabase); // userId 가져오기
+    const supabase = await createClient();
+    const userId = await getAuthenticatedUser(supabase);
 
     const { songId } = await request.json();
 
@@ -91,10 +92,11 @@ export async function POST(request: Request) {
     );
   }
 }
-export async function DELETE(request: Request) {
+
+export async function DELETE(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
-    const supabase = await createClient(); // Supabase 클라이언트 생성
-    const userId = await getAuthenticatedUser(supabase); // userId 가져오기
+    const supabase = await createClient();
+    const userId = await getAuthenticatedUser(supabase);
 
     const { songId } = await request.json();
 

@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
-import { SingLog } from '@/types/singLog';
-import { Song } from '@/types/song';
+import { ApiResponse } from '@/types/apiRoute';
+import { PersonalSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
-interface ResponseSingLog extends SingLog {
+interface ResponseSingLog extends PersonalSong {
   songs: Song;
 }
-export async function GET() {
+export async function GET(): Promise<NextResponse<ApiResponse<PersonalSong[]>>> {
   try {
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
