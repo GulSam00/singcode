@@ -3,12 +3,8 @@ import { create } from 'zustand';
 import { deleteLikedSongsArray, getLikedSongs } from '@/lib/api/like_activites';
 import { getRecentSongs } from '@/lib/api/songs';
 import { deleteToSingSongs, getToSingSongs, postToSingSongsArray } from '@/lib/api/tosings';
-import { ApiResponse, ApiSuccessResponse } from '@/types/apiRoute';
 import { AddListModalSong, ToSingSong } from '@/types/song';
-
-function isSuccessResponse<T>(response: ApiResponse<T>): response is ApiSuccessResponse<T> {
-  return response.success === true;
-}
+import { isSuccessResponse } from '@/utils/isSuccessResponse';
 
 interface SongStore {
   toSings: ToSingSong[];

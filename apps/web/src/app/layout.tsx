@@ -4,15 +4,14 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import { Toaster } from 'sonner';
 
+import ErrorWrapper from '@/ErrorWrapper';
+import Footer from '@/Footer';
+import Header from '@/Header';
+import AuthProvider from '@/auth';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import MessageDialog from '@/components/messageDialog';
-
-import ErrorWrapper from './ErrorWrapper';
-import Footer from './Footer';
-import Header from './Header';
-import AuthProvider from './auth';
-import './globals.css';
-import QueryProvider from './query';
+import '@/globals.css';
+import QueryProvider from '@/query';
 
 export const metadata: Metadata = {
   title: 'Singcode',

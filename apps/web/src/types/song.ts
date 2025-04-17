@@ -11,6 +11,7 @@ export interface Song {
   num_ky: string;
 }
 
+// 좋아요 곡과 최근 곡에서 공통으로 사용하는 타입
 export interface PersonalSong extends Song {
   user_id: string;
   song_id: string;

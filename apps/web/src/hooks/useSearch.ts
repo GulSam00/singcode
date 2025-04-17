@@ -7,6 +7,7 @@ import { postTotalStats } from '@/lib/api/total_stats';
 import useLoadingStore from '@/stores/useLoadingStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
+import { isSuccessResponse } from '@/utils/isSuccessResponse';
 
 type SearchType = 'title' | 'artist';
 
@@ -41,13 +42,13 @@ export default function useSearch() {
 
     await handleApiCall(
       async () => {
-        const { success, data } = await getSearch(search, searchType);
-        if (success) {
-          setSearchResults(data);
+        const response = await getSearch(search, searchType);
+        if (isSuccessResponse(response)) {
+          setSearchResults(response.data ?? []);
         } else {
           setSearchResults([]);
         }
-        return success;
+        return response.success;
       },
       () => {
         setSearchResults([]);

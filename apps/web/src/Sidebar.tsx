@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
   Sheet,
@@ -16,8 +17,6 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import useAuthStore from '@/stores/useAuthStore';
-
-import { Input } from './components/ui/input';
 
 export default function Sidebar() {
   // 목업 인증 상태
