@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { getUserStats } from '@/lib/api/userStats';
+import { getUserStats } from '@/lib/api/userStat';
 import { UserSongStat } from '@/types/userStat';
 import { isSuccessResponse } from '@/utils/isSuccessResponse';
 

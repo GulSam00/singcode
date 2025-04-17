@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { deleteLikedSongs, postLikedSongs } from '@/lib/api/likeActivites';
-import { getSearch } from '@/lib/api/search';
-import { deleteToSingSongs, postToSingSongs } from '@/lib/api/tosings';
-import { postTotalStats } from '@/lib/api/totalStats';
+import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
+import { getSearchSong } from '@/lib/api/searchSong';
+import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
+import { postTotalStat } from '@/lib/api/totalStat';
+import { useSearchSongQuery } from '@/queries/searchSongQuery';
 import useLoadingStore from '@/stores/useLoadingStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
@@ -13,11 +14,14 @@ type SearchType = 'title' | 'artist';
 
 export default function useSearch() {
   const [search, setSearch] = useState('');
+  const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchSong[]>([]);
   const [searchType, setSearchType] = useState<SearchType>('title');
   const { startLoading, stopLoading, initialLoading } = useLoadingStore();
   const [isModal, setIsModal] = useState(false);
   const [selectedSong, setSelectedSong] = useState<SearchSong | null>(null);
+  const { data, isLoading } = useSearchSongQuery(query, searchType);
+  console.log('test : ', data, isLoading);
 
   const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
     startLoading();
@@ -39,10 +43,11 @@ export default function useSearch() {
 
   const handleSearch = async () => {
     if (!search) return;
+    setQuery(search);
 
     await handleApiCall(
       async () => {
-        const response = await getSearch(search, searchType);
+        const response = await getSearchSong(search, searchType);
         if (isSuccessResponse(response)) {
           setSearchResults(response.data ?? []);
         } else {
@@ -60,9 +65,9 @@ export default function useSearch() {
     await handleApiCall(async () => {
       let response;
       if (method === 'POST') {
-        response = await postToSingSongs({ songId });
+        response = await postToSingSong({ songId });
       } else {
-        response = await deleteToSingSongs({ songId });
+        response = await deleteToSingSong({ songId });
       }
 
       const { success } = response;
@@ -83,7 +88,7 @@ export default function useSearch() {
 
   const handleToggleLike = async (songId: string, method: Method) => {
     await handleApiCall(async () => {
-      await postTotalStats({
+      await postTotalStat({
         songId,
         countType: 'like_count',
         isMinus: method === 'DELETE',
@@ -91,9 +96,9 @@ export default function useSearch() {
 
       let response;
       if (method === 'POST') {
-        response = await postLikedSongs({ songId });
+        response = await postLikeSong({ songId });
       } else {
-        response = await deleteLikedSongs({ songId });
+        response = await deleteLikeSong({ songId });
       }
 
       const { success } = response;

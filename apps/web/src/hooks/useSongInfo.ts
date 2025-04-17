@@ -9,7 +9,7 @@ export default function useAddSongList() {
   const [deleteLikeSelected, setDeleteLikeSelected] = useState<string[]>([]);
   const { startLoading, stopLoading, initialLoading } = useLoadingStore();
 
-  const { refreshLikedSongs, refreshRecentSongs, deleteLikedSongs } = useSongStore();
+  const { refreshLikeSongs, refreshRecentSongs, deleteLikeSong } = useSongStore();
 
   const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
     startLoading();
@@ -27,11 +27,11 @@ export default function useAddSongList() {
 
   const getLikedSongs = async () => {
     await handleApiCall(async () => {
-      refreshLikedSongs();
+      refreshLikeSongs();
     });
   };
 
-  const getRecentSongs = async () => {
+  const getRecentSong = async () => {
     await handleApiCall(async () => {
       refreshRecentSongs();
     });
@@ -45,7 +45,7 @@ export default function useAddSongList() {
 
   const handleDelete = async () => {
     await handleApiCall(async () => {
-      await deleteLikedSongs(deleteLikeSelected);
+      await deleteLikeSong(deleteLikeSelected);
       setDeleteLikeSelected([]);
     });
   };
@@ -54,7 +54,7 @@ export default function useAddSongList() {
 
   useEffect(() => {
     getLikedSongs();
-    getRecentSongs();
+    getRecentSong();
     initialLoading();
   }, []);
 

@@ -11,7 +11,7 @@ export default function useAddSongList() {
   const [songSelected, setSongSelected] = useState<string[]>([]);
   const { startLoading, stopLoading, initialLoading } = useLoadingStore();
 
-  const { refreshLikedSongs, refreshRecentSongs, postToSingSongs } = useSongStore();
+  const { refreshLikeSongs, refreshRecentSongs, postToSingSong } = useSongStore();
 
   const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
     startLoading();
@@ -29,11 +29,11 @@ export default function useAddSongList() {
 
   const getLikedSongs = async () => {
     await handleApiCall(async () => {
-      refreshLikedSongs();
+      refreshLikeSongs();
     });
   };
 
-  const getRecentSongs = async () => {
+  const getRecentSong = async () => {
     await handleApiCall(async () => {
       refreshRecentSongs();
     });
@@ -47,7 +47,7 @@ export default function useAddSongList() {
 
   const handleConfirmAdd = async () => {
     await handleApiCall(async () => {
-      await postToSingSongs(songSelected);
+      await postToSingSong(songSelected);
       setSongSelected([]);
     });
   };
@@ -56,7 +56,7 @@ export default function useAddSongList() {
 
   useEffect(() => {
     getLikedSongs();
-    getRecentSongs();
+    getRecentSong();
     initialLoading();
   }, []);
 

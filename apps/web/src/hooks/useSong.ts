@@ -3,10 +3,10 @@ import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useEffect } from 'react';
 
-import { postSingLog } from '@/lib/api/singLogs';
-import { patchToSingSongs } from '@/lib/api/tosings';
-import { postTotalStats } from '@/lib/api/totalStats';
-import { postUserStats } from '@/lib/api/userStats';
+import { postSingLog } from '@/lib/api/singLog';
+import { patchToSingSong } from '@/lib/api/tosing';
+import { postTotalStat } from '@/lib/api/totalStat';
+import { postUserStats } from '@/lib/api/userStat';
 import useAuthStore from '@/stores/useAuthStore';
 import useLoadingStore from '@/stores/useLoadingStore';
 import useSongStore from '@/stores/useSongStore';
@@ -64,7 +64,7 @@ export default function useSong() {
         newWeight = (prevItem.order_weight + nextItem.order_weight) / 2;
       }
 
-      const response = await patchToSingSongs({
+      const response = await patchToSingSong({
         songId: active.id as string,
         newWeight,
       });
@@ -88,7 +88,7 @@ export default function useSong() {
       const newItems = arrayMove(toSings, oldIndex, 0);
       const newWeight = toSings[0].order_weight - 1;
 
-      const response = await patchToSingSongs({
+      const response = await patchToSingSong({
         songId: songId,
         newWeight,
       });
@@ -106,7 +106,7 @@ export default function useSong() {
       const newItems = arrayMove(toSings, oldIndex, lastIndex);
       const newWeight = toSings[lastIndex].order_weight + 1;
 
-      const response = await patchToSingSongs({
+      const response = await patchToSingSong({
         songId: songId,
         newWeight,
       });
@@ -124,7 +124,7 @@ export default function useSong() {
 
       // 통계 업데이트
       await Promise.all([
-        postTotalStats({ songId, countType: 'sing_count', isMinus: false }),
+        postTotalStat({ songId, countType: 'sing_count', isMinus: false }),
         postUserStats(songId),
         postSingLog(songId),
         handleDelete(songId),

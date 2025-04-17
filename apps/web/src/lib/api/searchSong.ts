@@ -3,7 +3,7 @@ import { SearchSong } from '@/types/song';
 
 import { instance } from './client';
 
-export async function getSearch(search: string, searchType: string) {
+export async function getSearchSong(search: string, searchType: string) {
   const response = await instance.get<ApiResponse<SearchSong[]>>('/search', {
     params: { q: search, type: searchType },
   });
