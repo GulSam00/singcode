@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { deleteLikedSongs, postLikedSongs } from '@/lib/api/like_activites';
+import { deleteLikedSongs, postLikedSongs } from '@/lib/api/likeActivites';
 import { getSearch } from '@/lib/api/search';
 import { deleteToSingSongs, postToSingSongs } from '@/lib/api/tosings';
-import { postTotalStats } from '@/lib/api/total_stats';
+import { postTotalStats } from '@/lib/api/totalStats';
 import useLoadingStore from '@/stores/useLoadingStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';

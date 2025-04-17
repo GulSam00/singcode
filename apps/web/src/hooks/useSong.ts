@@ -3,10 +3,10 @@ import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useEffect } from 'react';
 
-import { postSingLog } from '@/lib/api/sing_logs';
+import { postSingLog } from '@/lib/api/singLogs';
 import { patchToSingSongs } from '@/lib/api/tosings';
-import { postTotalStats } from '@/lib/api/total_stats';
-import { postUserStats } from '@/lib/api/user_stats';
+import { postTotalStats } from '@/lib/api/totalStats';
+import { postUserStats } from '@/lib/api/userStats';
 import useAuthStore from '@/stores/useAuthStore';
 import useLoadingStore from '@/stores/useLoadingStore';
 import useSongStore from '@/stores/useSongStore';

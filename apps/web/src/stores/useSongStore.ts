@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { deleteLikedSongsArray, getLikedSongs } from '@/lib/api/like_activites';
+import { deleteLikedSongsArray, getLikedSongs } from '@/lib/api/likeActivites';
 import { getRecentSongs } from '@/lib/api/songs';
 import { deleteToSingSongs, getToSingSongs, postToSingSongsArray } from '@/lib/api/tosings';
 import { AddListModalSong, ToSingSong } from '@/types/song';
