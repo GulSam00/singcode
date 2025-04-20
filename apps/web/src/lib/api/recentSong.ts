@@ -5,5 +5,5 @@ import { instance } from './client';
 
 export async function getRecentSong() {
   const response = await instance.get<ApiResponse<PersonalSong[]>>('/songs/recent');
-  return response.data;
+  return response.data.data;
 }
