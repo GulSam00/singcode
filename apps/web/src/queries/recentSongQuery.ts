@@ -4,7 +4,7 @@ import { getRecentSong } from '@/lib/api/recentSong';
 
 export const useRecentSongsQuery = () => {
   return useQuery({
-    queryKey: ['recentSongs'],
+    queryKey: ['recentSong'],
     queryFn: getRecentSong,
   });
 };

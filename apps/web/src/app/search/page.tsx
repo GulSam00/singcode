@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import useSearch from '@/hooks/useSearch';
+import useSearchSong from '@/hooks/useSearchSong';
 
 import SearchResultCard from './SearchResultCard';
 
@@ -16,6 +16,8 @@ export default function SearchPage() {
     setSearch,
     searchResults,
     searchType,
+    data,
+    isLoading,
     handleSearchTypeChange,
     handleSearch,
     handleToggleToSing,
@@ -24,8 +26,9 @@ export default function SearchPage() {
     // isModal,
     // selectedSong,
     // handleSavePlaylist,
-  } = useSearch();
+  } = useSearchSong();
 
+  console.log('test : ', data);
   // 엔터 키 처리
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {

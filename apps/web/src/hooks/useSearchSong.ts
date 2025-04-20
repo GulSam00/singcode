@@ -4,7 +4,11 @@ import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
 import { getSearchSong } from '@/lib/api/searchSong';
 import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
 import { postTotalStat } from '@/lib/api/totalStat';
-import { useSearchSongQuery } from '@/queries/searchSongQuery';
+import {
+  useSearchSongSongQuery,
+  useToggleLikeMutation,
+  useToggleToSingMutation,
+} from '@/queries/searchSongQuery';
 import useLoadingStore from '@/stores/useLoadingStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
@@ -12,7 +16,7 @@ import { isSuccessResponse } from '@/utils/isSuccessResponse';
 
 type SearchType = 'title' | 'artist';
 
-export default function useSearch() {
+export default function useSearchSong() {
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchSong[]>([]);
@@ -20,8 +24,9 @@ export default function useSearch() {
   const { startLoading, stopLoading, initialLoading } = useLoadingStore();
   const [isModal, setIsModal] = useState(false);
   const [selectedSong, setSelectedSong] = useState<SearchSong | null>(null);
-  const { data, isLoading } = useSearchSongQuery(query, searchType);
-  console.log('test : ', data, isLoading);
+  const { data: newSearchResults, isLoading } = useSearchSongSongQuery(query, searchType);
+  const { mutate: toggleLike } = useToggleLikeMutation();
+  const { mutate: toggleToSing } = useToggleToSingMutation();
 
   const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
     startLoading();
@@ -129,6 +134,8 @@ export default function useSearch() {
     search,
     setSearch,
     searchResults,
+    newSearchResults,
+    isLoading,
     searchType,
     handleSearchTypeChange,
     handleSearch,

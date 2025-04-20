@@ -11,7 +11,7 @@ import { PersonalSong } from '@/types/song';
 // 🎵 좋아요 한 곡 리스트 가져오기
 export function useLikeSongQuery() {
   return useQuery({
-    queryKey: ['likeSongs'],
+    queryKey: ['likeSong'],
     queryFn: getLikeSongs,
   });
 }
@@ -23,7 +23,7 @@ export function usePostLikedSongMutation() {
   return useMutation({
     mutationFn: (songId: string) => postLikeSong({ songId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['likeSongs'] });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
     },
   });
 }
@@ -35,18 +35,18 @@ export function useDeleteLikedSongMutation() {
   return useMutation({
     mutationFn: (songId: string) => deleteLikeSong({ songId }),
     onMutate: async (songId: string) => {
-      queryClient.cancelQueries({ queryKey: ['likeSongs'] });
-      const prev = queryClient.getQueryData(['likeSongs']);
-      queryClient.setQueryData(['likeSongs'], (old: PersonalSong[]) =>
+      queryClient.cancelQueries({ queryKey: ['likeSong'] });
+      const prev = queryClient.getQueryData(['likeSong']);
+      queryClient.setQueryData(['likeSong'], (old: PersonalSong[]) =>
         old.filter(song => song.song_id !== songId),
       );
       return { prev };
     },
     onError: (error, songId, context) => {
-      queryClient.setQueryData(['likeSongs'], context?.prev);
+      queryClient.setQueryData(['likeSong'], context?.prev);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['likeSongs'] });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
     },
   });
 }
@@ -58,18 +58,18 @@ export function useDeleteLikeSongsArrayMutation() {
   return useMutation({
     mutationFn: (songIds: string[]) => deleteLikeSongArray({ songIds }),
     onMutate: async (songIds: string[]) => {
-      queryClient.cancelQueries({ queryKey: ['likeSongs'] });
-      const prev = queryClient.getQueryData(['likeSongs']);
-      queryClient.setQueryData(['likeSongs'], (old: PersonalSong[]) =>
+      queryClient.cancelQueries({ queryKey: ['likeSong'] });
+      const prev = queryClient.getQueryData(['likeSong']);
+      queryClient.setQueryData(['likeSong'], (old: PersonalSong[]) =>
         old.filter(song => !songIds.includes(song.song_id)),
       );
       return { prev };
     },
     onError: (error, songIds, context) => {
-      queryClient.setQueryData(['likeSongs'], context?.prev);
+      queryClient.setQueryData(['likeSong'], context?.prev);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['likeSongs'] });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
     },
   });
 }
