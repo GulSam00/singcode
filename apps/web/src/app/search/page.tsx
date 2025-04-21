@@ -13,22 +13,18 @@ import SearchResultCard from './SearchResultCard';
 export default function SearchPage() {
   const {
     search,
+    query,
     setSearch,
-    searchResults,
-    searchType,
-    data,
+    searchSongs,
     isLoading,
+    searchType,
     handleSearchTypeChange,
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
     handleOpenPlaylistModal,
-    // isModal,
-    // selectedSong,
-    // handleSavePlaylist,
   } = useSearchSong();
 
-  console.log('test : ', data);
   // 엔터 키 처리
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -69,9 +65,9 @@ export default function SearchPage() {
         </div>
       </div>
       <ScrollArea className="h-[calc(100vh-15rem)]">
-        {searchResults.length > 0 ? (
+        {searchSongs.length > 0 && (
           <div className="flex w-[360px] flex-col gap-3 p-3">
-            {searchResults.map((song, index) => (
+            {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
                 song={song}
@@ -83,7 +79,14 @@ export default function SearchPage() {
               />
             ))}
           </div>
-        ) : (
+        )}
+        {searchSongs.length === 0 && query && (
+          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
+            <p className="mb-2">검색 결과가 없습니다.</p>
+            <Mic className="h-8 w-8 opacity-50" />
+          </div>
+        )}
+        {searchSongs.length === 0 && !query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
             <p className="mb-2">노래 제목이나 가수를 검색해보세요</p>
             <Mic className="h-8 w-8 opacity-50" />

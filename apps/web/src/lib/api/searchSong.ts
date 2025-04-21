@@ -8,5 +8,5 @@ export async function getSearchSong(search: string, searchType: string) {
     params: { q: search, type: searchType },
   });
 
-  return response.data.data;
+  return response.data;
 }
