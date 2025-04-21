@@ -16,7 +16,6 @@ export default function SearchPage() {
     query,
     setSearch,
     searchSongs,
-    isLoading,
     searchType,
     handleSearchTypeChange,
     handleSearch,

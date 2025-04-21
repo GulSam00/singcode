@@ -1,41 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import useLoadingStore from '@/stores/useLoadingStore';
-import useSongStore from '@/stores/useSongStore';
+import { useDeleteLikeSongArrayMutation } from '@/queries/likeSongQuery';
 
-export default function useAddSongList() {
+// import { useDeleteLikedSongMutation } from '@/queries/likeSongQuery';
+
+export default function useSongInfo() {
   const [deleteLikeSelected, setDeleteLikeSelected] = useState<string[]>([]);
-  const { startLoading, stopLoading, initialLoading } = useLoadingStore();
 
-  const { refreshLikeSongs, refreshRecentSongs, deleteLikeSong } = useSongStore();
-
-  const handleApiCall = async <T>(apiCall: () => Promise<T>, onError?: () => void) => {
-    startLoading();
-    try {
-      const result = await apiCall();
-      return result;
-    } catch (error) {
-      console.error('API 호출 실패:', error);
-      if (onError) onError();
-      return null;
-    } finally {
-      stopLoading();
-    }
-  };
-
-  const getLikedSongs = async () => {
-    await handleApiCall(async () => {
-      refreshLikeSongs();
-    });
-  };
-
-  const getRecentSong = async () => {
-    await handleApiCall(async () => {
-      refreshRecentSongs();
-    });
-  };
+  const { mutate: deleteLikeSongArray } = useDeleteLikeSongArrayMutation();
+  // const { mutate: deleteLikeSong } = useDeleteLikedSongMutation();
 
   const handleToggleSelect = (songId: string) => {
     setDeleteLikeSelected(prev =>
@@ -43,25 +18,25 @@ export default function useAddSongList() {
     );
   };
 
-  const handleDelete = async () => {
-    await handleApiCall(async () => {
-      await deleteLikeSong(deleteLikeSelected);
-      setDeleteLikeSelected([]);
-    });
+  const handleDeleteArray = () => {
+    console.log('deleteLikeSelected', deleteLikeSelected);
+    deleteLikeSongArray(deleteLikeSelected);
+    setDeleteLikeSelected([]);
   };
 
-  const totalSelectedCount = deleteLikeSelected.length;
+  // const handleDelete = () => {
+  //   deleteLikeSelected.forEach(songId => {
+  //     deleteLikeSong(songId);
+  //   });
+  //   setDeleteLikeSelected([]);
+  // };
 
-  useEffect(() => {
-    getLikedSongs();
-    getRecentSong();
-    initialLoading();
-  }, []);
+  const totalSelectedCount = deleteLikeSelected.length;
 
   return {
     deleteLikeSelected,
     totalSelectedCount,
     handleToggleSelect,
-    handleDelete,
+    handleDeleteArray,
   };
 }

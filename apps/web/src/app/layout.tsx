@@ -40,9 +40,9 @@ export default function RootLayout({
         />
       </head>
       <body className="m-0 flex h-[100dvh] w-full justify-center">
-        <ErrorWrapper>
-          <QueryProvider>
-            <AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <ErrorWrapper>
               <div className="bg-secondary relative flex h-full w-[360px] flex-col">
                 <Header />
                 <main className="flex-1">{children}</main>
@@ -63,9 +63,9 @@ export default function RootLayout({
               <LoadingOverlay />
               <Analytics />
               <SpeedInsights />
-            </AuthProvider>
-          </QueryProvider>
-        </ErrorWrapper>
+            </ErrorWrapper>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

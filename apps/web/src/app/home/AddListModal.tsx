@@ -10,7 +10,8 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useAddListModal from '@/hooks/useAddSongList';
-import useSongStore from '@/stores/useSongStore';
+import { useLikeSongQuery } from '@/queries/likeSongQuery';
+import { useRecentSongsQuery } from '@/queries/recentSongQuery';
 
 import ModalSongItem from './ModalSongItem';
 
@@ -29,7 +30,8 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
     totalSelectedCount,
   } = useAddListModal();
 
-  const { likedSongs, recentSongs } = useSongStore();
+  const { data: likedSongs } = useLikeSongQuery();
+  const { data: recentSongs } = useRecentSongsQuery();
 
   const handleClickConfirm = () => {
     handleConfirmAdd();

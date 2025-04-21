@@ -5,6 +5,14 @@ import { getRecentSong } from '@/lib/api/recentSong';
 export const useRecentSongsQuery = () => {
   return useQuery({
     queryKey: ['recentSong'],
-    queryFn: getRecentSong,
+    queryFn: async () => {
+      const response = await getRecentSong();
+      if (!response.success) {
+        return [];
+      }
+      return response.data || [];
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5,
   });
 };

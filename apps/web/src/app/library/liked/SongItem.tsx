@@ -15,9 +15,9 @@ export default function SongItem({
   return (
     <div className={cn('border-border flex items-center space-x-3 border-b py-2 last:border-0')}>
       <Checkbox
-        id={`song-${song.id}`}
+        id={`song-${song.song_id}`}
         checked={isSelected}
-        onCheckedChange={() => onToggleSelect(song.id)}
+        onCheckedChange={() => onToggleSelect(song.song_id)}
       />
       <div className="min-w-0 flex-1">
         <h4 className="truncate text-sm font-medium">{song.title}</h4>

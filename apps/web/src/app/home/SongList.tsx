@@ -14,20 +14,23 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { Loader2 } from 'lucide-react';
 
+import StaticLoading from '@/components/StaticLoading';
 import useSong from '@/hooks/useSong';
-import useLoadingStore from '@/stores/useLoadingStore';
-import useSongStore from '@/stores/useSongStore';
 import { ToSingSong } from '@/types/song';
 
 import SongCard from './SongCard';
 
 export default function SongList() {
-  const { handleDragEnd, handleDelete, handleMoveToTop, handleMoveToBottom, handleSung } =
-    useSong();
-  const { toSings } = useSongStore();
-  const { isInitialLoading } = useLoadingStore();
+  const {
+    isLoading,
+    toSingSongs,
+    handleDragEnd,
+    handleDelete,
+    handleMoveToTop,
+    handleMoveToBottom,
+    handleSung,
+  } = useSong();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -35,6 +38,8 @@ export default function SongList() {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
+
+  if (isLoading) return <StaticLoading />;
 
   return (
     <DndContext
@@ -44,21 +49,16 @@ export default function SongList() {
       modifiers={[restrictToVerticalAxis]}
     >
       <SortableContext
-        items={toSings.map(item => item.songs.id)}
+        items={toSingSongs.map((item: ToSingSong) => item.songs.id)}
         strategy={verticalListSortingStrategy}
       >
         <div className="flex flex-col gap-4">
-          {isInitialLoading && (
-            <div className="fixed inset-0 flex h-full items-center justify-center bg-white/90">
-              <Loader2 className="h-16 w-16 animate-spin" />
-            </div>
-          )}
-          {!isInitialLoading && toSings.length === 0 && (
+          {toSingSongs.length === 0 && (
             <div className="flex h-full items-center justify-center">
               <p className="text-muted-foreground text-sm">노래방 플레이리스트가 없습니다.</p>
             </div>
           )}
-          {toSings.map((item: ToSingSong, index: number) => (
+          {toSingSongs.map((item: ToSingSong, index: number) => (
             <SongCard
               key={item.songs.id}
               song={item.songs}

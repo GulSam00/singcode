@@ -12,7 +12,15 @@ import { PersonalSong } from '@/types/song';
 export function useLikeSongQuery() {
   return useQuery({
     queryKey: ['likeSong'],
-    queryFn: getLikeSongs,
+    queryFn: async () => {
+      const response = await getLikeSongs();
+      if (!response.success) {
+        return [];
+      }
+      return response.data || [];
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5,
   });
 }
 
@@ -52,7 +60,7 @@ export function useDeleteLikedSongMutation() {
 }
 
 // 🎵 여러 곡 좋아요 취소
-export function useDeleteLikeSongsArrayMutation() {
+export function useDeleteLikeSongArrayMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -57,13 +57,15 @@ export const useToggleLikeMutation = () => {
 
       return { prev, query, searchType };
     },
-    onError: (error, songId, context) => {
+    onError: (error, variables, context) => {
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
       queryClient.invalidateQueries({
         queryKey: ['searchSong', context?.query, context?.searchType],
       });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
 };
@@ -97,13 +99,15 @@ export const useToggleToSingMutation = () => {
       );
       return { prev, query, searchType };
     },
-    onError: (error, songId, context) => {
+    onError: (error, variables, context) => {
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
       queryClient.invalidateQueries({
         queryKey: ['searchSong', context?.query, context?.searchType],
       });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
 };

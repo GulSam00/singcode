@@ -5,7 +5,6 @@ import {
   deleteToSingSongArray,
   getToSingSong,
   patchToSingSong,
-  postToSingSong,
   postToSingSongArray,
 } from '@/lib/api/tosing';
 import { ToSingSong } from '@/types/song';
@@ -14,7 +13,16 @@ import { ToSingSong } from '@/types/song';
 export function useToSingSongQuery() {
   return useQuery({
     queryKey: ['toSingSong'],
-    queryFn: getToSingSong,
+    queryFn: async () => {
+      const response = await getToSingSong();
+      if (!response.success) {
+        return [];
+      }
+      return response.data || [];
+    },
+    // DB의 값은 고정된 값이므로 캐시를 유지한다
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5,
   });
 }
 
@@ -23,9 +31,11 @@ export function usePostToSingSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (songId: string) => postToSingSong({ songId }),
+    mutationFn: (songIds: string[]) => postToSingSongArray({ songIds }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
 }
@@ -38,6 +48,8 @@ export function usePostToSingSongArrayMutation() {
     mutationFn: (songIds: string[]) => postToSingSongArray({ songIds }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
 }
@@ -56,11 +68,13 @@ export function useDeleteToSingSongMutation() {
       );
       return { prev };
     },
-    onError: (error, songId, context) => {
+    onError: (error, variables, context) => {
       queryClient.setQueryData(['toSingSong'], context?.prev);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
 }
@@ -79,11 +93,13 @@ export function useDeleteToSingSongArrayMutation() {
       );
       return { prev };
     },
-    onError: (error, songIds, context) => {
+    onError: (error, variables, context) => {
       queryClient.setQueryData(['toSingSong'], context?.prev);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
 }
@@ -93,9 +109,25 @@ export function usePatchToSingSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ songId, newWeight }: { songId: string; newWeight: number }) =>
-      patchToSingSong({ songId, newWeight }),
-    onSuccess: () => {
+    mutationFn: ({
+      songId,
+      newWeight,
+    }: {
+      songId: string;
+      newWeight: number;
+      newItems: ToSingSong[];
+    }) => patchToSingSong({ songId, newWeight }),
+    onMutate: async ({ newItems }) => {
+      queryClient.cancelQueries({ queryKey: ['toSingSong'] });
+      const prev = queryClient.getQueryData(['toSingSong']);
+      // newItems으로 전체 쿼리 교체
+      queryClient.setQueryData(['toSingSong'], newItems);
+      return { prev };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData(['toSingSong'], context?.prev);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
     },
   });

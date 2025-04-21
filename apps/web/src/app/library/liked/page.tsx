@@ -3,18 +3,24 @@
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import Loading from '@/app/loading';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import useSongInfo from '@/hooks/useSongInfo';
-import useSongStore from '@/stores/useSongStore';
+import { useLikeSongQuery } from '@/queries/likeSongQuery';
 
 import SongItem from './SongItem';
 
 export default function LikedPage() {
   const router = useRouter();
-  const { likedSongs } = useSongStore();
-  const { deleteLikeSelected, handleToggleSelect, handleDelete } = useSongInfo();
+  const { data, isLoading } = useLikeSongQuery();
+  const { deleteLikeSelected, handleToggleSelect, handleDeleteArray } = useSongInfo();
+  const likedSongs = data ?? [];
+
+  console.log('likedSongs', likedSongs);
+
+  if (isLoading) return <Loading />;
 
   return (
     <div className="bg-background h-full px-4">
@@ -32,7 +38,7 @@ export default function LikedPage() {
             : `총 ${likedSongs.length}곡`}
         </p>
         {deleteLikeSelected.length > 0 && (
-          <Button variant="destructive" size="sm" className="gap-2" onClick={handleDelete}>
+          <Button variant="destructive" size="sm" className="gap-2" onClick={handleDeleteArray}>
             삭제
           </Button>
         )}
@@ -43,9 +49,9 @@ export default function LikedPage() {
       <ScrollArea className="h-[calc(100vh-10rem)]">
         {likedSongs.map(song => (
           <SongItem
-            key={song.id}
+            key={song.song_id}
             song={song}
-            isSelected={deleteLikeSelected.includes(song.id)}
+            isSelected={deleteLikeSelected.includes(song.song_id)}
             onToggleSelect={handleToggleSelect}
           />
         ))}
