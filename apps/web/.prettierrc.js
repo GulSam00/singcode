@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   printWidth: 100, // 한 줄 최대 길이
   tabWidth: 2, // 탭 크기 (스페이스 2칸)
   singleQuote: true, // 작은따옴표 사용
@@ -6,7 +6,7 @@ module.exports = {
   arrowParens: 'avoid', // 화살표 함수 괄호 생략 (ex: x => x)
   bracketSpacing: true, // 중괄호 간격 유지 (ex: { foo: bar })
   jsxSingleQuote: false, // JSX에서 작은따옴표 사용 안 함
-  endOfLine: 'lf', // 줄바꿈 형식 (LF 고정)
+  endOfLine: 'auto',
   importOrder: ['<THIRD_PARTY_MODULES>', '^@repo/(.*)$', '^@/(.*)$', '^../(.*)$', '^./(.*)$'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
