@@ -29,6 +29,8 @@ export async function deleteToSingSong(body: { songId: string }) {
 }
 
 export async function deleteToSingSongArray(body: { songIds: string[] }) {
-  const response = await instance.delete<ApiResponse<void>>('/songs/tosing/array', { data: body });
+  const response = await instance.delete<ApiResponse<void>>('/songs/tosing/array', {
+    data: body,
+  });
   return response.data;
 }

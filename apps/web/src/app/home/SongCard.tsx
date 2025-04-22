@@ -22,7 +22,9 @@ export default function SongCard({
   onMoveToTop,
   onMoveToBottom,
 }: SongCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: song.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: song.id,
+  });
 
   const { title, artist, num_tj, num_ky } = song;
   const style = {

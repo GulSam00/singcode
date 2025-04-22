@@ -83,7 +83,11 @@ const useAuthStore = create(
           const { error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) throw error;
           toast.success('로그인 성공', { description: '다시 만나서 반가워요!' });
-          return { isSuccess: true, title: '로그인 성공', message: '다시 만나서 반가워요!' };
+          return {
+            isSuccess: true,
+            title: '로그인 성공',
+            message: '다시 만나서 반가워요!',
+          };
         } catch (error) {
           const { code } = error as AuthError;
           return getSupabaseErrorMessage(code as string);
