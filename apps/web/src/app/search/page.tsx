@@ -1,7 +1,8 @@
 'use client';
 
-import { Mic, Search } from 'lucide-react';
+import { Mic, Search, X } from 'lucide-react';
 
+import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -16,6 +17,7 @@ export default function SearchPage() {
     query,
     setSearch,
     searchSongs,
+    isLoading,
     searchType,
     handleSearchTypeChange,
     handleSearch,
@@ -81,17 +83,18 @@ export default function SearchPage() {
         )}
         {searchSongs.length === 0 && query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <p className="mb-2">검색 결과가 없습니다.</p>
-            <Mic className="h-8 w-8 opacity-50" />
+            <X className="h-8 w-8 opacity-50" />
+            <p className="m-2">검색 결과가 없습니다.</p>
           </div>
         )}
         {searchSongs.length === 0 && !query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <p className="mb-2">노래 제목이나 가수를 검색해보세요</p>
             <Mic className="h-8 w-8 opacity-50" />
+            <p className="m-2">노래 제목이나 가수를 검색해보세요</p>
           </div>
         )}
       </ScrollArea>
+      {isLoading && <StaticLoading />}
       {/* {isModal && <PlaylistModal song={selectedSong} />} */}
     </div>
   );

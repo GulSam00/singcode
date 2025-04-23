@@ -39,6 +39,16 @@ export async function GET(): Promise<NextResponse<ApiResponse<ToSingSong[]>>> {
 
     return NextResponse.json({ success: true, data: data as unknown as ToSingSong[] });
   } catch (error) {
+    if (error instanceof Error && error.cause === 'auth') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'User not authenticated',
+        },
+        { status: 401 },
+      );
+    }
+
     console.error('Error in tosing API:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to get tosing songs' },

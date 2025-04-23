@@ -3,7 +3,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import Loading from '@/app/loading';
+import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -18,12 +18,9 @@ export default function LikedPage() {
   const { deleteLikeSelected, handleToggleSelect, handleDeleteArray } = useSongInfo();
   const likedSongs = data ?? [];
 
-  console.log('likedSongs', likedSongs);
-
-  if (isLoading) return <Loading />;
-
   return (
     <div className="bg-background h-full px-4">
+      {isLoading && <StaticLoading />}
       <div className="mb-6 flex items-center">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />

@@ -39,9 +39,9 @@ export default function Error({ error }: ErrorPageProps) {
   }
 
   // 에러 로깅
-  useEffect(() => {
-    console.error('페이지 에러:', error);
-  }, [error]);
+  // useEffect(() => {
+  //   console.error('페이지 에러:', error);
+  // }, [error]);
 
   return (
     <div className="container flex min-h-screen items-center justify-center px-4 py-8">

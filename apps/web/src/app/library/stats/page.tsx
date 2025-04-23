@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import RankingList from '@/components/RankingList';
+import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import useUserStat from '@/hooks/useUserStat';
@@ -11,10 +12,11 @@ import useUserStat from '@/hooks/useUserStat';
 export default function StatsPage() {
   const router = useRouter();
 
-  const { userStat } = useUserStat();
+  const { userStat, isLoading } = useUserStat();
 
   return (
     <div className="bg-background h-full py-8">
+      {isLoading && <StaticLoading />}
       <div className="mb-6 flex items-center">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />

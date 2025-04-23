@@ -62,9 +62,9 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
               <TabsContent value="liked" className="mt-0 h-full">
                 <div className="h-full pr-2">
                   {likedSongs &&
-                    likedSongs.map(song => (
+                    likedSongs.map((song, index) => (
                       <ModalSongItem
-                        key={song.song_id}
+                        key={song.song_id + 'liked' + index}
                         song={song}
                         isSelected={songSelected.includes(song.song_id)}
                         onToggleSelect={handleToggleSelect}
@@ -76,9 +76,9 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
               <TabsContent value="recent" className="mt-0 h-full">
                 <div className="h-full pr-2">
                   {recentSongs &&
-                    recentSongs.map(song => (
+                    recentSongs.map((song, index) => (
                       <ModalSongItem
-                        key={song.song_id}
+                        key={song.song_id + 'recent' + index}
                         song={song}
                         isSelected={songSelected.includes(song.song_id)}
                         onToggleSelect={handleToggleSelect}

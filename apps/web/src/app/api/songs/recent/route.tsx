@@ -62,6 +62,16 @@ export async function GET(): Promise<NextResponse<ApiResponse<PersonalSong[]>>> 
 
     return NextResponse.json({ success: true, data: processedData });
   } catch (error) {
+    if (error instanceof Error && error.cause === 'auth') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'User not authenticated',
+        },
+        { status: 401 },
+      );
+    }
+
     console.error('Error in recent API:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to get recent songs' },

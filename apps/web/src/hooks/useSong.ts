@@ -97,7 +97,7 @@ export default function useSong() {
 
   return {
     toSingSongs,
-    isLoading: isLoading,
+    isLoading,
     handleDragEnd,
     handleDelete,
     handleMoveToTop,

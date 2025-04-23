@@ -77,6 +77,16 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       data: songs,
     });
   } catch (error) {
+    if (error instanceof Error && error.cause === 'auth') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'User not authenticated',
+        },
+        { status: 401 },
+      );
+    }
+
     console.error('Error in search API:', error);
     return NextResponse.json(
       {

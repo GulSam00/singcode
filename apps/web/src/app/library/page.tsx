@@ -24,10 +24,11 @@ const menuItems = [
 export default function LibraryPage() {
   const router = useRouter();
   const { user } = useAuthStore();
+  const nickname = user?.nickname ?? '근데 누구셨더라...?';
 
   return (
     <div className="bg-background h-full space-y-4 px-4 py-8">
-      <h1 className="text-2xl font-bold">반갑습니다, {user?.nickname}님</h1>
+      <h1 className="text-2xl font-bold">반가워요, {nickname}</h1>
 
       {menuItems.map(item => (
         <Card

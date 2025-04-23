@@ -123,31 +123,25 @@ const useAuthStore = create(
 
     // 인증 상태 확인
     checkAuth: async () => {
-      try {
-        const { data, error } = await supabase.auth.getUser();
+      const { data, error } = await supabase.auth.getUser();
+      if (error) return false;
+      if (!get().user) {
+        const id = data.user.id;
+        const { data: existingUser } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', id)
+          .single();
 
-        if (error) throw error;
-        if (!get().user) {
-          const id = data.user.id;
-          const { data: existingUser } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', id)
-            .single();
-
-          if (!existingUser) get().insertUser(id);
-          else {
-            set(state => {
-              state.user = existingUser;
-              state.isAuthenticated = true;
-            });
-          }
+        if (!existingUser) get().insertUser(id);
+        else {
+          set(state => {
+            state.user = existingUser;
+            state.isAuthenticated = true;
+          });
         }
-        return true;
-      } catch (error) {
-        console.error('checkAuth 오류:', error);
-        return false;
       }
+      return true;
     },
     insertUser: async (id: string) => {
       try {

@@ -108,6 +108,7 @@ export const useToggleToSingMutation = () => {
       });
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+      queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
     },
   });
 };
