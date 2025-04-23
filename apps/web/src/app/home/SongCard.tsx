@@ -37,7 +37,11 @@ export default function SongCard({
       {/* 메인 콘텐츠 영역 */}
       <div className="flex h-[120px] w-full gap-4 p-3">
         {/* 노래 정보 */}
-        <div className="mb-8 flex flex-col">
+        <div
+          className="mb-8 flex cursor-grab flex-col active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
           {/* 제목 및 가수 */}
           <div className="mb-1 w-[290px]">
             <h3 className="truncate text-base font-medium">{title}</h3>
@@ -45,7 +49,11 @@ export default function SongCard({
           </div>
 
           {/* 노래방 번호 */}
-          <div className="mt-1 flex">
+          <div
+            className="mt-1 flex cursor-grab active:cursor-grabbing"
+            {...attributes}
+            {...listeners}
+          >
             <div className="flex w-[70px] items-center">
               <span className="text-brand-tj mr-1 text-xs">TJ</span>
               <span className="text-sm font-medium">{num_tj}</span>
