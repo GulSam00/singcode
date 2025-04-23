@@ -3,13 +3,11 @@ import { toast } from 'sonner';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
-import createClient from '@/lib/supabase/client';
 import { User } from '@/types/user';
 import { getSupabaseErrorMessage } from '@/utils/getErrorMessage';
+import { getSupabase } from '@/utils/getSupabase';
 
 import { withLoading } from './middleware';
-
-const supabase = createClient();
 
 // 사용자 타입 정의
 
@@ -48,6 +46,7 @@ const useAuthStore = create(
     register: async (email, password) => {
       return await withLoading(set, get, async () => {
         try {
+          const supabase = getSupabase();
           const { data, error } = await supabase.auth.signUp({ email, password });
           if (error) throw error;
 
@@ -80,6 +79,8 @@ const useAuthStore = create(
     login: async (email, password) => {
       return await withLoading(set, get, async () => {
         try {
+          const supabase = getSupabase();
+
           const { error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) throw error;
           toast.success('로그인 성공', { description: '다시 만나서 반가워요!' });
@@ -96,6 +97,8 @@ const useAuthStore = create(
     },
     authKaKaoLogin: async () => {
       try {
+        const supabase = getSupabase();
+
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'kakao',
           options: {
@@ -117,12 +120,16 @@ const useAuthStore = create(
     },
     // 로그아웃 액션
     logout: async () => {
+      const supabase = getSupabase();
+
       await supabase.auth.signOut();
       set({ user: null, isAuthenticated: false });
     },
 
     // 인증 상태 확인
     checkAuth: async () => {
+      const supabase = getSupabase();
+
       const { data, error } = await supabase.auth.getUser();
       if (error) return false;
       if (!get().user) {
@@ -145,6 +152,8 @@ const useAuthStore = create(
     },
     insertUser: async (id: string) => {
       try {
+        const supabase = getSupabase();
+
         const { data: user, error } = await supabase.from('users').insert({ id }).select().single();
         if (error) throw error;
         set(state => {
@@ -175,6 +184,7 @@ const useAuthStore = create(
             return false;
           }
 
+          const supabase = getSupabase();
           const result = await supabase
             .from('users')
             .update({ nickname: nickname })
@@ -200,6 +210,8 @@ const useAuthStore = create(
     sendPasswordResetLink: async (email: string) => {
       return await withLoading(set, get, async () => {
         try {
+          const supabase = getSupabase();
+
           const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/update-password`,
           });
@@ -221,6 +233,8 @@ const useAuthStore = create(
     changePassword: async (password: string) => {
       return await withLoading(set, get, async () => {
         try {
+          const supabase = getSupabase();
+
           const { error } = await supabase.auth.updateUser({ password });
           if (error) throw error;
 
