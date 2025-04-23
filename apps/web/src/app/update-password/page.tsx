@@ -27,6 +27,7 @@ export default function UpdatePasswordPage() {
   const { openMessage } = useModalStore();
 
   const router = useRouter();
+  const supabase = createClient();
 
   // 이메일 제출 처리 (비밀번호 재설정 링크 요청)
   const handleSendResetLink = async (e: React.FormEvent) => {
@@ -64,7 +65,7 @@ export default function UpdatePasswordPage() {
   };
 
   useEffect(() => {
-    const supabase = createClient();
+    if (!supabase) return;
 
     // 현재 세션 상태 확인
     const checkCurrentSession = async () => {
@@ -99,7 +100,7 @@ export default function UpdatePasswordPage() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase]);
 
   return (
     <div className="bg-background flex h-full flex-col justify-center px-4">
