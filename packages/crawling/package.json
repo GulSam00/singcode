@@ -7,10 +7,18 @@
     ".": "./src/index.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.1",
     "@repo/open-api": "workspace:*",
+    "@supabase/supabase-js": "^2.49.1",
     "axios": "^1.5.0",
     "cheerio": "^1.0.0",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "openai": "^4.96.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
   }
 }
