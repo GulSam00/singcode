@@ -6,24 +6,6 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// getObject("AAA(혼성그룹)", "AAA", 0, 3, 2),
-// getObject("Aimer", "에이머(Aimer)", 2, 0, 1),
-// getObject("amazarashi", "아마자라시(amazarashi)", 0, 1, 2),
-// getObject("BUMP OF CHICKEN", "BUMP OF CHICKEN", 0, 1, 2),
-// getObject("DREAMS COME TRUE(밴드)", "DREAMS COME TRUE", 0, 1, 2),
-// getObject("ELLEGARDEN", "엘르가든(ELLEGARDEN)", 0, 1, 2),
-// getObject("King Gnu", "킹누(King Gnu)", 0, 1, 2),
-// getObject("LiSA", "리사(LiSA)", 2, 0, 1),
-// getObject("Mrs. GREEN APPLE", "미세스그린애플(Mrs. GREEN APPLE)", 0, 1, 2),
-// getObject("Official髭男dism", "오피셜히게단디즘(Official髭男dism)", 2, 0, 1),
-// getObject("Perfume", "퍼퓸(Perfume)", 0, 1, 2),
-// getObject("RADWIMPS", "래드윔프스(RADWIMPS)", 2, 0, 1),
-// getObject("SEKAI NO OWARI", "세카이노오와리(SEKAI NO OWARI)", 0, 1, 2),
-// getObject("SPYAIR", "스파이에어(SPYAIR)", 2, 0, 1),
-// getObject("Vaundy", "바운디(Vaundy)", 2, 0, 1),
-// getObject("w-inds.", "w-inds.", 0, 1, 2),
-// getObject("YOASOBI", "요아소비(YOASOBI)", 0, 1, 2),
-
 class TranslationAssistant {
   private messages: Array<OpenAI.Chat.ChatCompletionMessageParam>;
 
@@ -78,6 +60,3 @@ const translator = new TranslationAssistant();
 export const transChatGPT = async (text: string) => {
   return await translator.translate(text);
 };
-
-// const transData = await transChatGPT("緑黄色社会");
-// console.log(transData);

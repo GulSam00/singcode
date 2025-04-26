@@ -1,14 +1,8 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-import { createClient } from "@supabase/supabase-js";
 import { Song } from "./types";
+import { getClient } from "./getClient";
 
 export async function postDB(songs: Song[] | Song) {
-  const supabaseUrl = process.env.SUPABASE_URL || "";
-  const supabaseKey = process.env.SUPABASE_KEY || "";
-
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabase = getClient();
 
   let { data, error } = await supabase
     .from("songs")

@@ -7,8 +7,15 @@ export interface ArgList {
 }
 
 export interface Song {
+  id: string;
   title: string;
   artist: string;
   num_tj: string | null;
   num_ky: string | null;
+}
+
+export interface TransSong extends Song {
+  isTitleJp: boolean;
+  isArtistJp: boolean;
+  type?: "title" | "artist";
 }

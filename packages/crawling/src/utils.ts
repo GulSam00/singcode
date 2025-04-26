@@ -40,3 +40,16 @@ export const parseText = (text: string) => {
     .replace(/[※★☆○●◎◇◆□■△▲▽▼→←↑↓↔]/g, "")
     .trim();
 };
+
+export const containsJapanese = (text: string): boolean => {
+  const match = text.match(
+    /^([가-힣\s]+)\s*\(([\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9faf]+)\)$/
+  );
+  if (match) {
+    return false;
+  }
+  console.log("match : ", text);
+
+  // 2. 그 외에는 기존 일본어 판별 로직 사용
+  return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9faf]/.test(text);
+};
