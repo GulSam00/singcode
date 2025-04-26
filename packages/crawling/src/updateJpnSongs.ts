@@ -15,44 +15,44 @@ const transData: TransSong[] = [];
 
 let count = 0;
 
-// for (const song of data) {
-//   console.log("count : ", count++);
-//   await sleep(150); // 0.15초(150ms) 대기
+for (const song of data) {
+  console.log("count : ", count++);
+  await sleep(150); // 0.15초(150ms) 대기
 
-//   const newSong: TransSong = { ...song };
+  const newSong: TransSong = { ...song };
 
-//   if (song.isTitleJp) {
-//     const titleTrans = await transChatGPT(song.title);
-//     if (titleTrans === "UNKNOWN" || titleTrans === null) {
-//       unknownData.push({ ...newSong, type: "title" });
-//     } else {
-//       newSong.title = titleTrans;
-//     }
-//   }
-//   if (song.isArtistJp) {
-//     const artistTrans = await transChatGPT(song.artist);
-//     if (artistTrans === "UNKNOWN" || artistTrans === null) {
-//       unknownData.push({ ...song, type: "artist" });
-//     } else {
-//       newSong.artist = artistTrans;
-//     }
-//   }
-//   if (newSong.isTitleJp || newSong.isArtistJp) {
-//     transData.push(newSong);
-//   }
-// }
+  if (song.isTitleJp) {
+    const titleTrans = await transChatGPT(song.title);
+    if (!titleTrans || titleTrans.length === 0) {
+      unknownData.push({ ...newSong, type: "title" });
+    } else {
+      newSong.title = titleTrans;
+    }
+  }
+  if (song.isArtistJp) {
+    const artistTrans = await transChatGPT(song.artist);
+    if (!artistTrans || artistTrans.length === 0) {
+      unknownData.push({ ...song, type: "artist" });
+    } else {
+      newSong.artist = artistTrans;
+    }
+  }
+  if (newSong.isTitleJp || newSong.isArtistJp) {
+    transData.push(newSong);
+  }
+}
 
-// console.log("data : ", data);
-// console.log("transData : ", transData);
-// console.log("unknownData : ", unknownData);
+console.log("data : ", data);
+console.log("transData : ", transData);
+console.log("unknownData : ", unknownData);
 
-// let transCount = 0;
-// for (const song of transData) {
-//   console.log("transCount : ", transCount++);
-//   if (song) {
-//     updateDB(song);
-//   }
-// }
+let transCount = 0;
+for (const song of transData) {
+  console.log("transCount : ", transCount++);
+  if (song) {
+    updateDB(song);
+  }
+}
 
 // 만약 unknownData가 있다면 해당 데이터를 배열에 담아서 끝났을 때 error.txt에 저장
 if (unknownData.length > 0) {

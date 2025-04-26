@@ -48,8 +48,7 @@ export const containsJapanese = (text: string): boolean => {
   if (match) {
     return false;
   }
-  console.log("match : ", text);
+  const isJapanese = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9faf]/.test(text);
 
-  // 2. 그 외에는 기존 일본어 판별 로직 사용
-  return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9faf]/.test(text);
+  return isJapanese;
 };

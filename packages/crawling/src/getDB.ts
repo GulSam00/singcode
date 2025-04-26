@@ -21,9 +21,9 @@ export async function getDB() {
       // song 속성 추가
       newSong.isTitleJp = true;
     }
-    if (song.artist && containsJapanese(song.artist)) {
-      newSong.isArtistJp = true;
-    }
+    // if (song.artist && containsJapanese(song.artist)) {
+    //   newSong.isArtistJp = true;
+    // }
     if (newSong.isTitleJp || newSong.isArtistJp) {
       hasJapaneseData.push(newSong);
     }
@@ -31,3 +31,7 @@ export async function getDB() {
 
   return hasJapaneseData;
 }
+
+const data = await getDB();
+
+console.log("data : ", data);
