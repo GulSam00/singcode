@@ -14,8 +14,14 @@ import '@/globals.css';
 import QueryProvider from '@/query';
 
 export const metadata: Metadata = {
-  title: 'Singcode',
-  description: 'Singcode',
+  title: 'Singcode - 간편하게 노래를 저장하세요!',
+  description: '노래방만 가면 뭐 부를지 고민한다면?',
+  openGraph: {
+    title: 'Singcode - 간편하게 노래를 저장하세요!',
+    description: '노래방만 가면 뭐 부를지 고민한다면?',
+    url: 'https://singcode.vercel.app/',
+    siteName: 'Singcode',
+  },
 };
 
 export default function RootLayout({
