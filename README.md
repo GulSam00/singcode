@@ -23,6 +23,8 @@ Supabase를 활용한 자체 DB를 통해 금영, TJ 노래방의 번호를 한 
 
 ## 📁 프로젝트 구조
 
+### 디렉토리 구조
+
 ```
 sing-code/
 ├── apps/                   # 실제 서비스 앱이 위치하는 디렉토리
@@ -38,8 +40,14 @@ sing-code/
 ├── pnpm-workspace.yaml     # pnpm 워크스페이스 설정 파일 (패키지 정보)
 ├── package.json            # 루트 패키지 관리 파일
 └── 기타 설정 파일들        # .gitignore, .prettierrc.json, LICENSE 등
-
 ```
+### Supabase DB 구조
+
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+<img src="https://github.com/user-attachments/assets/64b6e5ee-494b-47a8-82fc-41903f04ba6f" height=800  style="height:800px; width:auto;" />
+</div>
+
+
 
 ## 📦 배포
 [Singcode](https://singcode.vercel.app/)
