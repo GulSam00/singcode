@@ -6,11 +6,15 @@ import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
-export const useSearchSongSongQuery = (search: string, searchType: string) => {
+export const useSearchSongSongQuery = (
+  search: string,
+  searchType: string,
+  isAuthenticated: boolean,
+) => {
   return useQuery<SearchSong[]>({
     queryKey: ['searchSong', search, searchType],
     queryFn: async () => {
-      const response = await getSearchSong(search, searchType);
+      const response = await getSearchSong(search, searchType, isAuthenticated);
       if (!response.success) {
         return [];
       }
