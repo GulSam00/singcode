@@ -1,5 +1,9 @@
 import puppeteer from "puppeteer";
 import * as cheerio from "cheerio";
+import { getKYNULLDB } from "./supabase/getDB";
+import { Song } from "./types";
+import { logUnknownData } from "./logData";
+import { updateKYDB } from "./supabase/updateDB";
 
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
@@ -31,4 +35,26 @@ function extractKaraokeNumber(title: string) {
 }
 
 // 사용
-const result = await scrapeSongNumber("눈물이 되어줄게 - 허각");
+
+const data = await getKYNULLDB();
+console.log("getKYNULLDB : ", data);
+const resultData: Song[] = [];
+let index = 0;
+
+for (const song of data) {
+  const query = song.title + " - " + song.artist;
+  const result = await scrapeSongNumber(query);
+  if (result) {
+    resultData.push({ ...song, num_ky: result });
+  }
+  index++;
+  console.log("scrapeSongNumber : ", index);
+}
+
+console.log("resultData : ", resultData.length);
+const result = await updateKYDB(resultData);
+
+console.log(result);
+
+logUnknownData(result.success, "log/crawlYoutubeSuccess.txt");
+logUnknownData(result.failed, "log/crawlYoutubeFailed.txt");

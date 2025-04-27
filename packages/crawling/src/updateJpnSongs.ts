@@ -1,11 +1,11 @@
-import { getDB } from "./supabase/getDB";
-import { updateDB } from "./supabase/updateDB";
+import { getJapaneseDB } from "./supabase/getDB";
+import { updateJpnDB } from "./supabase/updateDB";
 import { logUnknownData } from "./logData";
 import { transChatGPT } from "./transChatGPT";
 import { TransSong } from "./types";
 import { sleep } from "openai/core";
 
-const data = await getDB();
+const data = await getJapaneseDB();
 
 // 만약 null로 반환된다면 해당 id와 함께 배열에 담가두다가 끝났을 때 error.txt에 저장
 
@@ -50,15 +50,15 @@ let transCount = 0;
 for (const song of transData) {
   console.log("transCount : ", transCount++);
   if (song) {
-    updateDB(song);
+    updateJpnDB(song);
   }
 }
 
 // 만약 unknownData가 있다면 해당 데이터를 배열에 담아서 끝났을 때 error.txt에 저장
 if (unknownData.length > 0) {
-  logUnknownData(unknownData, "errorLog.txt");
+  logUnknownData(unknownData, "log/errorLog.txt");
 }
 
 if (transData.length > 0) {
-  logUnknownData(transData, "transDataLog.txt");
+  logUnknownData(transData, "log/transDataLog.txt");
 }

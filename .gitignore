@@ -32,9 +32,16 @@ dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-errorLog.txt
-transDataLog.txt
+
 
 # Misc
 .DS_Store
 *.pem
+
+# Crawling
+crawlYoutubeSuccess.txt
+crawlYoutubeFailed.txt
+postByReleaseSuccess.txt
+postByReleaseFailed.txt
+errorLog.txt
+transDataLog.txt

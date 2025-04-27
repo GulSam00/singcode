@@ -34,5 +34,5 @@ while (year <= 2025) {
 
 const result = await postDB(songs);
 
-logUnknownData(result.success, "postByRelease.txt");
-logUnknownData(result.failed, "postByRelease.txt");
+logUnknownData(result.success, "log/postByReleaseSuccess.txt");
+logUnknownData(result.failed, "log/postByReleaseFailed.txt");

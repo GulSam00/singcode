@@ -1,7 +1,7 @@
 import { getClient } from "./getClient";
-import { TransSong } from "../types";
+import { Song, TransSong } from "../types";
 
-export const updateDB = async (song: TransSong) => {
+export const updateJpnDB = async (song: TransSong) => {
   const supabase = getClient();
 
   if (song.isArtistJp || song.isTitleJp) {
@@ -11,4 +11,30 @@ export const updateDB = async (song: TransSong) => {
       .eq("id", song.id)
       .select();
   }
+};
+
+export const updateKYDB = async (song: Song | Song[]) => {
+  const supabase = getClient();
+  const results = {
+    success: [] as Song[],
+    failed: [] as { song: Song; error: any }[],
+  };
+
+  const songsArray = Array.isArray(song) ? song : [song];
+
+  for (const song of songsArray) {
+    const { error } = await supabase
+      .from("songs")
+      .update({ num_ky: song.num_ky })
+      .eq("id", song.id)
+      .select();
+
+    if (error) {
+      results.failed.push({ song, error });
+    } else {
+      results.success.push(song);
+    }
+  }
+
+  return results;
 };

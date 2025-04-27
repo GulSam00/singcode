@@ -22,13 +22,11 @@ export async function postDB(songs: Song[] | Song) {
 
       if (error) {
         results.failed.push({ song, error });
-        // console.error(`❌ 저장 실패 - ${song.title}: `, song);
       } else {
         results.success.push(song);
       }
     } catch (error) {
       results.failed.push({ song, error });
-      // console.error(`❌ 예외 발생 - ${song.title}: `, song);
     }
   }
 

@@ -1,8 +1,8 @@
 import { getClient } from "./getClient";
-import { TransSong } from "../types";
+import { Song, TransSong } from "../types";
 import { containsJapanese } from "../utils";
 
-export async function getDB() {
+export async function getJapaneseDB() {
   const supabase = getClient();
 
   // artist 정렬
@@ -32,6 +32,24 @@ export async function getDB() {
   return hasJapaneseData;
 }
 
-const data = await getDB();
+export async function getKYNULLDB() {
+  const supabase = getClient();
 
-console.log("data : ", data);
+  // artist 정렬
+  const { data, error } = await supabase
+    .from("songs")
+    .select("id, title, artist, num_tj, num_ky")
+    .order("title", { ascending: false });
+
+  if (error) throw error;
+
+  const isKYNULLData: Song[] = [];
+
+  data.forEach((song) => {
+    if (song.num_ky === null) {
+      isKYNULLData.push(song);
+    }
+  });
+
+  return isKYNULLData;
+}
