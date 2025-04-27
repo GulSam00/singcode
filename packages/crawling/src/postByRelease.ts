@@ -1,16 +1,7 @@
-import {
-  getComposer,
-  getLyricist,
-  getNo,
-  getPopular,
-  getRelease,
-  getSinger,
-  getSong,
-} from "@repo/open-api";
-
-let year = 2025;
-let month = 1;
-
+import { getRelease } from "@repo/open-api";
+import { Song } from "./types";
+import { postDB } from "./supabase/postDB";
+import { logUnknownData } from "./logData";
 const parseMonth = (month: number) => {
   return month < 10 ? `0${month}` : month;
 };
@@ -18,21 +9,30 @@ const parseMonth = (month: number) => {
 // TJ는 업데이트 충실한데 금영은 안되있음
 // 그냥 TJ 것만 파싱해서 넣을까?
 // 기존 DB와 중복되지 않게 tj_num, ky_num 고유값으로
+
+let year = 2007;
+let month = 1;
+
+const songs: Song[] = [];
 while (year <= 2025) {
   month = 1;
   while (month <= 12) {
-    const response9 = await getRelease({
+    const response = await getRelease({
       release: `${year}${parseMonth(month)}`,
       brand: "tj",
     });
-    // console.log('response9', response9);
-    // console.log('response9', `${year}${parseMonth(month)}`, response9?.length);
-    response9?.forEach((item) => {
-      const { title, singer, composer, lyricist } = item;
-      console.log("item", item);
+    // console.log('response', response);
+    console.log("response", `${year}${parseMonth(month)}`, response?.length);
+    response?.forEach((item) => {
+      const { title, singer, no } = item;
+      songs.push({ title, artist: singer, num_tj: no, num_ky: null });
     });
-
     month++;
   }
   year++;
 }
+
+const result = await postDB(songs);
+
+logUnknownData(result.success, "postByRelease.txt");
+logUnknownData(result.failed, "postByRelease.txt");

@@ -1,5 +1,5 @@
-import { getDB } from "./getDB";
-import { updateDB } from "./updateDB";
+import { getDB } from "./supabase/getDB";
+import { updateDB } from "./supabase/updateDB";
 import { logUnknownData } from "./logData";
 import { transChatGPT } from "./transChatGPT";
 import { TransSong } from "./types";

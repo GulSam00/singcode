@@ -1,5 +1,5 @@
 import { getClient } from "./getClient";
-import { TransSong } from "./types";
+import { TransSong } from "../types";
 
 export const updateDB = async (song: TransSong) => {
   const supabase = getClient();

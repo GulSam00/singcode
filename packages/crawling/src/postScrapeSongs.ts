@@ -1,5 +1,5 @@
 import { scrapeAllSongs, scrapeSongs, scrapeUtaiteSongs } from "./crawlWiki.js";
-import { postDB } from "./postDB.js";
+import { postDB } from "./supabase/postDB.js";
 import { argList } from "./argList.js";
 
 const postSongs = async () => {

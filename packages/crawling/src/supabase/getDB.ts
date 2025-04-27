@@ -1,6 +1,6 @@
 import { getClient } from "./getClient";
-import { TransSong } from "./types";
-import { containsJapanese } from "./utils";
+import { TransSong } from "../types";
+import { containsJapanese } from "../utils";
 
 export async function getDB() {
   const supabase = getClient();
