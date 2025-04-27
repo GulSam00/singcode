@@ -52,17 +52,26 @@ sing-code/
 * 자신이 저장한 부를 곡을 조회합니다.
 * 부를 곡의 순서를 바꿀 수 있습니다.
 * 곡을 부르거나, 부르지 않고 삭제할 수 있습니다.
-
+  
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
 <img src="https://github.com/user-attachments/assets/b29b2dc0-dde3-4d69-9ce5-69a91ffe7985" height=800  style="height:800px; width:auto;" />
+</div>
 
 * 좋아요 표시한 곡이나 최근 부른 곡 중에서 부를 곡으로 추가할 수 있습니다.
+
+
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
 <img src="https://github.com/user-attachments/assets/6a6e9f12-758c-4462-853d-4fadf3fb4851"   height=800  style="height:800px; width:auto;"/>
+</div>
 
 ### 검색 페이지
 * 제목, 가수 이름으로 곡을 검색할 수 있습니다.
 * 몇몇 일본곡은 한국어를 지원합니다.
   * 번역이 잘못되거나 부정확할 수 있습니다. 발견하신다면 제보 바랍니다.
+ 
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
   <img src="https://github.com/user-attachments/assets/886efbf5-bfc9-4b88-be8a-6e0e027dffc5"   height=800  style="height:800px; width:auto;" />
+</div>
 
 
 ### 라이브러리 페이지
