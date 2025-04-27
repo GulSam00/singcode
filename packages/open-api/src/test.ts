@@ -1,6 +1,12 @@
-import { getSong, getSinger, getComposer, getLyricist, getRelease } from './index.js';
+import {
+  getSong,
+  getSinger,
+  getComposer,
+  getLyricist,
+  getRelease,
+} from "./index.js";
 
-console.log('get song test');
+console.log("get song test");
 
 // 요청 시 공백 제거해서 보내져야 함
 
@@ -49,12 +55,15 @@ const parseMonth = (month: number) => {
 while (year <= 2025) {
   month = 1;
   while (month <= 12) {
-    const response9 = await getRelease({ release: `${year}${parseMonth(month)}`, brand: 'tj' });
+    const response9 = await getRelease({
+      release: `${year}${parseMonth(month)}`,
+      brand: "tj",
+    });
     // console.log('response9', response9);
     // console.log('response9', `${year}${parseMonth(month)}`, response9?.length);
     response9?.forEach((item: any) => {
       const { title, singer, composer, lyricist } = item;
-      console.log('item', item);
+      console.log("item", item);
     });
 
     month++;
