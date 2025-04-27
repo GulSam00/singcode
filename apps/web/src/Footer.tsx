@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 
 const navigation = [
-  { name: '부를 곡', href: '/' },
-  { name: '검색', href: '/search' },
+  { name: '검색', href: '/' },
+  { name: '부를 곡', href: '/tosing' },
   { name: '인기곡', href: '/popular' },
   { name: '라이브러리', href: '/library' },
 ];

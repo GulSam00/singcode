@@ -20,6 +20,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
     const type = searchParams.get('type') || 'title';
+    const authenticated = searchParams.get('authenticated') === 'true';
 
     if (!query) {
       return NextResponse.json(
@@ -32,6 +33,37 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     }
 
     const supabase = await createClient();
+
+    if (!authenticated) {
+      const { data, error } = await supabase.from('songs').select('*').ilike(type, `%${query}%`);
+      if (error) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: error?.message || 'Unknown error',
+          },
+          { status: 500 },
+        );
+      }
+
+      const songs: SearchSong[] = data.map((song: Song) => ({
+        id: song.id,
+        title: song.title,
+        artist: song.artist,
+        num_tj: song.num_tj,
+        num_ky: song.num_ky,
+        // like_activities에서 현재 사용자의 데이터가 있는지 확인
+        isLiked: false,
+        // tosings에서 현재 사용자의 데이터가 있는지 확인
+        isToSing: false,
+      }));
+
+      return NextResponse.json({
+        success: true,
+        data: songs,
+      });
+    }
+
     const userId = await getAuthenticatedUser(supabase); // userId 가져오기
 
     const { data, error } = await supabase
