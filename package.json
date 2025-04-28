@@ -13,6 +13,7 @@
     "node": ">=18"
   },
   "dependencies": {
+    "posthog-js": "^1.236.7",
     "react": "^19.0.0"
   },
   "devDependencies": {
