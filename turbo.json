@@ -9,7 +9,9 @@
     "KAKAO_REST_API_KEY",
     "KAKAO_SECRET_KEY",
     "KAKAO_REDIRECT_URI",
-    "NODE_ENV"
+    "NODE_ENV",
+    "NEXT_PUBLIC_POSTHOG_KEY",
+    "NEXT_PUBLIC_POSTHOG_HOST"
   ],
   "tasks": {
     "build": {

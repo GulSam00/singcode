@@ -11,6 +11,7 @@ import AuthProvider from '@/auth';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import MessageDialog from '@/components/messageDialog';
 import '@/globals.css';
+import { PostHogProvider } from '@/posthog';
 import QueryProvider from '@/query';
 
 export const metadata: Metadata = {
@@ -32,44 +33,59 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <Script id="jennifer-front" strategy="afterInteractive">
-          {`
-   (function(j,ennifer) {
-        j['dmndata']=[];j['jenniferFront']=function(args){window.dmndata.push(args)};
-        j['dmnaid']=ennifer;j['dmnatime']=new Date();j['dmnanocookie']=false;j['dmnajennifer']='JENNIFER_FRONT@INTG';
-    }(window, 'f42c6944'));
-          `}
-        </Script>
         <Script
-          src="https://d-collect.jennifersoft.com/f42c6944/demian.js"
+          src="https://www.googletagmanager.com/gtag/js?id=G-G0D5K3CWNL"
           strategy="afterInteractive"
         />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-G0D5K3CWNL');
+          `}
+        </Script>
+
+        <Script id="hotjar" strategy="afterInteractive">
+          {`
+            (function(h,o,t,j,a,r){
+                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                h._hjSettings={hjid:6385056,hjsv:6};
+                a=o.getElementsByTagName('head')[0];
+                r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+          `}
+        </Script>
       </head>
       <body className="m-0 flex h-[100dvh] w-full justify-center">
         <QueryProvider>
           <AuthProvider>
-            <ErrorWrapper>
-              <div className="bg-secondary relative flex h-full w-[360px] flex-col">
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Footer />
-              </div>
+            <PostHogProvider>
+              <ErrorWrapper>
+                <div className="bg-secondary relative flex h-full w-[360px] flex-col">
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                </div>
 
-              <Toaster
-                duration={2000}
-                position="top-center"
-                toastOptions={{
-                  style: {
-                    maxWidth: '360px',
-                  },
-                }}
-              />
+                <Toaster
+                  duration={2000}
+                  position="top-center"
+                  toastOptions={{
+                    style: {
+                      maxWidth: '360px',
+                    },
+                  }}
+                />
 
-              <MessageDialog />
-              <LoadingOverlay />
-              <Analytics />
-              <SpeedInsights />
-            </ErrorWrapper>
+                <MessageDialog />
+                <LoadingOverlay />
+                <Analytics />
+                <SpeedInsights />
+              </ErrorWrapper>
+            </PostHogProvider>
           </AuthProvider>
         </QueryProvider>
       </body>
