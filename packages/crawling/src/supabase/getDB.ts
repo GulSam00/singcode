@@ -39,7 +39,7 @@ export async function getKYNULLDB() {
   const { data, error } = await supabase
     .from("songs")
     .select("id, title, artist, num_tj, num_ky")
-    .order("title", { ascending: false });
+    .order("title", { ascending: true });
 
   if (error) throw error;
 
