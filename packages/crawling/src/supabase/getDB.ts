@@ -43,6 +43,8 @@ export async function getKYNULLDB() {
 
   if (error) throw error;
 
+  console.log("data", data.length);
+
   const isKYNULLData: Song[] = [];
 
   data.forEach((song) => {

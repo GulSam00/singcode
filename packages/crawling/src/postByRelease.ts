@@ -25,8 +25,8 @@ while (year <= 2025) {
     // console.log("response", response);
     // console.log("response", `${year}${parseMonth(month)}`, response?.length);
     response?.forEach((item) => {
-      const { title, singer, no } = item;
-      songs.push({ title, artist: singer, num_tj: no, num_ky: null });
+      const { title, singer, no, release } = item;
+      songs.push({ title, artist: singer, num_tj: no, num_ky: null, release });
     });
     month++;
   }
@@ -37,7 +37,7 @@ console.log("songs", songs.length);
 
 // TJ 2007~2025 38519곡
 
-// const result = await postDB(songs);
+const result = await postDB(songs);
 
-// logUnknownData(result.success, "log/postByReleaseSuccess.txt");
-// logUnknownData(result.failed, "log/postByReleaseFailed.txt");
+logUnknownData(result.success, "log/postByReleaseSuccess.txt");
+logUnknownData(result.failed, "log/postByReleaseFailed.txt");

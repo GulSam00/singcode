@@ -12,6 +12,7 @@ export interface Song {
   artist: string;
   num_tj: string | null;
   num_ky: string | null;
+  release?: string;
 }
 
 export interface TransSong extends Song {

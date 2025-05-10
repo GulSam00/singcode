@@ -4,7 +4,8 @@ import { Song, TransSong } from "../types";
 export const updateJpnDB = async (song: TransSong) => {
   const supabase = getClient();
 
-  if (song.isArtistJp || song.isTitleJp) {
+  // if (song.isArtistJp || song.isTitleJp) {
+  if (song.isTitleJp) {
     const { data, error } = await supabase
       .from("songs")
       .update({ title: song.title, artist: song.artist })
