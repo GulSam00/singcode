@@ -24,6 +24,7 @@ async function scrapeSongNumber(query: string) {
   const karaokeNumber = extractKaraokeNumber(title);
 
   // await browser.close();
+
   return karaokeNumber;
 }
 

@@ -29,15 +29,15 @@ for (const song of data) {
       newSong.title = titleTrans;
     }
   }
-  if (song.isArtistJp) {
-    const artistTrans = await transChatGPT(song.artist);
-    if (!artistTrans || artistTrans.length === 0) {
-      unknownData.push({ ...song, type: "artist" });
-    } else {
-      newSong.artist = artistTrans;
-    }
-  }
-  if (newSong.isTitleJp || newSong.isArtistJp) {
+  // if (song.isArtistJp) {
+  //   const artistTrans = await transChatGPT(song.artist);
+  //   if (!artistTrans || artistTrans.length === 0) {
+  //     unknownData.push({ ...song, type: "artist" });
+  //   } else {
+  //     newSong.artist = artistTrans;
+  //   }
+  // }
+  if (newSong.isTitleJp) {
     transData.push(newSong);
   }
 }
