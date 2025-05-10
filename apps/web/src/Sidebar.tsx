@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import useVersionDialog from '@/hooks/useVersionDialog';
 import useAuthStore from '@/stores/useAuthStore';
 
 export default function Sidebar() {
@@ -24,6 +25,8 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newNickname, setNewNickname] = useState(user?.nickname || '');
+
+  const { version } = useVersionDialog();
 
   const router = useRouter();
 
@@ -149,6 +152,7 @@ export default function Sidebar() {
               >
                 <Image src="/github_mark.svg" alt="github" width={32} height={32} />
               </Button>
+              <div>버전 {version}</div>
             </div>
           </div>
         </SheetFooter>
