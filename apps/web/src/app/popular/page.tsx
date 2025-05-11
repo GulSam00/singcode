@@ -2,25 +2,30 @@
 
 import { useState } from 'react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import StaticLoading from '@/components/StaticLoading';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTotalStatQuery } from '@/queries/totalStatQuery';
 import { CountType, PeriodType } from '@/types/totalStat';
 
-export default function PopularPage() {
-  const [mainTab, setMainTab] = useState<CountType>('sing_count');
-  const [singTab, setSingTab] = useState<PeriodType>('all');
+import PopularRankingList from './PopularRankingList';
 
-  const { isLoading, data } = useTotalStatQuery(mainTab, singTab);
+export default function PopularPage() {
+  const [typeTab, setTypeTab] = useState<CountType>('sing_count');
+  const [periodTab, setPeriodTab] = useState<PeriodType>('all');
+
+  const { isLoading, isPending, data } = useTotalStatQuery(typeTab, periodTab);
   console.log('useTotalStatQuery', data);
 
+  if (isLoading || isPending || !data) return <StaticLoading />;
+
   return (
-    <div className="bg-background mx-auto h-full px-2 py-4 shadow-sm">
+    <div className="bg-background h-full px-2 py-4 shadow-sm">
       <h1 className="mb-6 text-2xl font-bold">인기 노래</h1>
 
       <Tabs
-        value={mainTab}
-        onValueChange={value => setMainTab(value as CountType)}
+        value={typeTab}
+        onValueChange={value => setTypeTab(value as CountType)}
         className="w-full"
       >
         <TabsList className="mb-6 grid w-full grid-cols-2">
@@ -30,7 +35,7 @@ export default function PopularPage() {
 
         {/* 부른 곡 탭 콘텐츠 */}
         <TabsContent value="sing_count" className="space-y-6">
-          <Tabs value={singTab} onValueChange={value => setSingTab(value as PeriodType)}>
+          <Tabs value={periodTab} onValueChange={value => setPeriodTab(value as PeriodType)}>
             <TabsList className="w-full">
               <TabsTrigger value="all" className="flex-1">
                 전체
@@ -44,22 +49,30 @@ export default function PopularPage() {
             </TabsList>
 
             <TabsContent value="all" className="mt-4">
-              {/* <RankingList title="전체 부른 곡 순위" items={SUNG_ALL_SONGS} /> */}
+              <ScrollArea className="h-[calc(100vh-20rem)]">
+                <PopularRankingList title="전체 부른 곡 순위" songStats={data} />
+              </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="monthly" className="mt-4">
-              {/* <RankingList title="월별 부른 곡 순위" items={SUNG_MONTHLY_SONGS} /> */}
+            <TabsContent value="year" className="mt-4">
+              <ScrollArea className="h-[calc(100vh-20rem)]">
+                <PopularRankingList title="연간 부른 곡 순위" songStats={data} />
+              </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="weekly" className="mt-4">
-              {/* <RankingList title="주별 부른 곡 순위" items={SUNG_WEEKLY_SONGS} /> */}
+            <TabsContent value="month" className="mt-4">
+              <ScrollArea className="h-[calc(100vh-20rem)]">
+                <PopularRankingList title="월간 부른 곡 순위" songStats={data} />
+              </ScrollArea>
             </TabsContent>
           </Tabs>
         </TabsContent>
 
         {/* 좋아요 탭 콘텐츠 */}
         <TabsContent value="like_count">
-          {/* <RankingList title="좋아요 많은 곡 순위" items={LIKED_SONGS} /> */}
+          <ScrollArea className="h-[calc(100vh-20rem)]">
+            <PopularRankingList title="좋아요 순위" songStats={data} />
+          </ScrollArea>
         </TabsContent>
       </Tabs>
     </div>

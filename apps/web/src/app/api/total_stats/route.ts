@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
 import { ApiResponse } from '@/types/apiRoute';
-import { CountType, PeriodType, SongStats } from '@/types/totalStat';
+import { CountType, PeriodType, SongStat } from '@/types/totalStat';
 
 // API KEY 노출을 막기 위해 미들웨어 역할을 할 API ROUTE 활용
 
-export async function GET(request: Request): Promise<NextResponse<ApiResponse<SongStats[]>>> {
+export async function GET(request: Request): Promise<NextResponse<ApiResponse<SongStat[]>>> {
   try {
     const { searchParams } = new URL(request.url);
     const countType = searchParams.get('countType') as CountType;

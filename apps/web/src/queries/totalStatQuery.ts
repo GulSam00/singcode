@@ -7,6 +7,7 @@ export const useTotalStatQuery = (countType: string, periodType: string) => {
     queryKey: ['TotalStat', countType, periodType],
     queryFn: async () => {
       const response = await getTotalStat(countType, periodType);
+
       if (!response.success) {
         return [];
       }

@@ -105,7 +105,6 @@ const useAuthStore = create(
             redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}`,
           },
         });
-        console.log(data);
         if (error) throw error;
 
         return true;
