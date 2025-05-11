@@ -15,16 +15,16 @@ export default function StatsPage() {
   const { userStat, isLoading } = useUserStat();
 
   return (
-    <div className="bg-background h-full py-8">
+    <div className="bg-background h-full">
       {isLoading && <StaticLoading />}
-      <div className="mb-6 flex items-center">
+      <div className="mb-6 flex items-center px-2 py-4 shadow-sm">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-2xl font-bold">노래방 통계</h1>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-40rem)] w-[360px]">
+      <ScrollArea className="h-[calc(100vh-40rem)]">
         <RankingList title="가장 많이 부른 곡" items={userStat.slice(0, 10)} />
       </ScrollArea>
     </div>

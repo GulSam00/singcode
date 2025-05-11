@@ -17,7 +17,7 @@ export default function Footer() {
   const pathname = usePathname();
 
   return (
-    <footer className="bg-secondary fixed bottom-0 flex h-8 w-[360px] justify-between">
+    <footer className="fixed bottom-0 flex h-8 w-[360px] justify-between">
       {navigation.map(item => {
         const isActive = pathname === item.href;
         return (

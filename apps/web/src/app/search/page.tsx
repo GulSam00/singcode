@@ -35,8 +35,8 @@ export default function SearchPage() {
 
   return (
     <div className="bg-background">
-      <div className="bg-background p-2 shadow-sm">
-        <h1 className="mb-3 text-xl font-bold">노래 검색</h1>
+      <div className="bg-background px-2 py-4 shadow-sm">
+        <h1 className="mb-3 text-2xl font-bold">노래 검색</h1>
 
         <Tabs
           defaultValue="all"
@@ -67,7 +67,7 @@ export default function SearchPage() {
       </div>
       <ScrollArea className="h-[calc(100vh-15rem)]">
         {searchSongs.length > 0 && (
-          <div className="flex w-[360px] flex-col gap-3 p-3">
+          <div className="flex w-[360px] flex-col gap-3 px-2 py-4">
             {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}

@@ -1,6 +1,5 @@
 'use client';
 
-import { Construction } from 'lucide-react';
 import { useState } from 'react';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +10,7 @@ export default function PopularPage() {
   const [singTab, setSingTab] = useState('all');
 
   return (
-    <div className="bg-background mx-auto h-full px-2 py-2">
+    <div className="bg-background mx-auto h-full px-2 py-4 shadow-sm">
       <h1 className="mb-6 text-2xl font-bold">인기 노래</h1>
 
       <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">

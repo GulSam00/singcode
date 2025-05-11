@@ -68,6 +68,9 @@ for (const song of kyNullData) {
 // 1차 시도
 // 6079개 업데이트
 
+// 2차 시도
+// 15065개 업데이트, 제목 가수 이름 일치 이슈
+
 console.log(`
     총 ${kyNullData.length}곡 중:
     - 성공: ${resultsLog.success.length}곡
