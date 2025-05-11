@@ -27,7 +27,7 @@ export default function LibraryPage() {
   const nickname = user?.nickname ?? '근데 누구셨더라...?';
 
   return (
-    <div className="bg-background h-full space-y-4 px-4 py-8">
+    <div className="bg-background h-full space-y-4 px-2 py-2">
       <h1 className="text-2xl font-bold">반가워요, {nickname}</h1>
 
       {menuItems.map(item => (

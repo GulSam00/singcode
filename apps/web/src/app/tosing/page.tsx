@@ -13,7 +13,7 @@ export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="bg-background px-2">
+    <div className="bg-background px-2 py-2">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">노래방 플레이리스트</h1>
         <Button
