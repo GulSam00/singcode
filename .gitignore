@@ -39,7 +39,8 @@ yarn-error.log*
 *.pem
 
 # Crawling
-log/*
+findKYByOpenSuccess.txt
+findKYByOpenFailed.txt
 crawlYoutubeSuccess.txt
 crawlYoutubeFailed.txt
 postByReleaseSuccess.txt
