@@ -3,7 +3,7 @@ import { SongStats } from '@/types/totalStat';
 
 import { instance } from './client';
 
-export async function getTotalStats(countType: string, periodType: string) {
+export async function getTotalStat(countType: string, periodType: string) {
   const response = await instance.get<ApiResponse<SongStats[]>>(
     `/total_stats?countType=${countType}&periodType=${periodType}`,
   );

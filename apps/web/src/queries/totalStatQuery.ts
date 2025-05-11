@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getTotalStats } from '@/lib/api/totalStat';
+import { getTotalStat } from '@/lib/api/totalStat';
 
 export const useTotalStatQuery = (countType: string, periodType: string) => {
   return useQuery({
     queryKey: ['TotalStat', countType, periodType],
     queryFn: async () => {
-      const response = await getTotalStats(countType, periodType);
+      const response = await getTotalStat(countType, periodType);
       if (!response.success) {
         return [];
       }

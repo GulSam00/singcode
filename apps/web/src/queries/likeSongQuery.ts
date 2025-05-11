@@ -1,11 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import {
-  deleteLikeSong,
-  deleteLikeSongArray,
-  getLikeSongs,
-  postLikeSong,
-} from '@/lib/api/likeSong';
+import { deleteLikeSong, deleteLikeSongArray, getLikeSong, postLikeSong } from '@/lib/api/likeSong';
 import { PersonalSong } from '@/types/song';
 
 // 🎵 좋아요 한 곡 리스트 가져오기
@@ -13,7 +8,7 @@ export function useLikeSongQuery() {
   return useQuery({
     queryKey: ['likeSong'],
     queryFn: async () => {
-      const response = await getLikeSongs();
+      const response = await getLikeSong();
       if (!response.success) {
         return [];
       }

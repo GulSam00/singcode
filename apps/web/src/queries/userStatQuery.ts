@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getUserStats } from '@/lib/api/userStat';
+import { getUserStat } from '@/lib/api/userStat';
 
 export const useUserStatQuery = () => {
   return useQuery({
     queryKey: ['userStat'],
     queryFn: async () => {
-      const response = await getUserStats();
+      const response = await getUserStat();
       if (!response.success) {
         return [];
       }

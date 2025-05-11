@@ -3,7 +3,7 @@ import { UserSongStat } from '@/types/userStat';
 
 import { instance } from './client';
 
-export async function getUserStats() {
+export async function getUserStat() {
   const response = await instance.get<ApiResponse<UserSongStat[]>>('/user_stats');
   return response.data;
 }

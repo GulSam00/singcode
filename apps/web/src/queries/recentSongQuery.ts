@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getRecentSong } from '@/lib/api/recentSong';
 
-export const useRecentSongsQuery = () => {
+export const useRecentSongQuery = () => {
   return useQuery({
     queryKey: ['recentSong'],
     queryFn: async () => {
