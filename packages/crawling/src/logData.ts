@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export function logUnknownData<T>(unknownData: T[] | T, filename: string) {
+export function updateDataLog<T>(unknownData: T[] | T, filename: string) {
   if (!unknownData) return;
   const now = new Date();
   const timeString = now.toLocaleString("ko-KR", {
@@ -21,6 +21,7 @@ export function logUnknownData<T>(unknownData: T[] | T, filename: string) {
     // 로그 문자열 생성
     const logString =
       `\n[${timeString}]\n` +
+      `\n[총 ${unknownData.length}개의 데이터]\n` +
       unknownData.map((item) => JSON.stringify(item)).join("\n") +
       "\n";
 

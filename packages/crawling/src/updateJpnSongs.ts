@@ -1,6 +1,6 @@
 import { getJapaneseDB } from "./supabase/getDB";
 import { updateJpnDB } from "./supabase/updateDB";
-import { logUnknownData } from "./logData";
+import { updateDataLog } from "./logData";
 import { transChatGPT } from "./transChatGPT";
 import { TransSong } from "./types";
 import { sleep } from "openai/core";
@@ -56,9 +56,9 @@ for (const song of transData) {
 
 // 만약 unknownData가 있다면 해당 데이터를 배열에 담아서 끝났을 때 error.txt에 저장
 if (unknownData.length > 0) {
-  logUnknownData(unknownData, "log/errorLog.txt");
+  updateDataLog(unknownData, "log/errorLog.txt");
 }
 
 if (transData.length > 0) {
-  logUnknownData(transData, "log/transDataLog.txt");
+  updateDataLog(transData, "log/transDataLog.txt");
 }

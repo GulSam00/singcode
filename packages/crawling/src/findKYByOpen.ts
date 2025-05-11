@@ -2,7 +2,7 @@ import { getSong, getSinger } from "@repo/open-api";
 import { Song } from "./types";
 import { updateKYDB } from "./supabase/updateDB";
 import { getKYNULLDB } from "./supabase/getDB";
-import { logUnknownData } from "./logData";
+import { updateDataLog } from "./logData";
 
 const resultsLog = {
   success: [] as Song[],
@@ -77,5 +77,5 @@ console.log(`
     - 실패: ${resultsLog.failed.length}곡
   `);
 
-logUnknownData(resultsLog.success, "log/findKYByOpenSuccess.txt");
-logUnknownData(resultsLog.failed, "log/findKYByOpenSuccess.txt");
+updateDataLog(resultsLog.success, "log/findKYByOpenSuccess.txt");
+updateDataLog(resultsLog.failed, "log/findKYByOpenFailed.txt");
