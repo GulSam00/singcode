@@ -1,6 +1,6 @@
 // import { create } from 'zustand';
 
-// import { deleteLikeSongArray, getLikeSongs } from '@/lib/api/likeSong';
+// import { deleteLikeSongArray, getLikeSong } from '@/lib/api/likeSong';
 // import { getRecentSong } from '@/lib/api/recentSong';
 // import { deleteToSingSong, getToSingSong, postToSingSongArray } from '@/lib/api/tosing';
 // import { AddListModalSong, ToSingSong } from '@/types/song';
@@ -36,7 +36,7 @@
 //   },
 
 //   refreshLikeSongs: async () => {
-//     const response = await getLikeSongs();
+//     const response = await getLikeSong();
 //     if (isSuccessResponse(response) && response.data) {
 //       set({ likedSongs: response.data });
 //     }

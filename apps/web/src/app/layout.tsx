@@ -64,7 +64,7 @@ export default function RootLayout({
           <AuthProvider>
             <PostHogProvider>
               <ErrorWrapper>
-                <div className="bg-secondary relative flex h-full w-[360px] flex-col">
+                <div className="relative flex h-full w-[360px] flex-col">
                   <Header />
                   <main className="flex-1">{children}</main>
                   <Footer />

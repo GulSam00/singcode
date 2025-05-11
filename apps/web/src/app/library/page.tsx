@@ -27,8 +27,12 @@ export default function LibraryPage() {
   const nickname = user?.nickname ?? '근데 누구셨더라...?';
 
   return (
-    <div className="bg-background h-full space-y-4 px-4 py-8">
-      <h1 className="text-2xl font-bold">반가워요, {nickname}</h1>
+    <div className="bg-background h-full space-y-4">
+      <div className="mb-6 flex items-center justify-between px-2 py-4 shadow-sm">
+        <h1 className="text-2xl font-bold">내 라이브러리</h1>
+      </div>
+
+      {/* <h1 className="text-xl font-bold">반가워요, {nickname}</h1> */}
 
       {menuItems.map(item => (
         <Card

@@ -2,7 +2,7 @@ import { getSong, getSinger } from "@repo/open-api";
 import { Song } from "./types";
 import { updateKYDB } from "./supabase/updateDB";
 import { getKYNULLDB } from "./supabase/getDB";
-import { logUnknownData } from "./logData";
+import { updateDataLog } from "./logData";
 
 const resultsLog = {
   success: [] as Song[],
@@ -68,11 +68,14 @@ for (const song of kyNullData) {
 // 1차 시도
 // 6079개 업데이트
 
+// 2차 시도
+// 15065개 업데이트, 제목 가수 이름 일치 이슈
+
 console.log(`
     총 ${kyNullData.length}곡 중:
     - 성공: ${resultsLog.success.length}곡
     - 실패: ${resultsLog.failed.length}곡
   `);
 
-logUnknownData(resultsLog.success, "log/findKYByOpenSuccess.txt");
-logUnknownData(resultsLog.failed, "log/findKYByOpenSuccess.txt");
+updateDataLog(resultsLog.success, "log/findKYByOpenSuccess.txt");
+updateDataLog(resultsLog.failed, "log/findKYByOpenFailed.txt");

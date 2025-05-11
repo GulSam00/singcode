@@ -3,7 +3,7 @@ import { PersonalSong } from '@/types/song';
 
 import { instance } from './client';
 
-export async function getLikeSongs() {
+export async function getLikeSong() {
   const response = await instance.get<ApiResponse<PersonalSong[]>>('/songs/like');
   return response.data;
 }

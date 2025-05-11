@@ -13,8 +13,8 @@ export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="bg-background px-2">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="bg-background">
+      <div className="mb-6 flex items-center justify-between px-2 py-4 shadow-sm">
         <h1 className="text-2xl font-bold">노래방 플레이리스트</h1>
         <Button
           variant="outline"
@@ -26,7 +26,7 @@ export default function HomePage() {
           <span>곡 추가</span>
         </Button>
       </div>
-      <ScrollArea className="h-[calc(100vh-10rem)]">
+      <ScrollArea className="h-[calc(100vh-10rem)] px-2 py-4">
         <SongList />
       </ScrollArea>
 
