@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { postSingLog } from '@/lib/api/singLog';
 import { postTotalStat } from '@/lib/api/totalStat';
-import { postUserStats } from '@/lib/api/userStat';
+import { postUserStat } from '@/lib/api/userStat';
 
 export const usePostSingLogMutation = () => {
   const queryClient = useQueryClient();
@@ -12,7 +12,7 @@ export const usePostSingLogMutation = () => {
       return Promise.all([
         postSingLog(songId),
         postTotalStat({ songId, countType: 'sing_count', isMinus: false }),
-        postUserStats(songId),
+        postUserStat(songId),
       ]);
     },
     onSuccess: () => {

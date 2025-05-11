@@ -8,7 +8,7 @@ export async function getUserStats() {
   return response.data;
 }
 
-export async function postUserStats(songId: string) {
+export async function postUserStat(songId: string) {
   const response = await instance.post<ApiResponse<void>>('/user_stats', { songId });
   return response.data;
 }

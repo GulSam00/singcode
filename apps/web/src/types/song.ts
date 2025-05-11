@@ -9,6 +9,9 @@ export interface Song {
   artist: string;
   num_tj: string;
   num_ky: string;
+
+  release?: string;
+  created_at?: string;
 }
 
 // 좋아요 곡과 최근 곡에서 공통으로 사용하는 타입
