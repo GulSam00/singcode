@@ -19,16 +19,16 @@ export default function LikedPage() {
   const likedSongs = data ?? [];
 
   return (
-    <div className="bg-background h-full px-4">
+    <div className="bg-background h-full">
       {isLoading && <StaticLoading />}
-      <div className="mb-6 flex items-center">
+      <div className="mb-6 flex items-center px-2 py-4 shadow-sm">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-2xl font-bold">좋아요 곡 관리</h1>
       </div>
 
-      <div className="mb-4 flex items-center justify-between">
+      <div className="flex h-[48px] items-center justify-between p-2">
         <p className="text-muted-foreground text-sm">
           {deleteLikeSelected.length > 0
             ? `${deleteLikeSelected.length}곡 선택됨`

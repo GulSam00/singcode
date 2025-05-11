@@ -1,11 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import {
-  deleteLikeSong,
-  deleteLikeSongArray,
-  getLikeSongs,
-  postLikeSong,
-} from '@/lib/api/likeSong';
+import { deleteLikeSong, deleteLikeSongArray, getLikeSong, postLikeSong } from '@/lib/api/likeSong';
+import { postTotalStat, postTotalStatArray } from '@/lib/api/totalStat';
 import { PersonalSong } from '@/types/song';
 
 // 🎵 좋아요 한 곡 리스트 가져오기
@@ -13,7 +9,7 @@ export function useLikeSongQuery() {
   return useQuery({
     queryKey: ['likeSong'],
     queryFn: async () => {
-      const response = await getLikeSongs();
+      const response = await getLikeSong();
       if (!response.success) {
         return [];
       }
@@ -29,7 +25,11 @@ export function usePostLikedSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (songId: string) => postLikeSong({ songId }),
+    mutationFn: (songId: string) =>
+      Promise.all([
+        postLikeSong({ songId }),
+        postTotalStat({ songId, countType: 'like_count', isMinus: false }),
+      ]),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
     },
@@ -41,7 +41,11 @@ export function useDeleteLikedSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (songId: string) => deleteLikeSong({ songId }),
+    mutationFn: (songId: string) =>
+      Promise.all([
+        deleteLikeSong({ songId }),
+        postTotalStat({ songId, countType: 'like_count', isMinus: true }),
+      ]),
     onMutate: async (songId: string) => {
       queryClient.cancelQueries({ queryKey: ['likeSong'] });
       const prev = queryClient.getQueryData(['likeSong']);
@@ -64,7 +68,12 @@ export function useDeleteLikeSongArrayMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (songIds: string[]) => deleteLikeSongArray({ songIds }),
+    mutationFn: (songIds: string[]) =>
+      Promise.all([
+        deleteLikeSongArray({ songIds }),
+        postTotalStatArray({ songIds, countType: 'like_count', isMinus: true }),
+      ]),
+
     onMutate: async (songIds: string[]) => {
       queryClient.cancelQueries({ queryKey: ['likeSong'] });
       const prev = queryClient.getQueryData(['likeSong']);

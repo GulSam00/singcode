@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 import * as cheerio from "cheerio";
 import { getKYNULLDB } from "./supabase/getDB";
 import { Song } from "./types";
-import { logUnknownData } from "./logData";
+import { updateDataLog } from "./logData";
 import { updateKYDB } from "./supabase/updateDB";
 
 const browser = await puppeteer.launch();
@@ -24,6 +24,7 @@ async function scrapeSongNumber(query: string) {
   const karaokeNumber = extractKaraokeNumber(title);
 
   // await browser.close();
+
   return karaokeNumber;
 }
 
@@ -56,5 +57,5 @@ const result = await updateKYDB(resultData);
 
 console.log(result);
 
-logUnknownData(result.success, "log/crawlYoutubeSuccess.txt");
-logUnknownData(result.failed, "log/crawlYoutubeFailed.txt");
+updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
+updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");

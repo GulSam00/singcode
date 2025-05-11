@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
 import { getSearchSong } from '@/lib/api/searchSong';
 import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
+import { postTotalStat } from '@/lib/api/totalStat';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
@@ -36,9 +37,15 @@ export const useToggleLikeMutation = () => {
     //   await new Promise(resolve => setTimeout(resolve, 2000));
     mutationFn: ({ songId, method }: { songId: string; method: Method }) => {
       if (method === 'POST') {
-        return postLikeSong({ songId });
+        return Promise.all([
+          postLikeSong({ songId }),
+          postTotalStat({ songId, countType: 'like_count', isMinus: false }),
+        ]);
       } else {
-        return deleteLikeSong({ songId });
+        return Promise.all([
+          deleteLikeSong({ songId }),
+          postTotalStat({ songId, countType: 'like_count', isMinus: true }),
+        ]);
       }
     },
     onMutate: async ({

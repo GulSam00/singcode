@@ -39,9 +39,5 @@ yarn-error.log*
 *.pem
 
 # Crawling
-crawlYoutubeSuccess.txt
-crawlYoutubeFailed.txt
-postByReleaseSuccess.txt
-postByReleaseFailed.txt
-errorLog.txt
-transDataLog.txt
+**/logs/*.txt
+
