@@ -5,19 +5,19 @@ import { Song } from "./types";
 import { updateDataLog } from "./logData";
 import { updateKYDB } from "./supabase/updateDB";
 
-const successCase: Song[] = [];
-const failedCase: Song[] = [];
+const stackData: Song[] = [];
+const totalData: Song[] = [];
 
 // process.on("SIGINT", async () => {
 //   console.log("프로세스가 종료됩니다. 지금까지의 데이터를 업데이트 중...");
-//   console.log("resultData : ", resultData.length);
-//   const result = await updateKYDB(resultData);
+//   console.log("stackData : ", stackData.length);
+//   const result = await updateKYDB(stackData);
 
 //   console.log(result);
 //   console.log("프로세스가 종료됩니다. 로그를 기록 중...");
 
 //   await Promise.all([
-//     updateDataLog(successCase, "log/crawlYodutubeSuccess.txt"),
+//     updateDataLog(totalData, "log/crawlYodutubeSuccess.txt"),
 //     updateDataLog(failedCase, "log/crawlYoutubeFailed.txt"),
 //   ]);
 
@@ -29,7 +29,7 @@ const page = await browser.newPage();
 
 const baseUrl = "https://www.youtube.com/@KARAOKEKY/search";
 
-async function scrapeSongNumber(query: string) {
+const scrapeSongNumber = async (query: string) => {
   const searchUrl = `${baseUrl}?query=${encodeURIComponent(query)}`;
 
   // page.goto의 waitUntil 문제였음!
@@ -43,9 +43,6 @@ async function scrapeSongNumber(query: string) {
   // id contents 의 첫번째  ytd-item-section-renderer 찾기
   // const firstItem = $("#contents ytd-item-section-renderer").first();
 
-  // await 안해도 해결!
-  // await page.waitForSelector("ytd-video-renderer");
-
   const firstItem = $("ytd-video-renderer").first();
 
   // yt-formatted-string 찾기
@@ -53,44 +50,54 @@ async function scrapeSongNumber(query: string) {
 
   const karaokeNumber = extractKaraokeNumber(title);
 
-  // await browser.close();
-
   return karaokeNumber;
-}
+};
 
-function extractKaraokeNumber(title: string) {
+const extractKaraokeNumber = (title: string) => {
   // KY. 찾고 ) 가 올때까지 찾기
   const matchResult = title.match(/KY\.\s*(\d{2,5})\)/);
   const karaokeNumber = matchResult ? matchResult[1] : null;
   return karaokeNumber;
-}
+};
 
+const refreshData = async () => {
+  console.log("refreshData!!!!!!!");
+  const result = await updateKYDB(stackData);
+
+  updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
+  updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
+
+  stackData.length = 0; // stackData 초기화
+  console.log("refreshData END!!!!!!!");
+};
 // 사용
 
 const data = await getKYNULLDB(5000);
 console.log("getKYNULLDB : ", data.length);
-const resultData: Song[] = [];
 let index = 0;
 
 for (const song of data) {
+  if (stackData.length > 100) {
+    refreshData();
+  }
   const query = song.title + "-" + song.artist;
   console.log(song.title, " - ", song.artist);
   const result = await scrapeSongNumber(query);
   if (result) {
     console.log("success : ", result);
-    resultData.push({ ...song, num_ky: result });
-    successCase.push(song);
-  } else {
-    failedCase.push(song);
+    stackData.push({ ...song, num_ky: result });
+    totalData.push({ ...song, num_ky: result });
   }
   index++;
   console.log("scrapeSongNumber : ", index);
 }
 
-console.log("resultData : ", resultData.length);
-const result = await updateKYDB(resultData);
-
-console.log(result);
+console.log("totalData : ", totalData.length);
+// const result = await updateKYDB(totalData);
+const result = await updateKYDB(stackData);
 
 updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
 updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
+
+// 5.13 1차 시도
+// 5000개 중 3507개 성공
