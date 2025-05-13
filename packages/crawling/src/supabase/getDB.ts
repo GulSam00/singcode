@@ -32,7 +32,7 @@ export async function getJapaneseDB() {
   return hasJapaneseData;
 }
 
-export async function getKYNULLDB() {
+export async function getKYNULLDB(max: number = 50000) {
   const supabase = getClient();
 
   // artist 정렬
@@ -53,5 +53,5 @@ export async function getKYNULLDB() {
     }
   });
 
-  return isKYNULLData;
+  return isKYNULLData.slice(0, max);
 }
