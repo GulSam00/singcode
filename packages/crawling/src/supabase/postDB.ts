@@ -1,7 +1,7 @@
 import { Song } from "../types";
 import { getClient } from "./getClient";
 
-export async function postDB(songs: Song[] | Song) {
+export async function postSongsDB(songs: Song[] | Song) {
   const supabase = getClient();
   const songsArray = Array.isArray(songs) ? songs : [songs];
 

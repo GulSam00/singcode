@@ -2,7 +2,7 @@ import { getClient } from "./getClient";
 import { Song, TransSong } from "../types";
 import { containsJapanese } from "../utils";
 
-export async function getJapaneseDB() {
+export async function getSongsJpnDB() {
   const supabase = getClient();
 
   // artist 정렬
@@ -32,7 +32,7 @@ export async function getJapaneseDB() {
   return hasJapaneseData;
 }
 
-export async function getKYNULLDB(max: number = 50000) {
+export async function getSongsKyNullDB(max: number = 50000) {
   const supabase = getClient();
 
   // artist 정렬

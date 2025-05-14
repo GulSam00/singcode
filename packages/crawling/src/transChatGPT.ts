@@ -15,10 +15,10 @@ class TranslationAssistant {
         role: "system",
         content: `You are a Japanese music translator. Follow these rules:
             1. Translate song/artist names to Korean.
-            2. Format: Translation (Original)
+            2. Format: Translation
             3. Priority: Official KR release > Common Korean media name > Korean Fandom name
             4. If already translated, reformat only.
-            5. If unsure, return an empty string.
+            5. If unsure, return an empty string("").
           `,
       },
     ];
@@ -34,7 +34,7 @@ class TranslationAssistant {
 
     // API 호출
     const response = await client.chat.completions.create({
-      model: "gpt-3.5-turbo", // gpt-4 대신 gpt-3.5-turbo
+      model: "gpt-4-turbo", // gpt-4 대신 gpt-3.5-turbo
       messages: this.messages,
       temperature: 0.3,
     });
