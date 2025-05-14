@@ -1,9 +1,9 @@
 import puppeteer from "puppeteer";
 import * as cheerio from "cheerio";
-import { getKYNULLDB } from "./supabase/getDB";
+import { getSongsKyNullDB } from "./supabase/getDB";
 import { Song } from "./types";
 import { updateDataLog } from "./logData";
-import { updateKYDB } from "./supabase/updateDB";
+import { updateSongsKyDB } from "./supabase/updateDB";
 
 const stackData: Song[] = [];
 const totalData: Song[] = [];
@@ -11,7 +11,7 @@ const totalData: Song[] = [];
 // process.on("SIGINT", async () => {
 //   console.log("프로세스가 종료됩니다. 지금까지의 데이터를 업데이트 중...");
 //   console.log("stackData : ", stackData.length);
-//   const result = await updateKYDB(stackData);
+//   const result = await updateSongsKyDB(stackData);
 
 //   console.log(result);
 //   console.log("프로세스가 종료됩니다. 로그를 기록 중...");
@@ -63,7 +63,7 @@ const extractKaraokeNumber = (title: string) => {
 
 const refreshData = async () => {
   console.log("refreshData");
-  const result = await updateKYDB(stackData);
+  const result = await updateSongsKyDB(stackData);
 
   updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
   updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
@@ -72,8 +72,8 @@ const refreshData = async () => {
 };
 // 사용
 
-const data = await getKYNULLDB();
-console.log("getKYNULLDB : ", data.length);
+const data = await getSongsKyNullDB();
+console.log("getSongsKyNullDB : ", data.length);
 let index = 0;
 
 for (const song of data) {
@@ -94,8 +94,8 @@ for (const song of data) {
 }
 
 console.log("totalData : ", totalData.length);
-// const result = await updateKYDB(totalData);
-const result = await updateKYDB(stackData);
+// const result = await updateSongsKyDB(totalData);
+const result = await updateSongsKyDB(stackData);
 
 updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
 updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");

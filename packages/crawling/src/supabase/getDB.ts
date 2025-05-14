@@ -1,8 +1,8 @@
 import { getClient } from "./getClient";
-import { Song, TransSong } from "../types";
+import { Song, TransSong, TransDictionary } from "../types";
 import { containsJapanese } from "../utils";
 
-export async function getJapaneseDB() {
+export async function getSongsJpnDB() {
   const supabase = getClient();
 
   // artist 정렬
@@ -17,13 +17,13 @@ export async function getJapaneseDB() {
 
   data.forEach((song) => {
     const newSong: TransSong = { ...song, isTitleJp: false, isArtistJp: false };
-    if (song.title && containsJapanese(song.title)) {
-      // song 속성 추가
-      newSong.isTitleJp = true;
-    }
-    // if (song.artist && containsJapanese(song.artist)) {
-    //   newSong.isArtistJp = true;
+    // if (song.title && containsJapanese(song.title)) {
+    //   // song 속성 추가
+    //   newSong.isTitleJp = true;
     // }
+    if (song.artist && containsJapanese(song.artist)) {
+      newSong.isArtistJp = true;
+    }
     if (newSong.isTitleJp || newSong.isArtistJp) {
       hasJapaneseData.push(newSong);
     }
@@ -32,7 +32,7 @@ export async function getJapaneseDB() {
   return hasJapaneseData;
 }
 
-export async function getKYNULLDB(max: number = 50000) {
+export async function getSongsKyNullDB(max: number = 50000) {
   const supabase = getClient();
 
   // artist 정렬
@@ -63,4 +63,31 @@ export async function getKYNULLDB(max: number = 50000) {
   // });
 
   // return isKYNULLData.slice(0, max);
+}
+
+export async function getTransDictionariesDB(): Promise<TransDictionary[]> {
+  const supabase = getClient();
+
+  // artist 정렬
+  const { data, error } = await supabase.from("trans_dictionaries").select("*");
+
+  if (error) throw error;
+
+  return data;
+}
+export async function getTransDictionariesDBByOriginal(
+  original: string
+): Promise<TransDictionary | null> {
+  const supabase = getClient();
+
+  // artist 정렬
+  const { data, error } = await supabase
+    .from("trans_dictionaries")
+    .select("*")
+    .eq("original_japanese", original)
+    .limit(1);
+
+  if (error) throw error;
+
+  return data[0] ?? null;
 }

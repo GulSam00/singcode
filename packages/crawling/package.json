@@ -9,6 +9,7 @@
   "scripts": {
     "dev-ky-open": "tsx src/findKYByOpen.ts",
     "dev-ky-youtube": "tsx src/crawlYoutube.ts",
+    "dev-trans": "tsx src/postTransDictionary.ts",
     "lint": "eslint . --ext .ts,.js",
     "test": "vitest run"
   },

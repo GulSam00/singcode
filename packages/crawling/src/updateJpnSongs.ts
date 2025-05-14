@@ -1,11 +1,11 @@
-import { getJapaneseDB } from "./supabase/getDB";
-import { updateJpnDB } from "./supabase/updateDB";
+import { getSongsJpnDB } from "./supabase/getDB";
+import { updateSongsJpnDB } from "./supabase/updateDB";
 import { updateDataLog } from "./logData";
 import { transChatGPT } from "./transChatGPT";
 import { TransSong } from "./types";
 import { sleep } from "openai/core";
 
-const data = await getJapaneseDB();
+const data = await getSongsJpnDB();
 
 // 만약 null로 반환된다면 해당 id와 함께 배열에 담가두다가 끝났을 때 error.txt에 저장
 
@@ -50,7 +50,7 @@ let transCount = 0;
 for (const song of transData) {
   console.log("transCount : ", transCount++);
   if (song) {
-    updateJpnDB(song);
+    updateSongsJpnDB(song);
   }
 }
 

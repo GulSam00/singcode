@@ -1,7 +1,7 @@
 import { getClient } from "./getClient";
 import { Song, TransSong } from "../types";
 
-export const updateJpnDB = async (song: TransSong) => {
+export const updateSongsJpnDB = async (song: TransSong) => {
   const supabase = getClient();
 
   // if (song.isArtistJp || song.isTitleJp) {
@@ -14,7 +14,7 @@ export const updateJpnDB = async (song: TransSong) => {
   }
 };
 
-export const updateKYDB = async (song: Song | Song[]) => {
+export const updateSongsKyDB = async (song: Song | Song[]) => {
   const supabase = getClient();
   const results = {
     success: [] as Song[],
