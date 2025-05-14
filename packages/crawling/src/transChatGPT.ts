@@ -18,7 +18,7 @@ class TranslationAssistant {
             2. Format: Translation
             3. Priority: Official KR release > Common Korean media name > Korean Fandom name
             4. If already translated, reformat only.
-            5. If unsure, return an empty string("").
+            5. If unsure, return null.
           `,
       },
     ];
@@ -42,7 +42,16 @@ class TranslationAssistant {
     // 어시스턴트의 응답 저장
     const assistantMessage = response.choices[0].message;
 
-    return assistantMessage.content ?? null;
+    if (!assistantMessage.content) {
+      console.error("Assistant message is empty");
+      return null;
+    }
+
+    const content = assistantMessage.content.trim();
+    if (content.toLowerCase() === "null") {
+      return null;
+    }
+    return content ?? null;
   }
 
   // 컨텍스트 초기화가 필요한 경우

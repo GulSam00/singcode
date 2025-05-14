@@ -22,10 +22,10 @@ export interface TransSong extends Song {
 }
 
 export interface TransDictionary {
-  id: string;
+  id?: string;
   original_japanese: string;
-  translated_korean: string;
-  created_at: string;
+  translated_korean: string | null;
+  created_at?: string;
 }
 
 export interface LogData<T> {

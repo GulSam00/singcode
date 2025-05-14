@@ -17,13 +17,13 @@ export async function getSongsJpnDB() {
 
   data.forEach((song) => {
     const newSong: TransSong = { ...song, isTitleJp: false, isArtistJp: false };
-    if (song.title && containsJapanese(song.title)) {
-      // song 속성 추가
-      newSong.isTitleJp = true;
-    }
-    // if (song.artist && containsJapanese(song.artist)) {
-    //   newSong.isArtistJp = true;
+    // if (song.title && containsJapanese(song.title)) {
+    //   // song 속성 추가
+    //   newSong.isTitleJp = true;
     // }
+    if (song.artist && containsJapanese(song.artist)) {
+      newSong.isArtistJp = true;
+    }
     if (newSong.isTitleJp || newSong.isArtistJp) {
       hasJapaneseData.push(newSong);
     }
@@ -74,4 +74,20 @@ export async function getTransDictionariesDB(): Promise<TransDictionary[]> {
   if (error) throw error;
 
   return data;
+}
+export async function getTransDictionariesDBByOriginal(
+  original: string
+): Promise<TransDictionary | null> {
+  const supabase = getClient();
+
+  // artist 정렬
+  const { data, error } = await supabase
+    .from("trans_dictionaries")
+    .select("*")
+    .eq("original_japanese", original)
+    .limit(1);
+
+  if (error) throw error;
+
+  return data[0] ?? null;
 }
