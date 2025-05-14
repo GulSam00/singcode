@@ -32,26 +32,35 @@ export async function getJapaneseDB() {
   return hasJapaneseData;
 }
 
-export async function getKYNULLDB() {
+export async function getKYNULLDB(max: number = 50000) {
   const supabase = getClient();
 
   // artist 정렬
+  // const { data, error } = await supabase
+  //   .from("songs")
+  //   .select("id, title, artist, num_tj, num_ky")
+  //   .order("title", { ascending: true });
+
   const { data, error } = await supabase
     .from("songs")
     .select("id, title, artist, num_tj, num_ky")
-    .order("title", { ascending: true });
+    .is("num_ky", null) // num_ky가 null인 데이터만 가져옴
+    .order("title", { ascending: false })
+    .limit(max); // Supabase 쿼리 안에서의 한계를 넘을 수는 없음
 
   if (error) throw error;
 
   console.log("data", data.length);
 
-  const isKYNULLData: Song[] = [];
+  return data;
 
-  data.forEach((song) => {
-    if (song.num_ky === null) {
-      isKYNULLData.push(song);
-    }
-  });
+  // const isKYNULLData: Song[] = [];
 
-  return isKYNULLData;
+  // data.forEach((song) => {
+  //   if (song.num_ky === null) {
+  //     isKYNULLData.push(song);
+  //   }
+  // });
+
+  // return isKYNULLData.slice(0, max);
 }

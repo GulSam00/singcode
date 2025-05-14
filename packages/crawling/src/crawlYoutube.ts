@@ -5,57 +5,102 @@ import { Song } from "./types";
 import { updateDataLog } from "./logData";
 import { updateKYDB } from "./supabase/updateDB";
 
+const stackData: Song[] = [];
+const totalData: Song[] = [];
+
+// process.on("SIGINT", async () => {
+//   console.log("프로세스가 종료됩니다. 지금까지의 데이터를 업데이트 중...");
+//   console.log("stackData : ", stackData.length);
+//   const result = await updateKYDB(stackData);
+
+//   console.log(result);
+//   console.log("프로세스가 종료됩니다. 로그를 기록 중...");
+
+//   await Promise.all([
+//     updateDataLog(totalData, "log/crawlYodutubeSuccess.txt"),
+//     updateDataLog(failedCase, "log/crawlYoutubeFailed.txt"),
+//   ]);
+
+//   console.log("로그 기록 완료.");
+// });
+
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
 const baseUrl = "https://www.youtube.com/@KARAOKEKY/search";
 
-async function scrapeSongNumber(query: string) {
+const scrapeSongNumber = async (query: string) => {
   const searchUrl = `${baseUrl}?query=${encodeURIComponent(query)}`;
-  await page.goto(searchUrl);
+
+  // page.goto의 waitUntil 문제였음!
+  await page.goto(searchUrl, {
+    waitUntil: "networkidle2",
+    timeout: 0,
+  });
 
   const html = await page.content();
   const $ = cheerio.load(html);
+
   // id contents 의 첫번째  ytd-item-section-renderer 찾기
-  const firstItem = $("#contents ytd-item-section-renderer").first();
+  // const firstItem = $("#contents ytd-item-section-renderer").first();
+
+  const firstItem = $("ytd-video-renderer").first();
+
   // yt-formatted-string 찾기
   const title = firstItem.find("yt-formatted-string").first().text().trim();
 
   const karaokeNumber = extractKaraokeNumber(title);
 
-  // await browser.close();
-
   return karaokeNumber;
-}
+};
 
-function extractKaraokeNumber(title: string) {
+const extractKaraokeNumber = (title: string) => {
   // KY. 찾고 ) 가 올때까지 찾기
-  const matchResult = title.match(/KY\.\s*(\d{3,5})\)/);
+  const matchResult = title.match(/KY\.\s*(\d{2,5})\)/);
   const karaokeNumber = matchResult ? matchResult[1] : null;
   return karaokeNumber;
-}
+};
 
+const refreshData = async () => {
+  console.log("refreshData");
+  const result = await updateKYDB(stackData);
+
+  updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
+  updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
+
+  stackData.length = 0; // stackData 초기화
+};
 // 사용
 
 const data = await getKYNULLDB();
-console.log("getKYNULLDB : ", data);
-const resultData: Song[] = [];
+console.log("getKYNULLDB : ", data.length);
 let index = 0;
 
 for (const song of data) {
-  const query = song.title + " - " + song.artist;
+  if (stackData.length > 100) {
+    refreshData();
+  }
+  const query = song.title + "-" + song.artist;
+  console.log(song.title, " - ", song.artist);
   const result = await scrapeSongNumber(query);
   if (result) {
-    resultData.push({ ...song, num_ky: result });
+    console.log("success : ", result);
+    stackData.push({ ...song, num_ky: result });
+    totalData.push({ ...song, num_ky: result });
   }
   index++;
   console.log("scrapeSongNumber : ", index);
+  console.log("stackData : ", stackData.length);
 }
 
-console.log("resultData : ", resultData.length);
-const result = await updateKYDB(resultData);
-
-console.log(result);
+console.log("totalData : ", totalData.length);
+// const result = await updateKYDB(totalData);
+const result = await updateKYDB(stackData);
 
 updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
 updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
+
+// 5.13 1차 시도
+// 5000개 중 3507개 성공, 총 18906개 등록
+
+// 5.13 2차 시도

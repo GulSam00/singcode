@@ -16,6 +16,12 @@ export function updateDataLog<T>(unknownData: T[] | T, filename: string) {
   });
 
   const logPath = path.join(filename);
+  const logDir = path.dirname(logPath); // 디렉터리 경로 추출
+
+  // 디렉터리가 없으면 생성
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+  }
 
   if (unknownData instanceof Array) {
     // 로그 문자열 생성
