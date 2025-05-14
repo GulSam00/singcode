@@ -20,3 +20,15 @@ export interface TransSong extends Song {
   isArtistJp: boolean;
   type?: "title" | "artist";
 }
+
+export interface TransDictionary {
+  id: string;
+  original_japanese: string;
+  translated_korean: string;
+  created_at: string;
+}
+
+export interface LogData<T> {
+  success: T[];
+  failed: { item: T; error: any }[];
+}

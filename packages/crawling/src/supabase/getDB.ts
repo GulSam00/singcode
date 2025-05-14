@@ -1,5 +1,5 @@
 import { getClient } from "./getClient";
-import { Song, TransSong } from "../types";
+import { Song, TransSong, TransDictionary } from "../types";
 import { containsJapanese } from "../utils";
 
 export async function getSongsJpnDB() {
@@ -63,4 +63,15 @@ export async function getSongsKyNullDB(max: number = 50000) {
   // });
 
   // return isKYNULLData.slice(0, max);
+}
+
+export async function getTransDictionariesDB(): Promise<TransDictionary[]> {
+  const supabase = getClient();
+
+  // artist 정렬
+  const { data, error } = await supabase.from("trans_dictionaries").select("*");
+
+  if (error) throw error;
+
+  return data;
 }

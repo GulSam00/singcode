@@ -1,6 +1,6 @@
-import { scrapeAllSongs, scrapeSongs, scrapeUtaiteSongs } from "./crawlWiki.js";
-import { postSongsDB } from "./supabase/postSongsDB.js";
-import { argList } from "./argList.js";
+import { scrapeAllSongs, scrapeSongs, scrapeUtaiteSongs } from "./crawlWiki";
+import { postSongsDB } from "./supabase/postDB";
+import { argList } from "./argList";
 
 const postSongs = async () => {
   const postPromises = argList.map(async (arg) => {
