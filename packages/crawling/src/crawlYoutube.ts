@@ -35,6 +35,7 @@ const scrapeSongNumber = async (query: string) => {
   // page.goto의 waitUntil 문제였음!
   await page.goto(searchUrl, {
     waitUntil: "networkidle2",
+    timeout: 0,
   });
 
   const html = await page.content();
@@ -61,18 +62,17 @@ const extractKaraokeNumber = (title: string) => {
 };
 
 const refreshData = async () => {
-  console.log("refreshData!!!!!!!");
+  console.log("refreshData");
   const result = await updateKYDB(stackData);
 
   updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
   updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
 
   stackData.length = 0; // stackData 초기화
-  console.log("refreshData END!!!!!!!");
 };
 // 사용
 
-const data = await getKYNULLDB(5000);
+const data = await getKYNULLDB();
 console.log("getKYNULLDB : ", data.length);
 let index = 0;
 
@@ -90,6 +90,7 @@ for (const song of data) {
   }
   index++;
   console.log("scrapeSongNumber : ", index);
+  console.log("stackData : ", stackData.length);
 }
 
 console.log("totalData : ", totalData.length);
@@ -100,4 +101,6 @@ updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
 updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
 
 // 5.13 1차 시도
-// 5000개 중 3507개 성공
+// 5000개 중 3507개 성공, 총 18906개 등록
+
+// 5.13 2차 시도

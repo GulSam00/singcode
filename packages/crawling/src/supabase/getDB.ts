@@ -45,7 +45,7 @@ export async function getKYNULLDB(max: number = 50000) {
     .from("songs")
     .select("id, title, artist, num_tj, num_ky")
     .is("num_ky", null) // num_ky가 null인 데이터만 가져옴
-    .order("title", { ascending: true })
+    .order("title", { ascending: false })
     .limit(max); // Supabase 쿼리 안에서의 한계를 넘을 수는 없음
 
   if (error) throw error;
