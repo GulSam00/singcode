@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Singcode - 간편하게 노래를 저장하세요!',
     description: '노래방만 가면 뭐 부를지 고민한다면?',
-    url: 'https://singcode.vercel.app/',
+    url: 'https://singcode.vercel.app',
     siteName: 'Singcode',
   },
 };

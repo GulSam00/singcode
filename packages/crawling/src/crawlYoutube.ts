@@ -77,7 +77,7 @@ console.log("getSongsKyNullDB : ", data.length);
 let index = 0;
 
 for (const song of data) {
-  if (stackData.length > 100) {
+  if (stackData.length > 10) {
     refreshData();
   }
   const query = song.title + "-" + song.artist;

@@ -13,7 +13,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     const handleAuth = async () => {
-      const allowPaths = ['/login', '/signup', '/update-password', '/'];
+      const allowPaths = ['/login', '/signup', '/update-password', '/', '/popular'];
 
       const isAuthenticated = await checkAuth();
       if (!isAuthenticated && !allowPaths.includes(pathname)) {
