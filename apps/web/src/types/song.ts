@@ -22,6 +22,14 @@ export interface PersonalSong extends Song {
   isInToSingList: boolean;
 }
 
+export interface SaveSong extends Song {
+  user_id: string;
+  song_id: string;
+  created_at: string;
+  isInToSingList: boolean;
+  folder_name: string;
+}
+
 export interface SearchSong extends Song {
   isLiked: boolean;
   isToSing: boolean;
