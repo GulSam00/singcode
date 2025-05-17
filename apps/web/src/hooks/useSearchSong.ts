@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import {
-  useSearchSongSongQuery,
+  useSaveMutation,
+  useSearchSongQuery,
   useToggleLikeMutation,
   useToggleToSingMutation,
 } from '@/queries/searchSongQuery';
 import useAuthStore from '@/stores/useAuthStore';
 import { Method } from '@/types/common';
-import { SearchSong } from '@/types/song';
+import { SearchSong, Song } from '@/types/song';
 
 type SearchType = 'title' | 'artist';
 
@@ -18,15 +19,12 @@ export default function useSearchSong() {
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [searchType, setSearchType] = useState<SearchType>('title');
-  const [isModal, setIsModal] = useState(false);
-  const [selectedSong, setSelectedSong] = useState<SearchSong | null>(null);
-  const { data: searchResults, isLoading } = useSearchSongSongQuery(
-    query,
-    searchType,
-    isAuthenticated,
-  );
+  const [isSaveModal, setIsSaveModal] = useState(false);
+  const [selectedSaveSong, setSelectedSaveSong] = useState<SearchSong | null>(null);
+  const { data: searchResults, isLoading } = useSearchSongQuery(query, searchType, isAuthenticated);
   const { mutate: toggleToSing } = useToggleToSingMutation();
   const { mutate: toggleLike } = useToggleLikeMutation();
+  const { mutate: mutateSave } = useSaveMutation();
 
   const searchSongs = searchResults ?? [];
 
@@ -55,12 +53,19 @@ export default function useSearchSong() {
     toggleLike({ songId, method, query, searchType });
   };
 
-  const handleOpenPlaylistModal = (song: SearchSong) => {
-    setSelectedSong(song);
-    setIsModal(true);
+  const handleOpenSaveModal = (song: SearchSong) => {
+    if (!isAuthenticated) {
+      toast.error('로그인이 필요해요.');
+      return;
+    }
+
+    setSelectedSaveSong(song);
+    setIsSaveModal(true);
   };
 
-  const handleSavePlaylist = async () => {};
+  const saveSong = async (songId: string, folderName: string, method: Method) => {
+    mutateSave({ songId, folderName, method, query, searchType });
+  };
 
   return {
     search,
@@ -73,9 +78,10 @@ export default function useSearchSong() {
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
-    handleOpenPlaylistModal,
-    isModal,
-    selectedSong,
-    handleSavePlaylist,
+    handleOpenSaveModal,
+    isSaveModal,
+    setIsSaveModal,
+    selectedSaveSong,
+    saveSong,
   };
 }

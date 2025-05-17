@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSearchSong from '@/hooks/useSearchSong';
 
+import PlaylistModal from './PlaylistModal';
 import SearchResultCard from './SearchResultCard';
 
 export default function SearchPage() {
@@ -18,12 +19,16 @@ export default function SearchPage() {
     setSearch,
     searchSongs,
     isLoading,
+    isSaveModal,
+    setIsSaveModal,
+    handleOpenSaveModal,
+    selectedSaveSong,
     searchType,
     handleSearchTypeChange,
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
-    handleOpenPlaylistModal,
+    saveSong,
   } = useSearchSong();
 
   // 엔터 키 처리
@@ -75,8 +80,8 @@ export default function SearchPage() {
                 onToggleToSing={() =>
                   handleToggleToSing(song.id, song.isToSing ? 'DELETE' : 'POST')
                 }
-                onToggleLike={() => handleToggleLike(song.id, song.isLiked ? 'DELETE' : 'POST')}
-                onClickOpenPlaylistModal={() => handleOpenPlaylistModal(song)}
+                onToggleLike={() => handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST')}
+                onToggleSave={() => handleOpenSaveModal(song)}
               />
             ))}
           </div>
@@ -95,7 +100,14 @@ export default function SearchPage() {
         )}
       </ScrollArea>
       {isLoading && <StaticLoading />}
-      {/* {isModal && <PlaylistModal song={selectedSong} />} */}
+      {selectedSaveSong && (
+        <PlaylistModal
+          isOpen={isSaveModal}
+          setIsSaveModal={setIsSaveModal}
+          song={selectedSaveSong}
+          saveSong={saveSong}
+        />
+      )}
     </div>
   );
 }

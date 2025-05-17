@@ -1,8 +1,3 @@
-export interface ToSingSong {
-  order_weight: number;
-  songs: Song;
-}
-
 export interface Song {
   id: string;
   title: string;
@@ -12,6 +7,11 @@ export interface Song {
 
   release?: string;
   created_at?: string;
+}
+
+export interface ToSingSong {
+  order_weight: number;
+  songs: Song;
 }
 
 // 좋아요 곡과 최근 곡에서 공통으로 사용하는 타입
@@ -28,11 +28,13 @@ export interface SaveSong extends Song {
   created_at: string;
   isInToSingList: boolean;
   folder_name: string;
+  updated_at: Date;
 }
 
 export interface SearchSong extends Song {
-  isLiked: boolean;
   isToSing: boolean;
+  isLike: boolean;
+  isSave: boolean;
 }
 
 export interface AddListModalSong extends Song {

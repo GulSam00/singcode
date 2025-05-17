@@ -12,7 +12,7 @@ import { useLikeSongQuery } from '@/queries/likeSongQuery';
 
 import SongItem from './SongItem';
 
-export default function LikedPage() {
+export default function LikePage() {
   const router = useRouter();
   const { data, isLoading } = useLikeSongQuery();
   const { deleteLikeSelected, handleToggleSelect, handleDeleteArray } = useSongInfo();
