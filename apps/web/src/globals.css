@@ -50,6 +50,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-brand-tj: var(--brand-tj);
   --color-brand-ky: var(--brand-ky);
+  --color-check: var(--check);
 }
 
 @layer base {
@@ -101,6 +102,7 @@
   /* oklch로는 표현 ff4a00 */
   --brand-tj: oklch(66.48% 0.226 36.37);
   --brand-ky: oklch(61.23% 0.159 288.46);
+  --check: oklch(0.72 0.2 145);
 }
 
 .dark {
@@ -137,6 +139,8 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --check: oklch(0.6 0.18 145);
 }
 
 button {

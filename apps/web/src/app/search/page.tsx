@@ -1,6 +1,6 @@
 'use client';
 
-import { Mic, Search, X } from 'lucide-react';
+import { Mic, Search, SearchX } from 'lucide-react';
 
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
@@ -88,13 +88,13 @@ export default function SearchPage() {
         )}
         {searchSongs.length === 0 && query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <X className="h-8 w-8 opacity-50" />
+            <SearchX className="h-8 w-8 opacity-50" />
             <p className="m-2">검색 결과가 없습니다.</p>
           </div>
         )}
         {searchSongs.length === 0 && !query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <Mic className="h-8 w-8 opacity-50" />
+            <Search className="h-8 w-8 opacity-50" />
             <p className="m-2">노래 제목이나 가수를 검색해보세요</p>
           </div>
         )}

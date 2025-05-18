@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ChevronsDown, ChevronsUp, GripVertical, Mic, Trash } from 'lucide-react';
+import { Check, ChevronsDown, ChevronsUp, GripVertical, Trash } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
 import { Song } from '@/types/song';
@@ -62,10 +62,10 @@ export default function SongCard({
           <button
             type="button"
             onClick={onSung}
-            className={'hover:bg-accent rounded-full p-1.5'}
-            aria-label="노래 불렀음 표시"
+            className={'hover:bg-accent text-check hover:text-check rounded-full p-1.5'}
+            aria-label="노래 부르기"
           >
-            <Mic className="h-4 w-4" />
+            <Check className="h-4 w-4" />
           </button>
 
           <button
