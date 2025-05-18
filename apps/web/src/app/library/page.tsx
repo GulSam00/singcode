@@ -21,7 +21,7 @@ const menuItems = [
     icon: <Folder className="h-5 w-5" />,
   },
   {
-    id: 'stats',
+    id: 'stat',
     title: '노래 통계',
     description: '내가 불렀던 노래 통계를 확인합니다',
     icon: <BarChart2 className="h-5 w-5" />,
