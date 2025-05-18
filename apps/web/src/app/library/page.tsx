@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart2, Heart } from 'lucide-react';
+import { BarChart2, Folder, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,15 +8,22 @@ import useAuthStore from '@/stores/useAuthStore';
 
 const menuItems = [
   {
-    id: 'liked',
+    id: 'like',
     title: '좋아요 곡 관리',
     description: '좋아요를 누른 노래를 관리합니다',
     icon: <Heart className="h-5 w-5" />,
   },
+
+  {
+    id: 'folder',
+    title: '재생목록 관리',
+    description: '재생목록을 관리합니다',
+    icon: <Folder className="h-5 w-5" />,
+  },
   {
     id: 'stats',
-    title: '노래방 통계',
-    description: '나의 노래 통계를 확인합니다',
+    title: '노래 통계',
+    description: '내가 불렀던 노래 통계를 확인합니다',
     icon: <BarChart2 className="h-5 w-5" />,
   },
 ];

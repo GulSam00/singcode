@@ -70,7 +70,7 @@ export default function SearchPage() {
           <Button onClick={handleSearch}>검색</Button>
         </div>
       </div>
-      <ScrollArea className="h-[calc(100vh-15rem)]">
+      <ScrollArea className="h-[calc(100vh-16rem)]">
         {searchSongs.length > 0 && (
           <div className="flex w-[360px] flex-col gap-3 px-2 py-4">
             {searchSongs.map((song, index) => (

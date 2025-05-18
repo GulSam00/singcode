@@ -23,6 +23,7 @@ export interface PersonalSong extends Song {
 }
 
 export interface SaveSong extends Song {
+  id: string;
   user_id: string;
   song_id: string;
   created_at: string;
