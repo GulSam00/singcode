@@ -121,7 +121,7 @@ export default function PlaylistModal({ isOpen, song, setIsSaveModal, saveSong }
                 {saveSongFolder &&
                   saveSongFolder.map((folder, index) => (
                     <SelectItem key={folder.folderName + index} value={folder.folderName}>
-                      {folder.folderName} ({folder.songIdList.length}곡)
+                      {folder.folderName} ({folder.songList.length}곡)
                     </SelectItem>
                   ))}
               </SelectContent>

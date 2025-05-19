@@ -2,12 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { deleteSaveSong, getSaveSong, postSaveSong } from '@/lib/api/saveSong';
 import { postTotalStat, postTotalStatArray } from '@/lib/api/totalStat';
-import { SaveSong } from '@/types/song';
-
-export type Folder = {
-  folderName: string;
-  songIdList: string[];
-};
+import { SaveSong, SongFolder } from '@/types/song';
 
 export function useSaveSongQuery() {
   return useQuery({
@@ -20,18 +15,18 @@ export function useSaveSongQuery() {
 
       const rawData: SaveSong[] = response.data;
       console.log('rawData', rawData);
-      const folders: Folder[] = [];
+      const folders: SongFolder[] = [];
 
       rawData.forEach(item => {
-        console.log('item', item);
+        // console.log('item', item);
         const existingFolder = folders.find(folder => folder.folderName === item.folder_name);
 
         if (existingFolder) {
-          existingFolder.songIdList.push(item.song_id);
+          existingFolder.songList.push(item);
         } else {
           folders.push({
             folderName: item.folder_name,
-            songIdList: [item.song_id],
+            songList: [item],
           });
         }
       });

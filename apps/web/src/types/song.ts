@@ -23,13 +23,17 @@ export interface PersonalSong extends Song {
 }
 
 export interface SaveSong extends Song {
-  id: string;
   user_id: string;
   song_id: string;
   created_at: string;
   isInToSingList: boolean;
   folder_name: string;
   updated_at: Date;
+}
+
+export interface SongFolder {
+  folderName: string;
+  songList: SaveSong[];
 }
 
 export interface SearchSong extends Song {
