@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 import * as cheerio from "cheerio";
 import { getSongsKyNullDB } from "./supabase/getDB";
 import { Song } from "./types";
-import { updateDataLog } from "./logData";
+import { updateDataLog, saveFailedSong, loadFailedSongs } from "./logData";
 import { updateSongsKyDB } from "./supabase/updateDB";
 
 const stackData: Song[] = [];
@@ -17,8 +17,8 @@ const totalData: Song[] = [];
 //   console.log("프로세스가 종료됩니다. 로그를 기록 중...");
 
 //   await Promise.all([
-//     updateDataLog(totalData, "log/crawlYodutubeSuccess.txt"),
-//     updateDataLog(failedCase, "log/crawlYoutubeFailed.txt"),
+//     updateDataLog(totalData, "crawlYodutubeSuccess.txt"),
+//     updateDataLog(failedCase, "crawlYoutubeFailed.txt"),
 //   ]);
 
 //   console.log("로그 기록 완료.");
@@ -65,29 +65,45 @@ const refreshData = async () => {
   console.log("refreshData");
   const result = await updateSongsKyDB(stackData);
 
-  updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
-  updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
+  for (const failedItem of result.failed) {
+    const { title, artist } = failedItem.song;
+    saveFailedSong(title, artist);
+  }
+
+  updateDataLog(result.success, "crawlYoutubeSuccess.txt");
+  updateDataLog(result.failed, "crawlYoutubeFailed.txt");
 
   stackData.length = 0; // stackData 초기화
 };
 // 사용
 
 const data = await getSongsKyNullDB();
+const failedSongs = loadFailedSongs();
+
 console.log("getSongsKyNullDB : ", data.length);
 let index = 0;
 
 for (const song of data) {
-  if (stackData.length > 10) {
+  if (stackData.length >= 10) {
     refreshData();
   }
   const query = song.title + "-" + song.artist;
+
+  if (failedSongs.has(query)) {
+    console.log("already failed : ", song.title, " - ", song.artist);
+    index++;
+    continue;
+  }
+
   console.log(song.title, " - ", song.artist);
+
   const result = await scrapeSongNumber(query);
   if (result) {
     console.log("success : ", result);
     stackData.push({ ...song, num_ky: result });
     totalData.push({ ...song, num_ky: result });
-  }
+  } else saveFailedSong(song.title, song.artist);
+
   index++;
   console.log("scrapeSongNumber : ", index);
   console.log("stackData : ", stackData.length);
@@ -97,8 +113,8 @@ console.log("totalData : ", totalData.length);
 // const result = await updateSongsKyDB(totalData);
 const result = await updateSongsKyDB(stackData);
 
-updateDataLog(result.success, "log/crawlYoutubeSuccess.txt");
-updateDataLog(result.failed, "log/crawlYoutubeFailed.txt");
+updateDataLog(result.success, "crawlYoutubeSuccess.txt");
+updateDataLog(result.failed, "crawlYoutubeFailed.txt");
 
 // 5.13 1차 시도
 // 5000개 중 3507개 성공, 총 18906개 등록
