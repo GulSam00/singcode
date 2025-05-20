@@ -44,7 +44,7 @@ export function updateDataLog<T>(unknownData: T[] | T, filename: string) {
 }
 
 export function saveFailedSong(title: string, artist: string) {
-  const logPath = path.join("log", "crawlYoutubeFailedList.txt");
+  const logPath = path.join("src", "crawlYoutubeFailedList.txt");
   const logDir = path.dirname(logPath);
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
@@ -53,7 +53,7 @@ export function saveFailedSong(title: string, artist: string) {
 }
 
 export function loadFailedSongs(): Set<string> {
-  const logPath = path.join("log", "crawlYoutubeFailedList.txt");
+  const logPath = path.join("src", "crawlYoutubeFailedList.txt");
   if (!fs.existsSync(logPath)) return new Set();
   const lines = fs
     .readFileSync(logPath, "utf-8")
