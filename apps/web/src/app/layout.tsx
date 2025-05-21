@@ -14,6 +14,8 @@ import '@/globals.css';
 import { PostHogProvider } from '@/posthog';
 import QueryProvider from '@/query';
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export const metadata: Metadata = {
   title: 'Singcode - 간편하게 노래를 저장하세요!',
   description: '노래방만 가면 뭐 부를지 고민한다면?',
@@ -30,9 +32,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="ko">
-      <head>
+  const MonitoringScripts = () => {
+    if (isDevelopment) return null;
+
+    return (
+      <>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-G0D5K3CWNL"
           strategy="afterInteractive"
@@ -58,34 +62,60 @@ export default function RootLayout({
             })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
           `}
         </Script>
+      </>
+    );
+  };
+
+  const MonitoringComponent = () => {
+    if (isDevelopment) return null;
+
+    return (
+      <>
+        <Analytics />
+        <SpeedInsights />
+      </>
+    );
+  };
+
+  const AppContent = () => (
+    <ErrorWrapper>
+      <div className="relative flex h-full w-[360px] flex-col">
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </div>
+
+      <Toaster
+        duration={2000}
+        position="top-center"
+        toastOptions={{
+          style: {
+            maxWidth: '360px',
+          },
+        }}
+      />
+
+      <MessageDialog />
+      <LoadingOverlay />
+      <MonitoringComponent />
+    </ErrorWrapper>
+  );
+
+  return (
+    <html lang="ko">
+      <head>
+        <MonitoringScripts />
       </head>
       <body className="m-0 flex h-[100dvh] w-full justify-center">
         <QueryProvider>
           <AuthProvider>
-            <PostHogProvider>
-              <ErrorWrapper>
-                <div className="relative flex h-full w-[360px] flex-col">
-                  <Header />
-                  <main className="flex-1">{children}</main>
-                  <Footer />
-                </div>
-
-                <Toaster
-                  duration={2000}
-                  position="top-center"
-                  toastOptions={{
-                    style: {
-                      maxWidth: '360px',
-                    },
-                  }}
-                />
-
-                <MessageDialog />
-                <LoadingOverlay />
-                <Analytics />
-                <SpeedInsights />
-              </ErrorWrapper>
-            </PostHogProvider>
+            {isDevelopment ? (
+              <AppContent />
+            ) : (
+              <PostHogProvider>
+                <AppContent />
+              </PostHogProvider>
+            )}
           </AuthProvider>
         </QueryProvider>
       </body>
