@@ -90,12 +90,13 @@ export async function DELETE(request: Request): Promise<NextResponse<ApiResponse
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
-    const { folderName } = await request.json();
+    const { folderId } = await request.json();
 
     const { error } = await supabase
       .from('save_folders')
       .delete()
-      .match({ user_id: userId, folder_name: folderName });
+      .eq('user_id', userId)
+      .eq('id', folderId);
 
     if (error) throw error;
 

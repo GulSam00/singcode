@@ -31,7 +31,7 @@ interface IProps {
   saveSong: (songId: string, folderName: string, method: Method) => void;
 }
 
-export default function PlaylistModal({ isOpen, song, setIsSaveModal, saveSong }: IProps) {
+export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong }: IProps) {
   const { data: saveSongFolder, isLoading } = useSaveSongQuery();
 
   const [selectedFolderIndex, setSelectedFolderIndex] = useState<number>(0);
@@ -46,7 +46,7 @@ export default function PlaylistModal({ isOpen, song, setIsSaveModal, saveSong }
     if (!saveSongFolder) return;
 
     const index = saveSongFolder.findIndex(
-      (folder: { folderName: string }) => folder.folderName === folderName,
+      (folder: { folder_name: string }) => folder.folder_name === folderName,
     );
     setSelectedFolderIndex(index);
     setFolderName(folderName);
@@ -78,7 +78,7 @@ export default function PlaylistModal({ isOpen, song, setIsSaveModal, saveSong }
     }
 
     const matched = saveSongFolder?.find(
-      (folder: { folderName: string }) => folder.folderName === folderName,
+      (folder: { folder_name: string }) => folder.folder_name === folderName,
     );
     if (matched) {
       setIsExistingPlaylist(true);
@@ -93,7 +93,7 @@ export default function PlaylistModal({ isOpen, song, setIsSaveModal, saveSong }
     if (!saveSongFolder || saveSongFolder.length === 0) return;
 
     setSelectedFolderIndex(0);
-    setFolderName(saveSongFolder[0].folderName || '');
+    setFolderName(saveSongFolder[0].folder_name || '');
   }, [saveSongFolder]);
 
   return (
@@ -120,8 +120,8 @@ export default function PlaylistModal({ isOpen, song, setIsSaveModal, saveSong }
               <SelectContent>
                 {saveSongFolder &&
                   saveSongFolder.map((folder, index) => (
-                    <SelectItem key={folder.folderName + index} value={folder.folderName}>
-                      {folder.folderName} ({folder.songList.length}곡)
+                    <SelectItem key={folder.folder_name + index} value={folder.folder_name}>
+                      {folder.folder_name} ({folder.songList.length}곡)
                     </SelectItem>
                   ))}
               </SelectContent>

@@ -38,10 +38,10 @@ export default function PlaylistsPage() {
   const totalSelectedSongs = Object.values(selectedSongs).filter(Boolean).length;
 
   // 재생목록 펼치기/접기
-  const togglePlaylist = (dstFolderName: string) => {
+  const togglePlaylist = (dstFolderId: string) => {
     setExpandedPlaylists(prev => ({
       ...prev,
-      [dstFolderName]: !prev[dstFolderName],
+      [dstFolderId]: !prev[dstFolderId],
     }));
   };
 
@@ -54,9 +54,9 @@ export default function PlaylistsPage() {
   };
 
   // 재생목록 내 모든 곡 선택/해제
-  const toggleAllSongsInPlaylist = (dstFolderName: string) => {
+  const toggleAllSongsInPlaylist = (dstFolderId: string) => {
     if (!saveSongFolders) return;
-    const playlist = saveSongFolders.find(p => p.folder_name === dstFolderName);
+    const playlist = saveSongFolders.find(p => p.folder_id === dstFolderId);
     if (!playlist) return;
 
     const allSongIds = playlist.songList.map(song => song.id);
@@ -77,20 +77,20 @@ export default function PlaylistsPage() {
   };
 
   // 재생목록 내 선택된 곡 수 계산
-  const getSelectedSongCount = (dstFolderName: string) => {
+  const getSelectedSongCount = (dstFolderId: string) => {
     if (!saveSongFolders) return 0;
 
-    const playlist = saveSongFolders.find(p => p.folder_name === dstFolderName);
+    const playlist = saveSongFolders.find(p => p.folder_id === dstFolderId);
     if (!playlist) return 0;
 
     return playlist.songList.filter(song => selectedSongs[song.id]).length;
   };
 
   // 재생목록 내 모든 곡이 선택되었는지 확인
-  const areAllSongsSelected = (dstFolderName: string) => {
+  const areAllSongsSelected = (dstFolderId: string) => {
     if (!saveSongFolders) return false;
 
-    const playlist = saveSongFolders.find(p => p.folder_name === dstFolderName);
+    const playlist = saveSongFolders.find(p => p.folder_id === dstFolderId);
     if (!playlist || playlist.songList.length === 0) return false;
 
     return playlist.songList.every(song => selectedSongs[song.id]);
@@ -120,15 +120,15 @@ export default function PlaylistsPage() {
   };
 
   // 재생목록 삭제
-  const deletePlaylist = (dstFolderName: string) => {
+  const deletePlaylist = (dstFolderId: string) => {
     //임시로 테스트
-    console.log('deletePlaylist', dstFolderName);
-    deleteSaveFolderSong({ folderName: dstFolderName });
+    console.log('deletePlaylist', dstFolderId);
+    deleteSaveFolderSong({ folderId: dstFolderId });
     setModalType('deleteFolder');
   };
 
   // 재생목록 편집 (실제 구현에서는 편집 모달 열기)
-  const renamePlaylist = (dstFolderName: string) => {
+  const renamePlaylist = (dstFolderId: string) => {
     setModalType('renameFolder');
   };
 
@@ -201,8 +201,7 @@ export default function PlaylistsPage() {
                     folder_name: folder.folder_name,
                     folder_id: folder.id,
                     songList:
-                      saveSongFolders?.find(item => item.folder_name === folder.folder_name)
-                        ?.songList ?? [],
+                      saveSongFolders?.find(item => item.folder_id === folder.id)?.songList ?? [],
                   },
                   selectedSongs,
                   expandedPlaylists,

@@ -160,12 +160,12 @@ export async function DELETE(request: Request): Promise<NextResponse<ApiResponse
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
-    const { songId, folderName } = await request.json();
+    const { songId, folderId } = await request.json();
 
     const { error } = await supabase
       .from('like_activities')
       .delete()
-      .match({ user_id: userId, song_id: songId, folder_name: folderName });
+      .match({ user_id: userId, song_id: songId, folder_id: folderId });
 
     if (error) throw error;
 

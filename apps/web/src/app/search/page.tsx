@@ -9,7 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSearchSong from '@/hooks/useSearchSong';
 
-import PlaylistModal from './PlaylistModal';
+import PlaylistModal from './AddFolderModal';
 import SearchResultCard from './SearchResultCard';
 
 export default function SearchPage() {

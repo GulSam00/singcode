@@ -63,8 +63,8 @@ export default function useSearchSong() {
     setIsSaveModal(true);
   };
 
-  const saveSong = async (songId: string, folderName: string, method: Method) => {
-    mutateSave({ songId, folderName, method, query, searchType });
+  const saveSong = async (songId: string, folderName: string) => {
+    mutateSave({ songId, folderName, query, searchType });
   };
 
   return {

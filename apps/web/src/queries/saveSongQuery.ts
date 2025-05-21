@@ -1,14 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { deleteSaveSong, getSaveSong, patchSaveSong } from '@/lib/api/saveSong';
 import {
   deleteSaveFolderSong,
-  deleteSaveSong,
   getSaveFolderSong,
-  getSaveSong,
   patchSaveFolderSong,
-  patchSaveSong,
   postSaveFolderSong,
-} from '@/lib/api/saveSong';
+} from '@/lib/api/saveSongFolder';
 import { postTotalStat, postTotalStatArray } from '@/lib/api/totalStat';
 import { SaveSong, SaveSongFolder } from '@/types/song';
 
@@ -24,7 +22,7 @@ export function useSaveSongQuery() {
       const songFolders: SaveSongFolder[] = [];
 
       rawData.forEach(item => {
-        const existingFolder = songFolders.find(folder => folder.folder_name === item.folder_name);
+        const existingFolder = songFolders.find(folder => folder.folder_id === item.folder_id);
 
         if (existingFolder) {
           existingFolder.songList.push(item);
@@ -79,8 +77,8 @@ export function useDeleteSaveSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ songId, folderName }: { songId: string; folderName: string }) => {
-      const data = await deleteSaveSong({ songId, folderName });
+    mutationFn: async ({ songId, folderId }: { songId: string; folderId: string }) => {
+      const data = await deleteSaveSong({ songId, folderId });
       console.log('useDeleteSaveSongMutation', data);
       if (!data.success) {
         throw new Error(data.error);
@@ -158,8 +156,8 @@ export function useDeleteSaveFolderSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ folderName }: { folderName: string }) => {
-      const data = await deleteSaveFolderSong({ folderName });
+    mutationFn: async ({ folderId }: { folderId: string }) => {
+      const data = await deleteSaveFolderSong({ folderId });
       console.log('useDeleteSaveFolderSongMutation', data);
       if (!data.success) {
         throw new Error(data.error);

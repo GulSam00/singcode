@@ -134,44 +134,23 @@ export const useSaveMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      songId,
-      folderName,
-      method,
-    }: {
-      songId: string;
-      folderName: string;
-      method: Method;
-    }) => {
-      if (method === 'POST') {
-        return Promise.all([
-          postSaveSong({ songId, folderName }),
-          postTotalStat({ songId, countType: 'save_count', isMinus: false }),
-        ]);
-      } else {
-        return Promise.all([
-          deleteSaveSong({ songId, folderName }),
-          postTotalStat({ songId, countType: 'save_count', isMinus: true }),
-        ]);
-      }
+    mutationFn: ({ songId, folderName }: { songId: string; folderName: string }) => {
+      return postSaveSong({ songId, folderName });
     },
     onMutate: async ({
       songId,
-      method,
       query,
       searchType,
     }: {
       songId: string;
-      method: Method;
       folderName: string;
       query: string;
       searchType: string;
     }) => {
       queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
-      const isSave = method === 'POST';
       queryClient.setQueryData(['searchSong', query, searchType], (old: SearchSong[] = []) =>
-        old.map(song => (song.id === songId ? { ...song, isSave } : song)),
+        old.map(song => (song.id === songId ? { ...song, isSave: true } : song)),
       );
 
       return { prev, query, searchType };
@@ -185,7 +164,7 @@ export const useSaveMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ['searchSong', context?.query, context?.searchType],
       });
-      queryClient.invalidateQueries({ queryKey: ['saveSong'] });
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
