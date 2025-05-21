@@ -33,7 +33,8 @@ export interface SaveSong extends Song {
 }
 
 export interface SaveSongFolder {
-  folderName: string;
+  folder_name: string;
+  folder_id: string;
   songList: SaveSong[];
 }
 

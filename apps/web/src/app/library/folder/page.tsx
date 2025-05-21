@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { useSaveSongFolderQuery, useSaveSongQuery } from '@/queries/saveSongQuery';
-import { SaveSong, SaveSongFolder, Song } from '@/types/song';
 
 import AddFolderModal from './AddFolderModal';
 import PlaylistCard from './PlaylistCard';
@@ -51,7 +50,7 @@ export default function PlaylistsPage() {
   // 재생목록 내 모든 곡 선택/해제
   const toggleAllSongsInPlaylist = (dstFolderName: string) => {
     if (!saveSongFolders) return;
-    const playlist = saveSongFolders.find(p => p.folderName === dstFolderName);
+    const playlist = saveSongFolders.find(p => p.folder_name === dstFolderName);
     if (!playlist) return;
 
     const allSongIds = playlist.songList.map(song => song.id);
@@ -75,7 +74,7 @@ export default function PlaylistsPage() {
   const getSelectedSongCount = (dstFolderName: string) => {
     if (!saveSongFolders) return 0;
 
-    const playlist = saveSongFolders.find(p => p.folderName === dstFolderName);
+    const playlist = saveSongFolders.find(p => p.folder_name === dstFolderName);
     if (!playlist) return 0;
 
     return playlist.songList.filter(song => selectedSongs[song.id]).length;
@@ -85,7 +84,7 @@ export default function PlaylistsPage() {
   const areAllSongsSelected = (dstFolderName: string) => {
     if (!saveSongFolders) return false;
 
-    const playlist = saveSongFolders.find(p => p.folderName === dstFolderName);
+    const playlist = saveSongFolders.find(p => p.folder_name === dstFolderName);
     if (!playlist || playlist.songList.length === 0) return false;
 
     return playlist.songList.every(song => selectedSongs[song.id]);
@@ -183,12 +182,18 @@ export default function PlaylistsPage() {
       </div>
 
       <div className="space-y-4">
-        {saveSongFolders &&
-          saveSongFolders.map((playlist, index) => (
+        {saveSongFolderList &&
+          saveSongFolderList.map((folder, index) => (
             <PlaylistCard
-              key={playlist.folderName + index}
+              key={folder.id + index}
               {...{
-                playlist,
+                playlist: {
+                  folder_name: folder.folder_name,
+                  folder_id: folder.id,
+                  songList:
+                    saveSongFolders?.find(item => item.folder_name === folder.folder_name)
+                      ?.songList ?? [],
+                },
                 selectedSongs,
                 expandedPlaylists,
                 areAllSongsSelected,

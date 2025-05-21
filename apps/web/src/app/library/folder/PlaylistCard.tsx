@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { SaveSongFolder, Song } from '@/types/song';
+import { SaveSongFolder } from '@/types/song';
 
 interface IProps {
   playlist: SaveSongFolder;
@@ -37,12 +37,12 @@ export default function PlaylistCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Checkbox
-              id={`playlist-${playlist.folderName}`}
-              checked={areAllSongsSelected(playlist.folderName)}
-              onCheckedChange={() => toggleAllSongsInPlaylist(playlist.folderName)}
+              id={`playlist-${playlist.folder_name}`}
+              checked={areAllSongsSelected(playlist.folder_name)}
+              onCheckedChange={() => toggleAllSongsInPlaylist(playlist.folder_name)}
             />
             <CardTitle className="flex w-40 items-center gap-2 overflow-hidden text-lg text-ellipsis">
-              {playlist.folderName}
+              {playlist.folder_name}
             </CardTitle>
           </div>
 
@@ -50,7 +50,7 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => renamePlaylist(playlist.folderName)}
+              onClick={() => renamePlaylist(playlist.folder_name)}
               className="h-8 w-8 p-0"
             >
               <Edit className="h-4 w-4" />
@@ -58,7 +58,7 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => deletePlaylist(playlist.folderName)}
+              onClick={() => deletePlaylist(playlist.folder_name)}
               className="text-destructive hover:text-destructive h-8 w-8 p-0"
             >
               <Trash2 className="h-4 w-4" />
@@ -66,10 +66,10 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => togglePlaylist(playlist.folderName)}
+              onClick={() => togglePlaylist(playlist.folder_name)}
               className="h-8 w-8 p-0"
             >
-              {expandedPlaylists[playlist.folderName] ? (
+              {expandedPlaylists[playlist.folder_name] ? (
                 <ChevronUp className="h-4 w-4" />
               ) : (
                 <ChevronDown className="h-4 w-4" />
@@ -81,15 +81,15 @@ export default function PlaylistCard({
           <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-normal">
             {playlist.songList.length}곡
           </span>
-          {getSelectedSongCount(playlist.folderName) > 0 && (
+          {getSelectedSongCount(playlist.folder_name) > 0 && (
             <span className="bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-normal">
-              {getSelectedSongCount(playlist.folderName)}곡 선택됨
+              {getSelectedSongCount(playlist.folder_name)}곡 선택됨
             </span>
           )}
         </div>
       </CardHeader>
 
-      {expandedPlaylists[playlist.folderName] && (
+      {expandedPlaylists[playlist.folder_name] && (
         <CardContent className="p-0">
           <Separator className="my-2" />
           <div className="px-4">

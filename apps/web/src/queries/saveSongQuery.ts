@@ -23,13 +23,14 @@ export function useSaveSongQuery() {
       const songFolders: SaveSongFolder[] = [];
 
       rawData.forEach(item => {
-        const existingFolder = songFolders.find(folder => folder.folderName === item.folder_name);
+        const existingFolder = songFolders.find(folder => folder.folder_name === item.folder_name);
 
         if (existingFolder) {
           existingFolder.songList.push(item);
         } else {
           songFolders.push({
-            folderName: item.folder_name,
+            folder_name: item.folder_name,
+            folder_id: item.folder_id,
             songList: [item],
           });
         }
@@ -97,7 +98,6 @@ export function useSaveSongFolderQuery() {
     queryKey: ['saveSongFolderList'],
     queryFn: async () => {
       const response = await getSaveFolderSong();
-      console.log('useSaveSongFolderQuery', response);
       if (!response.success || !response.data) {
         return [];
       }
