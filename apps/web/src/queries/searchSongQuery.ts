@@ -165,6 +165,7 @@ export const useSaveMutation = () => {
         queryKey: ['searchSong', context?.query, context?.searchType],
       });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolderList'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });

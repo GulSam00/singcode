@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { usePostSaveSongFolderMutation } from '@/queries/saveSongQuery';
+import { usePostSaveSongFolderMutation } from '@/queries/saveSongFolderQuery';
 import { SaveSongFolderList } from '@/types/song';
 
 interface CreatePlaylistModalProps {

@@ -34,7 +34,6 @@ interface IProps {
 export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong }: IProps) {
   const { data: saveSongFolder, isLoading } = useSaveSongQuery();
 
-  const [selectedFolderIndex, setSelectedFolderIndex] = useState<number>(0);
   const [folderName, setFolderName] = useState<string>('');
 
   const [isExistingPlaylist, setIsExistingPlaylist] = useState(false);
@@ -48,12 +47,10 @@ export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong 
     const index = saveSongFolder.findIndex(
       (folder: { folder_name: string }) => folder.folder_name === folderName,
     );
-    setSelectedFolderIndex(index);
     setFolderName(folderName);
   };
 
   const resetModal = () => {
-    setSelectedFolderIndex(0);
     setFolderName('');
     setIsExistingPlaylist(false);
   };
@@ -72,7 +69,6 @@ export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong 
   // input 값이 변경될 때 기존 재생목록과 일치 여부 확인
   useEffect(() => {
     if (folderName.trim() === '' || !saveSongFolder) {
-      setSelectedFolderIndex(-1);
       setIsExistingPlaylist(false);
       return;
     }
@@ -82,17 +78,14 @@ export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong 
     );
     if (matched) {
       setIsExistingPlaylist(true);
-      setSelectedFolderIndex(saveSongFolder.indexOf(matched));
     } else {
       setIsExistingPlaylist(false);
-      setSelectedFolderIndex(-1);
     }
   }, [folderName, saveSongFolder]);
 
   useEffect(() => {
     if (!saveSongFolder || saveSongFolder.length === 0) return;
 
-    setSelectedFolderIndex(0);
     setFolderName(saveSongFolder[0].folder_name || '');
   }, [saveSongFolder]);
 

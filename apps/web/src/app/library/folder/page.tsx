@@ -10,8 +10,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   useDeleteSaveFolderSongMutation,
   useSaveSongFolderQuery,
-  useSaveSongQuery,
-} from '@/queries/saveSongQuery';
+} from '@/queries/saveSongFolderQuery';
+import { useSaveSongQuery } from '@/queries/saveSongQuery';
 
 import AddFolderModal from './AddFolderModal';
 import PlaylistCard from './PlaylistCard';
