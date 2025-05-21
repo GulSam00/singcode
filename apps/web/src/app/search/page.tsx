@@ -1,6 +1,6 @@
 'use client';
 
-import { Mic, Search, SearchX } from 'lucide-react';
+import { Search, SearchX } from 'lucide-react';
 
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';

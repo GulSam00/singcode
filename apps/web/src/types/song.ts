@@ -32,14 +32,15 @@ export interface SaveSong extends Song {
   updated_at: Date;
 }
 
-export interface SongFolder {
+export interface SaveSongFolder {
   folderName: string;
   songList: SaveSong[];
 }
 
-export interface SongFolderList {
-  folderName: string;
-  folderIdList: string;
+export interface SaveSongFolderList {
+  id: string;
+  user_id: string;
+  folder_name: string;
 
   created_at: string;
   updated_at: string;

@@ -9,7 +9,7 @@ import {
 } from '@/queries/searchSongQuery';
 import useAuthStore from '@/stores/useAuthStore';
 import { Method } from '@/types/common';
-import { SearchSong, Song } from '@/types/song';
+import { SearchSong } from '@/types/song';
 
 type SearchType = 'title' | 'artist';
 

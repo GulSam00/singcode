@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
 import { ApiResponse } from '@/types/apiRoute';
-import { SongFolderList } from '@/types/song';
+import { SaveSongFolderList } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
-export async function GET(): Promise<NextResponse<ApiResponse<SongFolderList[]>>> {
+export async function GET(): Promise<NextResponse<ApiResponse<SaveSongFolderList[]>>> {
   try {
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
@@ -19,7 +19,15 @@ export async function GET(): Promise<NextResponse<ApiResponse<SongFolderList[]>>
 
     if (saveError) throw saveError;
 
-    return NextResponse.json({ success: true, data: data });
+    const saveSongFolderList = data.map(folder => ({
+      id: folder.id,
+      user_id: folder.user_id,
+      folder_name: folder.folder_name,
+      created_at: folder.created_at,
+      updated_at: folder.updated_at,
+    }));
+
+    return NextResponse.json({ success: true, data: saveSongFolderList });
   } catch (error) {
     // if (error instanceof Error && error.cause === 'auth') {
     //   return NextResponse.json(

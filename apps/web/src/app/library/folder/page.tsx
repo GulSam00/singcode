@@ -1,25 +1,31 @@
 'use client';
 
-import { ArrowLeft, FolderInput, Trash2, X } from 'lucide-react';
+import { ArrowLeft, FolderInput, FolderPlus, Trash2, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { useSaveSongFolderQuery, useSaveSongQuery } from '@/queries/saveSongQuery';
-import { SaveSong, Song, SongFolder } from '@/types/song';
+import { SaveSong, SaveSongFolder, Song } from '@/types/song';
 
+import AddFolderModal from './AddFolderModal';
 import PlaylistCard from './PlaylistCard';
+
+type ModalType = null | 'move' | 'delete' | 'addFolder' | 'renameFolder' | 'deleteFolder';
 
 export default function PlaylistsPage() {
   // 상태 관리
-  const { data: saveSongFolders, isLoading } = useSaveSongQuery();
-  const { data: saveSongFolderList } = useSaveSongFolderQuery();
+  const { data: saveSongFolders, isLoading: isLoadingSongFolders } = useSaveSongQuery();
+  const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
+  const isLoading = isLoadingSongFolders || isLoadingSaveFolderList;
+
   console.log('useSaveSongQuery data', saveSongFolders);
   console.log('useSaveSongFolderQuery data', saveSongFolderList);
 
   const [expandedPlaylists, setExpandedPlaylists] = useState<Record<string, boolean>>({});
   const [selectedSongs, setSelectedSongs] = useState<Record<string, boolean>>({});
+  const [modalType, setModalType] = useState<ModalType>(null);
 
   const router = useRouter();
 
@@ -92,13 +98,6 @@ export default function PlaylistsPage() {
       return;
     }
 
-    // 실제 구현에서는 API 호출
-    const newPlaylists = saveSongFolders?.map(playlist => ({
-      ...playlist,
-      songs: playlist.songList.filter(song => !selectedSongs[song.id]),
-    }));
-
-    // setPlaylists(newPlaylists);
     setSelectedSongs({});
     toast.success(`${totalSelectedSongs}곡이 삭제되었습니다.`);
   };
@@ -117,14 +116,12 @@ export default function PlaylistsPage() {
 
   // 재생목록 삭제
   const deletePlaylist = (dstFolderName: string) => {
-    // 실제 구현에서는 API 호출
-    // setPlaylists(prev => prev.filter(playlist => playlist.id !== dstFolderName));
-    toast.success('재생목록이 삭제되었습니다.');
+    setModalType('deleteFolder');
   };
 
   // 재생목록 편집 (실제 구현에서는 편집 모달 열기)
-  const editPlaylist = (dstFolderName: string) => {
-    toast.info('재생목록 편집 기능은 준비 중입니다.');
+  const renamePlaylist = (dstFolderName: string) => {
+    setModalType('renameFolder');
   };
 
   return (
@@ -137,7 +134,7 @@ export default function PlaylistsPage() {
       </div>
 
       <div className="my-4 flex h-10 items-center justify-between gap-2">
-        {totalSelectedSongs > 0 && (
+        {totalSelectedSongs > 0 ? (
           <>
             <div className="bg-primary text-primary-foreground rounded-full px-2 py-1 text-sm">
               {totalSelectedSongs}곡 선택됨
@@ -155,7 +152,7 @@ export default function PlaylistsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={moveSelectedSongs}
+                onClick={() => setModalType('move')}
                 className="flex items-center gap-1"
               >
                 <FolderInput className="h-4 w-4" />
@@ -164,7 +161,7 @@ export default function PlaylistsPage() {
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={deleteSelectedSongs}
+                onClick={() => setModalType('delete')}
                 className="flex items-center gap-1"
               >
                 <Trash2 className="h-4 w-4" />
@@ -172,6 +169,16 @@ export default function PlaylistsPage() {
               </Button>
             </div>
           </>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setModalType('addFolder')}
+            className="flex items-center gap-1"
+          >
+            <FolderPlus className="h-4 w-4" />
+            새로운 재생목록 추가
+          </Button>
         )}
       </div>
 
@@ -188,7 +195,7 @@ export default function PlaylistsPage() {
                 toggleAllSongsInPlaylist,
                 getSelectedSongCount,
                 toggleSongSelection,
-                editPlaylist,
+                renamePlaylist,
                 deletePlaylist,
                 togglePlaylist,
               }}
@@ -203,6 +210,13 @@ export default function PlaylistsPage() {
             </div>
           ))}
       </div>
+
+      <AddFolderModal
+        isOpen={modalType === 'addFolder'}
+        isLoading={isLoading}
+        onClose={() => setModalType(null)}
+        existingPlaylists={saveSongFolderList ?? []}
+      />
     </div>
   );
 }

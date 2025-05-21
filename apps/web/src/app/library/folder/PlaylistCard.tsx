@@ -4,17 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Song, SongFolder } from '@/types/song';
+import { SaveSongFolder, Song } from '@/types/song';
 
 interface IProps {
-  playlist: SongFolder;
+  playlist: SaveSongFolder;
   selectedSongs: Record<string, boolean>;
   expandedPlaylists: Record<string, boolean>;
   areAllSongsSelected: (playlistId: string) => boolean;
   toggleAllSongsInPlaylist: (playlistId: string) => void;
   getSelectedSongCount: (playlistId: string) => number;
   toggleSongSelection: (songId: string) => void;
-  editPlaylist: (playlistId: string) => void;
+  renamePlaylist: (playlistId: string) => void;
   deletePlaylist: (playlistId: string) => void;
   togglePlaylist: (playlistId: string) => void;
 }
@@ -27,7 +27,7 @@ export default function PlaylistCard({
   toggleAllSongsInPlaylist,
   getSelectedSongCount,
   toggleSongSelection,
-  editPlaylist,
+  renamePlaylist,
   deletePlaylist,
   togglePlaylist,
 }: IProps) {
@@ -50,7 +50,7 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => editPlaylist(playlist.folderName)}
+              onClick={() => renamePlaylist(playlist.folderName)}
               className="h-8 w-8 p-0"
             >
               <Edit className="h-4 w-4" />

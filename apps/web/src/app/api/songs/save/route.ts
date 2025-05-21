@@ -128,6 +128,31 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
   }
 }
 
+export async function PATCH(request: Request): Promise<NextResponse<ApiResponse<void>>> {
+  try {
+    const supabase = await createClient();
+    const userId = await getAuthenticatedUser(supabase);
+
+    const { songIdArray, folderName } = await request.json();
+
+    const { error } = await supabase
+      .from('save_activities')
+      .update({ folder_name: folderName })
+      .eq('user_id', userId)
+      .in('song_id', songIdArray);
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error in save API:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to patch save song' },
+      { status: 500 },
+    );
+  }
+}
+
 export async function DELETE(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
     const supabase = await createClient();
