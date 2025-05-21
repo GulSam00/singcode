@@ -55,6 +55,8 @@ export function useDeleteLikeSongMutation() {
       return { prev };
     },
     onError: (error, songId, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['likeSong'], context?.prev);
     },
     onSettled: () => {
@@ -83,6 +85,8 @@ export function useDeleteLikeSongArrayMutation() {
       return { prev };
     },
     onError: (error, songIds, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['likeSong'], context?.prev);
     },
     onSettled: () => {

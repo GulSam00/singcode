@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
 import { deleteSaveSong, postSaveSong } from '@/lib/api/saveSong';
@@ -62,6 +63,8 @@ export const useToggleToSingMutation = () => {
       return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
@@ -113,6 +116,8 @@ export const useToggleLikeMutation = () => {
       return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
@@ -173,6 +178,7 @@ export const useSaveMutation = () => {
     },
     onError: (error, variables, context) => {
       console.log('error', error);
+      alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
