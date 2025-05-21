@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSaveSongFolderQuery, useSaveSongQuery } from '@/queries/saveSongQuery';
 
 import AddFolderModal from './AddFolderModal';
@@ -181,40 +182,42 @@ export default function PlaylistsPage() {
         )}
       </div>
 
-      <div className="space-y-4">
-        {saveSongFolderList &&
-          saveSongFolderList.map((folder, index) => (
-            <PlaylistCard
-              key={folder.id + index}
-              {...{
-                playlist: {
-                  folder_name: folder.folder_name,
-                  folder_id: folder.id,
-                  songList:
-                    saveSongFolders?.find(item => item.folder_name === folder.folder_name)
-                      ?.songList ?? [],
-                },
-                selectedSongs,
-                expandedPlaylists,
-                areAllSongsSelected,
-                toggleAllSongsInPlaylist,
-                getSelectedSongCount,
-                toggleSongSelection,
-                renamePlaylist,
-                deletePlaylist,
-                togglePlaylist,
-              }}
-            />
-          ))}
+      <ScrollArea className="h-[calc(100vh-12rem)] px-2">
+        <div className="space-y-4">
+          {saveSongFolderList &&
+            saveSongFolderList.map((folder, index) => (
+              <PlaylistCard
+                key={folder.id + index}
+                {...{
+                  playlist: {
+                    folder_name: folder.folder_name,
+                    folder_id: folder.id,
+                    songList:
+                      saveSongFolders?.find(item => item.folder_name === folder.folder_name)
+                        ?.songList ?? [],
+                  },
+                  selectedSongs,
+                  expandedPlaylists,
+                  areAllSongsSelected,
+                  toggleAllSongsInPlaylist,
+                  getSelectedSongCount,
+                  toggleSongSelection,
+                  renamePlaylist,
+                  deletePlaylist,
+                  togglePlaylist,
+                }}
+              />
+            ))}
 
-        {!saveSongFolders ||
-          (saveSongFolders.length === 0 && (
-            <div className="text-muted-foreground py-8 text-center">
-              <p className="mb-2">재생목록이 없습니다.</p>
-              <p>새 재생목록을 만들어보세요.</p>
-            </div>
-          ))}
-      </div>
+          {!saveSongFolders ||
+            (saveSongFolders.length === 0 && (
+              <div className="text-muted-foreground py-8 text-center">
+                <p className="mb-2">재생목록이 없습니다.</p>
+                <p>새 재생목록을 만들어보세요.</p>
+              </div>
+            ))}
+        </div>
+      </ScrollArea>
 
       <AddFolderModal
         isOpen={modalType === 'addFolder'}

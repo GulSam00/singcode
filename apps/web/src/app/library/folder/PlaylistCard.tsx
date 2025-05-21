@@ -40,6 +40,7 @@ export default function PlaylistCard({
               id={`playlist-${playlist.folder_name}`}
               checked={areAllSongsSelected(playlist.folder_name)}
               onCheckedChange={() => toggleAllSongsInPlaylist(playlist.folder_name)}
+              disabled={playlist.songList.length === 0}
             />
             <CardTitle className="flex w-40 items-center gap-2 overflow-hidden text-lg text-ellipsis">
               {playlist.folder_name}

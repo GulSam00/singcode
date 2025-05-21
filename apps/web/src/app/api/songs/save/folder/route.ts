@@ -29,15 +29,6 @@ export async function GET(): Promise<NextResponse<ApiResponse<SaveSongFolderList
 
     return NextResponse.json({ success: true, data: saveSongFolderList });
   } catch (error) {
-    // if (error instanceof Error && error.cause === 'auth') {
-    //   return NextResponse.json(
-    //     {
-    //       success: false,
-    //       error: 'User not authenticated',
-    //     },
-    //     { status: 401 },
-    //   );
-    // }
     console.error('Error in save folder API:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to get save folder songs' },
