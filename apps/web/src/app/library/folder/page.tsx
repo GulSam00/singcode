@@ -7,7 +7,11 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useSaveSongFolderQuery, useSaveSongQuery } from '@/queries/saveSongQuery';
+import {
+  useDeleteSaveFolderSongMutation,
+  useSaveSongFolderQuery,
+  useSaveSongQuery,
+} from '@/queries/saveSongQuery';
 
 import AddFolderModal from './AddFolderModal';
 import PlaylistCard from './PlaylistCard';
@@ -20,6 +24,7 @@ export default function PlaylistsPage() {
   const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
   const isLoading = isLoadingSongFolders || isLoadingSaveFolderList;
 
+  const { mutate: deleteSaveFolderSong } = useDeleteSaveFolderSongMutation();
   console.log('useSaveSongQuery data', saveSongFolders);
   console.log('useSaveSongFolderQuery data', saveSongFolderList);
 
@@ -116,6 +121,9 @@ export default function PlaylistsPage() {
 
   // 재생목록 삭제
   const deletePlaylist = (dstFolderName: string) => {
+    //임시로 테스트
+    console.log('deletePlaylist', dstFolderName);
+    deleteSaveFolderSong({ folderName: dstFolderName });
     setModalType('deleteFolder');
   };
 

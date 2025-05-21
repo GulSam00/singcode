@@ -30,6 +30,11 @@ export async function patchSaveSong(body: { songIdArray: string[]; folderName: s
   return response.data;
 }
 
+export async function patchSaveFolderSong(body: { folderId: string; folderName: string }) {
+  const response = await instance.patch<ApiResponse<void>>('/songs/save/folder', body);
+  return response.data;
+}
+
 export async function deleteSaveSong(body: { songId: string; folderName: string }) {
   const response = await instance.delete<ApiResponse<void>>('/songs/save', { data: body });
   return response.data;

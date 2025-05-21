@@ -5,6 +5,7 @@ import {
   deleteSaveSong,
   getSaveFolderSong,
   getSaveSong,
+  patchSaveFolderSong,
   patchSaveSong,
   postSaveFolderSong,
 } from '@/lib/api/saveSong';
@@ -36,6 +37,8 @@ export function useSaveSongQuery() {
         }
       });
 
+      console.log('rawData', rawData);
+      console.log('songFolders', songFolders);
       return songFolders;
     },
     staleTime: 1000 * 60 * 5,
@@ -116,6 +119,27 @@ export function usePostSaveSongFolderMutation() {
     mutationFn: async ({ folderName }: { folderName: string }) => {
       const data = await postSaveFolderSong({ folderName });
       console.log('usePostSaveSongFolderMutation', data);
+      if (!data.success) {
+        throw new Error(data.error);
+      }
+    },
+    onError: error => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolderList'] });
+    },
+  });
+}
+
+export function useRenameSaveSongFolderMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ folderId, folderName }: { folderId: string; folderName: string }) => {
+      const data = await patchSaveFolderSong({ folderId, folderName });
+      console.log('useRenameSaveSongFolderMutation', data);
       if (!data.success) {
         throw new Error(data.error);
       }

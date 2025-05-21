@@ -17,6 +17,9 @@ export async function GET(): Promise<NextResponse<ApiResponse<SaveSong[]>>> {
         `*,
         songs (
           *
+        ),
+        save_folders (
+          *
         )
     `,
       )
@@ -29,8 +32,8 @@ export async function GET(): Promise<NextResponse<ApiResponse<SaveSong[]>>> {
       id: item.user_id + item.song_id,
       user_id: item.user_id,
       song_id: item.songs.id,
-      folder_id: item.folder_id,
-      folder_name: item.folder_name,
+      folder_id: item.save_folders.id,
+      folder_name: item.save_folders.folder_name,
       created_at: item.created_at,
       updated_at: item.updated_at,
       title: item.songs.title,
@@ -112,7 +115,6 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
       user_id: userId,
       song_id: songId,
       folder_id: folderId,
-      folder_name: folderName,
       updated_at: today,
     });
 
@@ -133,11 +135,11 @@ export async function PATCH(request: Request): Promise<NextResponse<ApiResponse<
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
-    const { songIdArray, folderName } = await request.json();
+    const { songIdArray, folderId } = await request.json();
 
     const { error } = await supabase
       .from('save_activities')
-      .update({ folder_name: folderName })
+      .update({ folder_id: folderId })
       .eq('user_id', userId)
       .in('song_id', songIdArray);
 
