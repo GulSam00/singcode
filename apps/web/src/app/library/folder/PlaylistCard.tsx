@@ -41,8 +41,12 @@ export default function PlaylistCard({
               checked={areAllSongsSelected(playlist.folderName)}
               onCheckedChange={() => toggleAllSongsInPlaylist(playlist.folderName)}
             />
-            <CardTitle className="flex items-center gap-2 text-lg">{playlist.folderName}</CardTitle>
+            <CardTitle className="flex w-40 items-center gap-2 overflow-hidden text-lg text-ellipsis">
+              {playlist.folderName}
+            </CardTitle>
+          </div>
 
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
@@ -59,9 +63,6 @@ export default function PlaylistCard({
             >
               <Trash2 className="h-4 w-4" />
             </Button>
-          </div>
-
-          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
@@ -91,7 +92,7 @@ export default function PlaylistCard({
       {expandedPlaylists[playlist.folderName] && (
         <CardContent className="p-0">
           <Separator className="my-2" />
-          <div className="p-4 pt-0">
+          <div className="px-4">
             {playlist.songList.length > 0 ? (
               <div className="space-y-2">
                 {playlist.songList.map(song => (

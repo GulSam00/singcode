@@ -6,16 +6,17 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { useSaveSongQuery } from '@/queries/saveSongQuery';
+import { useSaveSongFolderQuery, useSaveSongQuery } from '@/queries/saveSongQuery';
 import { SaveSong, Song, SongFolder } from '@/types/song';
 
 import PlaylistCard from './PlaylistCard';
 
 export default function PlaylistsPage() {
   // 상태 관리
-  const { data: saveSongFolder, isLoading } = useSaveSongQuery();
-
-  console.log('useSaveSongQuery data', saveSongFolder);
+  const { data: saveSongFolders, isLoading } = useSaveSongQuery();
+  const { data: saveSongFolderList } = useSaveSongFolderQuery();
+  console.log('useSaveSongQuery data', saveSongFolders);
+  console.log('useSaveSongFolderQuery data', saveSongFolderList);
 
   const [expandedPlaylists, setExpandedPlaylists] = useState<Record<string, boolean>>({});
   const [selectedSongs, setSelectedSongs] = useState<Record<string, boolean>>({});
@@ -43,8 +44,8 @@ export default function PlaylistsPage() {
 
   // 재생목록 내 모든 곡 선택/해제
   const toggleAllSongsInPlaylist = (dstFolderName: string) => {
-    if (!saveSongFolder) return;
-    const playlist = saveSongFolder.find(p => p.folderName === dstFolderName);
+    if (!saveSongFolders) return;
+    const playlist = saveSongFolders.find(p => p.folderName === dstFolderName);
     if (!playlist) return;
 
     const allSongIds = playlist.songList.map(song => song.id);
@@ -66,9 +67,9 @@ export default function PlaylistsPage() {
 
   // 재생목록 내 선택된 곡 수 계산
   const getSelectedSongCount = (dstFolderName: string) => {
-    if (!saveSongFolder) return 0;
+    if (!saveSongFolders) return 0;
 
-    const playlist = saveSongFolder.find(p => p.folderName === dstFolderName);
+    const playlist = saveSongFolders.find(p => p.folderName === dstFolderName);
     if (!playlist) return 0;
 
     return playlist.songList.filter(song => selectedSongs[song.id]).length;
@@ -76,9 +77,9 @@ export default function PlaylistsPage() {
 
   // 재생목록 내 모든 곡이 선택되었는지 확인
   const areAllSongsSelected = (dstFolderName: string) => {
-    if (!saveSongFolder) return false;
+    if (!saveSongFolders) return false;
 
-    const playlist = saveSongFolder.find(p => p.folderName === dstFolderName);
+    const playlist = saveSongFolders.find(p => p.folderName === dstFolderName);
     if (!playlist || playlist.songList.length === 0) return false;
 
     return playlist.songList.every(song => selectedSongs[song.id]);
@@ -92,7 +93,7 @@ export default function PlaylistsPage() {
     }
 
     // 실제 구현에서는 API 호출
-    const newPlaylists = saveSongFolder?.map(playlist => ({
+    const newPlaylists = saveSongFolders?.map(playlist => ({
       ...playlist,
       songs: playlist.songList.filter(song => !selectedSongs[song.id]),
     }));
@@ -128,14 +129,14 @@ export default function PlaylistsPage() {
 
   return (
     <div className="bg-background h-full">
-      <div className="mb-6 flex items-center px-2 py-4 shadow-sm">
+      <div className="flex items-center px-2 py-4 shadow-sm">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-2xl font-bold">재생목록 관리</h1>
       </div>
 
-      <div className="mb-6 flex items-center justify-between gap-2">
+      <div className="my-4 flex h-10 items-center justify-between gap-2">
         {totalSelectedSongs > 0 && (
           <>
             <div className="bg-primary text-primary-foreground rounded-full px-2 py-1 text-sm">
@@ -175,8 +176,8 @@ export default function PlaylistsPage() {
       </div>
 
       <div className="space-y-4">
-        {saveSongFolder &&
-          saveSongFolder.map((playlist, index) => (
+        {saveSongFolders &&
+          saveSongFolders.map((playlist, index) => (
             <PlaylistCard
               key={playlist.folderName + index}
               {...{
@@ -194,8 +195,8 @@ export default function PlaylistsPage() {
             />
           ))}
 
-        {!saveSongFolder ||
-          (saveSongFolder.length === 0 && (
+        {!saveSongFolders ||
+          (saveSongFolders.length === 0 && (
             <div className="text-muted-foreground py-8 text-center">
               <p className="mb-2">재생목록이 없습니다.</p>
               <p>새 재생목록을 만들어보세요.</p>

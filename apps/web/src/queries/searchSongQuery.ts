@@ -172,6 +172,7 @@ export const useSaveMutation = () => {
       return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
+      console.log('error', error);
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {

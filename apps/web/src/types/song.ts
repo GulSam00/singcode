@@ -25,6 +25,7 @@ export interface PersonalSong extends Song {
 export interface SaveSong extends Song {
   user_id: string;
   song_id: string;
+  folder_id: string;
   created_at: string;
   isInToSingList: boolean;
   folder_name: string;
@@ -34,6 +35,14 @@ export interface SaveSong extends Song {
 export interface SongFolder {
   folderName: string;
   songList: SaveSong[];
+}
+
+export interface SongFolderList {
+  folderName: string;
+  folderIdList: string;
+
+  created_at: string;
+  updated_at: string;
 }
 
 export interface SearchSong extends Song {

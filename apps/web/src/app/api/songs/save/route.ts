@@ -27,9 +27,10 @@ export async function GET(): Promise<NextResponse<ApiResponse<SaveSong[]>>> {
 
     const saveSongs = data.map(item => ({
       id: item.user_id + item.song_id,
-      folder_name: item.folder_name,
       user_id: item.user_id,
       song_id: item.songs.id,
+      folder_id: item.folder_id,
+      folder_name: item.folder_name,
       created_at: item.created_at,
       updated_at: item.updated_at,
       title: item.songs.title,
@@ -85,17 +86,43 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     const { songId, folderName } = await request.json();
     const today = new Date();
 
-    const { error } = await supabase
-      .from('save_activities')
-      .insert({ user_id: userId, song_id: songId, folder_name: folderName, updated_at: today });
+    const { data: folderData, error: folderError } = await supabase
+      .from('save_folders')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('folder_name', folderName);
+
+    if (folderError) throw folderError;
+
+    let folderId;
+    if (folderData.length === 0) {
+      const { data: newFolderData, error: createFolderError } = await supabase
+        .from('save_folders')
+        .insert({ user_id: userId, folder_name: folderName })
+        .select('*');
+
+      if (createFolderError || !newFolderData) throw createFolderError;
+
+      folderId = newFolderData[0].id;
+    } else {
+      folderId = folderData[0].id;
+    }
+
+    const { error } = await supabase.from('save_activities').insert({
+      user_id: userId,
+      song_id: songId,
+      folder_id: folderId,
+      folder_name: folderName,
+      updated_at: today,
+    });
 
     if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in like API:', error);
+    console.error('Error in save API:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to post like song' },
+      { success: false, error: 'Failed to post save song' },
       { status: 500 },
     );
   }
@@ -117,9 +144,9 @@ export async function DELETE(request: Request): Promise<NextResponse<ApiResponse
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in search API:', error);
+    console.error('Error in save API:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to delete like song' },
+      { success: false, error: 'Failed to delete save song' },
       { status: 500 },
     );
   }

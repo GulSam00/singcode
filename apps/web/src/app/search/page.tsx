@@ -81,7 +81,7 @@ export default function SearchPage() {
                   handleToggleToSing(song.id, song.isToSing ? 'DELETE' : 'POST')
                 }
                 onToggleLike={() => handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST')}
-                onToggleSave={() => handleOpenSaveModal(song)}
+                onClickSave={() => handleOpenSaveModal(song)}
               />
             ))}
           </div>

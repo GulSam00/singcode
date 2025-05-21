@@ -8,14 +8,14 @@ interface IProps {
   song: SearchSong;
   onToggleToSing: () => void;
   onToggleLike: () => void;
-  onToggleSave: () => void;
+  onClickSave: () => void;
 }
 
 export default function SearchResultCard({
   song,
   onToggleToSing,
   onToggleLike,
-  onToggleSave,
+  onClickSave,
 }: IProps) {
   const { title, artist, num_tj, num_ky, isToSing, isLike, isSave } = song;
 
@@ -80,7 +80,7 @@ export default function SearchResultCard({
             size="icon"
             className={`h-8 w-8 ${isSave ? 'text-primary bg-primary/10' : ''}`}
             aria-label="재생목록에 추가"
-            onClick={onToggleSave}
+            onClick={onClickSave}
           >
             <div className="relative">
               <ListPlus className="h-4 w-4" />

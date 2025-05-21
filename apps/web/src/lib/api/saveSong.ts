@@ -1,10 +1,17 @@
 import { ApiResponse } from '@/types/apiRoute';
-import { SaveSong } from '@/types/song';
+import { SaveSong, SongFolderList } from '@/types/song';
 
 import { instance } from './client';
 
 export async function getSaveSong() {
   const response = await instance.get<ApiResponse<SaveSong[]>>('/songs/save');
+
+  return response.data;
+}
+
+export async function getSaveFolderSong() {
+  const response = await instance.get<ApiResponse<SongFolderList[]>>('/songs/save/folder');
+
   return response.data;
 }
 
