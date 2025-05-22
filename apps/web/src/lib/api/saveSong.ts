@@ -19,7 +19,7 @@ export async function patchSaveSong(body: { songIdArray: string[]; folderId: str
   return response.data;
 }
 
-export async function deleteSaveSong(body: { songId: string; folderId: string }) {
+export async function deleteSaveSong(body: { songIdArray: string[] }) {
   const response = await instance.delete<ApiResponse<void>>('/songs/save', { data: body });
   return response.data;
 }

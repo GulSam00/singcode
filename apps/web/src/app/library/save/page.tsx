@@ -12,6 +12,7 @@ import { useSaveSongQuery } from '@/queries/saveSongQuery';
 
 import AddFolderModal from './AddFolderModal';
 import DeleteFolderModal from './DeleteFolderModal';
+import DeleteModal from './DeleteModal';
 import FolderCard from './FolderCard';
 import MoveModal from './MoveModal';
 import RenameFolderModal from './RenameFolderModal';
@@ -28,6 +29,7 @@ export default function Page() {
   console.log('useSaveSongFolderQuery data', saveSongFolderList);
 
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
+  // song_id가 아닌 save_activities 테이블 요소의 id를 저장
   const [selectedSongs, setSelectedSongs] = useState<Record<string, boolean>>({});
   const [modalType, setModalType] = useState<ModalType>(null);
   const [selectedFolderId, setSelectedFolderId] = useState<string>('');
@@ -97,7 +99,6 @@ export default function Page() {
     return playlist.songList.every(song => selectedSongs[song.song_id]);
   };
 
-  // 선택된 곡 폴더 이동 (실제 구현에서는 이동 모달 열기)
   const handleMoveSelectedSongs = () => {
     if (totalSelectedSongs === 0) {
       toast.error('선택된 곡이 없습니다.');
@@ -115,13 +116,9 @@ export default function Page() {
     }
 
     setModalType('delete');
-
-    // toast.success(`${totalSelectedSongs}곡이 삭제되었습니다.`);
   };
 
   const handleDeleteFolder = (dstFolderId: string, dstFolderName: string) => {
-    //임시로 테스트
-    console.log('deleteFolder');
     setSelectedFolderId(dstFolderId);
     setSelectedFolderName(dstFolderName);
 
@@ -129,12 +126,13 @@ export default function Page() {
   };
 
   const handleRenameFolder = (dstFolderId: string, dstFolderName: string) => {
-    //임시로 테스트
-    console.log('renameFolder');
-
     setSelectedFolderId(dstFolderId);
     setSelectedFolderName(dstFolderName);
     setModalType('renameFolder');
+  };
+
+  const getSongIdArray = () => {
+    return Object.keys(selectedSongs).filter(id => selectedSongs[id]);
   };
 
   return (
@@ -236,7 +234,15 @@ export default function Page() {
         isLoading={isLoading}
         onClose={() => setModalType(null)}
         existingFolders={saveSongFolderList ?? []}
-        songIdArray={Object.keys(selectedSongs).filter(id => selectedSongs[id])}
+        songIdArray={getSongIdArray()}
+        setSelectedSongs={setSelectedSongs}
+      />
+
+      <DeleteModal
+        isOpen={modalType === 'delete'}
+        isLoading={isLoading}
+        onClose={() => setModalType(null)}
+        songIdArray={getSongIdArray()}
         setSelectedSongs={setSelectedSongs}
       />
 

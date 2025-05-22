@@ -29,7 +29,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<SaveSong[]>>> {
     if (saveError) throw saveError;
 
     const saveSongs = data.map(item => ({
-      id: item.user_id + item.song_id,
+      id: item.id,
       user_id: item.user_id,
       song_id: item.songs.id,
       folder_id: item.save_folders.id,
@@ -137,9 +137,6 @@ export async function PATCH(request: Request): Promise<NextResponse<ApiResponse<
 
     const { songIdArray, folderId } = await request.json();
 
-    // console.log('songIdArray', songIdArray);
-    // console.log('folderId', folderId);
-
     const { error } = await supabase
       .from('save_activities')
       .update({ folder_id: folderId })
@@ -163,12 +160,13 @@ export async function DELETE(request: Request): Promise<NextResponse<ApiResponse
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
-    const { songId, folderId } = await request.json();
+    const { songIdArray } = await request.json();
 
     const { error } = await supabase
-      .from('like_activities')
+      .from('save_activities')
       .delete()
-      .match({ user_id: userId, song_id: songId, folder_id: folderId });
+      .eq('user_id', userId)
+      .in('song_id', songIdArray);
 
     if (error) throw error;
 
