@@ -28,6 +28,7 @@ interface MoveModalProps {
   onClose: () => void;
   existingFolders: SaveSongFolderList[];
   songIdArray: string[];
+  setSelectedSongs: (selectedSongs: Record<string, boolean>) => void;
 }
 
 export default function MoveModal({
@@ -36,6 +37,7 @@ export default function MoveModal({
   onClose,
   existingFolders,
   songIdArray,
+  setSelectedSongs,
 }: MoveModalProps) {
   const [selectedFolderId, setSelectedFolderId] = useState<string>('');
   const { mutate: moveSongs } = useMoveSaveSongMutation();
@@ -65,6 +67,7 @@ export default function MoveModal({
       moveSongs({ songIdArray, folderId: selectedFolderId });
       toast.success('폴더로 이동되었습니다.');
       handleClose();
+      setSelectedSongs({});
     } catch (error) {
       console.error('폴더 이동 실패:', error);
       toast.error('폴더 이동에 실패했습니다.');

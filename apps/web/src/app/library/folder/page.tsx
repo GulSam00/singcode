@@ -105,10 +105,6 @@ export default function Page() {
     }
 
     setModalType('move');
-
-    toast.info(`${totalSelectedSongs}곡을 다른 재생목록으로 이동합니다.`, {
-      description: '폴더 이동 기능은 준비 중입니다.',
-    });
   };
 
   // 선택된 곡 삭제
@@ -120,7 +116,6 @@ export default function Page() {
 
     setModalType('delete');
 
-    // setSelectedSongs({});
     // toast.success(`${totalSelectedSongs}곡이 삭제되었습니다.`);
   };
 
@@ -242,6 +237,7 @@ export default function Page() {
         onClose={() => setModalType(null)}
         existingFolders={saveSongFolderList ?? []}
         songIdArray={Object.keys(selectedSongs).filter(id => selectedSongs[id])}
+        setSelectedSongs={setSelectedSongs}
       />
 
       <AddFolderModal
