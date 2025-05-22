@@ -64,8 +64,8 @@ export function useDeleteSaveSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ songId, folderId }: { songId: string; folderId: string }) => {
-      const data = await deleteSaveSong({ songId, folderId });
+    mutationFn: async ({ songIdArray }: { songIdArray: string[] }) => {
+      const data = await deleteSaveSong({ songIdArray });
       console.log('useDeleteSaveSongMutation', data);
       if (!data.success) {
         throw new Error(data.error);
