@@ -14,7 +14,7 @@ export async function postSaveSong(body: { songId: string; folderName: string })
   return response.data;
 }
 
-export async function patchSaveSong(body: { songIdArray: string[]; folderName: string }) {
+export async function patchSaveSong(body: { songIdArray: string[]; folderId: string }) {
   const response = await instance.patch<ApiResponse<void>>('/songs/save', body);
   return response.data;
 }

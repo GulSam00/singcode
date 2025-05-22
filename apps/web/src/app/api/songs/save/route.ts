@@ -137,6 +137,9 @@ export async function PATCH(request: Request): Promise<NextResponse<ApiResponse<
 
     const { songIdArray, folderId } = await request.json();
 
+    // console.log('songIdArray', songIdArray);
+    // console.log('folderId', folderId);
+
     const { error } = await supabase
       .from('save_activities')
       .update({ folder_id: folderId })

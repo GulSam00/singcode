@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
 
 import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
-import { deleteSaveSong, postSaveSong } from '@/lib/api/saveSong';
+import { postSaveSong } from '@/lib/api/saveSong';
 import { getSearchSong } from '@/lib/api/searchSong';
 import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
 import { postTotalStat } from '@/lib/api/totalStat';

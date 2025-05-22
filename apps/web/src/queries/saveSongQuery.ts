@@ -37,20 +37,14 @@ export function useSaveSongQuery() {
   });
 }
 
-export function useUpdateSaveSongMutation() {
+export function useMoveSaveSongMutation() {
   const queryClient = useQueryClient();
 
   // 낙관적 업데이트 도입 복잡, 그냥 새로 가져오기로
   return useMutation({
-    mutationFn: async ({
-      songIdArray,
-      folderName,
-    }: {
-      songIdArray: string[];
-      folderName: string;
-    }) => {
-      const data = await patchSaveSong({ songIdArray, folderName });
-      console.log('useUpdateSaveSongMutation', data);
+    mutationFn: async ({ songIdArray, folderId }: { songIdArray: string[]; folderId: string }) => {
+      const data = await patchSaveSong({ songIdArray, folderId });
+      console.log('useMoveSaveSongMutation', data);
       if (!data.success) {
         throw new Error(data.error);
       }

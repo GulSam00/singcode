@@ -13,6 +13,7 @@ import { useSaveSongQuery } from '@/queries/saveSongQuery';
 import AddFolderModal from './AddFolderModal';
 import DeleteFolderModal from './DeleteFolderModal';
 import FolderCard from './FolderCard';
+import MoveModal from './MoveModal';
 import RenameFolderModal from './RenameFolderModal';
 
 type ModalType = null | 'move' | 'delete' | 'addFolder' | 'renameFolder' | 'deleteFolder';
@@ -59,7 +60,7 @@ export default function Page() {
     const playlist = saveSongFolders.find(p => p.folder_id === dstFolderId);
     if (!playlist) return;
 
-    const allSongIds = playlist.songList.map(song => song.id);
+    const allSongIds = playlist.songList.map(song => song.song_id);
     const areAllSelected = allSongIds.every(id => selectedSongs[id]);
 
     const newSelectedSongs = { ...selectedSongs };
@@ -83,7 +84,7 @@ export default function Page() {
     const playlist = saveSongFolders.find(p => p.folder_id === dstFolderId);
     if (!playlist) return 0;
 
-    return playlist.songList.filter(song => selectedSongs[song.id]).length;
+    return playlist.songList.filter(song => selectedSongs[song.song_id]).length;
   };
 
   // 재생목록 내 모든 곡이 선택되었는지 확인
@@ -93,7 +94,7 @@ export default function Page() {
     const playlist = saveSongFolders.find(p => p.folder_id === dstFolderId);
     if (!playlist || playlist.songList.length === 0) return false;
 
-    return playlist.songList.every(song => selectedSongs[song.id]);
+    return playlist.songList.every(song => selectedSongs[song.song_id]);
   };
 
   // 선택된 곡 폴더 이동 (실제 구현에서는 이동 모달 열기)
@@ -234,6 +235,14 @@ export default function Page() {
             ))}
         </div>
       </ScrollArea>
+
+      <MoveModal
+        isOpen={modalType === 'move'}
+        isLoading={isLoading}
+        onClose={() => setModalType(null)}
+        existingFolders={saveSongFolderList ?? []}
+        songIdArray={Object.keys(selectedSongs).filter(id => selectedSongs[id])}
+      />
 
       <AddFolderModal
         isOpen={modalType === 'addFolder'}

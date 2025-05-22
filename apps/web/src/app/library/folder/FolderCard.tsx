@@ -98,13 +98,13 @@ export default function FolderCard({
               <div className="space-y-2">
                 {folder.songList.map(song => (
                   <div
-                    key={song.id}
+                    key={song.song_id}
                     className="flex items-center gap-3 border-b py-2 last:border-0"
                   >
                     <Checkbox
-                      id={`song-${song.id}`}
-                      checked={!!selectedSongs[song.id]}
-                      onCheckedChange={() => toggleSongSelection(song.id)}
+                      id={`song-${song.song_id}`}
+                      checked={!!selectedSongs[song.song_id]}
+                      onCheckedChange={() => toggleSongSelection(song.song_id)}
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
