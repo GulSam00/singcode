@@ -7,13 +7,11 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  useDeleteSaveFolderSongMutation,
-  useSaveSongFolderQuery,
-} from '@/queries/saveSongFolderQuery';
+import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
 import { useSaveSongQuery } from '@/queries/saveSongQuery';
 
 import AddFolderModal from './AddFolderModal';
+import DeleteFolderModal from './DeleteFolderModal';
 import PlaylistCard from './PlaylistCard';
 
 type ModalType = null | 'move' | 'delete' | 'addFolder' | 'renameFolder' | 'deleteFolder';
@@ -24,13 +22,14 @@ export default function PlaylistsPage() {
   const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
   const isLoading = isLoadingSongFolders || isLoadingSaveFolderList;
 
-  const { mutate: deleteSaveFolderSong } = useDeleteSaveFolderSongMutation();
   console.log('useSaveSongQuery data', saveSongFolders);
   console.log('useSaveSongFolderQuery data', saveSongFolderList);
 
   const [expandedPlaylists, setExpandedPlaylists] = useState<Record<string, boolean>>({});
   const [selectedSongs, setSelectedSongs] = useState<Record<string, boolean>>({});
   const [modalType, setModalType] = useState<ModalType>(null);
+  const [selectedFolderId, setSelectedFolderId] = useState<string>('');
+  const [selectedFolderName, setSelectedFolderName] = useState<string>('');
 
   const router = useRouter();
 
@@ -120,10 +119,12 @@ export default function PlaylistsPage() {
   };
 
   // 재생목록 삭제
-  const deletePlaylist = (dstFolderId: string) => {
+  const deletePlaylist = (dstFolderId: string, dstFolderName: string) => {
     //임시로 테스트
     console.log('deletePlaylist', dstFolderId);
-    deleteSaveFolderSong({ folderId: dstFolderId });
+    setSelectedFolderId(dstFolderId);
+    setSelectedFolderName(dstFolderName);
+
     setModalType('deleteFolder');
   };
 
@@ -197,7 +198,7 @@ export default function PlaylistsPage() {
               <PlaylistCard
                 key={folder.id + index}
                 {...{
-                  playlist: {
+                  folder: {
                     folder_name: folder.folder_name,
                     folder_id: folder.id,
                     songList:
@@ -231,6 +232,14 @@ export default function PlaylistsPage() {
         isLoading={isLoading}
         onClose={() => setModalType(null)}
         existingPlaylists={saveSongFolderList ?? []}
+      />
+
+      <DeleteFolderModal
+        isOpen={modalType === 'deleteFolder'}
+        isLoading={isLoading}
+        onClose={() => setModalType(null)}
+        selectedFolderId={selectedFolderId}
+        selectedFolderName={selectedFolderName}
       />
     </div>
   );

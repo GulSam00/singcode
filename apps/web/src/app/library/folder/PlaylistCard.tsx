@@ -7,20 +7,20 @@ import { Separator } from '@/components/ui/separator';
 import { SaveSongFolder } from '@/types/song';
 
 interface IProps {
-  playlist: SaveSongFolder;
+  folder: SaveSongFolder;
   selectedSongs: Record<string, boolean>;
   expandedPlaylists: Record<string, boolean>;
-  areAllSongsSelected: (playlistId: string) => boolean;
-  toggleAllSongsInPlaylist: (playlistId: string) => void;
-  getSelectedSongCount: (playlistId: string) => number;
+  areAllSongsSelected: (folderId: string) => boolean;
+  toggleAllSongsInPlaylist: (folderId: string) => void;
+  getSelectedSongCount: (folderId: string) => number;
   toggleSongSelection: (songId: string) => void;
-  renamePlaylist: (playlistId: string) => void;
-  deletePlaylist: (playlistId: string) => void;
-  togglePlaylist: (playlistId: string) => void;
+  renamePlaylist: (folderId: string) => void;
+  deletePlaylist: (folderId: string, folderName: string) => void;
+  togglePlaylist: (folderId: string) => void;
 }
 
 export default function PlaylistCard({
-  playlist,
+  folder,
   selectedSongs,
   expandedPlaylists,
   areAllSongsSelected,
@@ -37,13 +37,13 @@ export default function PlaylistCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Checkbox
-              id={`playlist-${playlist.folder_id}`}
-              checked={areAllSongsSelected(playlist.folder_id)}
-              onCheckedChange={() => toggleAllSongsInPlaylist(playlist.folder_id)}
-              disabled={playlist.songList.length === 0}
+              id={`folder-${folder.folder_id}`}
+              checked={areAllSongsSelected(folder.folder_id)}
+              onCheckedChange={() => toggleAllSongsInPlaylist(folder.folder_id)}
+              disabled={folder.songList.length === 0}
             />
             <CardTitle className="flex w-40 items-center gap-2 overflow-hidden text-lg text-ellipsis">
-              {playlist.folder_name}
+              {folder.folder_name}
             </CardTitle>
           </div>
 
@@ -51,7 +51,7 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => renamePlaylist(playlist.folder_id)}
+              onClick={() => renamePlaylist(folder.folder_id)}
               className="h-8 w-8 p-0"
             >
               <Edit className="h-4 w-4" />
@@ -59,7 +59,7 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => deletePlaylist(playlist.folder_id)}
+              onClick={() => deletePlaylist(folder.folder_id, folder.folder_name)}
               className="text-destructive hover:text-destructive h-8 w-8 p-0"
             >
               <Trash2 className="h-4 w-4" />
@@ -67,10 +67,10 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => togglePlaylist(playlist.folder_id)}
+              onClick={() => togglePlaylist(folder.folder_id)}
               className="h-8 w-8 p-0"
             >
-              {expandedPlaylists[playlist.folder_id] ? (
+              {expandedPlaylists[folder.folder_id] ? (
                 <ChevronUp className="h-4 w-4" />
               ) : (
                 <ChevronDown className="h-4 w-4" />
@@ -80,23 +80,23 @@ export default function PlaylistCard({
         </div>
         <div className="flex gap-2">
           <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-normal">
-            {playlist.songList.length}곡
+            {folder.songList.length}곡
           </span>
-          {getSelectedSongCount(playlist.folder_id) > 0 && (
+          {getSelectedSongCount(folder.folder_id) > 0 && (
             <span className="bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-normal">
-              {getSelectedSongCount(playlist.folder_id)}곡 선택됨
+              {getSelectedSongCount(folder.folder_id)}곡 선택됨
             </span>
           )}
         </div>
       </CardHeader>
 
-      {expandedPlaylists[playlist.folder_id] && (
+      {expandedPlaylists[folder.folder_id] && (
         <CardContent className="p-0">
           <Separator className="my-2" />
           <div className="px-4">
-            {playlist.songList.length > 0 ? (
+            {folder.songList.length > 0 ? (
               <div className="space-y-2">
-                {playlist.songList.map(song => (
+                {folder.songList.map(song => (
                   <div
                     key={song.id}
                     className="flex items-center gap-3 border-b py-2 last:border-0"
