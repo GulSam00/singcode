@@ -19,17 +19,9 @@ export default function useSongInfo() {
   };
 
   const handleDeleteArray = () => {
-    console.log('deleteLikeSelected', deleteLikeSelected);
     deleteLikeSongArray(deleteLikeSelected);
     setDeleteLikeSelected([]);
   };
-
-  // const handleDelete = () => {
-  //   deleteLikeSelected.forEach(songId => {
-  //     deleteLikeSong(songId);
-  //   });
-  //   setDeleteLikeSelected([]);
-  // };
 
   const totalSelectedCount = deleteLikeSelected.length;
 

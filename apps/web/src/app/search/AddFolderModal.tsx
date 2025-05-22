@@ -40,8 +40,6 @@ export default function AddFolderModal({
 }: IProps) {
   const { data: saveSongFolderList, isLoading } = useSaveSongFolderQuery();
 
-  console.log('saveSongFolderList', saveSongFolderList);
-
   const [folderName, setFolderName] = useState<string>('');
   const [isExistingPlaylist, setIsExistingPlaylist] = useState(false);
 

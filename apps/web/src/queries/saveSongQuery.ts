@@ -28,8 +28,6 @@ export function useSaveSongQuery() {
         }
       });
 
-      console.log('rawData', rawData);
-      console.log('songFolders', songFolders);
       return songFolders;
     },
     staleTime: 1000 * 60 * 5,

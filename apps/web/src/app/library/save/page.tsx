@@ -25,9 +25,6 @@ export default function Page() {
   const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
   const isLoading = isLoadingSongFolders || isLoadingSaveFolderList;
 
-  console.log('useSaveSongQuery data', saveSongFolders);
-  console.log('useSaveSongFolderQuery data', saveSongFolderList);
-
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
   // song_id가 아닌 save_activities 테이블 요소의 id를 저장
   const [selectedSongs, setSelectedSongs] = useState<Record<string, boolean>>({});

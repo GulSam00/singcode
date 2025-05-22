@@ -29,7 +29,6 @@ export function usePostSaveSongFolderMutation() {
   return useMutation({
     mutationFn: async ({ folderName }: { folderName: string }) => {
       const data = await postSaveFolderSong({ folderName });
-      console.log('usePostSaveSongFolderMutation', data);
       if (!data.success) {
         throw new Error(data.error);
       }
@@ -50,7 +49,6 @@ export function useRenameSaveSongFolderMutation() {
   return useMutation({
     mutationFn: async ({ folderId, folderName }: { folderId: string; folderName: string }) => {
       const data = await patchSaveFolderSong({ folderId, folderName });
-      console.log('useRenameSaveSongFolderMutation', data);
       if (!data.success) {
         throw new Error(data.error);
       }
@@ -71,7 +69,6 @@ export function useDeleteSaveFolderSongMutation() {
   return useMutation({
     mutationFn: async ({ folderId }: { folderId: string }) => {
       const data = await deleteSaveFolderSong({ folderId });
-      console.log('useDeleteSaveFolderSongMutation', data);
       if (!data.success) {
         throw new Error(data.error);
       }

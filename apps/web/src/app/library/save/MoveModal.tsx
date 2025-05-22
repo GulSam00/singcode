@@ -60,9 +60,6 @@ export default function MoveModal({
       return;
     }
 
-    console.log('selectedFolderId', selectedFolderId);
-    console.log('songIdArray', songIdArray);
-
     try {
       moveSongs({ songIdArray, folderId: selectedFolderId });
       toast.success('폴더로 이동되었습니다.');
