@@ -15,7 +15,7 @@ const menuItems = [
   },
 
   {
-    id: 'folder',
+    id: 'save',
     title: '재생목록 관리',
     description: '재생목록을 관리합니다',
     icon: <Folder className="h-5 w-5" />,
