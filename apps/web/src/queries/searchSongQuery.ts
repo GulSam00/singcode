@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
+import { postSaveSong } from '@/lib/api/saveSong';
 import { getSearchSong } from '@/lib/api/searchSong';
 import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
 import { postTotalStat } from '@/lib/api/totalStat';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
-export const useSearchSongSongQuery = (
+export const useSearchSongQuery = (
   search: string,
   searchType: string,
   isAuthenticated: boolean,
@@ -28,62 +29,12 @@ export const useSearchSongSongQuery = (
   });
 };
 
-export const useToggleLikeMutation = () => {
+export const useToggleToSingMutation = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     // 낙관적 업데이트 검증 코드
     // mutationFn: async ({ songId, method }: { songId: string; method: Method }) => {
     //   await new Promise(resolve => setTimeout(resolve, 2000));
-    mutationFn: ({ songId, method }: { songId: string; method: Method }) => {
-      if (method === 'POST') {
-        return Promise.all([
-          postLikeSong({ songId }),
-          postTotalStat({ songId, countType: 'like_count', isMinus: false }),
-        ]);
-      } else {
-        return Promise.all([
-          deleteLikeSong({ songId }),
-          postTotalStat({ songId, countType: 'like_count', isMinus: true }),
-        ]);
-      }
-    },
-    onMutate: async ({
-      songId,
-      method,
-      query,
-      searchType,
-    }: {
-      songId: string;
-      method: Method;
-      query: string;
-      searchType: string;
-    }) => {
-      queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
-      const prev = queryClient.getQueryData(['searchSong', query, searchType]);
-      const isLiked = method === 'POST';
-      queryClient.setQueryData(['searchSong', query, searchType], (old: SearchSong[] = []) =>
-        old.map(song => (song.id === songId ? { ...song, isLiked } : song)),
-      );
-
-      return { prev, query, searchType };
-    },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
-    },
-    onSettled: (data, error, context) => {
-      queryClient.invalidateQueries({
-        queryKey: ['searchSong', context?.query, context?.searchType],
-      });
-      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
-      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
-    },
-  });
-};
-
-export const useToggleToSingMutation = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
     mutationFn: async ({ songId, method }: { songId: string; method: Method }) => {
       if (method === 'POST') {
         return postToSingSong({ songId });
@@ -111,6 +62,8 @@ export const useToggleToSingMutation = () => {
       return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
@@ -120,6 +73,99 @@ export const useToggleToSingMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+    },
+  });
+};
+
+export const useToggleLikeMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ songId, method }: { songId: string; method: Method }) => {
+      if (method === 'POST') {
+        return Promise.all([
+          postLikeSong({ songId }),
+          postTotalStat({ songId, countType: 'like_count', isMinus: false }),
+        ]);
+      } else {
+        return Promise.all([
+          deleteLikeSong({ songId }),
+          postTotalStat({ songId, countType: 'like_count', isMinus: true }),
+        ]);
+      }
+    },
+    onMutate: async ({
+      songId,
+      method,
+      query,
+      searchType,
+    }: {
+      songId: string;
+      method: Method;
+      query: string;
+      searchType: string;
+    }) => {
+      queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
+      const prev = queryClient.getQueryData(['searchSong', query, searchType]);
+      const isLike = method === 'POST';
+      queryClient.setQueryData(['searchSong', query, searchType], (old: SearchSong[] = []) =>
+        old.map(song => (song.id === songId ? { ...song, isLike } : song)),
+      );
+
+      return { prev, query, searchType };
+    },
+    onError: (error, variables, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
+      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
+    },
+    onSettled: (data, error, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ['searchSong', context?.query, context?.searchType],
+      });
+      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+    },
+  });
+};
+
+export const useSaveMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ songId, folderName }: { songId: string; folderName: string }) => {
+      return postSaveSong({ songId, folderName });
+    },
+    onMutate: async ({
+      songId,
+      query,
+      searchType,
+    }: {
+      songId: string;
+      folderName: string;
+      query: string;
+      searchType: string;
+    }) => {
+      queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
+      const prev = queryClient.getQueryData(['searchSong', query, searchType]);
+      queryClient.setQueryData(['searchSong', query, searchType], (old: SearchSong[] = []) =>
+        old.map(song => (song.id === songId ? { ...song, isSave: true } : song)),
+      );
+
+      return { prev, query, searchType };
+    },
+    onError: (error, variables, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
+      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
+    },
+    onSettled: (data, error, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ['searchSong', context?.query, context?.searchType],
+      });
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolderList'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
 };

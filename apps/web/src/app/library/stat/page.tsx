@@ -22,10 +22,10 @@ export default function StatsPage() {
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-2xl font-bold">노래방 통계</h1>
+        <h1 className="text-2xl font-bold">노래 통계</h1>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-40rem)]">
+      <ScrollArea className="h-[calc(100vh-20rem)]">
         <UserRankingList title="가장 많이 부른 곡" items={userStat.slice(0, 10)} />
       </ScrollArea>
     </div>

@@ -77,5 +77,5 @@ console.log(`
     - 실패: ${resultsLog.failed.length}곡
   `);
 
-updateDataLog(resultsLog.success, "log/findKYByOpenSuccess.txt");
-updateDataLog(resultsLog.failed, "log/findKYByOpenFailed.txt");
+updateDataLog(resultsLog.success, "findKYByOpenSuccess.txt");
+updateDataLog(resultsLog.failed, "findKYByOpenFailed.txt");

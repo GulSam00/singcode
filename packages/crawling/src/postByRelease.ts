@@ -39,5 +39,5 @@ console.log("songs", songs.length);
 
 const result: LogData<Song> = await postSongsDB(songs);
 
-updateDataLog(result.success, "log/postByReleaseSuccess.txt");
-updateDataLog(result.failed, "log/postByReleaseFailed.txt");
+updateDataLog(result.success, "postByReleaseSuccess.txt");
+updateDataLog(result.failed, "postByReleaseFailed.txt");

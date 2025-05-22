@@ -56,9 +56,9 @@ for (const song of transData) {
 
 // 만약 unknownData가 있다면 해당 데이터를 배열에 담아서 끝났을 때 error.txt에 저장
 if (unknownData.length > 0) {
-  updateDataLog(unknownData, "log/errorLog.txt");
+  updateDataLog(unknownData, "errorLog.txt");
 }
 
 if (transData.length > 0) {
-  updateDataLog(transData, "log/transDataLog.txt");
+  updateDataLog(transData, "transDataLog.txt");
 }

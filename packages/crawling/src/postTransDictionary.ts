@@ -22,10 +22,10 @@ const refreshData = async () => {
 
   const result = await postTransDictionariesDB(transData);
 
-  updateDataLog(result.success, "log/postTransDictionarySuccess.txt");
-  updateDataLog(result.failed, "log/postTransDictionaryFailed.txt");
+  updateDataLog(result.success, "postTransDictionarySuccess.txt");
+  updateDataLog(result.failed, "postTransDictionaryFailed.txt");
   unknownData.length > 0 &&
-    updateDataLog(unknownData, "log/postTransDictionaryUnknown.txt");
+    updateDataLog(unknownData, "postTransDictionaryUnknown.txt");
 
   transData.length = 0;
   unknownData.length = 0;

@@ -98,25 +98,25 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<So
         }));
         break;
       }
-      case 'saved_count': {
-        const { data: savedCountData, error: savedCountError } = await supabase
+      case 'save_count': {
+        const { data: saveCountData, error: saveCountError } = await supabase
           .from('total_stats')
           .select('*, songs(*)')
-          .gt('saved_count', 0)
-          .order('saved_count', { ascending: false })
+          .gt('save_count', 0)
+          .order('save_count', { ascending: false })
           .limit(10);
 
-        if (savedCountError) {
+        if (saveCountError) {
           return NextResponse.json(
             {
               success: false,
-              error: savedCountError?.message || 'Unknown error',
+              error: saveCountError?.message || 'Unknown error',
             },
             { status: 500 },
           );
         }
-        resonse = savedCountData.map(item => ({
-          value: item.saved_count,
+        resonse = saveCountData.map(item => ({
+          value: item.save_count,
           song: item.songs,
         }));
         break;
@@ -153,7 +153,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     const { songId, countType, isMinus } = await request.json();
 
     // countType 유효성 검사
-    if (!['sing_count', 'like_count', 'saved_count'].includes(countType)) {
+    if (!['sing_count', 'like_count', 'save_count'].includes(countType)) {
       return NextResponse.json({ success: false, error: 'Invalid count type' }, { status: 400 });
     }
 
@@ -176,7 +176,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
         [countType]: 1,
         sing_count: countType === 'sing_count' ? 1 : 0,
         like_count: countType === 'like_count' ? 1 : 0,
-        saved_count: countType === 'saved_count' ? 1 : 0,
+        save_count: countType === 'save_count' ? 1 : 0,
       });
 
       if (insertError) throw insertError;

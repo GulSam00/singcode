@@ -12,7 +12,7 @@ import { useLikeSongQuery } from '@/queries/likeSongQuery';
 
 import SongItem from './SongItem';
 
-export default function LikedPage() {
+export default function LikePage() {
   const router = useRouter();
   const { data, isLoading } = useLikeSongQuery();
   const { deleteLikeSelected, handleToggleSelect, handleDeleteArray } = useSongInfo();
@@ -43,7 +43,7 @@ export default function LikedPage() {
 
       <Separator className="mb-4" />
 
-      <ScrollArea className="h-[calc(100vh-10rem)]">
+      <ScrollArea className="h-[calc(100vh-12rem)]">
         {likedSongs.map(song => (
           <SongItem
             key={song.song_id}

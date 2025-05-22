@@ -6,10 +6,13 @@ import { SearchSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 interface DBSong extends Song {
+  tosings: {
+    user_id: string;
+  }[];
   like_activities: {
     user_id: string;
   }[];
-  tosings: {
+  save_activities: {
     user_id: string;
   }[];
 }
@@ -53,9 +56,10 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
         num_tj: song.num_tj,
         num_ky: song.num_ky,
         // like_activities에서 현재 사용자의 데이터가 있는지 확인
-        isLiked: false,
+        isLike: false,
         // tosings에서 현재 사용자의 데이터가 있는지 확인
         isToSing: false,
+        isSave: false,
       }));
 
       return NextResponse.json({
@@ -71,10 +75,13 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       .select(
         `
         *,
+        tosings (
+          user_id
+        ),
         like_activities (
           user_id
         ),
-        tosings (
+        save_activities (
           user_id
         )
       `,
@@ -98,10 +105,12 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       artist: song.artist,
       num_tj: song.num_tj,
       num_ky: song.num_ky,
-      // like_activities에서 현재 사용자의 데이터가 있는지 확인
-      isLiked: song.like_activities?.some(like => like.user_id === userId) ?? false,
+
       // tosings에서 현재 사용자의 데이터가 있는지 확인
       isToSing: song.tosings?.some(tosing => tosing.user_id === userId) ?? false,
+      // like_activities에서 현재 사용자의 데이터가 있는지 확인
+      isLike: song.like_activities?.some(like => like.user_id === userId) ?? false,
+      isSave: song.save_activities?.some(save => save.user_id === userId) ?? false,
     }));
 
     return NextResponse.json({
