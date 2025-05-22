@@ -13,6 +13,7 @@ import { useSaveSongQuery } from '@/queries/saveSongQuery';
 import AddFolderModal from './AddFolderModal';
 import DeleteFolderModal from './DeleteFolderModal';
 import FolderCard from './FolderCard';
+import RenameFolderModal from './RenameFolderModal';
 
 type ModalType = null | 'move' | 'delete' | 'addFolder' | 'renameFolder' | 'deleteFolder';
 
@@ -95,41 +96,48 @@ export default function Page() {
     return playlist.songList.every(song => selectedSongs[song.id]);
   };
 
-  // 선택된 곡 삭제
-  const deleteSelectedSongs = () => {
-    if (totalSelectedSongs === 0) {
-      toast.error('선택된 곡이 없습니다.');
-      return;
-    }
-
-    setSelectedSongs({});
-    toast.success(`${totalSelectedSongs}곡이 삭제되었습니다.`);
-  };
-
   // 선택된 곡 폴더 이동 (실제 구현에서는 이동 모달 열기)
-  const moveSelectedSongs = () => {
+  const handleMoveSelectedSongs = () => {
     if (totalSelectedSongs === 0) {
       toast.error('선택된 곡이 없습니다.');
       return;
     }
+
+    setModalType('move');
 
     toast.info(`${totalSelectedSongs}곡을 다른 재생목록으로 이동합니다.`, {
       description: '폴더 이동 기능은 준비 중입니다.',
     });
   };
 
-  // 재생목록 삭제
-  const deleteFolder = (dstFolderId: string, dstFolderName: string) => {
+  // 선택된 곡 삭제
+  const handleDeleteSelectedSongs = () => {
+    if (totalSelectedSongs === 0) {
+      toast.error('선택된 곡이 없습니다.');
+      return;
+    }
+
+    setModalType('delete');
+
+    // setSelectedSongs({});
+    // toast.success(`${totalSelectedSongs}곡이 삭제되었습니다.`);
+  };
+
+  const handleDeleteFolder = (dstFolderId: string, dstFolderName: string) => {
     //임시로 테스트
-    console.log('deleteFolder', dstFolderId);
+    console.log('deleteFolder');
     setSelectedFolderId(dstFolderId);
     setSelectedFolderName(dstFolderName);
 
     setModalType('deleteFolder');
   };
 
-  // 재생목록 편집 (실제 구현에서는 편집 모달 열기)
-  const renameFolder = (dstFolderId: string) => {
+  const handleRenameFolder = (dstFolderId: string, dstFolderName: string) => {
+    //임시로 테스트
+    console.log('renameFolder');
+
+    setSelectedFolderId(dstFolderId);
+    setSelectedFolderName(dstFolderName);
     setModalType('renameFolder');
   };
 
@@ -161,7 +169,7 @@ export default function Page() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setModalType('move')}
+                onClick={handleMoveSelectedSongs}
                 className="flex items-center gap-1"
               >
                 <FolderInput className="h-4 w-4" />
@@ -170,7 +178,7 @@ export default function Page() {
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={() => setModalType('delete')}
+                onClick={handleDeleteSelectedSongs}
                 className="flex items-center gap-1"
               >
                 <Trash2 className="h-4 w-4" />
@@ -210,8 +218,8 @@ export default function Page() {
                   toggleAllSongsInFolder,
                   getSelectedSongCount,
                   toggleSongSelection,
-                  renameFolder,
-                  deleteFolder,
+                  handleRenameFolder,
+                  handleDeleteFolder,
                   toggleFolder,
                 }}
               />
@@ -232,6 +240,15 @@ export default function Page() {
         isLoading={isLoading}
         onClose={() => setModalType(null)}
         existingFolders={saveSongFolderList ?? []}
+      />
+
+      <RenameFolderModal
+        isOpen={modalType === 'renameFolder'}
+        isLoading={isLoading}
+        onClose={() => setModalType(null)}
+        existingFolders={saveSongFolderList ?? []}
+        folderId={selectedFolderId}
+        folderName={selectedFolderName}
       />
 
       <DeleteFolderModal

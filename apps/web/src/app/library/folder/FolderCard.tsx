@@ -14,8 +14,8 @@ interface IProps {
   toggleAllSongsInFolder: (folderId: string) => void;
   getSelectedSongCount: (folderId: string) => number;
   toggleSongSelection: (songId: string) => void;
-  renameFolder: (folderId: string) => void;
-  deleteFolder: (folderId: string, folderName: string) => void;
+  handleRenameFolder: (folderId: string, folderName: string) => void;
+  handleDeleteFolder: (folderId: string, folderName: string) => void;
   toggleFolder: (folderId: string) => void;
 }
 
@@ -27,8 +27,8 @@ export default function FolderCard({
   toggleAllSongsInFolder,
   getSelectedSongCount,
   toggleSongSelection,
-  renameFolder,
-  deleteFolder,
+  handleRenameFolder,
+  handleDeleteFolder,
   toggleFolder,
 }: IProps) {
   return (
@@ -51,7 +51,7 @@ export default function FolderCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => renameFolder(folder.folder_id)}
+              onClick={() => handleRenameFolder(folder.folder_id, folder.folder_name)}
               className="h-8 w-8 p-0"
             >
               <Edit className="h-4 w-4" />
@@ -59,7 +59,7 @@ export default function FolderCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => deleteFolder(folder.folder_id, folder.folder_name)}
+              onClick={() => handleDeleteFolder(folder.folder_id, folder.folder_name)}
               className="text-destructive hover:text-destructive h-8 w-8 p-0"
             >
               <Trash2 className="h-4 w-4" />
