@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useMoveSaveSongMutation } from '@/queries/saveSongQuery';
 import {
   useSaveMutation,
   useSearchSongQuery,
@@ -13,18 +14,21 @@ import { SearchSong } from '@/types/song';
 
 type SearchType = 'title' | 'artist';
 
+type SaveModalType = '' | 'POST' | 'PATCH';
+
 export default function useSearchSong() {
   const { isAuthenticated } = useAuthStore();
 
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [searchType, setSearchType] = useState<SearchType>('title');
-  const [isSaveModal, setIsSaveModal] = useState(false);
+  const [saveModalType, setSaveModalType] = useState<SaveModalType>('');
   const [selectedSaveSong, setSelectedSaveSong] = useState<SearchSong | null>(null);
   const { data: searchResults, isLoading } = useSearchSongQuery(query, searchType, isAuthenticated);
   const { mutate: toggleToSing } = useToggleToSingMutation();
   const { mutate: toggleLike } = useToggleLikeMutation();
-  const { mutate: mutateSave } = useSaveMutation();
+  const { mutate: postSong } = useSaveMutation();
+  const { mutate: moveSong } = useMoveSaveSongMutation();
 
   const searchSongs = searchResults ?? [];
 
@@ -53,18 +57,21 @@ export default function useSearchSong() {
     toggleLike({ songId, method, query, searchType });
   };
 
-  const handleOpenSaveModal = (song: SearchSong) => {
+  const handleToggleSave = async (song: SearchSong, method: Method) => {
     if (!isAuthenticated) {
       toast.error('로그인이 필요해요.');
       return;
     }
-
     setSelectedSaveSong(song);
-    setIsSaveModal(true);
+    setSaveModalType(method === 'POST' ? 'POST' : 'PATCH');
   };
 
-  const saveSong = async (songId: string, folderName: string) => {
-    mutateSave({ songId, folderName, query, searchType });
+  const postSaveSong = async (songId: string, folderName: string) => {
+    postSong({ songId, folderName, query, searchType });
+  };
+
+  const patchSaveSong = async (songId: string, folderId: string) => {
+    moveSong({ songIdArray: [songId], folderId });
   };
 
   return {
@@ -78,10 +85,11 @@ export default function useSearchSong() {
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
-    handleOpenSaveModal,
-    isSaveModal,
-    setIsSaveModal,
+    handleToggleSave,
+    saveModalType,
+    setSaveModalType,
     selectedSaveSong,
-    saveSong,
+    postSaveSong,
+    patchSaveSong,
   };
 }

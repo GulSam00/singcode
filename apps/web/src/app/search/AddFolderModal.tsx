@@ -20,33 +20,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useSaveSongQuery } from '@/queries/saveSongQuery';
-import { Method } from '@/types/common';
-import { SearchSong } from '@/types/song';
+import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
+import { SaveSongFolderList, SearchSong } from '@/types/song';
 
 interface IProps {
-  isOpen: boolean;
+  modalType: '' | 'POST' | 'PATCH';
   song: SearchSong;
-  setIsSaveModal: (temp: boolean) => void;
-  saveSong: (songId: string, folderName: string, method: Method) => void;
+  closeModal: () => void;
+  postSaveSong: (songId: string, folderName: string) => void;
+  patchSaveSong: (songId: string, folderId: string) => void;
 }
 
-export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong }: IProps) {
-  const { data: saveSongFolder, isLoading } = useSaveSongQuery();
+export default function AddFolderModal({
+  modalType,
+  song,
+  closeModal,
+  postSaveSong,
+  patchSaveSong,
+}: IProps) {
+  const { data: saveSongFolderList, isLoading } = useSaveSongFolderQuery();
+
+  console.log('saveSongFolderList', saveSongFolderList);
 
   const [folderName, setFolderName] = useState<string>('');
-
   const [isExistingPlaylist, setIsExistingPlaylist] = useState(false);
 
-  console.log('useSaveSongQuery data', saveSongFolder);
-  const { id, title, artist } = song;
+  const { id: songId, title, artist } = song;
+
+  const LOGIC_TEXT = modalType === 'POST' ? '저장' : '수정';
 
   const handlevalueChange = (folderName: string) => {
-    if (!saveSongFolder) return;
-
-    const index = saveSongFolder.findIndex(
-      (folder: { folder_name: string }) => folder.folder_name === folderName,
-    );
+    if (!saveSongFolderList) return;
     setFolderName(folderName);
   };
 
@@ -58,42 +62,52 @@ export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong 
   // 모달 닫기 핸들러
   const handleClose = () => {
     resetModal();
-    setIsSaveModal(false);
+    closeModal();
   };
 
   const handleSave = () => {
-    saveSong(id, folderName, 'POST');
-    setIsSaveModal(false);
+    if (modalType === 'POST') {
+      postSaveSong(songId, folderName);
+    } else {
+      if (!saveSongFolderList) return;
+
+      const folderId =
+        saveSongFolderList.find((folder: SaveSongFolderList) => folder.folder_name === folderName)
+          ?.id || '';
+
+      patchSaveSong(songId, folderId);
+    }
+    closeModal();
   };
 
   // input 값이 변경될 때 기존 재생목록과 일치 여부 확인
   useEffect(() => {
-    if (folderName.trim() === '' || !saveSongFolder) {
+    if (folderName.trim() === '' || !saveSongFolderList) {
       setIsExistingPlaylist(false);
       return;
     }
 
-    const matched = saveSongFolder?.find(
-      (folder: { folder_name: string }) => folder.folder_name === folderName,
+    const matched = saveSongFolderList?.find(
+      (folder: SaveSongFolderList) => folder.folder_name === folderName,
     );
     if (matched) {
       setIsExistingPlaylist(true);
     } else {
       setIsExistingPlaylist(false);
     }
-  }, [folderName, saveSongFolder]);
+  }, [folderName, saveSongFolderList]);
 
   useEffect(() => {
-    if (!saveSongFolder || saveSongFolder.length === 0) return;
+    if (!saveSongFolderList || saveSongFolderList.length === 0) return;
 
-    setFolderName(saveSongFolder[0].folder_name || '');
-  }, [saveSongFolder]);
+    setFolderName(saveSongFolderList[0].folder_name || '');
+  }, [saveSongFolderList]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={modalType !== ''} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>재생목록에 저장</DialogTitle>
+          <DialogTitle>재생목록 {LOGIC_TEXT}</DialogTitle>
         </DialogHeader>
 
         {/* 곡 정보 */}
@@ -111,10 +125,10 @@ export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong 
                 <SelectValue placeholder="재생목록을 선택하세요" />
               </SelectTrigger>
               <SelectContent>
-                {saveSongFolder &&
-                  saveSongFolder.map((folder, index) => (
-                    <SelectItem key={folder.folder_name + index} value={folder.folder_name}>
-                      {folder.folder_name} ({folder.songList.length}곡)
+                {saveSongFolderList &&
+                  saveSongFolderList.map(folder => (
+                    <SelectItem key={folder.id} value={folder.folder_name}>
+                      {folder.folder_name}
                     </SelectItem>
                   ))}
               </SelectContent>
@@ -122,42 +136,44 @@ export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong 
           </div>
 
           {/* 재생목록 이름 입력 */}
-          <div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="playlist-name">재생목록 이름</Label>
-              {isExistingPlaylist && (
-                <span className="text-primary flex items-center text-xs">
-                  <CheckCircle className="mr-1 h-3 w-3" />
-                  기존 재생목록
-                </span>
-              )}
-              {!isExistingPlaylist && folderName.trim() !== '' && (
-                <span className="flex items-center text-xs text-orange-500">
-                  <PlusCircle className="mr-1 h-3 w-3" />새 재생목록
-                </span>
-              )}
-            </div>
-            <Input
-              id="playlist-name"
-              value={folderName}
-              onChange={e => setFolderName(e.target.value)}
-              placeholder="재생목록 이름을 입력하거나 선택하세요"
-              className={`mt-1 ${
-                isExistingPlaylist
-                  ? 'border-primary'
+          {modalType === 'POST' && (
+            <div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="playlist-name">재생목록 이름</Label>
+                {isExistingPlaylist && (
+                  <span className="text-primary flex items-center text-xs">
+                    <CheckCircle className="mr-1 h-3 w-3" />
+                    기존 재생목록
+                  </span>
+                )}
+                {!isExistingPlaylist && folderName.trim() !== '' && (
+                  <span className="flex items-center text-xs text-orange-500">
+                    <PlusCircle className="mr-1 h-3 w-3" />새 재생목록
+                  </span>
+                )}
+              </div>
+              <Input
+                id="playlist-name"
+                value={folderName}
+                onChange={e => setFolderName(e.target.value)}
+                placeholder="재생목록 이름을 입력하거나 선택하세요"
+                className={`mt-1 ${
+                  isExistingPlaylist
+                    ? 'border-primary'
+                    : folderName.trim() !== ''
+                      ? 'border-orange-500'
+                      : ''
+                }`}
+              />
+              <p className="text-muted-foreground mt-1 text-xs">
+                {isExistingPlaylist
+                  ? `'${folderName}'에 곡을 추가합니다.`
                   : folderName.trim() !== ''
-                    ? 'border-orange-500'
-                    : ''
-              }`}
-            />
-            <p className="text-muted-foreground mt-1 text-xs">
-              {isExistingPlaylist
-                ? `'${folderName}'에 곡을 추가합니다.`
-                : folderName.trim() !== ''
-                  ? `'${folderName}' 재생목록을 새로 만듭니다.`
-                  : '기존 재생목록을 선택하거나 새 재생목록 이름을 입력하세요.'}
-            </p>
-          </div>
+                    ? `'${folderName}' 재생목록을 새로 만듭니다.`
+                    : '기존 재생목록을 선택하거나 새 재생목록 이름을 입력하세요.'}
+              </p>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="flex space-x-2 pt-2">
@@ -166,7 +182,7 @@ export default function AddFolderModal({ isOpen, song, setIsSaveModal, saveSong 
           </Button>
           <Button disabled={isLoading} onClick={handleSave} className="flex items-center">
             <Save className="mr-2 h-4 w-4" />
-            {isExistingPlaylist ? '재생목록에 추가' : '저장'}
+            {isExistingPlaylist ? `재생목록 ${LOGIC_TEXT}` : '저장'}
           </Button>
         </DialogFooter>
       </DialogContent>

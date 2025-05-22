@@ -1,4 +1,4 @@
-import { Heart, ListPlus, MinusCircle, PlusCircle } from 'lucide-react';
+import { Heart, ListPlus, ListRestart, MinusCircle, PlusCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -79,11 +79,11 @@ export default function SearchResultCard({
             variant="ghost"
             size="icon"
             className={`h-8 w-8 ${isSave ? 'text-primary bg-primary/10' : ''}`}
-            aria-label="재생목록에 추가"
+            aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
             onClick={onClickSave}
           >
             <div className="relative">
-              <ListPlus className="h-4 w-4" />
+              {isSave ? <ListRestart className="h-4 w-4" /> : <ListPlus className="h-4 w-4" />}
             </div>
           </Button>
         </div>

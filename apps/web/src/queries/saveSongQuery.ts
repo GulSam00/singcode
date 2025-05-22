@@ -44,7 +44,6 @@ export function useMoveSaveSongMutation() {
   return useMutation({
     mutationFn: async ({ songIdArray, folderId }: { songIdArray: string[]; folderId: string }) => {
       const data = await patchSaveSong({ songIdArray, folderId });
-      console.log('useMoveSaveSongMutation', data);
       if (!data.success) {
         throw new Error(data.error);
       }

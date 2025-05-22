@@ -1,6 +1,6 @@
 'use client';
 
-import { FolderOpen, FolderPlus } from 'lucide-react';
+import { FolderOpen } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
