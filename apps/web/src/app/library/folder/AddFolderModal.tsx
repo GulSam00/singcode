@@ -17,38 +17,38 @@ import { Label } from '@/components/ui/label';
 import { usePostSaveSongFolderMutation } from '@/queries/saveSongFolderQuery';
 import { SaveSongFolderList } from '@/types/song';
 
-interface CreatePlaylistModalProps {
+interface CreateFolderModalProps {
   isOpen: boolean;
   isLoading: boolean;
   onClose: () => void;
-  existingPlaylists: SaveSongFolderList[];
+  existingFolders: SaveSongFolderList[];
 }
 
 export default function AddFolderModal({
   isOpen,
   isLoading,
   onClose,
-  existingPlaylists,
-}: CreatePlaylistModalProps) {
-  const [playlistName, setPlaylistName] = useState('');
+  existingFolders,
+}: CreateFolderModalProps) {
+  const [folderName, setFolderName] = useState('');
   const [isDuplicate, setIsDuplicate] = useState(false);
 
   const { mutate: createFolder } = usePostSaveSongFolderMutation();
   // 입력값이 변경될 때마다 중복 확인
   useEffect(() => {
-    if (!playlistName) {
+    if (!folderName) {
       setIsDuplicate(false);
       return;
     }
 
-    const nameExists = existingPlaylists.some(playlist => playlist.folder_name === playlistName);
+    const nameExists = existingFolders.some(folder => folder.folder_name === folderName);
 
     setIsDuplicate(nameExists);
-  }, [playlistName, existingPlaylists]);
+  }, [folderName, existingFolders]);
 
   // 모달 초기화
   const resetModal = () => {
-    setPlaylistName('');
+    setFolderName('');
     setIsDuplicate(false);
   };
 
@@ -60,7 +60,7 @@ export default function AddFolderModal({
 
   // 폴더 생성 핸들러
   const handleCreatePlaylist = async () => {
-    if (!playlistName) {
+    if (!folderName) {
       toast.error('재생목록 이름을 입력해주세요.');
       return;
     }
@@ -72,8 +72,8 @@ export default function AddFolderModal({
 
     try {
       // 실제 구현에서는 API 호출
-      createFolder({ folderName: playlistName });
-      toast.success(`'${playlistName}' 재생목록이 생성되었습니다.`);
+      createFolder({ folderName: folderName });
+      toast.success(`'${folderName}' 재생목록이 생성되었습니다.`);
       handleClose();
     } catch (error) {
       console.error('재생목록 생성 실패:', error);
@@ -99,12 +99,12 @@ export default function AddFolderModal({
               <div className="mt-1">
                 <Input
                   id="playlist-name"
-                  value={playlistName}
-                  onChange={e => setPlaylistName(e.target.value)}
+                  value={folderName}
+                  onChange={e => setFolderName(e.target.value)}
                   disabled={isLoading}
                   placeholder="재생목록 이름을 입력하세요"
                   className={`${isDuplicate ? 'border-destructive focus-visible:ring-destructive' : ''} ${
-                    playlistName && !isDuplicate
+                    folderName && !isDuplicate
                       ? 'border-green-500 focus-visible:ring-green-500'
                       : ''
                   }`}
@@ -114,7 +114,7 @@ export default function AddFolderModal({
             </div>
 
             {/* 중복 여부 메시지 */}
-            {playlistName && (
+            {folderName && (
               <div
                 className={`flex items-center gap-2 text-sm ${isDuplicate ? 'text-destructive' : 'text-green-500'}`}
               >
@@ -140,7 +140,7 @@ export default function AddFolderModal({
           </Button>
           <Button
             onClick={handleCreatePlaylist}
-            disabled={isLoading || isDuplicate || !playlistName}
+            disabled={isLoading || isDuplicate || !folderName}
             className="flex items-center gap-2"
           >
             {isLoading ? '생성 중...' : '생성'}

@@ -12,11 +12,11 @@ import { useSaveSongQuery } from '@/queries/saveSongQuery';
 
 import AddFolderModal from './AddFolderModal';
 import DeleteFolderModal from './DeleteFolderModal';
-import PlaylistCard from './PlaylistCard';
+import FolderCard from './FolderCard';
 
 type ModalType = null | 'move' | 'delete' | 'addFolder' | 'renameFolder' | 'deleteFolder';
 
-export default function PlaylistsPage() {
+export default function Page() {
   // 상태 관리
   const { data: saveSongFolders, isLoading: isLoadingSongFolders } = useSaveSongQuery();
   const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
@@ -25,7 +25,7 @@ export default function PlaylistsPage() {
   console.log('useSaveSongQuery data', saveSongFolders);
   console.log('useSaveSongFolderQuery data', saveSongFolderList);
 
-  const [expandedPlaylists, setExpandedPlaylists] = useState<Record<string, boolean>>({});
+  const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
   const [selectedSongs, setSelectedSongs] = useState<Record<string, boolean>>({});
   const [modalType, setModalType] = useState<ModalType>(null);
   const [selectedFolderId, setSelectedFolderId] = useState<string>('');
@@ -37,8 +37,8 @@ export default function PlaylistsPage() {
   const totalSelectedSongs = Object.values(selectedSongs).filter(Boolean).length;
 
   // 재생목록 펼치기/접기
-  const togglePlaylist = (dstFolderId: string) => {
-    setExpandedPlaylists(prev => ({
+  const toggleFolder = (dstFolderId: string) => {
+    setExpandedFolders(prev => ({
       ...prev,
       [dstFolderId]: !prev[dstFolderId],
     }));
@@ -53,7 +53,7 @@ export default function PlaylistsPage() {
   };
 
   // 재생목록 내 모든 곡 선택/해제
-  const toggleAllSongsInPlaylist = (dstFolderId: string) => {
+  const toggleAllSongsInFolder = (dstFolderId: string) => {
     if (!saveSongFolders) return;
     const playlist = saveSongFolders.find(p => p.folder_id === dstFolderId);
     if (!playlist) return;
@@ -119,9 +119,9 @@ export default function PlaylistsPage() {
   };
 
   // 재생목록 삭제
-  const deletePlaylist = (dstFolderId: string, dstFolderName: string) => {
+  const deleteFolder = (dstFolderId: string, dstFolderName: string) => {
     //임시로 테스트
-    console.log('deletePlaylist', dstFolderId);
+    console.log('deleteFolder', dstFolderId);
     setSelectedFolderId(dstFolderId);
     setSelectedFolderName(dstFolderName);
 
@@ -129,7 +129,7 @@ export default function PlaylistsPage() {
   };
 
   // 재생목록 편집 (실제 구현에서는 편집 모달 열기)
-  const renamePlaylist = (dstFolderId: string) => {
+  const renameFolder = (dstFolderId: string) => {
     setModalType('renameFolder');
   };
 
@@ -195,7 +195,7 @@ export default function PlaylistsPage() {
         <div className="space-y-4">
           {saveSongFolderList &&
             saveSongFolderList.map((folder, index) => (
-              <PlaylistCard
+              <FolderCard
                 key={folder.id + index}
                 {...{
                   folder: {
@@ -205,14 +205,14 @@ export default function PlaylistsPage() {
                       saveSongFolders?.find(item => item.folder_id === folder.id)?.songList ?? [],
                   },
                   selectedSongs,
-                  expandedPlaylists,
+                  expandedFolders,
                   areAllSongsSelected,
-                  toggleAllSongsInPlaylist,
+                  toggleAllSongsInFolder,
                   getSelectedSongCount,
                   toggleSongSelection,
-                  renamePlaylist,
-                  deletePlaylist,
-                  togglePlaylist,
+                  renameFolder,
+                  deleteFolder,
+                  toggleFolder,
                 }}
               />
             ))}
@@ -231,7 +231,7 @@ export default function PlaylistsPage() {
         isOpen={modalType === 'addFolder'}
         isLoading={isLoading}
         onClose={() => setModalType(null)}
-        existingPlaylists={saveSongFolderList ?? []}
+        existingFolders={saveSongFolderList ?? []}
       />
 
       <DeleteFolderModal

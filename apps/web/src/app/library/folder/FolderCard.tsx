@@ -9,27 +9,27 @@ import { SaveSongFolder } from '@/types/song';
 interface IProps {
   folder: SaveSongFolder;
   selectedSongs: Record<string, boolean>;
-  expandedPlaylists: Record<string, boolean>;
+  expandedFolders: Record<string, boolean>;
   areAllSongsSelected: (folderId: string) => boolean;
-  toggleAllSongsInPlaylist: (folderId: string) => void;
+  toggleAllSongsInFolder: (folderId: string) => void;
   getSelectedSongCount: (folderId: string) => number;
   toggleSongSelection: (songId: string) => void;
-  renamePlaylist: (folderId: string) => void;
-  deletePlaylist: (folderId: string, folderName: string) => void;
-  togglePlaylist: (folderId: string) => void;
+  renameFolder: (folderId: string) => void;
+  deleteFolder: (folderId: string, folderName: string) => void;
+  toggleFolder: (folderId: string) => void;
 }
 
-export default function PlaylistCard({
+export default function FolderCard({
   folder,
   selectedSongs,
-  expandedPlaylists,
+  expandedFolders,
   areAllSongsSelected,
-  toggleAllSongsInPlaylist,
+  toggleAllSongsInFolder,
   getSelectedSongCount,
   toggleSongSelection,
-  renamePlaylist,
-  deletePlaylist,
-  togglePlaylist,
+  renameFolder,
+  deleteFolder,
+  toggleFolder,
 }: IProps) {
   return (
     <Card className="overflow-hidden">
@@ -39,7 +39,7 @@ export default function PlaylistCard({
             <Checkbox
               id={`folder-${folder.folder_id}`}
               checked={areAllSongsSelected(folder.folder_id)}
-              onCheckedChange={() => toggleAllSongsInPlaylist(folder.folder_id)}
+              onCheckedChange={() => toggleAllSongsInFolder(folder.folder_id)}
               disabled={folder.songList.length === 0}
             />
             <CardTitle className="flex w-40 items-center gap-2 overflow-hidden text-lg text-ellipsis">
@@ -51,7 +51,7 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => renamePlaylist(folder.folder_id)}
+              onClick={() => renameFolder(folder.folder_id)}
               className="h-8 w-8 p-0"
             >
               <Edit className="h-4 w-4" />
@@ -59,7 +59,7 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => deletePlaylist(folder.folder_id, folder.folder_name)}
+              onClick={() => deleteFolder(folder.folder_id, folder.folder_name)}
               className="text-destructive hover:text-destructive h-8 w-8 p-0"
             >
               <Trash2 className="h-4 w-4" />
@@ -67,10 +67,10 @@ export default function PlaylistCard({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => togglePlaylist(folder.folder_id)}
+              onClick={() => toggleFolder(folder.folder_id)}
               className="h-8 w-8 p-0"
             >
-              {expandedPlaylists[folder.folder_id] ? (
+              {expandedFolders[folder.folder_id] ? (
                 <ChevronUp className="h-4 w-4" />
               ) : (
                 <ChevronDown className="h-4 w-4" />
@@ -90,7 +90,7 @@ export default function PlaylistCard({
         </div>
       </CardHeader>
 
-      {expandedPlaylists[folder.folder_id] && (
+      {expandedFolders[folder.folder_id] && (
         <CardContent className="p-0">
           <Separator className="my-2" />
           <div className="px-4">
