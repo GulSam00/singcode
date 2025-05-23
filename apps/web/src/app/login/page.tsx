@@ -28,8 +28,11 @@ export default function LoginPage() {
     e.preventDefault();
     const { isSuccess, title, message } = await login(email, password);
     if (isSuccess) {
-      checkAuth();
-      router.push('/');
+      // await 하지 않고 result로 넘어가서 auth 인증 오류 발생
+      const result = await checkAuth();
+      if (result) {
+        router.push('/');
+      }
     } else {
       openMessage({
         title: title,
