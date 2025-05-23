@@ -50,38 +50,33 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<So
               { status: 400 },
             );
         }
-        const { data: singCountData, error: singCountError } = await supabase
-          .from('total_stats')
-          .select('*, songs(*)')
-          .gte('created_at', startDate.toISOString())
-          .lt('created_at', endDate.toISOString())
-          .gt('sing_count', 0)
-          .order('sing_count', { ascending: false })
-          .limit(10);
 
-        if (singCountError) {
+        const { data: singCountData, error } = await supabase.rpc('get_song_sing_counts_by_date', {
+          start_at: startDate.toISOString(),
+          end_at: endDate.toISOString(),
+        });
+
+        if (error) {
           return NextResponse.json(
             {
               success: false,
-              error: singCountError?.message || 'Unknown error',
+              error: error?.message || 'Unknown error',
             },
             { status: 500 },
           );
         }
-        resonse = singCountData.map(item => ({
+        resonse = singCountData.map((item: SongStat) => ({
           value: item.sing_count,
-          song: item.songs,
+          title: item.title,
+          artist: item.artist,
+          song_id: item.song_id,
         }));
         break;
       }
 
       case 'like_count': {
-        const { data: likeCountData, error: likeCountError } = await supabase
-          .from('total_stats')
-          .select('*, songs(*)')
-          .gt('like_count', 0)
-          .order('like_count', { ascending: false })
-          .limit(10);
+        const { data: likeCountData, error: likeCountError } =
+          await supabase.rpc('get_song_like_counts');
 
         if (likeCountError) {
           return NextResponse.json(
@@ -92,35 +87,15 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<So
             { status: 500 },
           );
         }
-        resonse = likeCountData.map(item => ({
+        resonse = likeCountData.map((item: SongStat) => ({
           value: item.like_count,
-          song: item.songs,
+          title: item.title,
+          artist: item.artist,
+          song_id: item.song_id,
         }));
         break;
       }
-      case 'save_count': {
-        const { data: saveCountData, error: saveCountError } = await supabase
-          .from('total_stats')
-          .select('*, songs(*)')
-          .gt('save_count', 0)
-          .order('save_count', { ascending: false })
-          .limit(10);
 
-        if (saveCountError) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: saveCountError?.message || 'Unknown error',
-            },
-            { status: 500 },
-          );
-        }
-        resonse = saveCountData.map(item => ({
-          value: item.save_count,
-          song: item.songs,
-        }));
-        break;
-      }
       default:
         return NextResponse.json(
           {
@@ -133,7 +108,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<So
 
     return NextResponse.json({
       success: true,
-      data: resonse,
+      data: resonse.slice(0, 10),
     });
   } catch (error) {
     console.error('Error in search API:', error);

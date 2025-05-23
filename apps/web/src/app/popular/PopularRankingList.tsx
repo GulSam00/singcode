@@ -19,7 +19,7 @@ export default function PopularRankingList({ title, songStats }: RankingListProp
         <div className="space-y-0">
           {songStats.length > 0 ? (
             songStats.map((item, index) => (
-              <RankingItem key={index} {...item.song} rank={index + 1} value={item.value} />
+              <RankingItem key={index} {...item} rank={index + 1} value={item.value} />
             ))
           ) : (
             <div className="flex h-64 flex-col items-center justify-center gap-4">
