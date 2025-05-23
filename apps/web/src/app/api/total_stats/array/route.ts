@@ -10,7 +10,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     const { songIds, countType, isMinus } = await request.json();
 
     // countType 유효성 검사
-    if (!['sing_count', 'like_count', 'saved_count'].includes(countType)) {
+    if (!['sing_count', 'like_count', 'save_count'].includes(countType)) {
       return NextResponse.json({ success: false, error: 'Invalid count type' }, { status: 400 });
     }
 
@@ -38,7 +38,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
           [countType]: 1,
           sing_count: countType === 'sing_count' ? 1 : 0,
           like_count: countType === 'like_count' ? 1 : 0,
-          saved_count: countType === 'saved_count' ? 1 : 0,
+          save_count: countType === 'save_count' ? 1 : 0,
         });
 
         if (insertError) throw insertError;

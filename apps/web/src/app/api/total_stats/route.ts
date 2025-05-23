@@ -50,38 +50,33 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<So
               { status: 400 },
             );
         }
-        const { data: singCountData, error: singCountError } = await supabase
-          .from('total_stats')
-          .select('*, songs(*)')
-          .gte('created_at', startDate.toISOString())
-          .lt('created_at', endDate.toISOString())
-          .gt('sing_count', 0)
-          .order('sing_count', { ascending: false })
-          .limit(10);
 
-        if (singCountError) {
+        const { data: singCountData, error } = await supabase.rpc('get_song_sing_counts_by_date', {
+          start_at: startDate.toISOString(),
+          end_at: endDate.toISOString(),
+        });
+
+        if (error) {
           return NextResponse.json(
             {
               success: false,
-              error: singCountError?.message || 'Unknown error',
+              error: error?.message || 'Unknown error',
             },
             { status: 500 },
           );
         }
-        resonse = singCountData.map(item => ({
+        resonse = singCountData.map((item: SongStat) => ({
           value: item.sing_count,
-          song: item.songs,
+          title: item.title,
+          artist: item.artist,
+          song_id: item.song_id,
         }));
         break;
       }
 
       case 'like_count': {
-        const { data: likeCountData, error: likeCountError } = await supabase
-          .from('total_stats')
-          .select('*, songs(*)')
-          .gt('like_count', 0)
-          .order('like_count', { ascending: false })
-          .limit(10);
+        const { data: likeCountData, error: likeCountError } =
+          await supabase.rpc('get_song_like_counts');
 
         if (likeCountError) {
           return NextResponse.json(
@@ -92,35 +87,15 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<So
             { status: 500 },
           );
         }
-        resonse = likeCountData.map(item => ({
+        resonse = likeCountData.map((item: SongStat) => ({
           value: item.like_count,
-          song: item.songs,
+          title: item.title,
+          artist: item.artist,
+          song_id: item.song_id,
         }));
         break;
       }
-      case 'saved_count': {
-        const { data: savedCountData, error: savedCountError } = await supabase
-          .from('total_stats')
-          .select('*, songs(*)')
-          .gt('saved_count', 0)
-          .order('saved_count', { ascending: false })
-          .limit(10);
 
-        if (savedCountError) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: savedCountError?.message || 'Unknown error',
-            },
-            { status: 500 },
-          );
-        }
-        resonse = savedCountData.map(item => ({
-          value: item.saved_count,
-          song: item.songs,
-        }));
-        break;
-      }
       default:
         return NextResponse.json(
           {
@@ -133,7 +108,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<So
 
     return NextResponse.json({
       success: true,
-      data: resonse,
+      data: resonse.slice(0, 10),
     });
   } catch (error) {
     console.error('Error in search API:', error);
@@ -153,7 +128,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     const { songId, countType, isMinus } = await request.json();
 
     // countType 유효성 검사
-    if (!['sing_count', 'like_count', 'saved_count'].includes(countType)) {
+    if (!['sing_count', 'like_count', 'save_count'].includes(countType)) {
       return NextResponse.json({ success: false, error: 'Invalid count type' }, { status: 400 });
     }
 
@@ -176,7 +151,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
         [countType]: 1,
         sing_count: countType === 'sing_count' ? 1 : 0,
         like_count: countType === 'like_count' ? 1 : 0,
-        saved_count: countType === 'saved_count' ? 1 : 0,
+        save_count: countType === 'save_count' ? 1 : 0,
       });
 
       if (insertError) throw insertError;

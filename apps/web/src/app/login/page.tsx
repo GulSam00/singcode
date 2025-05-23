@@ -49,10 +49,7 @@ export default function LoginPage() {
   }, [isAuthenticated, router]);
 
   return (
-    <div
-      className="bg-background flex min-h-screen flex-col justify-center px-4"
-      style={{ maxWidth: '360px', margin: '0 auto' }}
-    >
+    <div className="bg-background flex min-h-screen flex-col justify-center px-4">
       <div className="w-full space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold">로그인</h1>

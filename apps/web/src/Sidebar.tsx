@@ -51,9 +51,11 @@ export default function Sidebar() {
     setIsOpen(false);
   };
 
-  const handleLogout = () => {
-    logout();
-    window.location.reload();
+  const handleLogout = async () => {
+    const result = await logout();
+    if (result) {
+      window.location.reload();
+    }
   };
 
   const handleClickContact = () => {

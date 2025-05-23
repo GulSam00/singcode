@@ -1,6 +1,6 @@
 'use client';
 
-import { Mic, Search, X } from 'lucide-react';
+import { Search, SearchX } from 'lucide-react';
 
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSearchSong from '@/hooks/useSearchSong';
 
+import AddFolderModal from './AddFolderModal';
 import SearchResultCard from './SearchResultCard';
 
 export default function SearchPage() {
@@ -18,12 +19,17 @@ export default function SearchPage() {
     setSearch,
     searchSongs,
     isLoading,
+    saveModalType,
+    setSaveModalType,
+    selectedSaveSong,
     searchType,
     handleSearchTypeChange,
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
-    handleOpenPlaylistModal,
+    handleToggleSave,
+    postSaveSong,
+    patchSaveSong,
   } = useSearchSong();
 
   // 엔터 키 처리
@@ -65,7 +71,7 @@ export default function SearchPage() {
           <Button onClick={handleSearch}>검색</Button>
         </div>
       </div>
-      <ScrollArea className="h-[calc(100vh-15rem)]">
+      <ScrollArea className="h-[calc(100vh-16rem)]">
         {searchSongs.length > 0 && (
           <div className="flex w-[360px] flex-col gap-3 px-2 py-4">
             {searchSongs.map((song, index) => (
@@ -75,27 +81,35 @@ export default function SearchPage() {
                 onToggleToSing={() =>
                   handleToggleToSing(song.id, song.isToSing ? 'DELETE' : 'POST')
                 }
-                onToggleLike={() => handleToggleLike(song.id, song.isLiked ? 'DELETE' : 'POST')}
-                onClickOpenPlaylistModal={() => handleOpenPlaylistModal(song)}
+                onToggleLike={() => handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST')}
+                onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
               />
             ))}
           </div>
         )}
         {searchSongs.length === 0 && query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <X className="h-8 w-8 opacity-50" />
+            <SearchX className="h-8 w-8 opacity-50" />
             <p className="m-2">검색 결과가 없습니다.</p>
           </div>
         )}
         {searchSongs.length === 0 && !query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <Mic className="h-8 w-8 opacity-50" />
+            <Search className="h-8 w-8 opacity-50" />
             <p className="m-2">노래 제목이나 가수를 검색해보세요</p>
           </div>
         )}
       </ScrollArea>
       {isLoading && <StaticLoading />}
-      {/* {isModal && <PlaylistModal song={selectedSong} />} */}
+      {selectedSaveSong && (
+        <AddFolderModal
+          modalType={saveModalType}
+          closeModal={() => setSaveModalType('')}
+          song={selectedSaveSong}
+          postSaveSong={postSaveSong}
+          patchSaveSong={patchSaveSong}
+        />
+      )}
     </div>
   );
 }

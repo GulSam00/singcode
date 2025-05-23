@@ -63,7 +63,7 @@ export default function SongList() {
         <div className="flex flex-col gap-4">
           {toSingSongs.length === 0 && (
             <div className="flex h-full items-center justify-center">
-              <p className="text-muted-foreground text-sm">노래방 플레이리스트가 없습니다.</p>
+              <p className="text-muted-foreground text-sm">플레이리스트가 없습니다.</p>
             </div>
           )}
           {toSingSongs.map((item: ToSingSong, index: number) => (

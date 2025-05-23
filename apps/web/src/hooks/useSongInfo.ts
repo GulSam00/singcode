@@ -4,13 +4,13 @@ import { useState } from 'react';
 
 import { useDeleteLikeSongArrayMutation } from '@/queries/likeSongQuery';
 
-// import { useDeleteLikedSongMutation } from '@/queries/likeSongQuery';
+// import { useDeleteLikeSongMutation } from '@/queries/likeSongQuery';
 
 export default function useSongInfo() {
   const [deleteLikeSelected, setDeleteLikeSelected] = useState<string[]>([]);
 
   const { mutate: deleteLikeSongArray } = useDeleteLikeSongArrayMutation();
-  // const { mutate: deleteLikeSong } = useDeleteLikedSongMutation();
+  // const { mutate: deleteLikeSong } = useDeleteLikeSongMutation();
 
   const handleToggleSelect = (songId: string) => {
     setDeleteLikeSelected(prev =>
@@ -19,17 +19,9 @@ export default function useSongInfo() {
   };
 
   const handleDeleteArray = () => {
-    console.log('deleteLikeSelected', deleteLikeSelected);
     deleteLikeSongArray(deleteLikeSelected);
     setDeleteLikeSelected([]);
   };
-
-  // const handleDelete = () => {
-  //   deleteLikeSelected.forEach(songId => {
-  //     deleteLikeSong(songId);
-  //   });
-  //   setDeleteLikeSelected([]);
-  // };
 
   const totalSelectedCount = deleteLikeSelected.length;
 

@@ -14,8 +14,11 @@ export default function KakaoLogin() {
   };
 
   return (
-    <div className="flex cursor-pointer items-center justify-center" onClick={handleKakaoLogin}>
-      <Image src="/kakao_login.png" alt="kakao" width={360} height={50} />
+    <div
+      className="relative flex h-[50px] w-full cursor-pointer items-center justify-center"
+      onClick={handleKakaoLogin}
+    >
+      <Image src="/kakao_login.png" alt="kakao" fill />
     </div>
   );
 }

@@ -21,7 +21,7 @@ export function useLikeSongQuery() {
 }
 
 // 🎵 곡 좋아요 추가
-export function usePostLikedSongMutation() {
+export function usePostLikeSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -37,7 +37,7 @@ export function usePostLikedSongMutation() {
 }
 
 // 🎵 곡 좋아요 취소
-export function useDeleteLikedSongMutation() {
+export function useDeleteLikeSongMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -55,6 +55,8 @@ export function useDeleteLikedSongMutation() {
       return { prev };
     },
     onError: (error, songId, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['likeSong'], context?.prev);
     },
     onSettled: () => {
@@ -83,6 +85,8 @@ export function useDeleteLikeSongArrayMutation() {
       return { prev };
     },
     onError: (error, songIds, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['likeSong'], context?.prev);
     },
     onSettled: () => {

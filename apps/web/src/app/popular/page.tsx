@@ -15,7 +15,6 @@ export default function PopularPage() {
   const [periodTab, setPeriodTab] = useState<PeriodType>('all');
 
   const { isLoading, isPending, data } = useTotalStatQuery(typeTab, periodTab);
-  console.log('useTotalStatQuery', data);
 
   if (isLoading || isPending || !data) return <StaticLoading />;
 

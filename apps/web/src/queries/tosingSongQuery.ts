@@ -37,6 +37,10 @@ export function usePostToSingSongMutation() {
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
+    onError: error => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
+    },
   });
 }
 
@@ -50,6 +54,10 @@ export function usePostToSingSongArrayMutation() {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+    },
+    onError: error => {
+      console.log('error', error);
+      alert(error.message ?? 'POST 실패');
     },
   });
 }
@@ -69,6 +77,8 @@ export function useDeleteToSingSongMutation() {
       return { prev };
     },
     onError: (error, variables, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'DELETE 실패');
       queryClient.setQueryData(['toSingSong'], context?.prev);
     },
     onSettled: () => {
@@ -94,6 +104,8 @@ export function useDeleteToSingSongArrayMutation() {
       return { prev };
     },
     onError: (error, variables, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'DELETE 실패');
       queryClient.setQueryData(['toSingSong'], context?.prev);
     },
     onSettled: () => {
@@ -125,6 +137,8 @@ export function usePatchToSingSongMutation() {
       return { prev };
     },
     onError: (error, variables, context) => {
+      console.log('error', error);
+      alert(error.message ?? 'PATCH 실패');
       queryClient.setQueryData(['toSingSong'], context?.prev);
     },
     onSettled: () => {

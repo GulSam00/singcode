@@ -39,5 +39,5 @@ yarn-error.log*
 *.pem
 
 # Crawling
-**/logs/*.txt
+**/log/*.txt
 

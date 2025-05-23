@@ -1,7 +1,7 @@
 import { getSong, getSinger } from "@repo/open-api";
 import { Song } from "./types";
-import { updateKYDB } from "./supabase/updateDB";
-import { getKYNULLDB } from "./supabase/getDB";
+import { updateSongsKyDB } from "./supabase/updateDB";
+import { getSongsKyNullDB } from "./supabase/getDB";
 import { updateDataLog } from "./logData";
 
 const resultsLog = {
@@ -37,7 +37,7 @@ const updateKYByOpen = async (song: Song) => {
     if (filteredResponse.length === 1) {
       const kyNum = filteredResponse[0].no;
       // console.log("filteredResponse kyNum", kyNum);
-      const result = await updateKYDB({ ...song, num_ky: kyNum });
+      const result = await updateSongsKyDB({ ...song, num_ky: kyNum });
       if (result) {
         resultsLog.success.push({ ...song, num_ky: kyNum });
       } else {
@@ -49,7 +49,7 @@ const updateKYByOpen = async (song: Song) => {
   } else {
     const kyNum = response[0].no;
     // console.log("response kyNum", kyNum);
-    const result = await updateKYDB({ ...song, num_ky: kyNum });
+    const result = await updateSongsKyDB({ ...song, num_ky: kyNum });
     if (result) {
       resultsLog.success.push({ ...song, num_ky: kyNum });
     } else {
@@ -58,7 +58,7 @@ const updateKYByOpen = async (song: Song) => {
   }
 };
 
-const kyNullData = await getKYNULLDB();
+const kyNullData = await getSongsKyNullDB();
 console.log("kyNullData", kyNullData.length);
 
 for (const song of kyNullData) {
@@ -69,7 +69,7 @@ for (const song of kyNullData) {
 // 6079개 업데이트
 
 // 2차 시도
-// 15065개 업데이트, 제목 가수 이름 일치 이슈
+// 15065개 업데이트, 제목 가수 이름 불일치 이슈
 
 console.log(`
     총 ${kyNullData.length}곡 중:
@@ -77,5 +77,5 @@ console.log(`
     - 실패: ${resultsLog.failed.length}곡
   `);
 
-updateDataLog(resultsLog.success, "log/findKYByOpenSuccess.txt");
-updateDataLog(resultsLog.failed, "log/findKYByOpenFailed.txt");
+updateDataLog(resultsLog.success, "findKYByOpenSuccess.txt");
+updateDataLog(resultsLog.failed, "findKYByOpenFailed.txt");
