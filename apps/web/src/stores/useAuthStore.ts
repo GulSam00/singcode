@@ -20,7 +20,7 @@ interface AuthState {
   register: (email: string, password: string) => Promise<ModalResponseState>; // 반환 타입 변경
   login: (email: string, password: string) => Promise<ModalResponseState>; // 반환 타입 변경
   authKaKaoLogin: () => Promise<boolean>;
-  logout: () => Promise<void>;
+  logout: () => Promise<boolean>;
   checkAuth: () => Promise<boolean>;
   insertUser: (id: string) => Promise<void>;
 
@@ -121,8 +121,12 @@ const useAuthStore = create(
     logout: async () => {
       const supabase = getSupabase();
 
-      await supabase.auth.signOut();
-      set({ user: null, isAuthenticated: false });
+      const { error } = await supabase.auth.signOut();
+      if (!error) {
+        set({ user: null, isAuthenticated: false });
+        return true;
+      }
+      return false;
     },
 
     // 인증 상태 확인
