@@ -1,5 +1,6 @@
 'use client';
 
+import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -12,6 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useAddListModal from '@/hooks/useAddSongList';
 import { useLikeSongQuery } from '@/queries/likeSongQuery';
 import { useRecentSongQuery } from '@/queries/recentSongQuery';
+import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
+import { useSaveSongQuery } from '@/queries/saveSongQuery';
 
 import ModalSongItem from './ModalSongItem';
 
@@ -30,8 +33,17 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
     totalSelectedCount,
   } = useAddListModal();
 
-  const { data: likedSongs } = useLikeSongQuery();
-  const { data: recentSongs } = useRecentSongQuery();
+  const { data: likedSongs, isLoading: isLoadingLikedSongs } = useLikeSongQuery();
+  const { data: recentSongs, isLoading: isLoadingRecentSongs } = useRecentSongQuery();
+
+  const { data: saveSongFolders, isLoading: isLoadingSongFolders } = useSaveSongQuery();
+  const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
+
+  console.log('saveSongFolders', saveSongFolders);
+  console.log('saveSongFolderList', saveSongFolderList);
+
+  const isLoading =
+    isLoadingLikedSongs || isLoadingRecentSongs || isLoadingSongFolders || isLoadingSaveFolderList;
 
   const handleClickConfirm = () => {
     handleConfirmAdd();
@@ -39,7 +51,7 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
+    <Dialog open={isOpen && !isLoading} onOpenChange={open => !open && onClose()}>
       <DialogContent className="flex h-[500px] flex-col gap-0 p-0 sm:max-w-[450px]">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle>플레이리스트에 추가할 노래 선택</DialogTitle>
@@ -52,24 +64,52 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
             className="flex w-full flex-1 flex-col overflow-y-auto"
           >
             <div>
-              <TabsList className="my-2 grid w-full grid-cols-2">
-                <TabsTrigger value="liked">좋아요한 노래</TabsTrigger>
-                <TabsTrigger value="recent">최근 부른 노래</TabsTrigger>
+              <TabsList className="my-2 grid w-full grid-cols-3">
+                <TabsTrigger value="like">좋아요</TabsTrigger>
+                <TabsTrigger value="save">재생목록</TabsTrigger>
+                <TabsTrigger value="recent">최근곡</TabsTrigger>
               </TabsList>
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              <TabsContent value="liked" className="mt-0 h-full">
+              <TabsContent value="like" className="mt-0 h-full">
                 <div className="h-full pr-2">
                   {likedSongs &&
                     likedSongs.map((song, index) => (
                       <ModalSongItem
-                        key={song.song_id + 'liked' + index}
+                        key={song.song_id + 'like' + index}
                         song={song}
                         isSelected={songSelected.includes(song.song_id)}
                         onToggleSelect={handleToggleSelect}
                       />
                     ))}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="save" className="mt-0 h-full">
+                <div className="h-full pr-2">
+                  {saveSongFolders &&
+                    saveSongFolders.map((songFolder, index) => {
+                      return (
+                        <div key={songFolder.folder_id + index}>
+                          <div className="flex justify-between border-b-1 text-lg font-bold">
+                            <h3>{songFolder.folder_name}</h3>
+
+                            <span className="text-muted-foreground text-sm">
+                              {songFolder.songList.length}곡
+                            </span>
+                          </div>
+                          {songFolder.songList.map((song, index) => (
+                            <ModalSongItem
+                              key={song.song_id + 'save' + index}
+                              song={song}
+                              isSelected={songSelected.includes(song.song_id)}
+                              onToggleSelect={handleToggleSelect}
+                            />
+                          ))}
+                        </div>
+                      );
+                    })}
                 </div>
               </TabsContent>
 

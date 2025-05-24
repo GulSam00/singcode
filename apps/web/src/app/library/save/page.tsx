@@ -125,6 +125,7 @@ export default function Page() {
   const handleRenameFolder = (dstFolderId: string, dstFolderName: string) => {
     setSelectedFolderId(dstFolderId);
     setSelectedFolderName(dstFolderName);
+
     setModalType('renameFolder');
   };
 

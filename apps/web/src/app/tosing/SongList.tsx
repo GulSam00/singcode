@@ -47,8 +47,6 @@ export default function SongList() {
     }),
   );
 
-  if (isLoading) return <StaticLoading />;
-
   return (
     <DndContext
       sensors={sensors}
@@ -56,6 +54,7 @@ export default function SongList() {
       onDragEnd={handleDragEnd}
       modifiers={[restrictToVerticalAxis]}
     >
+      {isLoading && <StaticLoading />}
       <SortableContext
         items={toSingSongs.map((item: ToSingSong) => item.songs.id)}
         strategy={verticalListSortingStrategy}
