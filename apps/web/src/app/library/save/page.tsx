@@ -190,8 +190,8 @@ export default function Page() {
         )}
       </div>
 
-      <ScrollArea className="h-[calc(100vh-12rem)] px-2">
-        <div className="space-y-4">
+      <ScrollArea className="h-[calc(100vh-16rem)] p-2">
+        <div className="space-y-2">
           {saveSongFolderList &&
             saveSongFolderList.map((folder, index) => (
               <FolderCard
