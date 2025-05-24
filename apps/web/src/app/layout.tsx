@@ -48,18 +48,6 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-G0D5K3CWNL');
-          `}
-        </Script>
-
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-3KPK2T7ZT7"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
             gtag('config', 'G-3KPK2T7ZT7');
           `}
         </Script>
