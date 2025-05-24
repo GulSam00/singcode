@@ -37,6 +37,7 @@ export default function RootLayout({
 
     return (
       <>
+        {/* 구글 애널리틱스 */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-G0D5K3CWNL"
           strategy="afterInteractive"
@@ -50,16 +51,30 @@ export default function RootLayout({
           `}
         </Script>
 
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-3KPK2T7ZT7"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-3KPK2T7ZT7');
+          `}
+        </Script>
+
+        {/* 홈페이지 분석 */}
         <Script id="hotjar" strategy="afterInteractive">
           {`
             (function(h,o,t,j,a,r){
-                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                h._hjSettings={hjid:6385056,hjsv:6};
-                a=o.getElementsByTagName('head')[0];
-                r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                a.appendChild(r);
-            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+          h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+          h._hjSettings={hjid:6385056,hjsv:6};
+          a=o.getElementsByTagName('head')[0];
+          r=o.createElement('script');r.async=1;
+          r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+          a.appendChild(r);
+      })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
           `}
         </Script>
       </>
