@@ -15,11 +15,12 @@ const navigation = [
 
 export default function Footer() {
   const pathname = usePathname();
+  const navPath = pathname.split('/')[1];
 
   return (
     <footer className="bg-background fixed bottom-0 flex h-8 w-[360px] justify-between">
       {navigation.map(item => {
-        const isActive = pathname === item.href;
+        const isActive = '/' + navPath === item.href;
         return (
           <Button
             asChild

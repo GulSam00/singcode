@@ -26,7 +26,7 @@ export default function HomePage() {
           <span>곡 추가</span>
         </Button>
       </div>
-      <ScrollArea className="h-[calc(100vh-12rem)] px-2 py-4">
+      <ScrollArea className="h-[calc(100vh-16rem)] px-2 py-5">
         <SongList />
       </ScrollArea>
 

@@ -12,6 +12,7 @@ export function useSaveSongQuery() {
         return [];
       }
       const rawData: SaveSong[] = response.data;
+      console.log('rawData', rawData);
       const songFolders: SaveSongFolder[] = [];
 
       rawData.forEach(item => {

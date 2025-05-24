@@ -35,6 +35,7 @@ export function usePostToSingSongMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
     onError: error => {
@@ -53,6 +54,7 @@ export function usePostToSingSongArrayMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
     onError: error => {
@@ -84,6 +86,7 @@ export function useDeleteToSingSongMutation() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
@@ -111,6 +114,7 @@ export function useDeleteToSingSongArrayMutation() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
     },
   });
