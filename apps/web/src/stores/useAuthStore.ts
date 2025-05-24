@@ -99,7 +99,7 @@ const useAuthStore = create(
       try {
         const supabase = getSupabase();
 
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { error } = await supabase.auth.signInWithOAuth({
           provider: 'kakao',
           options: {
             redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}`,
