@@ -37,13 +37,8 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
   const { data: recentSongs, isLoading: isLoadingRecentSongs } = useRecentSongQuery();
 
   const { data: saveSongFolders, isLoading: isLoadingSongFolders } = useSaveSongQuery();
-  const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
 
-  console.log('saveSongFolders', saveSongFolders);
-  console.log('saveSongFolderList', saveSongFolderList);
-
-  const isLoading =
-    isLoadingLikedSongs || isLoadingRecentSongs || isLoadingSongFolders || isLoadingSaveFolderList;
+  const isLoading = isLoadingLikedSongs || isLoadingRecentSongs || isLoadingSongFolders;
 
   const handleClickConfirm = () => {
     handleConfirmAdd();

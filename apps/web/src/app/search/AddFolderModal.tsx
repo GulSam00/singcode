@@ -21,7 +21,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
-import { SaveSongFolderList, SearchSong } from '@/types/song';
+import { useSaveSongQuery } from '@/queries/saveSongQuery';
+import { SaveSongFolder, SaveSongFolderList, SearchSong } from '@/types/song';
 
 interface IProps {
   modalType: '' | 'POST' | 'PATCH';
@@ -38,7 +39,9 @@ export default function AddFolderModal({
   postSaveSong,
   patchSaveSong,
 }: IProps) {
-  const { data: saveSongFolderList, isLoading } = useSaveSongFolderQuery();
+  const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
+
+  const isLoading = isLoadingSaveFolderList;
 
   const [folderName, setFolderName] = useState<string>('');
   const [isExistingPlaylist, setIsExistingPlaylist] = useState(false);
@@ -126,7 +129,7 @@ export default function AddFolderModal({
                 {saveSongFolderList &&
                   saveSongFolderList.map(folder => (
                     <SelectItem key={folder.id} value={folder.folder_name}>
-                      {folder.folder_name}
+                      {folder.folder_name} ({folder.songItem.length}곡)
                     </SelectItem>
                   ))}
               </SelectContent>
