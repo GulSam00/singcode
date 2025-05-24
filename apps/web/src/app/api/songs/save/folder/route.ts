@@ -11,7 +11,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<SaveSongFolderList
     const userId = await getAuthenticatedUser(supabase);
 
     // save_activities에서 song_id 목록을 가져옴
-    const { data, error: saveError } = await supabase
+    const { data: saveFolders, error: saveError } = await supabase
       .from('save_folders')
       .select('*')
       .eq('user_id', userId)
@@ -19,12 +19,21 @@ export async function GET(): Promise<NextResponse<ApiResponse<SaveSongFolderList
 
     if (saveError) throw saveError;
 
-    const saveSongFolderList = data.map(folder => ({
+    const { data: saveActivities, error: saveActivitiesError } = await supabase
+      .from('save_activities')
+      .select('*')
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false });
+
+    if (saveActivitiesError) throw saveActivitiesError;
+
+    const saveSongFolderList = saveFolders.map(folder => ({
       id: folder.id,
       user_id: folder.user_id,
       folder_name: folder.folder_name,
       created_at: folder.created_at,
       updated_at: folder.updated_at,
+      songItem: saveActivities.filter(activity => activity.folder_id === folder.id),
     }));
 
     return NextResponse.json({ success: true, data: saveSongFolderList });

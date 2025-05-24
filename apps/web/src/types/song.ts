@@ -32,6 +32,16 @@ export interface SaveSong extends Song {
   updated_at: Date;
 }
 
+export interface SaveActivity {
+  id: string;
+  user_id: string;
+  song_id: string;
+  folder_id: string;
+
+  created_at: string;
+  updated_at: string;
+}
+
 export interface SaveSongFolder {
   folder_id: string;
   folder_name: string;
@@ -42,6 +52,7 @@ export interface SaveSongFolderList {
   id: string;
   user_id: string;
   folder_name: string;
+  songItem: SaveActivity[];
 
   created_at: string;
   updated_at: string;
