@@ -39,21 +39,20 @@ export default function RootLayout({
       <>
         {/* 구글 애널리틱스 */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-3KPK2T7ZT7"
-          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-G0D5K3CWNL"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-
-            gtag('config', 'G-3KPK2T7ZT7');
+            gtag('config', 'G-G0D5K3CWNL');
           `}
         </Script>
 
         {/* 홈페이지 분석 */}
-        <Script id="hotjar" strategy="afterInteractive">
+        {/* <Script id="hotjar" strategy="lazyOnload">
           {`
             (function(h,o,t,j,a,r){
           h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
@@ -64,7 +63,7 @@ export default function RootLayout({
           a.appendChild(r);
       })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
           `}
-        </Script>
+        </Script> */}
       </>
     );
   };
