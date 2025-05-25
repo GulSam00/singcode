@@ -1,11 +1,22 @@
 # 🎵 Singcode
 
+
 노래방만 가면 뭘 부르려고 했었지 하면서 부를 곡들을 잊어버린다면. <br/>
 매번 인터넷에서 노래방 번호를 검색해야 했었다면. <br/>
 내가 어떤 노래를 가장 많이 불렀는지 궁금하다면. <br/>
 
 Singcode는 당신만의 노래 리스트를 만들고, 좋아하는 곡을 저장하고, 부른 기록까지 남길 수 있는 서비스를 제공합니다.  <br/>
 Supabase를 활용한 자체 DB를 통해 금영, TJ 노래방의 번호를 한 눈에 확인할 수 있습니다.
+
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+
+![프로젝트 썸네일1](https://github.com/user-attachments/assets/dd6ce355-d961-4075-984b-a2d500f3d852)
+![프로젝트 썸네일2](https://github.com/user-attachments/assets/e4d3fb2c-7bee-48fd-b73c-eb833f48f1e0)
+![프로젝트 썸네일3](https://github.com/user-attachments/assets/133bb11e-18e6-47f3-ab86-6ef1fb2865c1)
+
+
+</div>
+
 
 ---
 
