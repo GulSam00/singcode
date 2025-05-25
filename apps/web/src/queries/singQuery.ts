@@ -4,7 +4,9 @@ import { postSingLog } from '@/lib/api/singLog';
 import { postTotalStat } from '@/lib/api/totalStat';
 import { postUserStat } from '@/lib/api/userStat';
 
-export const usePostSingLogMutation = () => {
+let invalidateTimeout: NodeJS.Timeout | null = null;
+
+export const usePostSingMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -16,8 +18,13 @@ export const usePostSingLogMutation = () => {
       ]);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
-      queryClient.invalidateQueries({ queryKey: ['userStat'] });
+      if (invalidateTimeout) {
+        clearTimeout(invalidateTimeout);
+      }
+      invalidateTimeout = setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['userStat'] });
+        queryClient.invalidateQueries({ queryKey: ['totalStat'] });
+      }, 1000);
     },
   });
 };

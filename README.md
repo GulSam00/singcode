@@ -44,16 +44,37 @@ sing-code/
 ### Supabase DB 구조
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-<img src="https://github.com/user-attachments/assets/64b6e5ee-494b-47a8-82fc-41903f04ba6f" height=800  style="height:800px; width:auto;" />
+
+![supabase DB](https://github.com/user-attachments/assets/a5130f5e-c4bd-419e-b1d5-a9f217b456f7)
+
 </div>
 
 
 
 ## 📦 배포
-[Singcode](https://singcode.vercel.app/)
+[Singcode - 당신의 노래방 메모장](https://www.singcode.kr)
 
 ## ✨ 주요 기능
 
+### 검색 페이지
+* 제목, 가수 이름으로 곡을 검색할 수 있습니다.
+
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+  
+![검색-곡추가](https://github.com/user-attachments/assets/c9636b94-f07a-4841-8f88-5c8c9d99a9fe)
+
+</div>
+
+ ### 검색 페이지 - 재생목록으로 저장
+ 
+* 기존 재생목록이나 새로운 재생목록에 곡을 저장할 수 있습니다.
+
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+
+![검색-재생목록 저장1](https://github.com/user-attachments/assets/8a747aff-2a32-44f6-b144-4f280a0a72f7)
+![검색-재생목록 저장2](https://github.com/user-attachments/assets/5ab8ee4c-c62b-46cb-92c2-e90689fec987)
+
+</div>
 
 ### 부를 곡 페이지
 
@@ -62,23 +83,31 @@ sing-code/
 * 곡을 부르거나, 부르지 않고 삭제할 수 있습니다.
   
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-<img src="https://github.com/user-attachments/assets/b29b2dc0-dde3-4d69-9ce5-69a91ffe7985" height=800  style="height:800px; width:auto;" />
+
+![부를곡](https://github.com/user-attachments/assets/8f36e52a-64b1-4d75-b386-031306310ffd)
+
 </div>
 
-* 좋아요 표시한 곡이나 최근 부른 곡 중에서 부를 곡으로 추가할 수 있습니다.
+* 좋아요 표시한 곡이나 재생목록에 저장한 곡, 최근 부른 곡 중에서 부를곡을 추가할 수 있습니다.
 
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-<img src="https://github.com/user-attachments/assets/6a6e9f12-758c-4462-853d-4fadf3fb4851"   height=800  style="height:800px; width:auto;"/>
+
+![부를곡-모달추가1](https://github.com/user-attachments/assets/1c17666c-57db-4d48-8ad5-e9f402d2667b)
+![부를곡-모달추가2](https://github.com/user-attachments/assets/ae4c71aa-068a-4862-8e12-78bc29bd150a)
+
 </div>
 
-### 검색 페이지
-* 제목, 가수 이름으로 곡을 검색할 수 있습니다.
-* 몇몇 일본곡은 한국어를 지원합니다.
-  * 번역이 잘못되거나 부정확할 수 있습니다. 발견하신다면 제보 바랍니다.
- 
+
+### 인기곡 페이지
+
+* 모든 사용자들이 노래 부른 곡 순위나, 좋아요 한 곡 순위를 집계하여 보여줍니다.
+
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-  <img src="https://github.com/user-attachments/assets/886efbf5-bfc9-4b88-be8a-6e0e027dffc5"   height=800  style="height:800px; width:auto;" />
+
+![인기곡-통계](https://github.com/user-attachments/assets/750ba410-ce3e-4c98-a191-bb8f9cf6e62d)
+![인기곡-좋아요](https://github.com/user-attachments/assets/59d98e20-a735-4c52-8ed2-bc8ee9418a3f)
+
 </div>
 
 
@@ -89,9 +118,12 @@ sing-code/
 * 자신이 가장 많이 부른 곡의 순위를 확인할 수 있습니다.
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-  <img src="https://github.com/user-attachments/assets/d395522e-e10f-43ba-ab49-6ae299322978"   height=800  style="height:800px; width:auto;" />
-  <img src="https://github.com/user-attachments/assets/8ca69483-ca76-47b2-b719-e301bbec3ee7"   height=800  style="height:800px; width:auto;"  />
-  <img src="https://github.com/user-attachments/assets/f2fbe965-470c-4bc0-ae3d-17f6974cceac"  height=800  style="height:800px; width:auto;"  />
+  
+![라이브러리](https://github.com/user-attachments/assets/8bae1b21-387d-47e0-b394-8e576a6816fb)
+![라이브러리-부른곡 통계](https://github.com/user-attachments/assets/93f38c68-5ab4-4be8-9efa-3840ff053834)
+![라이브러리-재생목록 관리](https://github.com/user-attachments/assets/668acd87-f78b-4f15-8d05-8aeefd640ff6)
+![라이브러리-좋아요 관리](https://github.com/user-attachments/assets/e681e512-c9cb-4f2f-b0fb-7640b6c5d935)
+
 </div>
 
 ### 로그인 & 회원가입 지원
@@ -100,15 +132,24 @@ sing-code/
 * 이메일 인증 회원가입과 카카오 회원가입을 지원합니다.
   
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-<img src="https://github.com/user-attachments/assets/4cf4094b-717c-4a88-a5bb-1ae285f3af8e"   height=800  style="height:800px; width:auto;" />
-<img src="https://github.com/user-attachments/assets/8d7d8e9f-c447-4b2e-800a-dd3007fd0b40"  height=800  style="height:800px; width:auto;" />
+
+![로그인](https://github.com/user-attachments/assets/72674739-f85a-42d6-8b8f-c1003b6fd896)
+![회원가입](https://github.com/user-attachments/assets/653b05a1-126d-423a-8bd6-fca8e4c40e25)
+
 </div>
+
 
 ## 📖 프로젝트 기록
 
 - 2025.03.12 : 프로젝트 시작
 - 2025.4.24 : MVP 버전 완성. (부를 곡, 검색, 라이브러리)
 - 2025.4.27 : ChatGPT API 활용 일본어 곡 번역 시도, cheerio 및 puppeteer를 활용해서 국내곡 데이터 추가
+- 2025.5.7 : TJ 협업 요청 거절 답변 착신.
+- 2025.5.10 : DB 초기화 후 OPEN API의 TJ 기준으로 세팅.
+- 2025.5.11 : 인기곡 페이지 추가. 버전 1.2.0 배포
+- 2025.5.13 : puppeteer, cheerio 활용 금영 데이터 업데이트
+- 2025.5.23 : 재생목록 저장 기능 추가, 인기곡 페이지 데이터 산정 방식 개선
+- 2025.5.25 : SEO 개선, sitemap 추가, debounce로 중복 요청 처리
 
 ## 📝 회고
 
@@ -118,13 +159,13 @@ sing-code/
 - Next.js의 API Route를 활용하여 서버리스 API를 구축하고 외부 API의 URL을 감추고자 하였습니다.
 - react query를 활용하여 서버, 즉 DB와의 동기화를 구축하고자 하였습니다.
 - OPEN API로는 금영 노래방의 곡을 DB에 저장하기에 한계가 있었기에 puppeteer로 금영 노래방 유튜브 채널을 렌더링하여 곡을 검색하고 cheerio로 결과를 파싱하여 크롤링 프로세스를 설계하였습니다.
-
+- walla를 통해 사용자들의 피드백을 수렴하여 실사용자들의 사용자 경험을 개선하고자 하였습니다.
+  
 ### 무엇을 얻었는지
 
 - Turborepo를 활용하면서 모노레포의 이해를 높이고 프로젝트에 어떻게 적용하고 확장해야 하는지에 대해 익혔습니다.
 - DMS인 Supabase를 통해 DB를 직접 구축하면서 DB Table 구조에 대한 개념을 익혔습니다.
 - react query를 도입하며 쿼리 키를 활용한 낙관적 업데이트, 데이터 캐싱에 대한 이해를 높였습니다.
-
 
 
 ## 📄 라이선스
