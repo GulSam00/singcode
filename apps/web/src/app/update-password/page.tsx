@@ -73,7 +73,6 @@ export default function UpdatePasswordPage() {
         data: { session },
       } = await supabase.auth.getSession();
       if (session?.user.email) {
-        console.log('Current session:', session);
         setStep('reset');
         toast.success('이메일 인증 확인', { description: '비밀번호를 재설정 해주세요.' });
       }
@@ -86,11 +85,10 @@ export default function UpdatePasswordPage() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth event:', event); // 디버깅용
-      console.log('Session:', session); // 디버깅용
+      // console.log('Auth event:', event); // 디버깅용
+      // console.log('Session:', session); // 디버깅용
 
       if (event === 'SIGNED_IN') {
-        console.log('Password recovery detected');
         setStep('reset');
         toast.success('이메일 인증 확인', { description: '비밀번호를 재설정 해주세요.' });
       }
