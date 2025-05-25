@@ -4,7 +4,7 @@ import { getTotalStat } from '@/lib/api/totalStat';
 
 export const useTotalStatQuery = (countType: string, periodType: string) => {
   return useQuery({
-    queryKey: ['TotalStat', countType, periodType],
+    queryKey: ['totalStat', countType, periodType],
     queryFn: async () => {
       const response = await getTotalStat(countType, periodType);
 
