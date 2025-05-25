@@ -82,10 +82,6 @@ export default function useSong() {
   };
 
   const handleSung = async (songId: string) => {
-    // 순서 이동
-    const oldIndex = toSingSongs.findIndex(item => item.songs.id === songId);
-    handleMoveToBottom(songId, oldIndex);
-
     // 통계 업데이트
     await Promise.all([postSingLog(songId), handleDelete(songId)]);
   };

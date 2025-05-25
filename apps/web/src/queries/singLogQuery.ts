@@ -16,7 +16,6 @@ export const usePostSingLogMutation = () => {
       ]);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
       queryClient.invalidateQueries({ queryKey: ['userStat'] });
     },
   });
