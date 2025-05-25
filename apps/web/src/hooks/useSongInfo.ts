@@ -4,13 +4,10 @@ import { useState } from 'react';
 
 import { useDeleteLikeSongArrayMutation } from '@/queries/likeSongQuery';
 
-// import { useDeleteLikeSongMutation } from '@/queries/likeSongQuery';
-
 export default function useSongInfo() {
   const [deleteLikeSelected, setDeleteLikeSelected] = useState<string[]>([]);
 
   const { mutate: deleteLikeSongArray } = useDeleteLikeSongArrayMutation();
-  // const { mutate: deleteLikeSong } = useDeleteLikeSongMutation();
 
   const handleToggleSelect = (songId: string) => {
     setDeleteLikeSelected(prev =>

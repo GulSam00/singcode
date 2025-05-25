@@ -8,6 +8,9 @@ import { postTotalStat } from '@/lib/api/totalStat';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
+let invalidateToSingTimeout: NodeJS.Timeout | null = null;
+let invalidateLikeTimeout: NodeJS.Timeout | null = null;
+
 export const useSearchSongQuery = (
   search: string,
   searchType: string,
@@ -67,12 +70,17 @@ export const useToggleToSingMutation = () => {
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
-      queryClient.invalidateQueries({
-        queryKey: ['searchSong', context?.query, context?.searchType],
-      });
-      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
-      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
-      queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+      if (invalidateToSingTimeout) {
+        console.log('invalidateToSingTimeout', invalidateToSingTimeout);
+        clearTimeout(invalidateToSingTimeout);
+      }
+      invalidateToSingTimeout = setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: ['searchSong', context?.query, context?.searchType],
+        });
+        queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+        queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+      }, 1000);
     },
   });
 };
@@ -120,11 +128,17 @@ export const useToggleLikeMutation = () => {
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
-      queryClient.invalidateQueries({
-        queryKey: ['searchSong', context?.query, context?.searchType],
-      });
-      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
-      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+      if (invalidateLikeTimeout) {
+        console.log('invalidateLikeTimeout', invalidateLikeTimeout);
+        clearTimeout(invalidateLikeTimeout);
+      }
+      invalidateLikeTimeout = setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: ['searchSong', context?.query, context?.searchType],
+        });
+        queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+        queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+      }, 1000);
     },
   });
 };
