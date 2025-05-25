@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.singcode.kr
+
+# Sitemaps
+Sitemap: https://www.singcode.kr/sitemap.xml

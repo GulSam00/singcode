@@ -17,13 +17,33 @@ import QueryProvider from '@/query';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const metadata: Metadata = {
-  title: 'Singcode - 간편하게 노래를 저장하세요!',
-  description: '노래방만 가면 뭐 부를지 고민한다면?',
+  title: 'Singcode - 당신의 노래방 메모장',
+  description:
+    '노래방만 가면 부르고 싶었던 노래가 기억 안 날 때? Singcode에서 검색하고 저장하면 걱정 끝!',
   openGraph: {
-    title: 'Singcode - 간편하게 노래를 저장하세요!',
-    description: '노래방만 가면 뭐 부를지 고민한다면?',
-    url: 'https://singcode.vercel.app',
+    title: 'Singcode - 노래방에서 부를 곡, 기억하지 말고 저장하세요',
+    description: '노래방 갈 때마다 잊어버리는 곡번호? Singcode가 대신 기억할게요!',
+    url: 'https://www.singcode.kr',
     siteName: 'Singcode',
+    images: [
+      {
+        url: '/thumbnail.png',
+        width: 1200,
+        height: 630,
+        alt: 'Singcode 썸네일 이미지',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Singcode - 노래방에서 부를 곡, 기억하지 말고 저장하세요',
+    description: '노래방 갈 때마다 잊어버리는 곡번호? Singcode가 대신 기억할게요!',
+    images: ['/thumbnail.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -39,21 +59,20 @@ export default function RootLayout({
       <>
         {/* 구글 애널리틱스 */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-3KPK2T7ZT7"
-          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-G0D5K3CWNL"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-
-            gtag('config', 'G-3KPK2T7ZT7');
+            gtag('config', 'G-G0D5K3CWNL');
           `}
         </Script>
 
         {/* 홈페이지 분석 */}
-        <Script id="hotjar" strategy="afterInteractive">
+        {/* <Script id="hotjar" strategy="lazyOnload">
           {`
             (function(h,o,t,j,a,r){
           h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
@@ -64,7 +83,7 @@ export default function RootLayout({
           a.appendChild(r);
       })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
           `}
-        </Script>
+        </Script> */}
       </>
     );
   };
