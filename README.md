@@ -1,5 +1,7 @@
 # 🎵 Singcode
 
+[Singcode - 당신의 노래방 메모장](https://www.singcode.kr)
+
 
 노래방만 가면 뭘 부르려고 했었지 하면서 부를 곡들을 잊어버린다면. <br/>
 매번 인터넷에서 노래방 번호를 검색해야 했었다면. <br/>
@@ -19,6 +21,10 @@ Supabase를 활용한 자체 DB를 통해 금영, TJ 노래방의 번호를 한 
 
 
 ---
+
+
+## 📦 배포
+[Singcode - 당신의 노래방 메모장](https://www.singcode.kr)
 
 ## 📚 기술 스택
 
@@ -60,10 +66,6 @@ sing-code/
 
 </div>
 
-
-
-## 📦 배포
-[Singcode - 당신의 노래방 메모장](https://www.singcode.kr)
 
 ## ✨ 주요 기능
 
