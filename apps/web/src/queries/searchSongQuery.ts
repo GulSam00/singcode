@@ -65,13 +65,12 @@ export const useToggleToSingMutation = () => {
       return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
       if (invalidateToSingTimeout) {
-        console.log('invalidateToSingTimeout', invalidateToSingTimeout);
         clearTimeout(invalidateToSingTimeout);
       }
       invalidateToSingTimeout = setTimeout(() => {
@@ -123,13 +122,12 @@ export const useToggleLikeMutation = () => {
       return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
       if (invalidateLikeTimeout) {
-        console.log('invalidateLikeTimeout', invalidateLikeTimeout);
         clearTimeout(invalidateLikeTimeout);
       }
       invalidateLikeTimeout = setTimeout(() => {
@@ -169,7 +167,7 @@ export const useSaveMutation = () => {
       return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },

@@ -12,7 +12,6 @@ export function useSaveSongQuery() {
         return [];
       }
       const rawData: SaveSong[] = response.data;
-      console.log('rawData', rawData);
       const songFolders: SaveSongFolder[] = [];
 
       rawData.forEach(item => {
@@ -49,7 +48,7 @@ export function useMoveSaveSongMutation() {
     },
 
     onError: error => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
     },
     onSettled: () => {
@@ -64,13 +63,13 @@ export function useDeleteSaveSongMutation() {
   return useMutation({
     mutationFn: async ({ songIdArray }: { songIdArray: string[] }) => {
       const data = await deleteSaveSong({ songIdArray });
-      console.log('useDeleteSaveSongMutation', data);
+
       if (!data.success) {
         throw new Error(data.error);
       }
     },
     onError: error => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
     },
     onSettled: () => {

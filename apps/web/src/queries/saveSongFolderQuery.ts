@@ -34,7 +34,7 @@ export function usePostSaveSongFolderMutation() {
       }
     },
     onError: error => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
     },
     onSettled: () => {
@@ -54,7 +54,7 @@ export function useRenameSaveSongFolderMutation() {
       }
     },
     onError: error => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
     },
     onSettled: () => {
@@ -74,7 +74,7 @@ export function useDeleteSaveFolderSongMutation() {
       }
     },
     onError: error => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
     },
     onSettled: () => {
