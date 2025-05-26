@@ -1,6 +1,8 @@
 # *
 User-agent: *
-Allow: /
+Disallow: /
+Allow: /$
+Allow: /popular
 
 # Host
 Host: https://www.singcode.kr

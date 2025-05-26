@@ -6,12 +6,22 @@ const config = {
   sitemapSize: 7000,
   changefreq: 'weekly',
   priority: 0.7,
-  exclude: ['/login', '/api'], // 필요 시 제외할 경로
+  exclude: [
+    '/login',
+    '/signup',
+    '/update-password',
+    '/search',
+    '/library',
+    '/library/*',
+    '/tosing',
+    '/error',
+  ],
   robotsTxtOptions: {
     policies: [
       {
         userAgent: '*',
-        allow: '/',
+        disallow: '/', // 기본은 모든 경로 막기
+        allow: ['/', '/popular'], // 이 두 경로만 허용
       },
     ],
   },

@@ -55,7 +55,7 @@ export function useLikeSongQuery() {
 //       return { prev };
 //     },
 //     onError: (error, songId, context) => {
-//       console.log('error', error);
+//       console.error('error', error);
 //       alert(error.message ?? 'POST 실패');
 //       queryClient.setQueryData(['likeSong'], context?.prev);
 //     },
@@ -85,7 +85,7 @@ export function useDeleteLikeSongArrayMutation() {
       return { prev };
     },
     onError: (error, songIds, context) => {
-      console.log('error', error);
+      console.error('error', error);
       alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['likeSong'], context?.prev);
     },
