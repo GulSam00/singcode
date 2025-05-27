@@ -2,7 +2,6 @@
 
 import { Search, SearchX } from 'lucide-react';
 
-import DisquietBadge from '@/components/DisquietBadge';
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -111,7 +110,6 @@ export default function SearchPage() {
           patchSaveSong={patchSaveSong}
         />
       )}
-      <DisquietBadge />
     </div>
   );
 }
