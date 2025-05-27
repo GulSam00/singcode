@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import DisquietBadge from '@/components/DisquietBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -131,6 +132,8 @@ export default function Sidebar() {
         </div>
 
         <SheetFooter>
+          <DisquietBadge />
+
           {isAuthenticated ? (
             <Button variant="destructive" className="w-full" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />

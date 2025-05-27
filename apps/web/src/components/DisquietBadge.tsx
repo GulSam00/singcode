@@ -16,8 +16,8 @@ export default function DisquietBadge() {
 
   return (
     <div
-      className={`absolute bottom-0 left-0 w-full transition-all duration-500 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+      className={`fixed top-0 left-0 w-full transition-all duration-500 ${
+        isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
       }`}
     >
       <iframe
