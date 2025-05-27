@@ -1,6 +1,14 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@font-face {
+  font-family: Barcode;
+  src: url('/fonts/LibreBarcode128Text-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* @theme {
@@ -51,6 +59,7 @@
   --color-brand-tj: var(--brand-tj);
   --color-brand-ky: var(--brand-ky);
   --color-check: var(--check);
+  --font-barcode: Barcode;
 }
 
 @layer base {
