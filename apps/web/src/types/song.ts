@@ -64,6 +64,12 @@ export interface SearchSong extends Song {
   isSave: boolean;
 }
 
+export interface SearchSongResponse {
+  data: SearchSong[];
+  hasMore: boolean;
+  nextPage: number;
+}
+
 export interface AddListModalSong extends Song {
   isInToSingList: boolean;
   id: string;

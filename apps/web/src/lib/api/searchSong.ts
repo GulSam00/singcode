@@ -8,5 +8,7 @@ export async function getSearchSong(search: string, searchType: string, isAuthen
     params: { q: search, type: searchType, authenticated: isAuthenticated },
   });
 
+  console.log('response : ', response.data);
+
   return response.data;
 }

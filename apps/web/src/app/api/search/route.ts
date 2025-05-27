@@ -25,6 +25,11 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const type = searchParams.get('type') || 'title';
     const authenticated = searchParams.get('authenticated') === 'true';
 
+    const page = parseInt(searchParams.get('page') || '0', 10);
+    const size = 20;
+    const from = page * size;
+    const to = from + size - 1;
+
     if (!query) {
       return NextResponse.json(
         {
@@ -38,7 +43,13 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const supabase = await createClient();
 
     if (!authenticated) {
-      const { data, error } = await supabase.from('songs').select('*').ilike(type, `%${query}%`);
+      const { data, error, count } = await supabase
+        .from('songs')
+        .select('*', { count: 'exact' })
+        .ilike(type, `%${query}%`)
+        .order('release', { ascending: false })
+        .range(from, to);
+
       if (error) {
         return NextResponse.json(
           {
@@ -65,12 +76,13 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       return NextResponse.json({
         success: true,
         data: songs,
+        hasNext: (count ?? 0) > to + 1,
       });
     }
 
     const userId = await getAuthenticatedUser(supabase); // userId 가져오기
 
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('songs')
       .select(
         `
@@ -85,8 +97,11 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
           user_id
         )
       `,
+        { count: 'exact' },
       )
-      .ilike(type, `%${query}%`);
+      .ilike(type, `%${query}%`)
+      .order('release', { ascending: false })
+      .range(from, to);
 
     if (error) {
       return NextResponse.json(
@@ -116,6 +131,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     return NextResponse.json({
       success: true,
       data: songs,
+      hasNext: (count ?? 0) > to + 1,
     });
   } catch (error) {
     if (error instanceof Error && error.cause === 'auth') {
