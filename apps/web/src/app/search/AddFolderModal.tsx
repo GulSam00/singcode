@@ -21,8 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
-import { useSaveSongQuery } from '@/queries/saveSongQuery';
-import { SaveSongFolder, SaveSongFolderList, SearchSong } from '@/types/song';
+import { SaveSongFolderList, SearchSong } from '@/types/song';
 
 interface IProps {
   modalType: '' | 'POST' | 'PATCH';
@@ -121,7 +120,7 @@ export default function AddFolderModal({
           {/* 재생목록 선택 */}
           <div>
             <Label htmlFor="playlist-select">재생목록 선택</Label>
-            <Select value={folderName} onValueChange={handlevalueChange}>
+            <Select disabled={isLoading} value={folderName} onValueChange={handlevalueChange}>
               <SelectTrigger id="playlist-select" className="mt-1 w-full">
                 <SelectValue placeholder="재생목록을 선택하세요" />
               </SelectTrigger>
