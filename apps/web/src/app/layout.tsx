@@ -59,7 +59,7 @@ export default function RootLayout({
       <>
         {/* 구글 애널리틱스 */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-G0D5K3CWNL"
+          src="https://www.googletagmanager.com/gtag/js?id=G-3KPK2T7ZT7"
           strategy="lazyOnload"
         />
         <Script id="google-analytics" strategy="lazyOnload">
@@ -67,7 +67,7 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-G0D5K3CWNL');
+            gtag('config', 'G-3KPK2T7ZT7');
           `}
         </Script>
 
