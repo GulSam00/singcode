@@ -369,6 +369,9 @@ importers:
       axios:
         specifier: ^1.5.0
         version: 1.9.0
+      tsx:
+        specifier: ^4.19.3
+        version: 4.19.3
     devDependencies:
       '@types/node':
         specifier: ^22.13.10
