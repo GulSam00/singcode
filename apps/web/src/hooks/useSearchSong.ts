@@ -5,6 +5,7 @@ import { useMoveSaveSongMutation } from '@/queries/saveSongQuery';
 import {
   useSaveMutation,
   useSearchSongQuery,
+  useTestInfiniteQuery,
   useToggleLikeMutation,
   useToggleToSingMutation,
 } from '@/queries/searchSongQuery';
@@ -29,6 +30,16 @@ export default function useSearchSong() {
   const { mutate: toggleLike } = useToggleLikeMutation();
   const { mutate: postSong } = useSaveMutation();
   const { mutate: moveSong } = useMoveSaveSongMutation();
+
+  const {
+    data: testInfiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+  } = useTestInfiniteQuery(query, searchType, isAuthenticated);
+
+  console.log('status', hasNextPage, isFetchingNextPage, isError);
 
   const searchSongs = searchResults ?? [];
 
@@ -80,6 +91,7 @@ export default function useSearchSong() {
     query,
     searchSongs,
     isLoading,
+
     searchType,
     handleSearchTypeChange,
     handleSearch,
@@ -91,5 +103,11 @@ export default function useSearchSong() {
     selectedSaveSong,
     postSaveSong,
     patchSaveSong,
+
+    testInfiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
   };
 }

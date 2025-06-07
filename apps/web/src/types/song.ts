@@ -66,8 +66,8 @@ export interface SearchSong extends Song {
 
 export interface SearchSongResponse {
   data: SearchSong[];
-  hasMore: boolean;
-  nextPage: number;
+  success: boolean;
+  hasNext: boolean;
 }
 
 export interface AddListModalSong extends Song {

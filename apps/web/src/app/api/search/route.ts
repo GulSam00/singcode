@@ -76,6 +76,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       return NextResponse.json({
         success: true,
         data: songs,
+        // 전체 개수가 현재 페이지 번호 * 페이지 크기(범위의 끝이 되는 index) 보다 크면 다음 페이지가 있음
         hasNext: (count ?? 0) > to + 1,
       });
     }

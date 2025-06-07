@@ -1,6 +1,9 @@
 'use client';
 
 import { Search, SearchX } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
@@ -8,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSearchSong from '@/hooks/useSearchSong';
+import { SearchSong } from '@/types/song';
 
 import AddFolderModal from './AddFolderModal';
 import SearchResultCard from './SearchResultCard';
@@ -30,7 +34,28 @@ export default function SearchPage() {
     handleToggleSave,
     postSaveSong,
     patchSaveSong,
+
+    testInfiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
   } = useSearchSong();
+
+  const { ref, inView } = useInView();
+
+  console.log('searchSongs', searchSongs);
+  console.log('testInfiniteData', testInfiniteData);
+  let pageParams: number[] = [];
+  let pages: SearchSong[] = [];
+
+  if (testInfiniteData) {
+    pageParams = testInfiniteData.pageParams as number[];
+    pages = testInfiniteData.pages.flat();
+  }
+
+  console.log('pageParams', pageParams);
+  console.log('pages', pages);
 
   // 엔터 키 처리
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -38,6 +63,16 @@ export default function SearchPage() {
       handleSearch();
     }
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (inView && hasNextPage && !isFetchingNextPage && !isError) {
+        fetchNextPage();
+      }
+    }, 1000); // 1000ms 정도 지연
+
+    return () => clearTimeout(timeout);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   return (
     <div className="bg-background">
@@ -72,9 +107,9 @@ export default function SearchPage() {
         </div>
       </div>
       <ScrollArea className="h-[calc(100vh-16rem)]">
-        {searchSongs.length > 0 && (
+        {pages.length > 0 && (
           <div className="flex w-[360px] flex-col gap-3 px-2 py-4">
-            {searchSongs.map((song, index) => (
+            {pages.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
                 song={song}
@@ -85,6 +120,11 @@ export default function SearchPage() {
                 onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
               />
             ))}
+            {hasNextPage && (
+              <div ref={ref} className="flex h-10 items-center justify-center p-2">
+                <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            )}
           </div>
         )}
         {searchSongs.length === 0 && query && (
