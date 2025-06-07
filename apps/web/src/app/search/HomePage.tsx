@@ -21,8 +21,14 @@ export default function SearchPage() {
     search,
     query,
     setSearch,
-    searchSongs,
+
+    searchResults,
     isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+
     saveModalType,
     setSaveModalType,
     selectedSaveSong,
@@ -34,28 +40,18 @@ export default function SearchPage() {
     handleToggleSave,
     postSaveSong,
     patchSaveSong,
-
-    testInfiniteData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isError,
   } = useSearchSong();
 
   const { ref, inView } = useInView();
 
-  console.log('searchSongs', searchSongs);
-  console.log('testInfiniteData', testInfiniteData);
-  let pageParams: number[] = [];
-  let pages: SearchSong[] = [];
+  let searchSongs: SearchSong[] = [];
 
-  if (testInfiniteData) {
-    pageParams = testInfiniteData.pageParams as number[];
-    pages = testInfiniteData.pages.flat();
+  if (searchResults) {
+    searchSongs = searchResults.pages.flatMap(page => page.data);
   }
 
-  console.log('pageParams', pageParams);
-  console.log('pages', pages);
+  // console.log('searchResults', searchResults);
+  // console.log('pages', searchSongs);
 
   // 엔터 키 처리
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -107,9 +103,9 @@ export default function SearchPage() {
         </div>
       </div>
       <ScrollArea className="h-[calc(100vh-16rem)]">
-        {pages.length > 0 && (
+        {searchSongs.length > 0 && (
           <div className="flex w-[360px] flex-col gap-3 px-2 py-4">
-            {pages.map((song, index) => (
+            {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
                 song={song}
@@ -120,7 +116,7 @@ export default function SearchPage() {
                 onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
               />
             ))}
-            {hasNextPage && (
+            {hasNextPage && !isFetchingNextPage && (
               <div ref={ref} className="flex h-10 items-center justify-center p-2">
                 <Loader2 className="h-8 w-8 animate-spin" />
               </div>

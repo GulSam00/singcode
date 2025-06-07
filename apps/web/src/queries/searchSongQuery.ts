@@ -2,7 +2,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 
 import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
 import { postSaveSong } from '@/lib/api/saveSong';
-import { getSearchSong } from '@/lib/api/searchSong';
+import { getInfiniteSearchSong, getSearchSong } from '@/lib/api/searchSong';
 import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
 import { postTotalStat } from '@/lib/api/totalStat';
 import { Method } from '@/types/common';
@@ -11,30 +11,38 @@ import { SearchSong } from '@/types/song';
 let invalidateToSingTimeout: NodeJS.Timeout | null = null;
 let invalidateLikeTimeout: NodeJS.Timeout | null = null;
 
-export const useTestInfiniteQuery = (
+export const useInfiniteSearchSongQuery = (
   search: string,
   searchType: string,
   isAuthenticated: boolean,
 ) => {
   return useInfiniteQuery({
-    queryKey: ['testInfiniteQuery', search, searchType],
+    queryKey: ['searchSong', search, searchType],
     queryFn: async ({ pageParam }) => {
-      const response = await getSearchSong(search, searchType, isAuthenticated, pageParam);
+      const response = await getInfiniteSearchSong(search, searchType, isAuthenticated, pageParam);
+
       console.log('response', response);
+
       if (!response.success) {
         throw new Error('Search API failed');
       }
-      return response.data || [];
+      return {
+        data: response.data || [],
+        hasNext: response.hasNext,
+      };
     },
+
     getNextPageParam: (lastPage, pages) => {
       // lastPage : 직전 페이지의 데이터
       // pages : 현재까지 조회된 모든 데이터
       // console.log('lastPage', lastPage);
       // console.log('pages', pages);
-      if (!lastPage || lastPage.length === 0) return undefined;
-      return pages.length;
+
+      if (!lastPage || lastPage.data.length === 0) return undefined;
+      return lastPage.hasNext ? pages.length : undefined;
     },
     initialPageParam: 0,
+    enabled: !!search,
   });
 };
 

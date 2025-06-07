@@ -1,5 +1,5 @@
 import { ApiResponse } from '@/types/apiRoute';
-import { SearchSong, SearchSongResponse } from '@/types/song';
+import { SearchSong } from '@/types/song';
 
 import { instance } from './client';
 
@@ -9,11 +9,9 @@ export async function getInfiniteSearchSong(
   isAuthenticated: boolean,
   page?: number,
 ) {
-  const response = await instance.get<ApiResponse<SearchSongResponse>>('/search', {
+  const response = await instance.get<ApiResponse<SearchSong[]>>('/search', {
     params: { q: search, type: searchType, authenticated: isAuthenticated, page },
   });
-
-  console.log('response : ', response.data);
 
   return response.data;
 }
@@ -27,8 +25,6 @@ export async function getSearchSong(
   const response = await instance.get<ApiResponse<SearchSong[]>>('/search', {
     params: { q: search, type: searchType, authenticated: isAuthenticated, page },
   });
-
-  console.log('response : ', response.data);
 
   return response.data;
 }
