@@ -3,8 +3,8 @@ import { toast } from 'sonner';
 
 import { useMoveSaveSongMutation } from '@/queries/saveSongQuery';
 import {
+  useInfiniteSearchSongQuery,
   useSaveMutation,
-  useSearchSongQuery,
   useToggleLikeMutation,
   useToggleToSingMutation,
 } from '@/queries/searchSongQuery';
@@ -24,13 +24,20 @@ export default function useSearchSong() {
   const [searchType, setSearchType] = useState<SearchType>('title');
   const [saveModalType, setSaveModalType] = useState<SaveModalType>('');
   const [selectedSaveSong, setSelectedSaveSong] = useState<SearchSong | null>(null);
-  const { data: searchResults, isLoading } = useSearchSongQuery(query, searchType, isAuthenticated);
+  // const { data: searchResults, isLoading } = useSearchSongQuery(query, searchType, isAuthenticated);
   const { mutate: toggleToSing } = useToggleToSingMutation();
   const { mutate: toggleLike } = useToggleLikeMutation();
   const { mutate: postSong } = useSaveMutation();
   const { mutate: moveSong } = useMoveSaveSongMutation();
 
-  const searchSongs = searchResults ?? [];
+  const {
+    data: searchResults,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
   const handleSearch = () => {
     setQuery(search);
@@ -78,8 +85,14 @@ export default function useSearchSong() {
     search,
     setSearch,
     query,
-    searchSongs,
+
+    searchResults,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     isLoading,
+    isError,
+
     searchType,
     handleSearchTypeChange,
     handleSearch,

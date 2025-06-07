@@ -3,7 +3,11 @@ import {
   getTransDictionariesDBByOriginal,
 } from "./supabase/getDB";
 import { postTransDictionariesDB } from "./supabase/postDB";
-import { updateDataLog } from "./logData";
+import {
+  updateDataLog,
+  saveDictionariesLog,
+  loadDictionariesLog,
+} from "./logData";
 import { transChatGPT } from "./transChatGPT";
 import { TransSong, TransDictionary } from "./types";
 import { sleep } from "openai/core";
@@ -21,6 +25,9 @@ const refreshData = async () => {
   console.log("refreshData");
 
   const result = await postTransDictionariesDB(transData);
+  for (const song of transData) {
+    saveDictionariesLog(song.original_japanese);
+  }
 
   updateDataLog(result.success, "postTransDictionarySuccess.txt");
   updateDataLog(result.failed, "postTransDictionaryFailed.txt");
@@ -33,6 +40,8 @@ const refreshData = async () => {
 
 let count = 0;
 
+const tryLogs = loadDictionariesLog();
+
 for (const song of data) {
   if (count >= 10) {
     await refreshData();
@@ -41,9 +50,14 @@ for (const song of data) {
   console.log("count : ", count++);
   await sleep(150); // 0.15초(150ms) 대기
 
+  if (tryLogs.has(song.artist)) {
+    continue;
+  }
+
   const dupArtistTrans = await getTransDictionariesDBByOriginal(song.artist);
 
   if (dupArtistTrans) {
+    saveDictionariesLog(song.artist);
     continue;
   }
 

@@ -1,13 +1,17 @@
 'use client';
 
-import { Search, SearchX } from 'lucide-react';
+import { Loader2, Search, SearchX, X } from 'lucide-react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
 import useSearchSong from '@/hooks/useSearchSong';
+import { SearchSong } from '@/types/song';
 
 import AddFolderModal from './AddFolderModal';
 import SearchResultCard from './SearchResultCard';
@@ -17,8 +21,14 @@ export default function SearchPage() {
     search,
     query,
     setSearch,
-    searchSongs,
+
+    searchResults,
     isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+
     saveModalType,
     setSaveModalType,
     selectedSaveSong,
@@ -32,16 +42,47 @@ export default function SearchPage() {
     patchSaveSong,
   } = useSearchSong();
 
+  const { ref, inView } = useInView();
+
+  let searchSongs: SearchSong[] = [];
+
+  if (searchResults) {
+    searchSongs = searchResults.pages.flatMap(page => page.data);
+  }
+
+  // console.log('searchResults', searchResults);
+  // console.log('pages', searchSongs);
+  const { searchHistory, addToHistory, removeFromHistory } = useSearchHistory();
+
   // 엔터 키 처리
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
+      addToHistory(search);
     }
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (inView && hasNextPage && !isFetchingNextPage && !isError) {
+        fetchNextPage();
+      }
+    }, 1000); // 1000ms 정도 지연
+
+    return () => clearTimeout(timeout);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
+  const handleSearchClick = () => {
+    handleSearch();
+    addToHistory(search);
+  };
+
+  const handleHistoryClick = (term: string) => {
+    setSearch(term);
   };
 
   return (
     <div className="bg-background">
-      <div className="bg-background px-2 py-4 shadow-sm">
+      <div className="bg-background p-2 pt-4 shadow-sm">
         <h1 className="mb-3 text-2xl font-bold">노래 검색</h1>
 
         <Tabs
@@ -68,10 +109,37 @@ export default function SearchPage() {
               onKeyDown={handleKeyDown}
             />
           </div>
-          <Button onClick={handleSearch}>검색</Button>
+
+          <Button onClick={handleSearchClick}>검색</Button>
         </div>
+        {searchHistory.length > 0 && (
+          <div className="m-2 flex gap-2 overflow-x-auto pt-2">
+            {searchHistory.map((term, index) => (
+              <div
+                key={index}
+                className="bg-background flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-sm"
+              >
+                <button
+                  type="button"
+                  className="hover:text-primary"
+                  onClick={() => handleHistoryClick(term)}
+                >
+                  {term}
+                </button>
+                <button
+                  type="button"
+                  className="hover:text-destructive"
+                  onClick={() => removeFromHistory(term)}
+                  title="검색 기록 삭제"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      <ScrollArea className="h-[calc(100vh-16rem)]">
+      <ScrollArea className="h-[calc(100vh-20rem)]">
         {searchSongs.length > 0 && (
           <div className="flex w-[360px] flex-col gap-3 px-2 py-4">
             {searchSongs.map((song, index) => (
@@ -85,6 +153,11 @@ export default function SearchPage() {
                 onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
               />
             ))}
+            {hasNextPage && !isFetchingNextPage && (
+              <div ref={ref} className="flex h-10 items-center justify-center p-2">
+                <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            )}
           </div>
         )}
         {searchSongs.length === 0 && query && (

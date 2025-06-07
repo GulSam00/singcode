@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, Mail, Menu, Pencil, User } from 'lucide-react';
+import { LogOut, Menu, Pencil, User } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -59,11 +59,6 @@ export default function Sidebar() {
     }
   };
 
-  const handleClickContact = () => {
-    const contactUrl = 'https://walla.my/survey/K79c5bC6alDqc1qiaaES';
-    window.open(contactUrl, '_blank');
-  };
-
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -119,16 +114,7 @@ export default function Sidebar() {
 
           <Separator />
 
-          <div className="space-y-2">
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => handleClickContact()}
-            >
-              <Mail className="h-4 w-4" />
-              개발자에게 문의
-            </Button>
-          </div>
+          <div className="space-y-2"></div>
         </div>
 
         <SheetFooter>

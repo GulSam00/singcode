@@ -1,6 +1,7 @@
 export interface ApiSuccessResponse<T> {
   success: true;
   data?: T;
+  hasNext?: boolean;
   // data: T; 타입 에러
 }
 

@@ -43,6 +43,26 @@ export function updateDataLog<T>(unknownData: T[] | T, filename: string) {
   }
 }
 
+export function saveDictionariesLog(japanese: string) {
+  const logPath = path.join("src", "transList.txt");
+  const logDir = path.dirname(logPath);
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+  }
+  fs.appendFileSync(logPath, `${japanese}\n`, "utf-8");
+}
+
+export function loadDictionariesLog(): Set<string> {
+  const logPath = path.join("src", "transList.txt");
+  if (!fs.existsSync(logPath)) return new Set();
+  const lines = fs
+    .readFileSync(logPath, "utf-8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  return new Set(lines);
+}
+
 export function saveFailedSong(title: string, artist: string) {
   const logPath = path.join("src", "crawlYoutubeFailedList.txt");
   const logDir = path.dirname(logPath);
