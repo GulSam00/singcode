@@ -8,9 +8,16 @@ import { postSongsDB } from "./supabase/postDB";
 const START_CODE = 0xac00; // '가'
 const END_CODE = 0xd7a3; // '힣'
 
+const ALPHA_START_CODE = 0x0041; // 'A'
+const ALPHA_END_CODE = 0x005a; // 'Z'
+
+const NUMBER_START_CODE = 0x0030; // '0'
+const NUMBER_END_CODE = 0x0039; // '9'
+
 // a ~ z, 0 ~ 9도 따로 처리해야 함
 
 const STATE_FILE = path.join("src", "progress.json");
+const ALPHA_STATE_FILE = path.join("src", "alphaProgress.json");
 
 function loadProgress(): number {
   try {
@@ -21,23 +28,33 @@ function loadProgress(): number {
   }
 }
 
+function loadAlphaProgress(): number {
+  try {
+    const data = fs.readFileSync(ALPHA_STATE_FILE, "utf-8");
+    return JSON.parse(data).alphaIndex ?? ALPHA_START_CODE;
+  } catch {
+    return ALPHA_START_CODE;
+  }
+}
+
 function saveProgress(index: number): void {
   fs.writeFileSync(STATE_FILE, JSON.stringify({ index }), "utf-8");
 }
 
-function getNextHangulCharacter(index: number): string {
-  return String.fromCharCode(index);
+function saveAlphaProgress(index: number): void {
+  fs.writeFileSync(
+    ALPHA_STATE_FILE,
+    JSON.stringify({ alphaIndex: index }),
+    "utf-8"
+  );
 }
 
-async function main() {
+async function getHangulSongs() {
   let index = loadProgress();
 
   while (index <= END_CODE) {
-    const char = getNextHangulCharacter(index);
+    const char = String.fromCharCode(index);
     console.log(`[${index}] ${char}`);
-
-    // 여기서 원하는 작업 수행
-    // 예: GPT 번역 요청, DB 저장, 로그 작성 등
 
     const response = await getSong({ title: char, brand: "tj" });
     if (!response) {
@@ -63,4 +80,68 @@ async function main() {
   }
 }
 
-main();
+async function getAlphaSongs() {
+  let index = loadAlphaProgress();
+
+  while (index <= ALPHA_END_CODE) {
+    const char = String.fromCharCode(index);
+    console.log(`[${index}] ${char}`);
+
+    const response = await getSong({ title: char, brand: "tj" });
+    if (!response) {
+      console.log("null");
+      continue;
+    }
+
+    console.log(response.length);
+    const songs = response.map((item) => ({
+      title: item.title,
+      artist: item.singer,
+      num_tj: item.no,
+      num_ky: null,
+      release: item.release === "0000-00-00" ? null : item.release,
+    }));
+    const result: LogData<Song> = await postSongsDB(songs);
+
+    updateDataLog(result.success, "postByAllOpenSuccess.txt");
+    updateDataLog(result.failed, "postByAllOpenFailed.txt");
+
+    saveAlphaProgress(index);
+    index++;
+  }
+}
+
+async function getNumberSongs() {
+  let index = NUMBER_START_CODE;
+
+  while (index <= NUMBER_END_CODE) {
+    const char = String.fromCharCode(index);
+    console.log(`[${index}] ${char}`);
+
+    const response = await getSong({ title: char, brand: "tj" });
+    if (!response) {
+      console.log("null");
+      continue;
+    }
+
+    console.log(response.length);
+    const songs = response.map((item) => ({
+      title: item.title,
+      artist: item.singer,
+      num_tj: item.no,
+      num_ky: null,
+      release: item.release === "0000-00-00" ? null : item.release,
+    }));
+    const result: LogData<Song> = await postSongsDB(songs);
+
+    updateDataLog(result.success, "postByAllOpenSuccess.txt");
+    updateDataLog(result.failed, "postByAllOpenFailed.txt");
+
+    saveAlphaProgress(index);
+    index++;
+  }
+}
+
+// getHangulSongs();
+// getAlphaSongs();
+getNumberSongs();
