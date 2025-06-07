@@ -21,7 +21,7 @@ export const useInfiniteSearchSongQuery = (
     queryFn: async ({ pageParam }) => {
       const response = await getInfiniteSearchSong(search, searchType, isAuthenticated, pageParam);
 
-      console.log('response', response);
+      // console.log('response', response);
 
       if (!response.success) {
         throw new Error('Search API failed');
