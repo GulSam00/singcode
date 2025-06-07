@@ -1,4 +1,4 @@
-import { getSong, getSinger } from "@repo/open-api";
+import { getSong } from "@repo/open-api";
 import { Song } from "./types";
 import { updateSongsKyDB } from "./supabase/updateDB";
 import { getSongsKyNullDB } from "./supabase/getDB";
