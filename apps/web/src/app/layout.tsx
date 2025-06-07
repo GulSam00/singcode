@@ -127,6 +127,7 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <MonitoringScripts />
+        <meta name="naver-site-verification" content="85db7c6070d2f26d08e995cdab5a70caac28e80d" />
       </head>
       <body className="m-0 flex h-[100dvh] w-full justify-center">
         <QueryProvider>
