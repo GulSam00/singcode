@@ -57,7 +57,6 @@ export default function useSearchSong() {
   };
 
   const handleToggleLike = async (songId: string, method: Method) => {
-    console.log('handleToggleLike', songId, method);
     if (!isAuthenticated) {
       toast.error('로그인이 필요해요.');
       return;
