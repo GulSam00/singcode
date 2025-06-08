@@ -91,6 +91,7 @@ export function useDeleteLikeSongArrayMutation() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
+      queryClient.invalidateQueries({ queryKey: ['searchSong'] });
     },
   });
 }

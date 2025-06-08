@@ -24,6 +24,9 @@ export const usePostSingMutation = () => {
       invalidateTimeout = setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['userStat'] });
         queryClient.invalidateQueries({ queryKey: ['totalStat'] });
+        queryClient.invalidateQueries({ queryKey: ['searchSong'] });
+        // queryClient.invalidateQueries({ queryKey: ['searchSong', title] });
+        // queryClient.invalidateQueries({ queryKey: ['searchSong', artist] });
       }, 1000);
     },
   });
