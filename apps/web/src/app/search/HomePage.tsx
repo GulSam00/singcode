@@ -48,6 +48,7 @@ export default function SearchPage() {
 
   if (searchResults) {
     searchSongs = searchResults.pages.flatMap(page => page.data);
+    console.log('searchSongs', searchSongs);
   }
 
   // console.log('searchResults', searchResults);

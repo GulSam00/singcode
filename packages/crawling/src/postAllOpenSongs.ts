@@ -143,5 +143,5 @@ async function getNumberSongs() {
 }
 
 // getHangulSongs();
-// getAlphaSongs();
-getNumberSongs();
+getAlphaSongs();
+// getNumberSongs();
