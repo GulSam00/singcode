@@ -11,6 +11,16 @@ import { SearchSong } from '@/types/song';
 let invalidateToSingTimeout: NodeJS.Timeout | null = null;
 let invalidateLikeTimeout: NodeJS.Timeout | null = null;
 
+interface PagesType {
+  data: SearchSong[];
+  hasNext: boolean;
+}
+
+interface NextPageParamType {
+  pages: PagesType[];
+  pageParam: number[];
+}
+
 export const useInfiniteSearchSongQuery = (
   search: string,
   searchType: string,
@@ -94,9 +104,22 @@ export const useToggleToSingMutation = () => {
       queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
       const isToSing = method === 'POST';
-      queryClient.setQueryData(['searchSong', query, searchType], (old: SearchSong[] = []) =>
-        old.map(song => (song.id === songId ? { ...song, isToSing } : song)),
+
+      queryClient.setQueryData(
+        ['searchSong', query, searchType],
+        (old: NextPageParamType | undefined) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
+              ...page,
+              data: page.data.map(song => (song.id === songId ? { ...song, isToSing } : song)),
+            })),
+          };
+        },
       );
+
       return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
@@ -150,8 +173,19 @@ export const useToggleLikeMutation = () => {
       queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
       const isLike = method === 'POST';
-      queryClient.setQueryData(['searchSong', query, searchType], (old: SearchSong[] = []) =>
-        old.map(song => (song.id === songId ? { ...song, isLike } : song)),
+      queryClient.setQueryData(
+        ['searchSong', query, searchType],
+        (old: NextPageParamType | undefined) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
+              ...page,
+              data: page.data.map(song => (song.id === songId ? { ...song, isLike } : song)),
+            })),
+          };
+        },
       );
 
       return { prev, query, searchType };
@@ -195,8 +229,20 @@ export const useSaveMutation = () => {
     }) => {
       queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
-      queryClient.setQueryData(['searchSong', query, searchType], (old: SearchSong[] = []) =>
-        old.map(song => (song.id === songId ? { ...song, isSave: true } : song)),
+
+      queryClient.setQueryData(
+        ['searchSong', query, searchType],
+        (old: NextPageParamType | undefined) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
+              ...page,
+              data: page.data.map(song => (song.id === songId ? { ...song, isSave: true } : song)),
+            })),
+          };
+        },
       );
 
       return { prev, query, searchType };

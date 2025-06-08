@@ -79,6 +79,7 @@ export function useDeleteSaveFolderSongMutation() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['saveSongFolderList'] });
+      queryClient.invalidateQueries({ queryKey: ['searchSong'] });
     },
   });
 }
