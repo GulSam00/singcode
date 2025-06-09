@@ -115,7 +115,8 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
       user_id: userId,
       song_id: songId,
       folder_id: folderId,
-      updated_at: today,
+      // updated_at: today,
+      // supabase Trigger + Function으로 자동 처리
     });
 
     if (error) throw error;
