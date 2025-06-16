@@ -1,0 +1,25 @@
+name: Crawl Recent TJ Songs
+
+on:
+  schedule:
+    - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
+  workflow_dispatch:
+
+jobs:
+  run-npm-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: run crawl script
+        working-directory: packages/crawling
+        run: npm run dev-recent-tj
