@@ -52,6 +52,12 @@ area.find("li.search-data-list").each((index, element) => {
 
 const result: LogData<Song> = await postSongsDB(songs);
 
+console.log("성공 개수 : ", result.success.length);
+console.log("실패 개수 : ", result.failed.length);
+
+console.log("성공 데이터 : ", result.success);
+console.log("실패 데이터 : ", result.failed);
+
 updateDataLog(result.success, "postByRecentTJSuccess.txt");
 updateDataLog(result.failed, "postByRecentTJFailed.txt");
 
