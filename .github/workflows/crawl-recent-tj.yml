@@ -17,9 +17,15 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: run crawl script
         working-directory: ./packages/crawling
-        run: npm run dev-recent-tj
+        run: pnpm run dev-recent-tj
