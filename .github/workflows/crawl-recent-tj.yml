@@ -18,9 +18,9 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        working-directory: packages/crawling
+        working-directory: ./packages/crawling
         run: npm install
 
       - name: run crawl script
-        working-directory: packages/crawling
+        working-directory: ./packages/crawling
         run: npm run dev-recent-tj
