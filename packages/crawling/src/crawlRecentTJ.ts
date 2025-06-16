@@ -9,6 +9,7 @@ import { parseNumber, parseText } from "./utils";
 
 import dotenv from "dotenv";
 import { updateDataLog } from "./logData";
+import { format } from "date-fns";
 
 dotenv.config();
 
@@ -28,12 +29,8 @@ const html = await page.content();
 
 const $ = cheerio.load(html);
 
-const dateInfo = $(".music-date-info").text().trim();
-const dateArray = dateInfo.split(" ");
-const year = dateArray[0].replace("년", "").trim();
-const month = dateArray[1].replace("월", "").trim();
-const parsedMonth = month.length === 1 ? `0${month}` : month;
-const release = `${year}-${parsedMonth}-01`;
+const today = new Date();
+const releaseDate = format(today, "yyyy-MM-dd");
 
 const area = $(".chart-list-area");
 area.find("li.search-data-list").each((index, element) => {
@@ -44,7 +41,13 @@ area.find("li.search-data-list").each((index, element) => {
   );
   const artist = parseText($(element).find(".title4").text().trim());
 
-  songs.push({ title, artist, num_tj: num, num_ky: null, release });
+  songs.push({
+    title,
+    artist,
+    num_tj: num,
+    num_ky: null,
+    release: releaseDate,
+  });
 });
 
 const result: LogData<Song> = await postSongsDB(songs);
