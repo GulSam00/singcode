@@ -24,8 +24,9 @@ jobs:
           run_install: false
 
       - name: Install dependencies
+        working-directory: packages/crawling
         run: pnpm install
 
       - name: run crawl script
-        working-directory: ./packages/crawling
+        working-directory: packages/crawling
         run: pnpm run dev-recent-tj
