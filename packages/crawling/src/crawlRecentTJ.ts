@@ -13,7 +13,13 @@ import { format } from "date-fns";
 
 dotenv.config();
 
-const browser = await puppeteer.launch();
+// const browser = await puppeteer.launch();
+
+// action 우분투 환경에서의 호환을 위해 추가
+const browser = await puppeteer.launch({
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+});
+
 const page = await browser.newPage();
 
 const url = "https://www.tjmedia.com/song/recent_song";
