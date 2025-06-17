@@ -27,6 +27,12 @@ jobs:
         working-directory: packages/crawling
         run: pnpm install
 
+      - name: Create .env file
+        working-directory: packages/crawling
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
       - name: run crawl script
         working-directory: packages/crawling
         run: pnpm run dev-recent-tj
