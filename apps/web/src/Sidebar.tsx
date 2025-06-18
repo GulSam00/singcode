@@ -23,7 +23,8 @@ import useAuthStore from '@/stores/useAuthStore';
 export default function Sidebar() {
   // 목업 인증 상태
   const { user, isAuthenticated, logout, changeNickname } = useAuthStore();
-  const [isOpen, setIsOpen] = useState(false);
+
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newNickname, setNewNickname] = useState(user?.nickname || '');
 
@@ -60,7 +61,7 @@ export default function Sidebar() {
 
   const handleLogin = () => {
     router.push('/login');
-    setIsOpen(false);
+    setIsOpenSidebar(false);
   };
 
   const handleLogout = async () => {
@@ -70,8 +71,13 @@ export default function Sidebar() {
     }
   };
 
+  const handleWithdrawal = () => {
+    router.push('/withdrawal');
+    setIsOpenSidebar(false);
+  };
+
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet open={isOpenSidebar} onOpenChange={setIsOpenSidebar}>
       <SheetTrigger asChild>
         <Button className="flex items-center justify-center">
           <Menu className="h-6 w-6" />
@@ -132,10 +138,15 @@ export default function Sidebar() {
           <DisquietBadge />
 
           {isAuthenticated ? (
-            <Button variant="destructive" className="w-full" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              로그아웃
-            </Button>
+            <>
+              <Button variant="outline" className="w-full" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                로그아웃
+              </Button>
+              <Button variant="destructive" className="mt-2 w-full" onClick={handleWithdrawal}>
+                회원 탈퇴
+              </Button>
+            </>
           ) : (
             <Button variant="outline" className="w-full" onClick={handleLogin}>
               <User className="mr-2 h-4 w-4" />
