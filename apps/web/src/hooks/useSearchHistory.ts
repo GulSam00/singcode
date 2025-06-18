@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const SEARCH_HISTORY_KEY = 'search_history';
-const MAX_HISTORY_ITEMS = 5;
+const MAX_HISTORY_ITEMS = 20;
 
 export const useSearchHistory = () => {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
