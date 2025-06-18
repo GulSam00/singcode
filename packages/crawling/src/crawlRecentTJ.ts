@@ -9,10 +9,17 @@ import { parseNumber, parseText } from "./utils";
 
 import dotenv from "dotenv";
 import { updateDataLog } from "./logData";
+import { format } from "date-fns";
 
 dotenv.config();
 
-const browser = await puppeteer.launch();
+// const browser = await puppeteer.launch();
+
+// action 우분투 환경에서의 호환을 위해 추가
+const browser = await puppeteer.launch({
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+});
+
 const page = await browser.newPage();
 
 const url = "https://www.tjmedia.com/song/recent_song";
@@ -28,12 +35,8 @@ const html = await page.content();
 
 const $ = cheerio.load(html);
 
-const dateInfo = $(".music-date-info").text().trim();
-const dateArray = dateInfo.split(" ");
-const year = dateArray[0].replace("년", "").trim();
-const month = dateArray[1].replace("월", "").trim();
-const parsedMonth = month.length === 1 ? `0${month}` : month;
-const release = `${year}-${parsedMonth}-01`;
+const today = new Date();
+const releaseDate = format(today, "yyyy-MM-dd");
 
 const area = $(".chart-list-area");
 area.find("li.search-data-list").each((index, element) => {
@@ -44,10 +47,22 @@ area.find("li.search-data-list").each((index, element) => {
   );
   const artist = parseText($(element).find(".title4").text().trim());
 
-  songs.push({ title, artist, num_tj: num, num_ky: null, release });
+  songs.push({
+    title,
+    artist,
+    num_tj: num,
+    num_ky: null,
+    release: releaseDate,
+  });
 });
 
 const result: LogData<Song> = await postSongsDB(songs);
+
+console.log("성공 개수 : ", result.success.length);
+console.log("실패 개수 : ", result.failed.length);
+
+console.log("성공 데이터 : ", result.success);
+console.log("실패 데이터 : ", result.failed);
 
 updateDataLog(result.success, "postByRecentTJSuccess.txt");
 updateDataLog(result.failed, "postByRecentTJFailed.txt");

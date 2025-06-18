@@ -8,7 +8,7 @@ import ErrorWrapper from '@/ErrorWrapper';
 import Footer from '@/Footer';
 import Header from '@/Header';
 import AuthProvider from '@/auth';
-import LoadingOverlay from '@/components/LoadingOverlay';
+// import LoadingOverlay from '@/components/LoadingOverlay';
 import MessageDialog from '@/components/messageDialog';
 import '@/globals.css';
 import { PostHogProvider } from '@/posthog';
@@ -103,7 +103,7 @@ export default function RootLayout({
     <ErrorWrapper>
       <div className="relative flex h-full w-[360px] flex-col">
         <Header />
-        <main className="flex-1">{children}</main>
+        {children}
         <Footer />
       </div>
 
@@ -118,7 +118,7 @@ export default function RootLayout({
       />
 
       <MessageDialog />
-      <LoadingOverlay />
+      {/* <LoadingOverlay /> */}
       <MonitoringComponent />
     </ErrorWrapper>
   );

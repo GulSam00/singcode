@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
-import useLoadingStore from '@/stores/useLoadingStore';
+// import useLoadingStore from '@/stores/useLoadingStore';
 
 export default function LoadingOverlay() {
-  const { isLoading } = useLoadingStore();
+  // const { isLoading } = useLoadingStore();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function LoadingOverlay() {
 
   if (!isMounted) return null;
 
-  if (!isLoading) return null;
+  // if (!isLoading) return null;
 
   return (
     <div className="fixed top-0 z-[9999] flex h-full w-[360px] items-center justify-center bg-white/90">

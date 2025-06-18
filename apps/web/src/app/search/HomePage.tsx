@@ -56,7 +56,7 @@ export default function SearchPage() {
   const { searchHistory, addToHistory, removeFromHistory } = useSearchHistory();
 
   // 엔터 키 처리
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyUp = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
       addToHistory(search);
@@ -72,6 +72,7 @@ export default function SearchPage() {
 
     return () => clearTimeout(timeout);
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
+
   const handleSearchClick = () => {
     handleSearch();
     addToHistory(search);
@@ -107,7 +108,7 @@ export default function SearchPage() {
               className="pl-8"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              onKeyDown={handleKeyDown}
+              onKeyUp={handleKeyUp}
             />
           </div>
 

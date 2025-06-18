@@ -10,6 +10,7 @@
     "dev-ky-open": "tsx src/findKYByOpen.ts",
     "dev-ky-youtube": "tsx src/crawlYoutube.ts",
     "dev-trans": "tsx src/postTransDictionary.ts",
+    "dev-recent-tj": "tsx src/crawlRecentTJ.ts",
     "lint": "eslint . --ext .ts,.js",
     "test": "vitest run"
   },
@@ -18,6 +19,7 @@
     "@supabase/supabase-js": "^2.49.1",
     "axios": "^1.5.0",
     "cheerio": "^1.0.0",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "openai": "^4.96.0",
     "puppeteer": "^24.7.2"
