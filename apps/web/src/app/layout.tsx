@@ -103,7 +103,7 @@ export default function RootLayout({
     <ErrorWrapper>
       <div className="relative flex h-full w-[360px] flex-col">
         <Header />
-        <main className="flex-1">{children}</main>
+        {children}
         <Footer />
       </div>
 
