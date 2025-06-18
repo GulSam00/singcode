@@ -23,7 +23,8 @@ import useAuthStore from '@/stores/useAuthStore';
 export default function Sidebar() {
   // 목업 인증 상태
   const { user, isAuthenticated, logout, changeNickname } = useAuthStore();
-  const [isOpen, setIsOpen] = useState(false);
+
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newNickname, setNewNickname] = useState(user?.nickname || '');
 
@@ -47,9 +48,20 @@ export default function Sidebar() {
     if (result) setIsEditing(false);
   };
 
+  const handleOpenGithub = () => {
+    window.open('https://github.com/GulSam00/sing-code', '_blank');
+  };
+
+  const handleOpenTerm = () => {
+    window.open(
+      'https://coding-sham.notion.site/Singcode-215286f3bd70802c8191d2a0344ecc1c',
+      '_blank',
+    );
+  };
+
   const handleLogin = () => {
     router.push('/login');
-    setIsOpen(false);
+    setIsOpenSidebar(false);
   };
 
   const handleLogout = async () => {
@@ -59,8 +71,13 @@ export default function Sidebar() {
     }
   };
 
+  const handleWithdrawal = () => {
+    router.push('/withdrawal');
+    setIsOpenSidebar(false);
+  };
+
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet open={isOpenSidebar} onOpenChange={setIsOpenSidebar}>
       <SheetTrigger asChild>
         <Button className="flex items-center justify-center">
           <Menu className="h-6 w-6" />
@@ -121,10 +138,15 @@ export default function Sidebar() {
           <DisquietBadge />
 
           {isAuthenticated ? (
-            <Button variant="destructive" className="w-full" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              로그아웃
-            </Button>
+            <>
+              <Button variant="outline" className="w-full" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                로그아웃
+              </Button>
+              <Button variant="destructive" className="mt-2 w-full" onClick={handleWithdrawal}>
+                회원 탈퇴
+              </Button>
+            </>
           ) : (
             <Button variant="outline" className="w-full" onClick={handleLogin}>
               <User className="mr-2 h-4 w-4" />
@@ -135,15 +157,17 @@ export default function Sidebar() {
           <div className="text-muted-foreground flex flex-col items-center gap-2 border-t pt-2">
             <div className="flex w-full flex-col items-center gap-2">
               <span className="text-xs">© 2025 singcode - Released under the MIT License.</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => window.open('https://github.com/GulSam00/sing-code', '_blank')}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleOpenGithub}>
                 <Image src="/github_mark.svg" alt="github" width={32} height={32} />
               </Button>
               <div>버전 {version}</div>
+              <Button
+                variant="link"
+                className="text-muted-foreground h-auto p-0 text-xs"
+                onClick={handleOpenTerm}
+              >
+                이용약관
+              </Button>
             </div>
           </div>
         </SheetFooter>
