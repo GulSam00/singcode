@@ -6,6 +6,7 @@ import type React from 'react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useAuthStore from '@/stores/useAuthStore';
@@ -15,13 +16,30 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const { register, isLoading } = useAuthStore();
   const { openMessage } = useModalStore();
   const router = useRouter();
 
+  const handleOpenTerm = () => {
+    window.open(
+      'https://coding-sham.notion.site/Singcode-215286f3bd70802c8191d2a0344ecc1c',
+      '_blank',
+    );
+  };
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!agreedToTerms) {
+      openMessage({
+        title: '이용약관 동의 필요',
+        message: '이용약관에 동의해주세요.',
+        variant: 'error',
+      });
+      return;
+    }
 
     if (password !== confirmPassword) {
       openMessage({
@@ -93,7 +111,25 @@ export default function SignupPage() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms"
+              checked={agreedToTerms}
+              onCheckedChange={checked => setAgreedToTerms(checked as boolean)}
+            />
+            <div className="flex items-center space-x-1 text-sm">
+              <Label htmlFor="terms">
+                <span>
+                  <Button variant="link" className="h-auto p-0 text-sm" onClick={handleOpenTerm}>
+                    이용약관
+                  </Button>
+                  에 동의합니다
+                </span>
+              </Label>
+            </div>
+          </div>
+
+          <Button type="submit" className="w-full" disabled={isLoading || !agreedToTerms}>
             {isLoading ? '처리 중...' : '회원가입'}
           </Button>
 

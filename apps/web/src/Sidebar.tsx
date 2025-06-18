@@ -47,6 +47,17 @@ export default function Sidebar() {
     if (result) setIsEditing(false);
   };
 
+  const handleOpenGithub = () => {
+    window.open('https://github.com/GulSam00/sing-code', '_blank');
+  };
+
+  const handleOpenTerm = () => {
+    window.open(
+      'https://coding-sham.notion.site/Singcode-215286f3bd70802c8191d2a0344ecc1c',
+      '_blank',
+    );
+  };
+
   const handleLogin = () => {
     router.push('/login');
     setIsOpen(false);
@@ -135,15 +146,17 @@ export default function Sidebar() {
           <div className="text-muted-foreground flex flex-col items-center gap-2 border-t pt-2">
             <div className="flex w-full flex-col items-center gap-2">
               <span className="text-xs">© 2025 singcode - Released under the MIT License.</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => window.open('https://github.com/GulSam00/sing-code', '_blank')}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleOpenGithub}>
                 <Image src="/github_mark.svg" alt="github" width={32} height={32} />
               </Button>
               <div>버전 {version}</div>
+              <Button
+                variant="link"
+                className="text-muted-foreground h-auto p-0 text-xs"
+                onClick={handleOpenTerm}
+              >
+                이용약관
+              </Button>
             </div>
           </div>
         </SheetFooter>
