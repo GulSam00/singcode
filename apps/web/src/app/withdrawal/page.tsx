@@ -12,6 +12,8 @@ import useModalStore from '@/stores/useModalStore';
 
 export default function WithdrawalPage() {
   const [confirmText, setConfirmText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
   const { logout } = useAuthStore();
@@ -24,6 +26,7 @@ export default function WithdrawalPage() {
 
   const handleWithdrawal = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const isSuccess = await deleteUser();
 
@@ -42,6 +45,7 @@ export default function WithdrawalPage() {
         variant: 'error',
       });
     }
+    setIsLoading(false);
   };
 
   const handleCancel = () => {
@@ -76,7 +80,7 @@ export default function WithdrawalPage() {
             type="submit"
             variant="destructive"
             className="w-full"
-            disabled={confirmText !== '회원탈퇴'}
+            disabled={confirmText !== '회원탈퇴' || isLoading}
           >
             정말 탈퇴하기
           </Button>
