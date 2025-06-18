@@ -1,19 +1,47 @@
 'use client';
 
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import useAuthStore from '@/stores/useAuthStore';
+import useModalStore from '@/stores/useModalStore';
 
 export default function WithdrawalPage() {
   const [confirmText, setConfirmText] = useState('');
   const router = useRouter();
 
-  const handleWithdrawal = (e: React.FormEvent) => {
+  const { logout } = useAuthStore();
+  const { openMessage } = useModalStore();
+
+  const deleteUser = async () => {
+    const { data } = await axios.delete('/api/user');
+    return data.success;
+  };
+
+  const handleWithdrawal = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 실제 탈퇴 처리 로직 구현
+
+    const isSuccess = await deleteUser();
+
+    if (isSuccess) {
+      logout();
+      router.push('/');
+      openMessage({
+        title: '회원 탈퇴 성공',
+        message: '다음에 또 만나요!',
+        variant: 'success',
+      });
+    } else {
+      openMessage({
+        title: '회원 탈퇴 실패',
+        message: '회원 탈퇴에 실패했어요. 잠시 후 다시 시도해주세요.',
+        variant: 'error',
+      });
+    }
   };
 
   const handleCancel = () => {
