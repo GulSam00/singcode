@@ -35,12 +35,6 @@ export async function getSongsJpnDB() {
 export async function getSongsKyNullDB(max: number = 50000) {
   const supabase = getClient();
 
-  // artist 정렬
-  // const { data, error } = await supabase
-  //   .from("songs")
-  //   .select("id, title, artist, num_tj, num_ky")
-  //   .order("title", { ascending: true });
-
   const { data, error } = await supabase
     .from("songs")
     .select("id, title, artist, num_tj, num_ky")
@@ -63,6 +57,21 @@ export async function getSongsKyNullDB(max: number = 50000) {
   // });
 
   // return isKYNULLData.slice(0, max);
+}
+
+export async function getSongsKyNotNullDB(max: number = 50000) {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from("songs")
+    .select("id, title, artist, num_tj, num_ky")
+    .not("num_ky", "is", null) // num_ky가 null이 아닌 데이터만 가져옴
+    .order("updated_at", { ascending: true })
+    .limit(max); // Supabase 쿼리 안에서의 한계를 넘을 수는 없음
+
+  if (error) throw error;
+
+  return data;
 }
 
 export async function getTransDictionariesDB(): Promise<TransDictionary[]> {

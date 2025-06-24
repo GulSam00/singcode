@@ -16,8 +16,8 @@ const NUMBER_END_CODE = 0x0039; // '9'
 
 // a ~ z, 0 ~ 9도 따로 처리해야 함
 
-const STATE_FILE = path.join("src", "progress.json");
-const ALPHA_STATE_FILE = path.join("src", "alphaProgress.json");
+const STATE_FILE = path.join("src", "allOpenprogress.json");
+const ALPHA_STATE_FILE = path.join("src", "allOpenAlphaProgress.json");
 
 function loadProgress(): number {
   try {
