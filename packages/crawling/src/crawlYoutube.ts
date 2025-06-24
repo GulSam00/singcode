@@ -90,8 +90,8 @@ for (const song of data) {
   const query = song.title + "-" + song.artist;
 
   if (failedSongs.has(query)) {
-    console.log("already failed : ", song.title, " - ", song.artist);
-    index++;
+    // console.log("already failed : ", song.title, " - ", song.artist);
+    // index++;
     continue;
   }
 

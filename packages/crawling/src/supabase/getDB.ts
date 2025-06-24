@@ -45,7 +45,7 @@ export async function getSongsKyNullDB(max: number = 50000) {
     .from("songs")
     .select("id, title, artist, num_tj, num_ky")
     .is("num_ky", null) // num_ky가 null인 데이터만 가져옴
-    .order("title", { ascending: true })
+    .order("created_at", { ascending: false }) // 최근 생성한 데이터 순으로 정렬
     .limit(max); // Supabase 쿼리 안에서의 한계를 넘을 수는 없음
 
   if (error) throw error;
