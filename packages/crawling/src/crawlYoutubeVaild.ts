@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 import * as cheerio from "cheerio";
 import { getSongsKyNotNullDB } from "./supabase/getDB";
 import { Song } from "./types";
-import { updateDataLog, saveFailedSong, loadFailedSongs } from "./logData";
+import { updateDataLog, saveVaildSongs, loadVaildSongs } from "./logData";
 import { updateSongsKyDB } from "./supabase/updateDB";
 
 const stackData: Song[] = [];
@@ -15,7 +15,18 @@ const baseUrl = "https://kysing.kr/search/?category=1&keyword=";
 // KY에서는 가사도 크롤링 가능??? 가사 넣을 수 있나???
 // TJ에서는 지원 안함, KY에서만 가능한 것 같음
 
-const vaildExistNumber = async (number: string) => {
+const parseText = (text: string) => {
+  // 모두 소문자로
+  // 공백은 제거
+
+  return text.toLowerCase().replace(/\s/g, "");
+};
+
+const isVaildExistNumber = async (
+  number: string,
+  title: string,
+  artist: string
+) => {
   const searchUrl = baseUrl + number;
 
   // page.goto의 waitUntil 문제였음!
@@ -27,12 +38,31 @@ const vaildExistNumber = async (number: string) => {
   const html = await page.content();
   const $ = cheerio.load(html);
 
+  const parsedTitle = parseText(title);
+  const parsedArtist = parseText(artist);
+
   // const chartList = $("search_chart_list")[1];
-  const title = $(".search_chart_tit").find(".tit").eq(0).text().trim();
-  const artist = $(".search_chart_tit").find(".tit").eq(1).text().trim();
-  // console.log(chartList);
-  console.log("title : ", title);
-  console.log("artist : ", artist);
+  const titleResult = parseText(
+    $(".search_chart_tit").find(".tit").eq(0).text().trim()
+  );
+  const artistResult = parseText(
+    $(".search_chart_tit").find(".tit").eq(1).text().trim()
+  );
+
+  // artistResult가 parsedArtist를 포함하는지 검증
+  // 표기의 오류가 있을 수 있기에 parsedTitle, parsedArtist를 0, 2로 slice하여 비교
+  if (
+    titleResult.includes(parsedTitle.slice(0, 2)) &&
+    artistResult.includes(parsedArtist.slice(0, 2))
+  ) {
+    return true;
+  }
+
+  console.log("invalid!!!!!!!!!!");
+  console.log("title : ", parsedTitle, " - ", titleResult);
+  console.log("artist : ", parsedArtist, " - ", artistResult);
+
+  return false;
 };
 
 const refreshData = async () => {
@@ -41,18 +71,18 @@ const refreshData = async () => {
 
   for (const failedItem of result.failed) {
     const { title, artist } = failedItem.song;
-    saveFailedSong(title, artist);
+    saveVaildSongs(title, artist);
   }
 
-  updateDataLog(result.success, "crawlYoutubeSuccess.txt");
-  updateDataLog(result.failed, "crawlYoutubeFailed.txt");
+  updateDataLog(result.success, "updateNullInvaildSongSuccess.txt");
+  updateDataLog(result.failed, "updateNullInvaildSongFailed.txt");
 
   stackData.length = 0; // stackData 초기화
 };
 // 사용
 
 const data = await getSongsKyNotNullDB();
-const failedSongs = loadFailedSongs();
+const vaildSongs = loadVaildSongs();
 
 console.log("getSongsKyNotNullDB : ", data.length);
 let index = 0;
@@ -61,23 +91,27 @@ for (const song of data) {
   if (stackData.length >= 10) {
     refreshData();
   }
+
   const query = song.title + "-" + song.artist;
 
-  // if (failedSongs.has(query)) {
-  //   // console.log("already failed : ", song.title, " - ", song.artist);
-  //   // index++;
-  //   continue;
-  // }
+  if (vaildSongs.has(query)) {
+    // console.log("already failed : ", song.title, " - ", song.artist);
+    // index++;
+    continue;
+  }
 
   console.log(song.title, " - ", song.artist + " : ", song.num_ky);
 
-  const result = await vaildExistNumber(song.num_ky);
+  const isVaild = await isVaildExistNumber(
+    song.num_ky,
+    song.title,
+    song.artist
+  );
 
-  // if (result) {
-  //   console.log("success : ", result);
-  //   stackData.push({ ...song, num_ky: result });
-  //   totalData.push({ ...song, num_ky: result });
-  // } else saveFailedSong(song.title, song.artist);
+  if (!isVaild) {
+    stackData.push({ ...song, num_ky: null });
+    totalData.push({ ...song, num_ky: null });
+  } else saveVaildSongs(song.title, song.artist);
 
   index++;
   console.log("scrapeSongNumber : ", index);
@@ -85,8 +119,3 @@ for (const song of data) {
 }
 
 console.log("totalData : ", totalData.length);
-
-// const result = await updateSongsKyDB(stackData);
-
-// updateDataLog(result.success, "crawlYoutubeSuccess.txt");
-// updateDataLog(result.failed, "crawlYoutubeFailed.txt");

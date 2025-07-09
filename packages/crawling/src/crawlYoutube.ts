@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 import * as cheerio from "cheerio";
 import { getSongsKyNullDB } from "./supabase/getDB";
 import { Song } from "./types";
-import { updateDataLog, saveFailedSong, loadFailedSongs } from "./logData";
+import { updateDataLog, saveFailedSongs, loadFailedSongs } from "./logData";
 import { updateSongsKyDB } from "./supabase/updateDB";
 
 const stackData: Song[] = [];
@@ -67,7 +67,7 @@ const refreshData = async () => {
 
   for (const failedItem of result.failed) {
     const { title, artist } = failedItem.song;
-    saveFailedSong(title, artist);
+    saveFailedSongs(title, artist);
   }
 
   updateDataLog(result.success, "crawlYoutubeSuccess.txt");
@@ -102,7 +102,7 @@ for (const song of data) {
     console.log("success : ", result);
     stackData.push({ ...song, num_ky: result });
     totalData.push({ ...song, num_ky: result });
-  } else saveFailedSong(song.title, song.artist);
+  } else saveFailedSongs(song.title, song.artist);
 
   index++;
   console.log("scrapeSongNumber : ", index);

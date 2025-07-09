@@ -63,7 +63,7 @@ export function loadDictionariesLog(): Set<string> {
   return new Set(lines);
 }
 
-export function saveFailedSong(title: string, artist: string) {
+export function saveFailedSongs(title: string, artist: string) {
   const logPath = path.join("src", "crawlYoutubeFailedList.txt");
   const logDir = path.dirname(logPath);
   if (!fs.existsSync(logDir)) {
@@ -74,6 +74,26 @@ export function saveFailedSong(title: string, artist: string) {
 
 export function loadFailedSongs(): Set<string> {
   const logPath = path.join("src", "crawlYoutubeFailedList.txt");
+  if (!fs.existsSync(logPath)) return new Set();
+  const lines = fs
+    .readFileSync(logPath, "utf-8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  return new Set(lines);
+}
+
+export function saveVaildSongs(title: string, artist: string) {
+  const logPath = path.join("src", "crawlKYVaildList.txt");
+  const logDir = path.dirname(logPath);
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+  }
+  fs.appendFileSync(logPath, `${title}-${artist}\n`, "utf-8");
+}
+
+export function loadVaildSongs(): Set<string> {
+  const logPath = path.join("src", "crawlKYVaildList.txt");
   if (!fs.existsSync(logPath)) return new Set();
   const lines = fs
     .readFileSync(logPath, "utf-8")
