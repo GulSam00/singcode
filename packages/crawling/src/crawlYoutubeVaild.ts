@@ -18,8 +18,13 @@ const baseUrl = "https://kysing.kr/search/?category=1&keyword=";
 const parseText = (text: string) => {
   // 모두 소문자로
   // 공백은 제거
+  // 괄호도 제거할까...?
 
-  return text.toLowerCase().replace(/\s/g, "");
+  return text
+    .toLowerCase()
+    .replace(/\s/g, "")
+    .replace(/\(/g, "")
+    .replace(/\)/g, "");
 };
 
 const isVaildExistNumber = async (
@@ -41,6 +46,9 @@ const isVaildExistNumber = async (
   const parsedTitle = parseText(title);
   const parsedArtist = parseText(artist);
 
+  console.log("parsedTitle : ", parsedTitle);
+  console.log("parsedArtist : ", parsedArtist);
+
   // const chartList = $("search_chart_list")[1];
   const titleResult = parseText(
     $(".search_chart_tit").find(".tit").eq(0).text().trim()
@@ -50,10 +58,13 @@ const isVaildExistNumber = async (
   );
 
   // artistResult가 parsedArtist를 포함하는지 검증
-  // 표기의 오류가 있을 수 있기에 parsedTitle, parsedArtist를 0, 2로 slice하여 비교
+  // 표기의 오류가 있을 수 있기에 parsedTitle, parsedArtist를 (0, 2) / (-2)로 slice하여 비교
+
   if (
-    titleResult.includes(parsedTitle.slice(0, 2)) &&
-    artistResult.includes(parsedArtist.slice(0, 2))
+    (titleResult.includes(parsedTitle.slice(0, 2)) ||
+      titleResult.includes(parsedTitle.slice(-2))) &&
+    (artistResult.includes(parsedArtist.slice(0, 2)) ||
+      artistResult.includes(parsedArtist.slice(-2)))
   ) {
     return true;
   }
