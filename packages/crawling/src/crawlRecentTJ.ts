@@ -5,7 +5,8 @@ import { postSongsDB } from "./supabase/postDB";
 
 import { LogData, Song } from "./types";
 
-import { parseNumber, parseText } from "./utils";
+import { parseText } from "@/utils/parseString";
+import { parseNumber } from "@/utils/parseNumber";
 
 import dotenv from "dotenv";
 import { updateDataLog } from "./logData";

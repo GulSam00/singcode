@@ -1,6 +1,6 @@
 import { getClient } from "./getClient";
 import { Song, TransSong, TransDictionary } from "../types";
-import { containsJapanese } from "../utils";
+import { containsJapanese } from "@/utils/parseString";
 
 export async function getSongsJpnDB() {
   const supabase = getClient();

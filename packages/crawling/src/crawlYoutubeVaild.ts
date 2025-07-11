@@ -1,9 +1,10 @@
-import puppeteer from "puppeteer";
-import * as cheerio from "cheerio";
-import { getSongsKyNotNullDB } from "./supabase/getDB";
-import { Song } from "./types";
-import { updateDataLog, saveVaildSongs, loadVaildSongs } from "./logData";
-import { updateSongsKyDB } from "./supabase/updateDB";
+import * as cheerio from 'cheerio';
+import puppeteer from 'puppeteer';
+
+import { loadVaildSongs, saveVaildSongs, updateDataLog } from './logData';
+import { getSongsKyNotNullDB } from './supabase/getDB';
+import { updateSongsKyDB } from './supabase/updateDB';
+import { Song } from './types';
 
 const stackData: Song[] = [];
 const totalData: Song[] = [];
@@ -11,7 +12,7 @@ const totalData: Song[] = [];
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
-const baseUrl = "https://kysing.kr/search/?category=1&keyword=";
+const baseUrl = 'https://kysing.kr/search/?category=1&keyword=';
 // KY에서는 가사도 크롤링 가능??? 가사 넣을 수 있나???
 // TJ에서는 지원 안함, KY에서만 가능한 것 같음
 
@@ -20,23 +21,15 @@ const parseText = (text: string) => {
   // 공백은 제거
   // 괄호도 제거할까...?
 
-  return text
-    .toLowerCase()
-    .replace(/\s/g, "")
-    .replace(/\(/g, "")
-    .replace(/\)/g, "");
+  return text.toLowerCase().replace(/\s/g, '').replace(/\(/g, '').replace(/\)/g, '');
 };
 
-const isVaildExistNumber = async (
-  number: string,
-  title: string,
-  artist: string
-) => {
+const isVaildKYExistNumber = async (number: string, title: string, artist: string) => {
   const searchUrl = baseUrl + number;
 
   // page.goto의 waitUntil 문제였음!
   await page.goto(searchUrl, {
-    waitUntil: "networkidle2",
+    waitUntil: 'networkidle2',
     timeout: 0,
   });
 
@@ -46,16 +39,12 @@ const isVaildExistNumber = async (
   const parsedTitle = parseText(title);
   const parsedArtist = parseText(artist);
 
-  console.log("parsedTitle : ", parsedTitle);
-  console.log("parsedArtist : ", parsedArtist);
+  console.log('parsedTitle : ', parsedTitle);
+  console.log('parsedArtist : ', parsedArtist);
 
   // const chartList = $("search_chart_list")[1];
-  const titleResult = parseText(
-    $(".search_chart_tit").find(".tit").eq(0).text().trim()
-  );
-  const artistResult = parseText(
-    $(".search_chart_tit").find(".tit").eq(1).text().trim()
-  );
+  const titleResult = parseText($('.search_chart_tit').find('.tit').eq(0).text().trim());
+  const artistResult = parseText($('.search_chart_tit').find('.tit').eq(1).text().trim());
 
   // artistResult가 parsedArtist를 포함하는지 검증
   // 표기의 오류가 있을 수 있기에 parsedTitle, parsedArtist를 (0, 2) / (-2)로 slice하여 비교
@@ -69,15 +58,15 @@ const isVaildExistNumber = async (
     return true;
   }
 
-  console.log("invalid!!!!!!!!!!");
-  console.log("title : ", parsedTitle, " - ", titleResult);
-  console.log("artist : ", parsedArtist, " - ", artistResult);
+  console.log('invalid!!!!!!!!!!');
+  console.log('title : ', parsedTitle, ' - ', titleResult);
+  console.log('artist : ', parsedArtist, ' - ', artistResult);
 
   return false;
 };
 
 const refreshData = async () => {
-  console.log("refreshData");
+  console.log('refreshData');
   const result = await updateSongsKyDB(stackData);
 
   for (const failedItem of result.failed) {
@@ -85,8 +74,8 @@ const refreshData = async () => {
     saveVaildSongs(title, artist);
   }
 
-  updateDataLog(result.success, "updateNullInvaildSongSuccess.txt");
-  updateDataLog(result.failed, "updateNullInvaildSongFailed.txt");
+  updateDataLog(result.success, 'updateNullInvaildSongSuccess.txt');
+  updateDataLog(result.failed, 'updateNullInvaildSongFailed.txt');
 
   stackData.length = 0; // stackData 초기화
 };
@@ -95,7 +84,7 @@ const refreshData = async () => {
 const data = await getSongsKyNotNullDB();
 const vaildSongs = loadVaildSongs();
 
-console.log("getSongsKyNotNullDB : ", data.length);
+console.log('getSongsKyNotNullDB : ', data.length);
 let index = 0;
 
 for (const song of data) {
@@ -103,7 +92,7 @@ for (const song of data) {
     refreshData();
   }
 
-  const query = song.title + "-" + song.artist;
+  const query = song.title + '-' + song.artist;
 
   if (vaildSongs.has(query)) {
     // console.log("already failed : ", song.title, " - ", song.artist);
@@ -111,13 +100,14 @@ for (const song of data) {
     continue;
   }
 
-  console.log(song.title, " - ", song.artist + " : ", song.num_ky);
-
-  const isVaild = await isVaildExistNumber(
-    song.num_ky,
-    song.title,
-    song.artist
-  );
+  console.log(song.title, ' - ', song.artist + ' : ', song.num_ky);
+  let isVaild = true;
+  try {
+    isVaild = await isVaildKYExistNumber(song.num_ky, song.title, song.artist);
+  } catch (error) {
+    index++;
+    continue;
+  }
 
   if (!isVaild) {
     stackData.push({ ...song, num_ky: null });
@@ -125,8 +115,8 @@ for (const song of data) {
   } else saveVaildSongs(song.title, song.artist);
 
   index++;
-  console.log("scrapeSongNumber : ", index);
-  console.log("stackData : ", stackData.length);
+  console.log('scrapeSongNumber : ', index);
+  console.log('stackData : ', stackData.length);
 }
 
-console.log("totalData : ", totalData.length);
+console.log('totalData : ', totalData.length);

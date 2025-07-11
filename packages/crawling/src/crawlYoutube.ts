@@ -98,6 +98,8 @@ for (const song of data) {
   console.log(song.title, " - ", song.artist);
 
   const result = await scrapeSongNumber(query);
+  // ky 홈페이지 검증 프로세스 필요
+
   if (result) {
     console.log("success : ", result);
     stackData.push({ ...song, num_ky: result });
