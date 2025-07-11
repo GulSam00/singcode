@@ -1,9 +1,10 @@
-import puppeteer from "puppeteer";
-import * as cheerio from "cheerio";
-import { getSongsKyNullDB } from "./supabase/getDB";
-import { Song } from "./types";
-import { updateDataLog, saveFailedSongs, loadFailedSongs } from "./logData";
-import { updateSongsKyDB } from "./supabase/updateDB";
+import * as cheerio from 'cheerio';
+import puppeteer from 'puppeteer';
+
+import { loadFailedSongs, saveFailedSongs, updateDataLog } from './logData';
+import { getSongsKyNullDB } from './supabase/getDB';
+import { updateSongsKyDB } from './supabase/updateDB';
+import { Song } from './types';
 
 const stackData: Song[] = [];
 const totalData: Song[] = [];
@@ -27,14 +28,14 @@ const totalData: Song[] = [];
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
-const baseUrl = "https://www.youtube.com/@KARAOKEKY/search";
+const baseUrl = 'https://www.youtube.com/@KARAOKEKY/search';
 
 const scrapeSongNumber = async (query: string) => {
   const searchUrl = `${baseUrl}?query=${encodeURIComponent(query)}`;
 
   // page.goto의 waitUntil 문제였음!
   await page.goto(searchUrl, {
-    waitUntil: "networkidle2",
+    waitUntil: 'networkidle2',
     timeout: 0,
   });
 
@@ -44,10 +45,10 @@ const scrapeSongNumber = async (query: string) => {
   // id contents 의 첫번째  ytd-item-section-renderer 찾기
   // const firstItem = $("#contents ytd-item-section-renderer").first();
 
-  const firstItem = $("ytd-video-renderer").first();
+  const firstItem = $('ytd-video-renderer').first();
 
   // yt-formatted-string 찾기
-  const title = firstItem.find("yt-formatted-string").first().text().trim();
+  const title = firstItem.find('yt-formatted-string').first().text().trim();
 
   const karaokeNumber = extractKaraokeNumber(title);
 
@@ -62,7 +63,7 @@ const extractKaraokeNumber = (title: string) => {
 };
 
 const refreshData = async () => {
-  console.log("refreshData");
+  console.log('refreshData');
   const result = await updateSongsKyDB(stackData);
 
   for (const failedItem of result.failed) {
@@ -70,8 +71,8 @@ const refreshData = async () => {
     saveFailedSongs(title, artist);
   }
 
-  updateDataLog(result.success, "crawlYoutubeSuccess.txt");
-  updateDataLog(result.failed, "crawlYoutubeFailed.txt");
+  updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
+  updateDataLog(result.failed, 'crawlYoutubeFailed.txt');
 
   stackData.length = 0; // stackData 초기화
 };
@@ -80,14 +81,14 @@ const refreshData = async () => {
 const data = await getSongsKyNullDB();
 const failedSongs = loadFailedSongs();
 
-console.log("getSongsKyNullDB : ", data.length);
+console.log('getSongsKyNullDB : ', data.length);
 let index = 0;
 
 for (const song of data) {
   if (stackData.length >= 10) {
     refreshData();
   }
-  const query = song.title + "-" + song.artist;
+  const query = song.title + '-' + song.artist;
 
   if (failedSongs.has(query)) {
     // console.log("already failed : ", song.title, " - ", song.artist);
@@ -95,28 +96,28 @@ for (const song of data) {
     continue;
   }
 
-  console.log(song.title, " - ", song.artist);
+  console.log(song.title, ' - ', song.artist);
 
   const result = await scrapeSongNumber(query);
   // ky 홈페이지 검증 프로세스 필요
 
   if (result) {
-    console.log("success : ", result);
+    console.log('success : ', result);
     stackData.push({ ...song, num_ky: result });
     totalData.push({ ...song, num_ky: result });
   } else saveFailedSongs(song.title, song.artist);
 
   index++;
-  console.log("scrapeSongNumber : ", index);
-  console.log("stackData : ", stackData.length);
+  console.log('scrapeSongNumber : ', index);
+  console.log('stackData : ', stackData.length);
 }
 
-console.log("totalData : ", totalData.length);
+console.log('totalData : ', totalData.length);
 // const result = await updateSongsKyDB(totalData);
 const result = await updateSongsKyDB(stackData);
 
-updateDataLog(result.success, "crawlYoutubeSuccess.txt");
-updateDataLog(result.failed, "crawlYoutubeFailed.txt");
+updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
+updateDataLog(result.failed, 'crawlYoutubeFailed.txt');
 
 // 5.13 1차 시도
 // 5000개 중 3507개 성공, 총 18906개 등록

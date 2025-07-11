@@ -1,7 +1,8 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
+import OpenAI from 'openai';
+
 dotenv.config();
 
-import OpenAI from "openai";
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -12,7 +13,7 @@ class TranslationAssistant {
   constructor() {
     this.messages = [
       {
-        role: "system",
+        role: 'system',
         content: `You are a Japanese music translator. Follow these rules:
             1. Translate song/artist names to Korean.
             2. Format: Translation
@@ -28,13 +29,13 @@ class TranslationAssistant {
     // 새로운 사용자 메시지 추가
     this.resetContext();
     this.messages.push({
-      role: "user",
+      role: 'user',
       content: text,
     });
 
     // API 호출
     const response = await client.chat.completions.create({
-      model: "gpt-4-turbo", // gpt-4 대신 gpt-3.5-turbo
+      model: 'gpt-4-turbo', // gpt-4 대신 gpt-3.5-turbo
       messages: this.messages,
       temperature: 0.3,
     });
@@ -43,12 +44,12 @@ class TranslationAssistant {
     const assistantMessage = response.choices[0].message;
 
     if (!assistantMessage.content) {
-      console.error("Assistant message is empty");
+      console.error('Assistant message is empty');
       return null;
     }
 
     const content = assistantMessage.content.trim();
-    if (content.toLowerCase() === "null") {
+    if (content.toLowerCase() === 'null') {
       return null;
     }
     return content ?? null;

@@ -1,8 +1,9 @@
-import { getSong } from "@repo/open-api";
-import { Song } from "./types";
-import { updateSongsKyDB } from "./supabase/updateDB";
-import { getSongsKyNullDB } from "./supabase/getDB";
-import { updateDataLog } from "./logData";
+import { getSong } from '@repo/open-api';
+
+import { updateDataLog } from './logData';
+import { getSongsKyNullDB } from './supabase/getDB';
+import { updateSongsKyDB } from './supabase/updateDB';
+import { Song } from './types';
 
 const resultsLog = {
   success: [] as Song[],
@@ -15,20 +16,20 @@ const updateKYByOpen = async (song: Song) => {
   const trimArtist = artist.trim();
   // console.log(artist, "-", title);
 
-  const response = await getSong({ title: trimTitle, brand: "kumyoung" });
+  const response = await getSong({ title: trimTitle, brand: 'kumyoung' });
 
   if (!response || response.length === 0 || !Array.isArray(response)) {
-    resultsLog.failed.push({ song, error: "there is no kumyoung song" });
+    resultsLog.failed.push({ song, error: 'there is no kumyoung song' });
     return null;
   }
 
   // 가수 일치하거나 비슷한지 조회
-  console.log("금영 title 일치 개수 ", response.length, "개");
+  console.log('금영 title 일치 개수 ', response.length, '개');
 
   // console.log(response);
   if (response && response.length > 1) {
     // filter의 includes 만으로는 완벽 비교 불가. chatGPT API를 활용해야 할까...?
-    const filteredResponse = response.filter((item) => {
+    const filteredResponse = response.filter(item => {
       const artistName = item.singer.trim();
       return artistName.includes(trimArtist);
     });
@@ -41,10 +42,10 @@ const updateKYByOpen = async (song: Song) => {
       if (result) {
         resultsLog.success.push({ ...song, num_ky: kyNum });
       } else {
-        resultsLog.failed.push({ song, error: "supabase update failed" });
+        resultsLog.failed.push({ song, error: 'supabase update failed' });
       }
     } else {
-      console.log("필터링 실패");
+      console.log('필터링 실패');
     }
   } else {
     const kyNum = response[0].no;
@@ -53,13 +54,13 @@ const updateKYByOpen = async (song: Song) => {
     if (result) {
       resultsLog.success.push({ ...song, num_ky: kyNum });
     } else {
-      resultsLog.failed.push({ song, error: "supabase update failed" });
+      resultsLog.failed.push({ song, error: 'supabase update failed' });
     }
   }
 };
 
 const kyNullData = await getSongsKyNullDB();
-console.log("kyNullData", kyNullData.length);
+console.log('kyNullData', kyNullData.length);
 
 for (const song of kyNullData) {
   await updateKYByOpen(song);
@@ -77,5 +78,5 @@ console.log(`
     - 실패: ${resultsLog.failed.length}곡
   `);
 
-updateDataLog(resultsLog.success, "findKYByOpenSuccess.txt");
-updateDataLog(resultsLog.failed, "findKYByOpenFailed.txt");
+updateDataLog(resultsLog.success, 'findKYByOpenSuccess.txt');
+updateDataLog(resultsLog.failed, 'findKYByOpenFailed.txt');

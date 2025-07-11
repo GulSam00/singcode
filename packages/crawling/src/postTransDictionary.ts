@@ -1,19 +1,13 @@
-import {
-  getSongsJpnDB,
-  getTransDictionariesDBByOriginal,
-} from "./supabase/getDB";
-import { postTransDictionariesDB } from "./supabase/postDB";
-import {
-  updateDataLog,
-  saveDictionariesLog,
-  loadDictionariesLog,
-} from "./logData";
-import { transChatGPT } from "./transChatGPT";
-import { TransSong, TransDictionary } from "./types";
-import { sleep } from "openai/core";
+import { sleep } from 'openai/core';
+
+import { loadDictionariesLog, saveDictionariesLog, updateDataLog } from './logData';
+import { getSongsJpnDB, getTransDictionariesDBByOriginal } from './supabase/getDB';
+import { postTransDictionariesDB } from './supabase/postDB';
+import { transChatGPT } from './transChatGPT';
+import { TransDictionary, TransSong } from './types';
 
 const data: TransSong[] = await getSongsJpnDB();
-console.log("data to translate : ", data.length);
+console.log('data to translate : ', data.length);
 
 // 만약 null로 반환된다면 해당 id와 함께 배열에 담가두다가 끝났을 때 error.txt에 저장
 
@@ -22,17 +16,16 @@ const unknownData: { item: TransSong; error: any }[] = [];
 const transData: TransDictionary[] = [];
 
 const refreshData = async () => {
-  console.log("refreshData");
+  console.log('refreshData');
 
   const result = await postTransDictionariesDB(transData);
   for (const song of transData) {
     saveDictionariesLog(song.original_japanese);
   }
 
-  updateDataLog(result.success, "postTransDictionarySuccess.txt");
-  updateDataLog(result.failed, "postTransDictionaryFailed.txt");
-  unknownData.length > 0 &&
-    updateDataLog(unknownData, "postTransDictionaryUnknown.txt");
+  updateDataLog(result.success, 'postTransDictionarySuccess.txt');
+  updateDataLog(result.failed, 'postTransDictionaryFailed.txt');
+  unknownData.length > 0 && updateDataLog(unknownData, 'postTransDictionaryUnknown.txt');
 
   transData.length = 0;
   unknownData.length = 0;
@@ -47,7 +40,7 @@ for (const song of data) {
     await refreshData();
     count = 0;
   }
-  console.log("count : ", count++);
+  console.log('count : ', count++);
   await sleep(150); // 0.15초(150ms) 대기
 
   if (tryLogs.has(song.artist)) {
@@ -64,7 +57,7 @@ for (const song of data) {
   if (song.isArtistJp) {
     const artistTrans = await transChatGPT(song.artist);
     if (!artistTrans || artistTrans.length === 0) {
-      unknownData.push({ item: song, error: "transChatGPT failed" });
+      unknownData.push({ item: song, error: 'transChatGPT failed' });
       transData.push({
         original_japanese: song.artist,
         translated_korean: null,

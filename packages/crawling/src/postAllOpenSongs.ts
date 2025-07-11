@@ -1,9 +1,11 @@
-import fs from "fs";
-import path from "path";
-import { getSong } from "@repo/open-api";
-import { updateDataLog } from "./logData";
-import { LogData, Song } from "./types";
-import { postSongsDB } from "./supabase/postDB";
+import fs from 'fs';
+import path from 'path';
+
+import { getSong } from '@repo/open-api';
+
+import { updateDataLog } from './logData';
+import { postSongsDB } from './supabase/postDB';
+import { LogData, Song } from './types';
 
 const START_CODE = 0xac00; // '가'
 const END_CODE = 0xd7a3; // '힣'
@@ -16,12 +18,12 @@ const NUMBER_END_CODE = 0x0039; // '9'
 
 // a ~ z, 0 ~ 9도 따로 처리해야 함
 
-const STATE_FILE = path.join("src", "allOpenprogress.json");
-const ALPHA_STATE_FILE = path.join("src", "allOpenAlphaProgress.json");
+const STATE_FILE = path.join('src', 'allOpenprogress.json');
+const ALPHA_STATE_FILE = path.join('src', 'allOpenAlphaProgress.json');
 
 function loadProgress(): number {
   try {
-    const data = fs.readFileSync(STATE_FILE, "utf-8");
+    const data = fs.readFileSync(STATE_FILE, 'utf-8');
     return JSON.parse(data).index ?? START_CODE;
   } catch {
     return START_CODE;
@@ -30,7 +32,7 @@ function loadProgress(): number {
 
 function loadAlphaProgress(): number {
   try {
-    const data = fs.readFileSync(ALPHA_STATE_FILE, "utf-8");
+    const data = fs.readFileSync(ALPHA_STATE_FILE, 'utf-8');
     return JSON.parse(data).alphaIndex ?? ALPHA_START_CODE;
   } catch {
     return ALPHA_START_CODE;
@@ -38,15 +40,11 @@ function loadAlphaProgress(): number {
 }
 
 function saveProgress(index: number): void {
-  fs.writeFileSync(STATE_FILE, JSON.stringify({ index }), "utf-8");
+  fs.writeFileSync(STATE_FILE, JSON.stringify({ index }), 'utf-8');
 }
 
 function saveAlphaProgress(index: number): void {
-  fs.writeFileSync(
-    ALPHA_STATE_FILE,
-    JSON.stringify({ alphaIndex: index }),
-    "utf-8"
-  );
+  fs.writeFileSync(ALPHA_STATE_FILE, JSON.stringify({ alphaIndex: index }), 'utf-8');
 }
 
 async function getHangulSongs() {
@@ -56,24 +54,24 @@ async function getHangulSongs() {
     const char = String.fromCharCode(index);
     console.log(`[${index}] ${char}`);
 
-    const response = await getSong({ title: char, brand: "tj" });
+    const response = await getSong({ title: char, brand: 'tj' });
     if (!response) {
-      console.log("null");
+      console.log('null');
       continue;
     }
 
     console.log(response.length);
-    const songs = response.map((item) => ({
+    const songs = response.map(item => ({
       title: item.title,
       artist: item.singer,
       num_tj: item.no,
       num_ky: null,
-      release: item.release === "0000-00-00" ? null : item.release,
+      release: item.release === '0000-00-00' ? null : item.release,
     }));
     const result: LogData<Song> = await postSongsDB(songs);
 
-    updateDataLog(result.success, "postByAllOpenSuccess.txt");
-    updateDataLog(result.failed, "postByAllOpenFailed.txt");
+    updateDataLog(result.success, 'postByAllOpenSuccess.txt');
+    updateDataLog(result.failed, 'postByAllOpenFailed.txt');
 
     saveProgress(index);
     index++;
@@ -87,24 +85,24 @@ async function getAlphaSongs() {
     const char = String.fromCharCode(index);
     console.log(`[${index}] ${char}`);
 
-    const response = await getSong({ title: char, brand: "tj" });
+    const response = await getSong({ title: char, brand: 'tj' });
     if (!response) {
-      console.log("null");
+      console.log('null');
       continue;
     }
 
     console.log(response.length);
-    const songs = response.map((item) => ({
+    const songs = response.map(item => ({
       title: item.title,
       artist: item.singer,
       num_tj: item.no,
       num_ky: null,
-      release: item.release === "0000-00-00" ? null : item.release,
+      release: item.release === '0000-00-00' ? null : item.release,
     }));
     const result: LogData<Song> = await postSongsDB(songs);
 
-    updateDataLog(result.success, "postByAllOpenSuccess.txt");
-    updateDataLog(result.failed, "postByAllOpenFailed.txt");
+    updateDataLog(result.success, 'postByAllOpenSuccess.txt');
+    updateDataLog(result.failed, 'postByAllOpenFailed.txt');
 
     saveAlphaProgress(index);
     index++;
@@ -118,24 +116,24 @@ async function getNumberSongs() {
     const char = String.fromCharCode(index);
     console.log(`[${index}] ${char}`);
 
-    const response = await getSong({ title: char, brand: "tj" });
+    const response = await getSong({ title: char, brand: 'tj' });
     if (!response) {
-      console.log("null");
+      console.log('null');
       continue;
     }
 
     console.log(response.length);
-    const songs = response.map((item) => ({
+    const songs = response.map(item => ({
       title: item.title,
       artist: item.singer,
       num_tj: item.no,
       num_ky: null,
-      release: item.release === "0000-00-00" ? null : item.release,
+      release: item.release === '0000-00-00' ? null : item.release,
     }));
     const result: LogData<Song> = await postSongsDB(songs);
 
-    updateDataLog(result.success, "postByAllOpenSuccess.txt");
-    updateDataLog(result.failed, "postByAllOpenFailed.txt");
+    updateDataLog(result.success, 'postByAllOpenSuccess.txt');
+    updateDataLog(result.failed, 'postByAllOpenFailed.txt');
 
     saveAlphaProgress(index);
     index++;
