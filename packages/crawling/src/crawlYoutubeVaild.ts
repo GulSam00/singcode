@@ -1,10 +1,10 @@
 import * as cheerio from 'cheerio';
 import puppeteer from 'puppeteer';
 
-import { loadVaildSongs, saveVaildSongs, updateDataLog } from './logData';
-import { getSongsKyNotNullDB } from './supabase/getDB';
-import { updateSongsKyDB } from './supabase/updateDB';
-import { Song } from './types';
+import { getSongsKyNotNullDB } from '@/supabase/getDB';
+import { updateSongsKyDB } from '@/supabase/updateDB';
+import { Song } from '@/types';
+import { loadVaildSongs, saveVaildSongs, updateDataLog } from '@/utils/logData';
 
 const stackData: Song[] = [];
 const totalData: Song[] = [];

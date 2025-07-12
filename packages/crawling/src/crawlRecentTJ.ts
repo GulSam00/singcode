@@ -3,12 +3,11 @@ import { format } from 'date-fns';
 import dotenv from 'dotenv';
 import puppeteer from 'puppeteer';
 
+import { postSongsDB } from '@/supabase/postDB';
+import { LogData, Song } from '@/types';
+import { updateDataLog } from '@/utils/logData';
 import { parseNumber } from '@/utils/parseNumber';
 import { parseText } from '@/utils/parseString';
-
-import { updateDataLog } from './logData';
-import { postSongsDB } from './supabase/postDB';
-import { LogData, Song } from './types';
 
 dotenv.config();
 

@@ -1,8 +1,8 @@
 import { getRelease } from '@repo/open-api';
 
-import { updateDataLog } from './logData';
-import { postSongsDB } from './supabase/postDB';
-import { LogData, Song } from './types';
+import { postSongsDB } from '@/supabase/postDB';
+import { LogData, Song } from '@/types';
+import { updateDataLog } from '@/utils/logData';
 
 const parseMonth = (month: number) => {
   return month < 10 ? `0${month}` : month;

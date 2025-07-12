@@ -1,10 +1,10 @@
 import { sleep } from 'openai/core';
 
-import { loadDictionariesLog, saveDictionariesLog, updateDataLog } from './logData';
-import { getSongsJpnDB, getTransDictionariesDBByOriginal } from './supabase/getDB';
-import { postTransDictionariesDB } from './supabase/postDB';
-import { transChatGPT } from './transChatGPT';
-import { TransDictionary, TransSong } from './types';
+import { getSongsJpnDB, getTransDictionariesDBByOriginal } from '@/supabase/getDB';
+import { postTransDictionariesDB } from '@/supabase/postDB';
+import { TransDictionary, TransSong } from '@/types';
+import { loadDictionariesLog, saveDictionariesLog, updateDataLog } from '@/utils/logData';
+import { transChatGPT } from '@/utils/transChatGPT';
 
 const data: TransSong[] = await getSongsJpnDB();
 console.log('data to translate : ', data.length);

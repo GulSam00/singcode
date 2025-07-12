@@ -1,9 +1,9 @@
 import { getSong } from '@repo/open-api';
 
-import { updateDataLog } from './logData';
-import { getSongsKyNullDB } from './supabase/getDB';
-import { updateSongsKyDB } from './supabase/updateDB';
-import { Song } from './types';
+import { getSongsKyNullDB } from '@/supabase/getDB';
+import { updateSongsKyDB } from '@/supabase/updateDB';
+import { Song } from '@/types';
+import { updateDataLog } from '@/utils/logData';
 
 const resultsLog = {
   success: [] as Song[],

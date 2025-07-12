@@ -1,6 +1,6 @@
 import { containsJapanese } from '@/utils/parseString';
 
-import { Song, TransDictionary, TransSong } from '../types';
+import { Song, TransDictionary, TransSong } from '.@/types';
 
 import { getClient } from './getClient';
 

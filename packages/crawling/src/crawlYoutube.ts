@@ -1,10 +1,10 @@
 import * as cheerio from 'cheerio';
 import puppeteer from 'puppeteer';
 
-import { loadFailedSongs, saveFailedSongs, updateDataLog } from './logData';
-import { getSongsKyNullDB } from './supabase/getDB';
-import { updateSongsKyDB } from './supabase/updateDB';
-import { Song } from './types';
+import { getSongsKyNullDB } from '@/supabase/getDB';
+import { updateSongsKyDB } from '@/supabase/updateDB';
+import { Song } from '@/types';
+import { loadFailedSongs, saveFailedSongs, updateDataLog } from '@/utils/logData';
 
 const stackData: Song[] = [];
 const totalData: Song[] = [];

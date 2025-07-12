@@ -43,7 +43,7 @@ export function updateDataLog<T>(unknownData: T[] | T, filename: string) {
 }
 
 export function saveDictionariesLog(japanese: string) {
-  const logPath = path.join('src', 'transList.txt');
+  const logPath = path.join('src', 'assets', 'transList.txt');
   const logDir = path.dirname(logPath);
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
@@ -52,7 +52,7 @@ export function saveDictionariesLog(japanese: string) {
 }
 
 export function loadDictionariesLog(): Set<string> {
-  const logPath = path.join('src', 'transList.txt');
+  const logPath = path.join('src', 'assets', 'transList.txt');
   if (!fs.existsSync(logPath)) return new Set();
   const lines = fs
     .readFileSync(logPath, 'utf-8')
@@ -63,7 +63,7 @@ export function loadDictionariesLog(): Set<string> {
 }
 
 export function saveFailedSongs(title: string, artist: string) {
-  const logPath = path.join('src', 'crawlYoutubeFailedList.txt');
+  const logPath = path.join('src', 'assets', 'crawlYoutubeFailedList.txt');
   const logDir = path.dirname(logPath);
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
@@ -72,7 +72,7 @@ export function saveFailedSongs(title: string, artist: string) {
 }
 
 export function loadFailedSongs(): Set<string> {
-  const logPath = path.join('src', 'crawlYoutubeFailedList.txt');
+  const logPath = path.join('src', 'assets', 'crawlYoutubeFailedList.txt');
   if (!fs.existsSync(logPath)) return new Set();
   const lines = fs
     .readFileSync(logPath, 'utf-8')
@@ -83,7 +83,7 @@ export function loadFailedSongs(): Set<string> {
 }
 
 export function saveVaildSongs(title: string, artist: string) {
-  const logPath = path.join('src', 'crawlKYVaildList.txt');
+  const logPath = path.join('src', 'assets', 'crawlKYVaildList.txt');
   const logDir = path.dirname(logPath);
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
@@ -92,7 +92,7 @@ export function saveVaildSongs(title: string, artist: string) {
 }
 
 export function loadVaildSongs(): Set<string> {
-  const logPath = path.join('src', 'crawlKYVaildList.txt');
+  const logPath = path.join('src', 'assets', 'crawlKYVaildList.txt');
   if (!fs.existsSync(logPath)) return new Set();
   const lines = fs
     .readFileSync(logPath, 'utf-8')

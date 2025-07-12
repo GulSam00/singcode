@@ -2,10 +2,9 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import dotenv from 'dotenv';
 
+import { ArgList, Song } from '@/types';
 import { parseNumber } from '@/utils/parseNumber';
 import { parseJapaneseText, parseText } from '@/utils/parseString';
-
-import { ArgList, Song } from './types';
 
 dotenv.config();
 

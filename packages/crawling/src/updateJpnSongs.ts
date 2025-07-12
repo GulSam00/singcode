@@ -1,10 +1,10 @@
 import { sleep } from 'openai/core';
 
-import { updateDataLog } from './logData';
-import { getSongsJpnDB } from './supabase/getDB';
-import { updateSongsJpnDB } from './supabase/updateDB';
-import { transChatGPT } from './transChatGPT';
-import { TransSong } from './types';
+import { getSongsJpnDB } from '@/supabase/getDB';
+import { updateSongsJpnDB } from '@/supabase/updateDB';
+import { TransSong } from '@/types';
+import { updateDataLog } from '@/utils/logData';
+import { transChatGPT } from '@/utils/transChatGPT';
 
 const data = await getSongsJpnDB();
 

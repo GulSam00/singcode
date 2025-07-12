@@ -3,9 +3,9 @@ import path from 'path';
 
 import { getSong } from '@repo/open-api';
 
-import { updateDataLog } from './logData';
-import { postSongsDB } from './supabase/postDB';
-import { LogData, Song } from './types';
+import { postSongsDB } from '@/supabase/postDB';
+import { LogData, Song } from '@/types';
+import { updateDataLog } from '@/utils/logData';
 
 const START_CODE = 0xac00; // '가'
 const END_CODE = 0xd7a3; // '힣'
@@ -18,8 +18,8 @@ const NUMBER_END_CODE = 0x0039; // '9'
 
 // a ~ z, 0 ~ 9도 따로 처리해야 함
 
-const STATE_FILE = path.join('src', 'allOpenprogress.json');
-const ALPHA_STATE_FILE = path.join('src', 'allOpenAlphaProgress.json');
+const STATE_FILE = path.join('src', 'assets', 'allOpenprogress.json');
+const ALPHA_STATE_FILE = path.join('src', 'assets', 'allOpenAlphaProgress.json');
 
 function loadProgress(): number {
   try {

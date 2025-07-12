@@ -1,4 +1,4 @@
-import { ArgList } from './types';
+import { ArgList } from '@/types';
 
 const getObject = (
   url: string,
@@ -15,7 +15,7 @@ const getObject = (
 // 너무 적은 데이터
 // &TEAM, NiziU
 
-export const argList = [
+export const JpArgList = [
   // url, artist, titleIndex, tjIndex, kyIndex
   getObject('AAA(혼성그룹)', 'AAA', 0, 3, 2),
   getObject('Aimer', '에이머(Aimer)', 2, 0, 1),

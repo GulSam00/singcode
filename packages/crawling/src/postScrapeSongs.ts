@@ -1,9 +1,10 @@
-import { argList } from './argList';
+import { postSongsDB } from '@/supabase/postDB';
+import { JpArgList } from '@/utils/namuArgList';
+
 import { scrapeAllSongs, scrapeSongs, scrapeUtaiteSongs } from './crawlWiki';
-import { postSongsDB } from './supabase/postDB';
 
 const postSongs = async () => {
-  const postPromises = argList.map(async arg => {
+  const postPromises = JpArgList.map(async arg => {
     const songs = await scrapeSongs(arg);
 
     // console.log(songs); // 크롤링한 데이터 확인
