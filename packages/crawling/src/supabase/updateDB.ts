@@ -1,4 +1,4 @@
-import { Song, TransSong } from '.@/types';
+import { Song, TransSong } from '@/types';
 
 import { getClient } from './getClient';
 

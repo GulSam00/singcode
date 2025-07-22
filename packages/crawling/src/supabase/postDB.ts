@@ -1,4 +1,4 @@
-import { LogData, Song, TransDictionary } from '.@/types';
+import { LogData, Song, TransDictionary } from '@/types';
 
 import { getClient } from './getClient';
 

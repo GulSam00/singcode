@@ -9,26 +9,53 @@ import { loadFailedSongs, saveFailedSongs, updateDataLog } from '@/utils/logData
 const stackData: Song[] = [];
 const totalData: Song[] = [];
 
-// process.on("SIGINT", async () => {
-//   console.log("프로세스가 종료됩니다. 지금까지의 데이터를 업데이트 중...");
-//   console.log("stackData : ", stackData.length);
-//   const result = await updateSongsKyDB(stackData);
-
-//   console.log(result);
-//   console.log("프로세스가 종료됩니다. 로그를 기록 중...");
-
-//   await Promise.all([
-//     updateDataLog(totalData, "crawlYodutubeSuccess.txt"),
-//     updateDataLog(failedCase, "crawlYoutubeFailed.txt"),
-//   ]);
-
-//   console.log("로그 기록 완료.");
-// });
-
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
 const baseUrl = 'https://www.youtube.com/@KARAOKEKY/search';
+
+const parseText = (text: string) => {
+  return text.toLowerCase().replace(/\s/g, '').replace(/\(/g, '').replace(/\)/g, '');
+};
+
+const isVaildKYExistNumber = async (number: string, title: string, artist: string) => {
+  const kyUrl = 'https://kysing.kr/search/?category=1&keyword=';
+  const searchUrl = kyUrl + number;
+
+  await page.goto(searchUrl, {
+    waitUntil: 'networkidle2',
+    timeout: 0,
+  });
+
+  const html = await page.content();
+  const $ = cheerio.load(html);
+
+  const parsedTitle = parseText(title);
+  const parsedArtist = parseText(artist);
+
+  const titleResult = parseText($('.search_chart_tit').find('.tit').eq(0).text().trim());
+  const artistResult = parseText($('.search_chart_tit').find('.tit').eq(1).text().trim());
+
+  // artistResult가 parsedArtist를 포함하는지 검증
+  // 표기의 오류가 있을 수 있기에 parsedTitle, parsedArtist를 (0, 2) / (-2)로 slice하여 비교
+
+  if (
+    (titleResult.includes(parsedTitle.slice(0, 2)) ||
+      titleResult.includes(parsedTitle.slice(-2))) &&
+    (artistResult.includes(parsedArtist.slice(0, 2)) ||
+      artistResult.includes(parsedArtist.slice(-2)))
+  ) {
+    return true;
+  }
+
+  console.log(number, ' - invalid!!!');
+  console.log('title : ');
+  console.log('검색 쿼리 : ', parsedTitle, ' | ', '번호 결과 : ', titleResult);
+  console.log('artist : ');
+  console.log('검색 쿼리 : ', parsedArtist, ' | ', '번호 결과 : ', artistResult);
+
+  return false;
+};
 
 const scrapeSongNumber = async (query: string) => {
   const searchUrl = `${baseUrl}?query=${encodeURIComponent(query)}`;
@@ -91,20 +118,33 @@ for (const song of data) {
   const query = song.title + '-' + song.artist;
 
   if (failedSongs.has(query)) {
-    // console.log("already failed : ", song.title, " - ", song.artist);
-    // index++;
     continue;
   }
 
   console.log(song.title, ' - ', song.artist);
 
-  const result = await scrapeSongNumber(query);
-  // ky 홈페이지 검증 프로세스 필요
+  let resultKyNum = null;
+  try {
+    resultKyNum = await scrapeSongNumber(query);
+  } catch (error) {
+    continue;
+  }
 
-  if (result) {
-    console.log('success : ', result);
-    stackData.push({ ...song, num_ky: result });
-    totalData.push({ ...song, num_ky: result });
+  if (resultKyNum) {
+    let isVaild = true;
+    try {
+      isVaild = await isVaildKYExistNumber(resultKyNum, song.title, song.artist);
+    } catch (error) {
+      continue;
+    }
+
+    if (!isVaild) {
+      saveFailedSongs(song.title, song.artist);
+      continue;
+    } else {
+      stackData.push({ ...song, num_ky: resultKyNum });
+      totalData.push({ ...song, num_ky: resultKyNum });
+    }
   } else saveFailedSongs(song.title, song.artist);
 
   index++;
