@@ -82,8 +82,8 @@ export function loadFailedSongs(): Set<string> {
   return new Set(lines);
 }
 
-export function saveVaildSongs(title: string, artist: string) {
-  const logPath = path.join('src', 'assets', 'crawlKYVaildList.txt');
+export function saveValidSongs(title: string, artist: string) {
+  const logPath = path.join('src', 'assets', 'crawlKYValidList.txt');
   const logDir = path.dirname(logPath);
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
@@ -91,8 +91,8 @@ export function saveVaildSongs(title: string, artist: string) {
   fs.appendFileSync(logPath, `${title}-${artist}\n`, 'utf-8');
 }
 
-export function loadVaildSongs(): Set<string> {
-  const logPath = path.join('src', 'assets', 'crawlKYVaildList.txt');
+export function loadValidSongs(): Set<string> {
+  const logPath = path.join('src', 'assets', 'crawlKYValidList.txt');
   if (!fs.existsSync(logPath)) return new Set();
   const lines = fs
     .readFileSync(logPath, 'utf-8')

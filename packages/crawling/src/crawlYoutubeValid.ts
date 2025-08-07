@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer';
 import { getSongsKyNotNullDB } from '@/supabase/getDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
 import { Song } from '@/types';
-import { loadVaildSongs, saveVaildSongs, updateDataLog } from '@/utils/logData';
+import { loadValidSongs, saveValidSongs, updateDataLog } from '@/utils/logData';
 
 const stackData: Song[] = [];
 const totalData: Song[] = [];
@@ -24,7 +24,7 @@ const parseText = (text: string) => {
   return text.toLowerCase().replace(/\s/g, '').replace(/\(/g, '').replace(/\)/g, '');
 };
 
-const isVaildKYExistNumber = async (number: string, title: string, artist: string) => {
+const isValidKYExistNumber = async (number: string, title: string, artist: string) => {
   const searchUrl = baseUrl + number;
 
   // page.goto의 waitUntil 문제였음!
@@ -71,7 +71,7 @@ const isVaildKYExistNumber = async (number: string, title: string, artist: strin
 
 //   for (const failedItem of result.failed) {
 //     const { title, artist } = failedItem.song;
-//     saveVaildSongs(title, artist);
+//     saveValidSongs(title, artist);
 //   }
 
 //   updateDataLog(result.success, 'updateNullInvaildSongSuccess.txt');
@@ -87,7 +87,7 @@ const updateData = async (data: Song) => {
 };
 
 const data = await getSongsKyNotNullDB();
-const vaildSongs = loadVaildSongs();
+const vaildSongs = loadValidSongs();
 
 console.log('getSongsKyNotNullDB : ', data.length);
 let index = 0;
@@ -104,20 +104,20 @@ for (const song of data) {
   }
 
   console.log(song.title, ' - ', song.artist + ' : ', song.num_ky);
-  let isVaild = true;
+  let isValid = true;
   try {
-    isVaild = await isVaildKYExistNumber(song.num_ky, song.title, song.artist);
+    isValid = await isValidKYExistNumber(song.num_ky, song.title, song.artist);
   } catch (error) {
     index++;
     continue;
   }
 
-  if (!isVaild) {
+  if (!isValid) {
     // stackData.push({ ...song, num_ky: null });
     // totalData.push({ ...song, num_ky: null });
     await updateData({ ...song, num_ky: null });
-  } else saveVaildSongs(song.title, song.artist);
+  } else saveValidSongs(song.title, song.artist);
 
   index++;
-  console.log('crawlYoutubeVaild : ', index);
+  console.log('crawlYoutubeValid : ', index);
 }

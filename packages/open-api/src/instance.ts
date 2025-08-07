@@ -1,11 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import type { Brand, Period, ResponseType, InstanceResponse } from "./types";
 
-export const isVaildBrand = (brand: string): brand is Brand => {
+export const isValidBrand = (brand: string): brand is Brand => {
   return ["kumyoung", "tj", "dam", "joysound"].includes(brand);
 };
 
-export const isVaildPeriod = (period: string): period is Period => {
+export const isValidPeriod = (period: string): period is Period => {
   return ["daily", "weekly", "monthly"].includes(period);
 };
 
@@ -24,7 +24,7 @@ const createApiRequest = (instance: AxiosInstance) => {
   ): Promise<InstanceResponse> => {
     try {
       // brand 유효성 검사
-      if (brand && !isVaildBrand(brand)) {
+      if (brand && !isValidBrand(brand)) {
         throw new Error("Invalid brand type");
       }
 

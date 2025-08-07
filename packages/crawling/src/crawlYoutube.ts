@@ -18,7 +18,7 @@ const parseText = (text: string) => {
   return text.toLowerCase().replace(/\s/g, '').replace(/\(/g, '').replace(/\)/g, '');
 };
 
-const isVaildKYExistNumber = async (number: string, title: string, artist: string) => {
+const isValidKYExistNumber = async (number: string, title: string, artist: string) => {
   const kyUrl = 'https://kysing.kr/search/?category=1&keyword=';
   const searchUrl = kyUrl + number;
 
@@ -136,14 +136,14 @@ for (const song of data) {
   }
 
   if (resultKyNum) {
-    let isVaild = true;
+    let isValid = true;
     try {
-      isVaild = await isVaildKYExistNumber(resultKyNum, song.title, song.artist);
+      isValid = await isValidKYExistNumber(resultKyNum, song.title, song.artist);
     } catch (error) {
       continue;
     }
 
-    if (!isVaild) {
+    if (!isValid) {
       saveFailedSongs(song.title, song.artist);
       continue;
     } else {

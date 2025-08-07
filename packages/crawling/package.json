@@ -9,7 +9,7 @@
   "scripts": {
     "ky-open": "tsx src/findKYByOpen.ts",
     "ky-youtube": "tsx src/crawlYoutube.ts",
-    "ky-vaild": "tsx src/crawlYoutubeVaild.ts",
+    "ky-valid": "tsx src/crawlYoutubeValid.ts",
     "trans": "tsx src/postTransDictionary.ts",
     "recent-tj": "tsx src/crawlRecentTJ.ts",
     "lint": "eslint . --ext .ts,.js",
