@@ -1,7 +1,8 @@
-import { getRelease } from "@repo/open-api";
-import { Song, LogData } from "./types";
-import { postSongsDB } from "./supabase/postDB";
-import { updateDataLog } from "./logData";
+import { getRelease } from '@repo/open-api';
+
+import { postSongsDB } from '@/supabase/postDB';
+import { LogData, Song } from '@/types';
+import { updateDataLog } from '@/utils/logData';
 
 const parseMonth = (month: number) => {
   return month < 10 ? `0${month}` : month;
@@ -20,11 +21,11 @@ while (year <= 2025) {
   while (month <= 12) {
     const response = await getRelease({
       release: `${year}${parseMonth(month)}`,
-      brand: "tj",
+      brand: 'tj',
     });
     // console.log("response", response);
     // console.log("response", `${year}${parseMonth(month)}`, response?.length);
-    response?.forEach((item) => {
+    response?.forEach(item => {
       const { title, singer, no, release } = item;
       songs.push({ title, artist: singer, num_tj: no, num_ky: null, release });
     });
@@ -33,11 +34,11 @@ while (year <= 2025) {
   year++;
 }
 
-console.log("songs", songs.length);
+console.log('songs', songs.length);
 
 // TJ 2007~2025 38519곡
 
 const result: LogData<Song> = await postSongsDB(songs);
 
-updateDataLog(result.success, "postByReleaseSuccess.txt");
-updateDataLog(result.failed, "postByReleaseFailed.txt");
+updateDataLog(result.success, 'postByReleaseSuccess.txt');
+updateDataLog(result.failed, 'postByReleaseFailed.txt');

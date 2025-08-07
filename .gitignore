@@ -41,3 +41,5 @@ yarn-error.log*
 # Crawling
 **/log/*.txt
 
+# Gemini
+.gemini/

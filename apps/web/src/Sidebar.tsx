@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import DisquietBadge from '@/components/DisquietBadge';
+// import DisquietBadge from '@/components/DisquietBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -135,7 +135,7 @@ export default function Sidebar() {
         </div>
 
         <SheetFooter>
-          <DisquietBadge />
+          {/* <DisquietBadge /> */}
 
           {isAuthenticated ? (
             <>

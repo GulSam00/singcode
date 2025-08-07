@@ -1,9 +1,10 @@
-import { scrapeAllSongs, scrapeSongs, scrapeUtaiteSongs } from "./crawlWiki";
-import { postSongsDB } from "./supabase/postDB";
-import { argList } from "./argList";
+import { postSongsDB } from '@/supabase/postDB';
+import { JpArgList } from '@/utils/namuArgList';
+
+import { scrapeAllSongs, scrapeSongs, scrapeUtaiteSongs } from './crawlWiki';
 
 const postSongs = async () => {
-  const postPromises = argList.map(async (arg) => {
+  const postPromises = JpArgList.map(async arg => {
     const songs = await scrapeSongs(arg);
 
     // console.log(songs); // 크롤링한 데이터 확인
@@ -16,7 +17,7 @@ const postSongs = async () => {
 
 const postAllSongs = async () => {
   const allSongs = await scrapeAllSongs();
-  const postPromises = allSongs.map(async (song) => {
+  const postPromises = allSongs.map(async song => {
     await postSongsDB(song);
   });
   await Promise.all(postPromises);
@@ -24,7 +25,7 @@ const postAllSongs = async () => {
 
 const postUtaiteSongs = async () => {
   const utaiteSongs = await scrapeUtaiteSongs();
-  const postPromises = utaiteSongs.map(async (song) => {
+  const postPromises = utaiteSongs.map(async song => {
     await postSongsDB(song);
   });
   await Promise.all(postPromises);

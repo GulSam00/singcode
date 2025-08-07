@@ -12,7 +12,11 @@
     "rootDir": "src",
     "declaration": true,
     "declarationDir": "./dist/types", // 디버깅 편의를 위해 추가
-    "declarationMap": true // 디버깅 편의를 위해 추가
+    "declarationMap": true, // 디버깅 편의를 위해 추가
+
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"],
