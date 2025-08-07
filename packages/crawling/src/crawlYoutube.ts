@@ -89,21 +89,26 @@ const extractKaraokeNumber = (title: string) => {
   return karaokeNumber;
 };
 
-const refreshData = async () => {
-  console.log('refreshData');
-  const result = await updateSongsKyDB(stackData);
+// const refreshData = async () => {
+//   console.log('refreshData');
+//   const result = await updateSongsKyDB(stackData);
 
-  for (const failedItem of result.failed) {
-    const { title, artist } = failedItem.song;
-    saveFailedSongs(title, artist);
-  }
+//   for (const failedItem of result.failed) {
+//     const { title, artist } = failedItem.song;
+//     saveFailedSongs(title, artist);
+//   }
 
+//   updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
+//   updateDataLog(result.failed, 'crawlYoutubeFailed.txt');
+
+//   stackData.length = 0; // stackData 초기화
+// };
+
+const updateData = async (data: Song) => {
+  const result = await updateSongsKyDB(data);
   updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
   updateDataLog(result.failed, 'crawlYoutubeFailed.txt');
-
-  stackData.length = 0; // stackData 초기화
 };
-// 사용
 
 const data = await getSongsKyNullDB();
 const failedSongs = loadFailedSongs();
@@ -112,9 +117,9 @@ console.log('getSongsKyNullDB : ', data.length);
 let index = 0;
 
 for (const song of data) {
-  if (stackData.length >= 10) {
-    refreshData();
-  }
+  // if (stackData.length >= 10) {
+  //   refreshData();
+  // }
   const query = song.title + '-' + song.artist;
 
   if (failedSongs.has(query)) {
@@ -142,22 +147,17 @@ for (const song of data) {
       saveFailedSongs(song.title, song.artist);
       continue;
     } else {
-      stackData.push({ ...song, num_ky: resultKyNum });
-      totalData.push({ ...song, num_ky: resultKyNum });
+      // stackData.push({ ...song, num_ky: resultKyNum });
+      // totalData.push({ ...song, num_ky: resultKyNum });
+      await updateData({ ...song, num_ky: resultKyNum });
     }
   } else saveFailedSongs(song.title, song.artist);
 
   index++;
   console.log('scrapeSongNumber : ', index);
-  console.log('stackData : ', stackData.length);
 }
 
-console.log('totalData : ', totalData.length);
-// const result = await updateSongsKyDB(totalData);
-const result = await updateSongsKyDB(stackData);
-
-updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
-updateDataLog(result.failed, 'crawlYoutubeFailed.txt');
+// console.log('totalData : ', totalData.length);
 
 // 5.13 1차 시도
 // 5000개 중 3507개 성공, 총 18906개 등록

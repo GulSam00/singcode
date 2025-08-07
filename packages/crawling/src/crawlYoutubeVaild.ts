@@ -65,21 +65,26 @@ const isVaildKYExistNumber = async (number: string, title: string, artist: strin
   return false;
 };
 
-const refreshData = async () => {
-  console.log('refreshData');
-  const result = await updateSongsKyDB(stackData);
+// const refreshData = async () => {
+//   console.log('refreshData');
+//   const result = await updateSongsKyDB(stackData);
 
-  for (const failedItem of result.failed) {
-    const { title, artist } = failedItem.song;
-    saveVaildSongs(title, artist);
-  }
+//   for (const failedItem of result.failed) {
+//     const { title, artist } = failedItem.song;
+//     saveVaildSongs(title, artist);
+//   }
 
-  updateDataLog(result.success, 'updateNullInvaildSongSuccess.txt');
-  updateDataLog(result.failed, 'updateNullInvaildSongFailed.txt');
+//   updateDataLog(result.success, 'updateNullInvaildSongSuccess.txt');
+//   updateDataLog(result.failed, 'updateNullInvaildSongFailed.txt');
 
-  stackData.length = 0; // stackData 초기화
+//   stackData.length = 0; // stackData 초기화
+// };
+
+const updateData = async (data: Song) => {
+  const result = await updateSongsKyDB(data);
+  updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
+  updateDataLog(result.failed, 'crawlYoutubeFailed.txt');
 };
-// 사용
 
 const data = await getSongsKyNotNullDB();
 const vaildSongs = loadVaildSongs();
@@ -88,15 +93,13 @@ console.log('getSongsKyNotNullDB : ', data.length);
 let index = 0;
 
 for (const song of data) {
-  if (stackData.length >= 10) {
-    refreshData();
-  }
+  // if (stackData.length >= 10) {
+  //   refreshData();
+  // }
 
   const query = song.title + '-' + song.artist;
 
   if (vaildSongs.has(query)) {
-    // console.log("already failed : ", song.title, " - ", song.artist);
-    // index++;
     continue;
   }
 
@@ -110,13 +113,11 @@ for (const song of data) {
   }
 
   if (!isVaild) {
-    stackData.push({ ...song, num_ky: null });
-    totalData.push({ ...song, num_ky: null });
+    // stackData.push({ ...song, num_ky: null });
+    // totalData.push({ ...song, num_ky: null });
+    await updateData({ ...song, num_ky: null });
   } else saveVaildSongs(song.title, song.artist);
 
   index++;
-  console.log('scrapeSongNumber : ', index);
-  console.log('stackData : ', stackData.length);
+  console.log('crawlYoutubeVaild : ', index);
 }
-
-console.log('totalData : ', totalData.length);
