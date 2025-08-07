@@ -121,3 +121,5 @@ for (const song of data) {
   index++;
   console.log('crawlYoutubeValid : ', index);
 }
+
+browser.close();

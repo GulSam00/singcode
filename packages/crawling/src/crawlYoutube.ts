@@ -157,6 +157,8 @@ for (const song of data) {
   console.log('scrapeSongNumber : ', index);
 }
 
+browser.close();
+
 // console.log('totalData : ', totalData.length);
 
 // 5.13 1차 시도
