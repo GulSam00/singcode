@@ -3,6 +3,7 @@
 import { Loader2, Search, SearchX, X } from 'lucide-react';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { toast } from 'sonner';
 
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
@@ -74,6 +75,11 @@ export default function SearchPage() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   const handleSearchClick = () => {
+    if (!search.trim()) {
+      toast.error('검색어를 입력해주세요.');
+      return;
+    }
+
     handleSearch();
     addToHistory(search);
   };

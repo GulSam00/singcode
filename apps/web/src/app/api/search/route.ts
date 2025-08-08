@@ -47,7 +47,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
         .from('songs')
         .select('*', { count: 'exact' })
         .ilike(type, `%${query}%`)
-        .order('release', { ascending: false })
+        .order(type)
         .range(from, to);
 
       if (error) {
@@ -101,7 +101,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
         { count: 'exact' },
       )
       .ilike(type, `%${query}%`)
-      .order('release', { ascending: false })
+      .order(type)
       .range(from, to);
 
     if (error) {
