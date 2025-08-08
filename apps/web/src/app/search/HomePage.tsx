@@ -75,13 +75,14 @@ export default function SearchPage() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   const handleSearchClick = () => {
-    if (!search.trim()) {
+    const trimmedSearch = search.trim();
+    if (!trimmedSearch) {
       toast.error('검색어를 입력해주세요.');
       return;
     }
 
     handleSearch();
-    addToHistory(search);
+    addToHistory(trimmedSearch);
   };
 
   const handleHistoryClick = (term: string) => {
@@ -99,7 +100,8 @@ export default function SearchPage() {
           onValueChange={handleSearchTypeChange}
           className="mb-3"
         >
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="all">전체</TabsTrigger>
             <TabsTrigger value="title">제목</TabsTrigger>
             <TabsTrigger value="artist">가수</TabsTrigger>
           </TabsList>
