@@ -18,7 +18,7 @@ export interface Song {
 export interface TransSong extends Song {
   isTitleJp: boolean;
   isArtistJp: boolean;
-  type?: "title" | "artist";
+  type?: 'title' | 'artist';
 }
 
 export interface TransDictionary {

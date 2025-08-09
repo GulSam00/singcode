@@ -7,12 +7,14 @@
     ".": "./src/index.js"
   },
   "scripts": {
-    "dev-ky-open": "tsx src/findKYByOpen.ts",
-    "dev-ky-youtube": "tsx src/crawlYoutube.ts",
-    "dev-trans": "tsx src/postTransDictionary.ts",
-    "dev-recent-tj": "tsx src/crawlRecentTJ.ts",
+    "ky-open": "tsx src/findKYByOpen.ts",
+    "ky-youtube": "tsx src/crawlYoutube.ts",
+    "ky-valid": "tsx src/crawlYoutubeValid.ts",
+    "trans": "tsx src/postTransDictionary.ts",
+    "recent-tj": "tsx src/crawlRecentTJ.ts",
     "lint": "eslint . --ext .ts,.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
     "@repo/open-api": "workspace:*",

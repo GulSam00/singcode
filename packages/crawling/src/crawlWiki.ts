@@ -1,10 +1,11 @@
-import axios from "axios";
-import * as cheerio from "cheerio";
-import dotenv from "dotenv";
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import dotenv from 'dotenv';
 
-import { ArgList, Song } from "./types";
+import { ArgList, Song } from '@/types';
+import { parseNumber } from '@/utils/parseNumber';
+import { parseJapaneseText, parseText } from '@/utils/parseString';
 
-import { parseNumber, parseJapaneseText, parseText } from "./utils";
 dotenv.config();
 
 // ✅ 나무위키에서 데이터 크롤링
@@ -12,12 +13,11 @@ export async function scrapeSongs(dst: ArgList) {
   try {
     const { url, artist, titleIndex, tjIndex, kyIndex } = dst;
     if (!url || !artist) {
-      throw new Error("url 또는 artist가 없습니다.");
+      throw new Error('url 또는 artist가 없습니다.');
     }
 
-    const baseUrl = "https://namu.wiki/w/";
-    const endURL =
-      "/%EB%85%B8%EB%9E%98%EB%B0%A9%20%EC%88%98%EB%A1%9D%20%EB%AA%A9%EB%A1%9D";
+    const baseUrl = 'https://namu.wiki/w/';
+    const endURL = '/%EB%85%B8%EB%9E%98%EB%B0%A9%20%EC%88%98%EB%A1%9D%20%EB%AA%A9%EB%A1%9D';
     const fullURL = baseUrl + url + endURL;
     console.log(fullURL);
     const { data } = await axios.get(fullURL);
@@ -26,8 +26,8 @@ export async function scrapeSongs(dst: ArgList) {
 
     let songs: Song[] = [];
 
-    $("table tbody tr").each((index, element) => {
-      const cols = $(element).find("td");
+    $('table tbody tr').each((index, element) => {
+      const cols = $(element).find('td');
 
       const title = parseJapaneseText($(cols[titleIndex]).text());
       const num_tj = parseNumber($(cols[tjIndex]).text().trim().slice(0, 5));
@@ -39,7 +39,7 @@ export async function scrapeSongs(dst: ArgList) {
 
     return songs;
   } catch (error) {
-    console.error("크롤링 실패:", error);
+    console.error('크롤링 실패:', error);
     return [];
   }
 }
@@ -51,19 +51,19 @@ export async function scrapeAllSongs() {
     const tjIndex = 0;
     const kyIndex = 1;
 
-    const baseUrl = "https://namu.wiki/w/";
-    const url = "애니메이션%20음악/노래방%20수록%20목록/전체곡%20일람";
+    const baseUrl = 'https://namu.wiki/w/';
+    const url = '애니메이션%20음악/노래방%20수록%20목록/전체곡%20일람';
     const fullURL = baseUrl + url;
     console.log(fullURL);
     const { data } = await axios.get(fullURL, {
-      headers: { "User-Agent": "Mozilla/5.0" },
+      headers: { 'User-Agent': 'Mozilla/5.0' },
     });
     const $ = cheerio.load(data);
 
     let songs: Song[] = [];
 
-    $("table tbody tr").each((index, element) => {
-      const cols = $(element).find("td");
+    $('table tbody tr').each((index, element) => {
+      const cols = $(element).find('td');
 
       const title = parseText($(cols[titleIndex]).text());
       const artist = parseText($(cols[artistIndex]).text());
@@ -76,7 +76,7 @@ export async function scrapeAllSongs() {
 
     return songs;
   } catch (error) {
-    console.error("크롤링 실패:", error);
+    console.error('크롤링 실패:', error);
     return [];
   }
 }
@@ -88,19 +88,19 @@ export async function scrapeUtaiteSongs() {
     const tjIndex = 0;
     const kyIndex = 1;
 
-    const baseUrl = "https://namu.wiki/w/";
-    const url = "우타이테 오리지널 곡/노래방 수록 목록";
+    const baseUrl = 'https://namu.wiki/w/';
+    const url = '우타이테 오리지널 곡/노래방 수록 목록';
     const fullURL = baseUrl + url;
     console.log(fullURL);
     const { data } = await axios.get(fullURL, {
-      headers: { "User-Agent": "Mozilla/5.0" },
+      headers: { 'User-Agent': 'Mozilla/5.0' },
     });
     const $ = cheerio.load(data);
 
     let songs: Song[] = [];
 
-    $("table tbody tr").each((index, element) => {
-      const cols = $(element).find("td");
+    $('table tbody tr').each((index, element) => {
+      const cols = $(element).find('td');
 
       const title = parseText($(cols[titleIndex]).text());
       const artist = parseText($(cols[artistIndex]).text());
@@ -113,7 +113,7 @@ export async function scrapeUtaiteSongs() {
 
     return songs;
   } catch (error) {
-    console.error("크롤링 실패:", error);
+    console.error('크롤링 실패:', error);
     return [];
   }
 }

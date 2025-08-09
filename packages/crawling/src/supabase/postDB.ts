@@ -1,5 +1,6 @@
-import { Song, TransDictionary, LogData } from "../types";
-import { getClient } from "./getClient";
+import { LogData, Song, TransDictionary } from '@/types';
+
+import { getClient } from './getClient';
 
 export async function postSongsDB(songs: Song[] | Song) {
   const supabase = getClient();
@@ -13,10 +14,7 @@ export async function postSongsDB(songs: Song[] | Song) {
   // 각 곡을 개별적으로 처리
   for (const song of songsArray) {
     try {
-      const { data, error } = await supabase
-        .from("songs")
-        .insert(song)
-        .select();
+      const { data, error } = await supabase.from('songs').insert(song).select();
 
       if (error) {
         results.failed.push({ item: song, error });
@@ -51,7 +49,7 @@ export async function postTransDictionariesDB(dictionaries: TransDictionary[]) {
     try {
       const { original_japanese, translated_korean } = item;
       const { data, error } = await supabase
-        .from("trans_dictionaries")
+        .from('trans_dictionaries')
         .insert([{ original_japanese, translated_korean }])
         .select();
 

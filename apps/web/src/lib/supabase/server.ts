@@ -6,7 +6,8 @@ export default async function createClient() {
   const cookieStore = await cookies();
 
   // return createServerClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
-  return createServerClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+  //  process.env.SUPABASE_SERVICE_ROLE_KEY?? 출처가 어디지?
+  return createServerClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

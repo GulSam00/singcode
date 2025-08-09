@@ -23,6 +23,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
     const type = searchParams.get('type') || 'title';
+    const order = type === 'all' ? 'title' : type; // 'all' 타입은 title로 정렬
     const authenticated = searchParams.get('authenticated') === 'true';
 
     const page = parseInt(searchParams.get('page') || '0', 10);
@@ -42,13 +43,16 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
 
     const supabase = await createClient();
 
+    const baseQuery = supabase.from('songs').select('*', { count: 'exact' });
+
+    if (type === 'all') {
+      baseQuery.or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
+    } else {
+      baseQuery.ilike(type, `%${query}%`);
+    }
+
     if (!authenticated) {
-      const { data, error, count } = await supabase
-        .from('songs')
-        .select('*', { count: 'exact' })
-        .ilike(type, `%${query}%`)
-        .order('release', { ascending: false })
-        .range(from, to);
+      const { data, error, count } = await baseQuery.order(order).range(from, to);
 
       if (error) {
         return NextResponse.json(
@@ -101,7 +105,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
         { count: 'exact' },
       )
       .ilike(type, `%${query}%`)
-      .order('release', { ascending: false })
+      .order(type)
       .range(from, to);
 
     if (error) {
