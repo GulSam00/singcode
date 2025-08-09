@@ -40,8 +40,11 @@ export default function useSearchSong() {
   } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
   const handleSearch = () => {
-    setQuery(search);
-    setSearch('');
+    const trimmedSearch = search.trim();
+    if (trimmedSearch) {
+      setQuery(trimmedSearch);
+      setSearch(trimmedSearch);
+    }
   };
 
   const handleSearchTypeChange = (value: string) => {

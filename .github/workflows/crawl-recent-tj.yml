@@ -35,4 +35,4 @@ jobs:
 
       - name: run crawl script
         working-directory: packages/crawling
-        run: pnpm run dev-recent-tj
+        run: pnpm run recent-tj
