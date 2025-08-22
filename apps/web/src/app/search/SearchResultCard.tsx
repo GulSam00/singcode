@@ -50,41 +50,31 @@ export default function SearchResultCard({
           <Button
             variant="ghost"
             size="icon"
-            className={`h-8 w-8 ${isToSing ? 'text-primary bg-primary/10' : ''}`}
+            className={`h-10 w-10 p-1.5 ${isToSing ? 'text-primary bg-primary/10' : ''}`}
             aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
             onClick={onToggleToSing}
           >
-            {isToSing ? (
-              <div className="relative">
-                <MinusCircle className="h-4 w-4" />
-              </div>
-            ) : (
-              <div className="relative">
-                <PlusCircle className="h-4 w-4" />
-              </div>
-            )}
+            {isToSing ? <MinusCircle /> : <PlusCircle />}
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
-            className={`h-8 w-8 ${isLike ? 'text-red-500' : ''}`}
+            className={`h-10 w-10 p-1.5 ${isLike ? 'text-red-500' : ''}`}
             aria-label={isLike ? '좋아요 취소' : '좋아요'}
             onClick={onToggleLike}
           >
-            <Heart className={`h-4 w-4 ${isLike ? 'fill-current' : ''}`} />
+            <Heart className={`h-5 w-5 ${isLike ? 'fill-current' : ''}`} />
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
-            className={`h-8 w-8 ${isSave ? 'text-primary bg-primary/10' : ''}`}
+            className={`h-10 w-10 p-1.5 ${isSave ? 'text-primary bg-primary/10' : ''}`}
             aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
             onClick={onClickSave}
           >
-            <div className="relative">
-              {isSave ? <ListRestart className="h-4 w-4" /> : <ListPlus className="h-4 w-4" />}
-            </div>
+            {isSave ? <ListRestart className="h-5 w-5" /> : <ListPlus className="h-5 w-5" />}
           </Button>
         </div>
       </div>

@@ -160,7 +160,7 @@ export default function SearchPage() {
           </div>
         )}
       </div>
-      <ScrollArea className="h-[calc(100vh-20rem)]">
+      <ScrollArea className="h-[calc(100vh-24rem)]">
         {searchSongs.length > 0 && (
           <div className="flex w-[360px] flex-col gap-3 px-2 py-4">
             {searchSongs.map((song, index) => (

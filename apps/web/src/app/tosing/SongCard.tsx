@@ -68,7 +68,7 @@ export default function SongCard({
                   className={'hover:bg-accent text-check hover:text-check rounded-full p-1.5'}
                   aria-label="노래 부르기"
                 >
-                  <Check className="h-4 w-4" />
+                  <Check className="h-5 w-5" />
                 </div>
               </TooltipTrigger>
 
@@ -82,7 +82,7 @@ export default function SongCard({
                   className="hover:bg-accent text-destructive hover:text-destructive rounded-full p-1.5"
                   aria-label="삭제"
                 >
-                  <Trash className="h-4 w-4" />
+                  <Trash className="h-5 w-5" />
                 </div>
               </TooltipTrigger>
               <TooltipContent>노래 삭제</TooltipContent>
@@ -95,7 +95,7 @@ export default function SongCard({
                   className="hover:bg-accent rounded-full p-1.5"
                   aria-label="맨 위로 이동"
                 >
-                  <ChevronsUp className="h-4 w-4" />
+                  <ChevronsUp className="h-5 w-5" />
                 </div>
               </TooltipTrigger>
               <TooltipContent>최상위 순서</TooltipContent>
@@ -108,7 +108,7 @@ export default function SongCard({
                   className="hover:bg-accent rounded-full p-1.5"
                   aria-label="맨 아래로 이동"
                 >
-                  <ChevronsDown className="h-4 w-4" />
+                  <ChevronsDown className="h-5 w-5" />
                 </div>
               </TooltipTrigger>
               <TooltipContent>최하위 순서</TooltipContent>
