@@ -89,6 +89,17 @@ export default function SearchPage() {
     setSearch(term);
   };
 
+  const getPlaceholder = (type: string) => {
+    switch (type) {
+      case 'title':
+        return '노래 제목 검색';
+      case 'artist':
+        return '가수 이름 검색';
+      default:
+        return '전체 키워드 검색';
+    }
+  };
+
   return (
     <div className="bg-background">
       <div className="bg-background p-2 pt-4 shadow-sm">
@@ -112,7 +123,7 @@ export default function SearchPage() {
             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
             <Input
               type="text"
-              placeholder={searchType === 'title' ? '노래 제목 검색' : '가수 이름 검색'}
+              placeholder={getPlaceholder(searchType)}
               className="pl-8"
               value={search}
               onChange={e => setSearch(e.target.value)}
