@@ -46,35 +46,38 @@ export default function SearchResultCard({
         </div>
 
         {/* 버튼 영역 - 우측 하단에 고정 */}
-        <div className="absolute right-3 bottom-3 flex space-x-1">
+        <div className="absolute right-3 bottom-3 flex space-x-2">
           <Button
             variant="ghost"
             size="icon"
-            className={`h-10 w-10 p-1.5 ${isToSing ? 'text-primary bg-primary/10' : ''}`}
+            className={`h-13 w-25 flex-col items-center justify-center ${isToSing ? 'text-primary bg-primary/10' : ''}`}
             aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
             onClick={onToggleToSing}
           >
             {isToSing ? <MinusCircle /> : <PlusCircle />}
+            <span>{isToSing ? '부를곡 취소' : '부를곡 추가'}</span>
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
-            className={`h-10 w-10 p-1.5 ${isLike ? 'text-red-500' : ''}`}
+            className={`h-13 w-25 flex-col items-center justify-center`}
             aria-label={isLike ? '좋아요 취소' : '좋아요'}
             onClick={onToggleLike}
           >
-            <Heart className={`h-5 w-5 ${isLike ? 'fill-current' : ''}`} />
+            <Heart className={`${isLike ? 'fill-current text-red-500' : ''}`} />
+            <span>{isLike ? '좋아요 취소' : '좋아요'}</span>
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
-            className={`h-10 w-10 p-1.5 ${isSave ? 'text-primary bg-primary/10' : ''}`}
+            className={`h-13 w-25 flex-col items-center justify-center ${isSave ? 'text-primary bg-primary/10' : ''}`}
             aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
             onClick={onClickSave}
           >
             {isSave ? <ListRestart className="h-5 w-5" /> : <ListPlus className="h-5 w-5" />}
+            <span>{isSave ? '재생목록 수정' : '재생목록 추가'}</span>
           </Button>
         </div>
       </div>
