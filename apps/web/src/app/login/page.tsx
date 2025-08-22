@@ -26,6 +26,16 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (email.trim() === '' || password.trim() === '') {
+      openMessage({
+        title: '입력 오류',
+        message: '이메일과 비밀번호를 입력하세요.',
+        variant: 'error',
+      });
+      return;
+    }
+
     const { isSuccess, title, message } = await login(email, password);
     if (isSuccess) {
       // await 하지 않고 result로 넘어가서 auth 인증 오류 발생
