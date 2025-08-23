@@ -43,15 +43,15 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
 
     const supabase = await createClient();
 
-    const baseQuery = supabase.from('songs').select('*', { count: 'exact' });
-
-    if (type === 'all') {
-      baseQuery.or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
-    } else {
-      baseQuery.ilike(type, `%${query}%`);
-    }
-
     if (!authenticated) {
+      const baseQuery = supabase.from('songs').select('*', { count: 'exact' });
+
+      if (type === 'all') {
+        baseQuery.or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
+      } else {
+        baseQuery.ilike(type, `%${query}%`);
+      }
+
       const { data, error, count } = await baseQuery.order(order).range(from, to);
 
       if (error) {
@@ -87,10 +87,8 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
 
     const userId = await getAuthenticatedUser(supabase); // userId 가져오기
 
-    const { data, error, count } = await supabase
-      .from('songs')
-      .select(
-        `
+    const baseQuery = supabase.from('songs').select(
+      `
         *,
         tosings (
           user_id
@@ -102,11 +100,16 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
           user_id
         )
       `,
-        { count: 'exact' },
-      )
-      .ilike(type, `%${query}%`)
-      .order(type)
-      .range(from, to);
+      { count: 'exact' },
+    );
+
+    if (type === 'all') {
+      baseQuery.or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
+    } else {
+      baseQuery.ilike(type, `%${query}%`);
+    }
+
+    const { data, error, count } = await baseQuery.order(order).range(from, to);
 
     if (error) {
       return NextResponse.json(
