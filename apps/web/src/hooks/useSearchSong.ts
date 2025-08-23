@@ -12,7 +12,7 @@ import useAuthStore from '@/stores/useAuthStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
-type SearchType = 'title' | 'artist';
+type SearchType = 'all' | 'title' | 'artist';
 
 type SaveModalType = '' | 'POST' | 'PATCH';
 
@@ -21,7 +21,7 @@ export default function useSearchSong() {
 
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
-  const [searchType, setSearchType] = useState<SearchType>('title');
+  const [searchType, setSearchType] = useState<SearchType>('all');
   const [saveModalType, setSaveModalType] = useState<SaveModalType>('');
   const [selectedSaveSong, setSelectedSaveSong] = useState<SearchSong | null>(null);
   // const { data: searchResults, isLoading } = useSearchSongQuery(query, searchType, isAuthenticated);

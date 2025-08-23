@@ -32,6 +32,15 @@ export default function SignupPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (email.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
+      openMessage({
+        title: '입력 오류',
+        message: '이메일과 비밀번호를 입력하세요.',
+        variant: 'error',
+      });
+      return;
+    }
+
     if (!agreedToTerms) {
       openMessage({
         title: '이용약관 동의 필요',
