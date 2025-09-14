@@ -1,6 +1,6 @@
 'use client';
 
-import StaticLoading from '@/components/StaticLoading';
+// import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -12,8 +12,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useAddListModal from '@/hooks/useAddSongList';
 import { useLikeSongQuery } from '@/queries/likeSongQuery';
-import { useRecentSongQuery } from '@/queries/recentSongQuery';
-import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
+import { useRecentSingLogQuery } from '@/queries/recentSingLogQuery';
+// import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
 import { useSaveSongQuery } from '@/queries/saveSongQuery';
 
 import ModalSongItem from './ModalSongItem';
@@ -34,7 +34,7 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
   } = useAddListModal();
 
   const { data: likedSongs, isLoading: isLoadingLikedSongs } = useLikeSongQuery();
-  const { data: recentSongs, isLoading: isLoadingRecentSongs } = useRecentSongQuery();
+  const { data: recentSongs, isLoading: isLoadingRecentSongs } = useRecentSingLogQuery();
 
   const { data: saveSongFolders, isLoading: isLoadingSongFolders } = useSaveSongQuery();
 

@@ -37,7 +37,7 @@ export function usePostToSingSongMutation() {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
-      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
       queryClient.invalidateQueries({ queryKey: ['searchSong'] });
     },
     onError: error => {
@@ -57,7 +57,7 @@ export function usePostToSingSongArrayMutation() {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
-      queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+      queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
       queryClient.invalidateQueries({ queryKey: ['searchSong'] });
     },
     onError: error => {
@@ -95,7 +95,7 @@ export function useDeleteToSingSongMutation() {
         queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
         queryClient.invalidateQueries({ queryKey: ['likeSong'] });
         queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
-        queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+        queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
         queryClient.invalidateQueries({ queryKey: ['searchSong'] });
       }, 1000);
     },
@@ -126,7 +126,7 @@ export function useDeleteToSingSongMutation() {
 //       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
 //       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
 //       queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
-//       queryClient.invalidateQueries({ queryKey: ['recentSong'] });
+//       queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
 //     },
 //   });
 // }
