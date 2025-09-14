@@ -7,10 +7,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 
 const navigation = [
-  { name: '검색', href: '/' },
+  { name: '최신 곡', href: '/recent' },
+
   { name: '부를 곡', href: '/tosing' },
+  { name: '검색', href: '/' },
+
   { name: '인기곡', href: '/popular' },
-  { name: '라이브러리', href: '/library' },
+  { name: '정보', href: '/info' },
 ];
 
 export default function Footer() {
@@ -25,7 +28,7 @@ export default function Footer() {
           <Button
             asChild
             key={item.name}
-            className={cn('w-[90px] flex-auto', isActive && 'bg-accent text-accent-foreground')}
+            className={cn('flex-1 px-0 text-sm', isActive && 'bg-accent text-accent-foreground')}
             variant="ghost"
           >
             <Link href={item.href}>{item.name}</Link>
