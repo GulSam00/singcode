@@ -84,7 +84,7 @@ export default function UpdatePasswordPage() {
     // 인증 상태 변경 감지
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async event => {
       // console.log('Auth event:', event); // 디버깅용
       // console.log('Session:', session); // 디버깅용
 

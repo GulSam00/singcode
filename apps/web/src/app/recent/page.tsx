@@ -1,7 +1,6 @@
 'use client';
 
 import { ArrowLeft, ArrowRight, Construction } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import StaticLoading from '@/components/StaticLoading';

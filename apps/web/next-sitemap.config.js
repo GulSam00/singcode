@@ -7,21 +7,25 @@ const config = {
   changefreq: 'weekly',
   priority: 0.7,
   exclude: [
-    '/login',
-    '/signup',
-    '/update-password',
-    '/search',
-    '/info',
-    '/info/*',
-    '/tosing',
-    '/error',
+    '/login*',
+    '/signup*',
+    '/update-password*',
+    '/search*',
+    '/info*',
+    '/tosing*',
+    '/error*',
+    '/popular*',
+    '/recent*',
+    '/withdrawal*',
+    '/api/*',
+    '/admin/*',
   ],
   robotsTxtOptions: {
     policies: [
       {
         userAgent: '*',
-        disallow: '/', // 기본은 모든 경로 막기
-        allow: ['/', '/popular'], // 이 두 경로만 허용
+        disallow: '/', // 다른 경로 막기
+        allow: ['/$'], // 루트 경로만 허용
       },
     ],
   },

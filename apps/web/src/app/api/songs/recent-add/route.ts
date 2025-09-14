@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
 import { ApiResponse } from '@/types/apiRoute';
-import { PersonalSong, Song } from '@/types/song';
-import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
+import { Song } from '@/types/song';
 
 interface ResponseRecentAddSong {
   songs: Song;
