@@ -60,8 +60,6 @@ export default function LibraryPage() {
         </Button>
       </div>
 
-      {/* <h1 className="text-xl font-bold">반가워요, {nickname}</h1> */}
-
       {recentAddSongs && recentAddSongs.length > 0 ? (
         <div className="flex flex-col">
           {recentAddSongs.map(song => (
