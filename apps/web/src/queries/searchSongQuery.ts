@@ -31,8 +31,6 @@ export const useInfiniteSearchSongQuery = (
     queryFn: async ({ pageParam }) => {
       const response = await getInfiniteSearchSong(search, searchType, isAuthenticated, pageParam);
 
-      // console.log('response', response);
-
       if (!response.success) {
         throw new Error('Search API failed');
       }
@@ -45,8 +43,6 @@ export const useInfiniteSearchSongQuery = (
     getNextPageParam: (lastPage, pages) => {
       // lastPage : 직전 페이지의 데이터
       // pages : 현재까지 조회된 모든 데이터
-      // console.log('lastPage', lastPage);
-      // console.log('pages', pages);
 
       if (!lastPage || lastPage.data.length === 0) return undefined;
       return lastPage.hasNext ? pages.length : undefined;

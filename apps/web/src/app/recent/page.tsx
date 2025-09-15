@@ -27,7 +27,6 @@ export default function LibraryPage() {
     setToday(new Date(today.getFullYear(), today.getMonth() + 1, 1));
     setPrevAction('next');
   };
-  console.log('recentAddSongs', recentAddSongs, today.getFullYear(), today.getMonth() + 1);
 
   return (
     <div className="bg-background h-full space-y-4">
