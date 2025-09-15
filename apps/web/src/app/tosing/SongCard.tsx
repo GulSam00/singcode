@@ -6,7 +6,6 @@ import { Check, ChevronsDown, ChevronsUp, GripVertical, Trash } from 'lucide-rea
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Song } from '@/types/song';
 
 interface SongCardProps {

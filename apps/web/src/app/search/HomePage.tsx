@@ -49,11 +49,8 @@ export default function SearchPage() {
 
   if (searchResults) {
     searchSongs = searchResults.pages.flatMap(page => page.data);
-    // console.log('searchSongs', searchSongs);
   }
 
-  // console.log('searchResults', searchResults);
-  // console.log('pages', searchSongs);
   const { searchHistory, addToHistory, removeFromHistory } = useSearchHistory();
 
   // 엔터 키 처리

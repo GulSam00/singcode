@@ -12,7 +12,7 @@ import PopularRankingList from './PopularRankingList';
 
 export default function PopularPage() {
   const [typeTab, setTypeTab] = useState<CountType>('sing_count');
-  const [periodTab, setPeriodTab] = useState<PeriodType>('month');
+  const [periodTab, setPeriodTab] = useState<PeriodType>('all');
 
   const { isLoading, isPending, data } = useTotalStatQuery(typeTab, periodTab);
 
@@ -36,15 +36,14 @@ export default function PopularPage() {
         <TabsContent value="sing_count" className="space-y-6">
           <Tabs value={periodTab} onValueChange={value => setPeriodTab(value as PeriodType)}>
             <TabsList className="w-full">
-              <TabsTrigger value="month" className="flex-1">
-                월별
+              <TabsTrigger value="all" className="flex-1">
+                전체
               </TabsTrigger>
               <TabsTrigger value="year" className="flex-1">
                 년별
               </TabsTrigger>
-
-              <TabsTrigger value="all" className="flex-1">
-                전체
+              <TabsTrigger value="month" className="flex-1">
+                월별
               </TabsTrigger>
             </TabsList>
 

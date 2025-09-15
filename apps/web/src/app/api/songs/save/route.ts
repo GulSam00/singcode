@@ -87,7 +87,6 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     const userId = await getAuthenticatedUser(supabase);
 
     const { songId, folderName } = await request.json();
-    const today = new Date();
 
     const { data: folderData, error: folderError } = await supabase
       .from('save_folders')
