@@ -4,7 +4,11 @@ import puppeteer from 'puppeteer';
 import { getSongsKyNullDB } from '@/supabase/getDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
 import { Song } from '@/types';
-import { loadCrawlYoutubeFailedTJSongs, saveFailedSongs, updateDataLog } from '@/utils/logData';
+import {
+  loadCrawlYoutubeFailedKYSongs,
+  saveCrawlYoutubeFailedKYSongs,
+  updateDataLog,
+} from '@/utils/logData';
 
 import { isValidKYExistNumber } from './isValidKYExistNumber';
 
@@ -52,7 +56,7 @@ const updateData = async (data: Song) => {
 };
 
 const data = await getSongsKyNullDB();
-const failedSongs = loadCrawlYoutubeFailedTJSongs();
+const failedSongs = loadCrawlYoutubeFailedKYSongs();
 
 console.log('getSongsKyNullDB : ', data.length);
 let index = 0;
@@ -82,12 +86,12 @@ for (const song of data) {
     }
 
     if (!isValid) {
-      saveFailedSongs(song.title, song.artist);
+      saveCrawlYoutubeFailedKYSongs(song.title, song.artist);
       continue;
     } else {
       await updateData({ ...song, num_ky: resultKyNum });
     }
-  } else saveFailedSongs(song.title, song.artist);
+  } else saveCrawlYoutubeFailedKYSongs(song.title, song.artist);
 
   index++;
   console.log('scrapeSongNumber : ', index);

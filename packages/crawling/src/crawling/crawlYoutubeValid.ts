@@ -1,10 +1,9 @@
-import * as cheerio from 'cheerio';
 import puppeteer from 'puppeteer';
 
 import { getSongsKyNotNullDB } from '@/supabase/getDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
 import { Song } from '@/types';
-import { loadValidSongs, saveValidSongs, updateDataLog } from '@/utils/logData';
+import { loadValidKYSongs, saveValidKYSongs, updateDataLog } from '@/utils/logData';
 
 import { isValidKYExistNumber } from './isValidKYExistNumber';
 
@@ -18,7 +17,7 @@ const updateData = async (data: Song) => {
 };
 
 const data = await getSongsKyNotNullDB();
-const vaildSongs = loadValidSongs();
+const vaildSongs = loadValidKYSongs();
 
 console.log('getSongsKyNotNullDB : ', data.length);
 let index = 0;
@@ -43,7 +42,7 @@ for (const song of data) {
     // stackData.push({ ...song, num_ky: null });
     // totalData.push({ ...song, num_ky: null });
     await updateData({ ...song, num_ky: null });
-  } else saveValidSongs(song.title, song.artist);
+  } else saveValidKYSongs(song.title, song.artist);
 
   index++;
   console.log('crawlYoutubeValid : ', index);
