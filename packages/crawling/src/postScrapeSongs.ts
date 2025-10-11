@@ -1,7 +1,7 @@
 import { postSongsDB } from '@/supabase/postDB';
 import { JpArgList } from '@/utils/namuArgList';
 
-import { scrapeAllSongs, scrapeSongs, scrapeUtaiteSongs } from './crawlWiki';
+import { scrapeAllSongs, scrapeSongs, scrapeUtaiteSongs } from './crawling/crawlWiki';
 
 const postSongs = async () => {
   const postPromises = JpArgList.map(async arg => {

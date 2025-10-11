@@ -71,7 +71,7 @@ export function saveFailedSongs(title: string, artist: string) {
   fs.appendFileSync(logPath, `${title}-${artist}\n`, 'utf-8');
 }
 
-export function loadFailedSongs(): Set<string> {
+export function loadCrawlYoutubeFailedTJSongs(): Set<string> {
   const logPath = path.join('src', 'assets', 'crawlYoutubeFailedList.txt');
   if (!fs.existsSync(logPath)) return new Set();
   const lines = fs
