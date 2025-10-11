@@ -7,6 +7,9 @@ import { loadValidKYSongs, saveValidKYSongs, updateDataLog } from '@/utils/logDa
 
 import { isValidKYExistNumber } from './isValidKYExistNumber';
 
+// 기존에 등록된 KY 노래방 번호가 실제로 KY 노래방과 일치하는지 검증
+// crawlYoutube와는 다르게 끝이 정해진 작업
+
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 

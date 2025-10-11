@@ -12,6 +12,9 @@ import {
 
 import { isValidKYExistNumber } from './isValidKYExistNumber';
 
+// youtube에서 KY 노래방 번호 크롤링
+// crawlYoutubeValid에서 진행하는 실제 사이트 검증도 포함
+
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
