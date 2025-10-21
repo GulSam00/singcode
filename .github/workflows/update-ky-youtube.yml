@@ -1,0 +1,62 @@
+name: Crawl Recent TJ Songs
+
+on:
+  schedule:
+    - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
+  workflow_dispatch:
+
+permissions:
+  contents: write # push 권한을 위해 필요
+
+jobs:
+  run-npm-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/songUpdate
+          persist-credentials: false # 수동 인증으로 푸시 제어
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        working-directory: packages/crawling
+        run: pnpm install
+
+      - name: Create .env file
+        working-directory: packages/crawling
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
+      - name: run update script - packages/crawling/crawlYoutube.ts
+        working-directory: packages/crawling
+        run: pnpm run ky-youtube
+
+      - name: Commit and push changes to feat/songUpdate branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout feat/songUpdate
+
+          git add .
+          if git diff --cached --quiet; then
+            echo "✅ No changes to commit"
+          else
+            git commit -m "chore: update crawled TJ song data [skip ci]"
+            git push origin feat/songUpdate
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
