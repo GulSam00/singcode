@@ -65,6 +65,11 @@ console.log('getSongsKyNullDB : ', data.length);
 let index = 0;
 
 for (const song of data) {
+  // 테스트를 위해 100회 반복 후 종료시키기
+  if (index >= 100) {
+    break;
+  }
+
   const query = song.title + '-' + song.artist;
 
   if (failedSongs.has(query)) {
