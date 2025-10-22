@@ -18,7 +18,14 @@ import { isValidKYExistNumber } from './isValidKYExistNumber';
 // action 우분투 환경에서의 호환을 위해 추가
 const browser = await puppeteer.launch({
   headless: true,
-  args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage', // 리눅스 메모리 제한 대응
+    '--disable-gpu',
+    '--disable-infobars',
+    '--window-size=1920,1080',
+  ],
 });
 
 const page = await browser.newPage();
