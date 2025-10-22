@@ -18,6 +18,16 @@ import { isValidKYExistNumber } from './isValidKYExistNumber';
 // action 우분투 환경에서의 호환을 위해 추가
 const browser = await puppeteer.launch({
   headless: true,
+  executablePath: '/usr/bin/chromium-browser', // 또는 "/usr/bin/chromium"
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage', // 리눅스 메모리 제한 대응
+    '--disable-gpu',
+    '--disable-infobars',
+    '--single-process',
+    '--window-size=1920,1080',
+  ],
 });
 
 const page = await browser.newPage();
@@ -66,7 +76,6 @@ const data = await getSongsKyNullDB();
 const failedSongs = loadCrawlYoutubeFailedKYSongs();
 
 console.log('getSongsKyNullDB : ', data.length);
-console.log(failedSongs.size);
 let index = 0;
 
 for (const song of data) {
@@ -78,9 +87,10 @@ for (const song of data) {
   const query = song.title + '-' + song.artist;
 
   if (failedSongs.has(query)) {
-    console.log('failedSongs has : ', query);
     continue;
   }
+
+  console.log(song.title, ' - ', song.artist);
 
   let resultKyNum = null;
   try {
@@ -106,7 +116,6 @@ for (const song of data) {
   } else saveCrawlYoutubeFailedKYSongs(song.title, song.artist);
 
   index++;
-  console.log(query);
   console.log('scrapeSongNumber : ', index);
 }
 
