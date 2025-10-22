@@ -15,7 +15,12 @@ import { isValidKYExistNumber } from './isValidKYExistNumber';
 // youtube에서 KY 노래방 번호 크롤링
 // crawlYoutubeValid에서 진행하는 실제 사이트 검증도 포함
 
-const browser = await puppeteer.launch();
+// action 우분투 환경에서의 호환을 위해 추가
+const browser = await puppeteer.launch({
+  headless: true,
+  args: ['--no-sandbox', '--disable-setuid-sandbox'],
+});
+
 const page = await browser.newPage();
 
 const baseUrl = 'https://www.youtube.com/@KARAOKEKY/search';

@@ -15,6 +15,7 @@ dotenv.config();
 
 // action 우분투 환경에서의 호환을 위해 추가
 const browser = await puppeteer.launch({
+  headless: true,
   args: ['--no-sandbox', '--disable-setuid-sandbox'],
 });
 
