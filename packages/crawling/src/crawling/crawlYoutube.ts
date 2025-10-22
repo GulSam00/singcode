@@ -24,6 +24,7 @@ const browser = await puppeteer.launch({
     '--disable-dev-shm-usage', // 리눅스 메모리 제한 대응
     '--disable-gpu',
     '--disable-infobars',
+    '--single-process',
     '--window-size=1920,1080',
   ],
 });
