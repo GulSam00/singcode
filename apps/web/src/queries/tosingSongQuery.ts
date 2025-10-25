@@ -102,35 +102,6 @@ export function useDeleteToSingSongMutation() {
   });
 }
 
-// 여러 곡 부를 노래 삭제 - 미사용?
-
-// export function useDeleteToSingSongArrayMutation() {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: (songIds: string[]) => deleteToSingSongArray({ songIds }),
-//     onMutate: async (songIds: string[]) => {
-//       queryClient.cancelQueries({ queryKey: ['toSingSong'] });
-//       const prev = queryClient.getQueryData(['toSingSong']);
-//       queryClient.setQueryData(['toSingSong'], (old: ToSingSong[]) =>
-//         old.filter(song => !songIds.includes(song.songs.id)),
-//       );
-//       return { prev };
-//     },
-//     onError: (error, variables, context) => {
-//       console.error('error', error);
-//       alert(error.message ?? 'DELETE 실패');
-//       queryClient.setQueryData(['toSingSong'], context?.prev);
-//     },
-//     onSettled: () => {
-//       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
-//       queryClient.invalidateQueries({ queryKey: ['likeSong'] });
-//       queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
-//       queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
-//     },
-//   });
-// }
-
 // 🎵 부를 노래 순서 변경
 export function usePatchToSingSongMutation() {
   const queryClient = useQueryClient();
