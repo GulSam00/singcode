@@ -25,10 +25,10 @@ export default function useSearchSong() {
   const [saveModalType, setSaveModalType] = useState<SaveModalType>('');
   const [selectedSaveSong, setSelectedSaveSong] = useState<SearchSong | null>(null);
   // const { data: searchResults, isLoading } = useSearchSongQuery(query, searchType, isAuthenticated);
-  const { mutate: toggleToSing } = useToggleToSingMutation();
-  const { mutate: toggleLike } = useToggleLikeMutation();
-  const { mutate: postSong } = useSaveMutation();
-  const { mutate: moveSong } = useMoveSaveSongMutation();
+  const { mutate: toggleToSing, isPending: isToggleToSingPending } = useToggleToSingMutation();
+  const { mutate: toggleLike, isPending: isToggleLikePending } = useToggleLikeMutation();
+  const { mutate: postSong, isPending: isPostSongPending } = useSaveMutation();
+  const { mutate: moveSong, isPending: isMoveSongPending } = useMoveSaveSongMutation();
 
   const {
     data: searchResults,
@@ -56,12 +56,22 @@ export default function useSearchSong() {
       toast.error('로그인이 필요해요.');
       return;
     }
+
+    if (isToggleToSingPending) {
+      toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
     toggleToSing({ songId, method, query, searchType });
   };
 
   const handleToggleLike = async (songId: string, method: Method) => {
     if (!isAuthenticated) {
       toast.error('로그인이 필요해요.');
+      return;
+    }
+
+    if (isToggleLikePending) {
+      toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
       return;
     }
     toggleLike({ songId, method, query, searchType });
@@ -72,15 +82,25 @@ export default function useSearchSong() {
       toast.error('로그인이 필요해요.');
       return;
     }
+
     setSelectedSaveSong(song);
     setSaveModalType(method === 'POST' ? 'POST' : 'PATCH');
   };
 
   const postSaveSong = async (songId: string, folderName: string) => {
+    if (isPostSongPending) {
+      toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
     postSong({ songId, folderName, query, searchType });
   };
 
   const patchSaveSong = async (songId: string, folderId: string) => {
+    if (isMoveSongPending) {
+      toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+
     moveSong({ songIdArray: [songId], folderId });
   };
 
