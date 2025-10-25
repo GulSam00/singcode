@@ -16,18 +16,23 @@ import { isValidKYExistNumber } from './isValidKYExistNumber';
 // crawlYoutubeValid에서 진행하는 실제 사이트 검증도 포함
 
 // action 우분투 환경에서의 호환을 위해 추가
+// const browser = await puppeteer.launch({
+//   headless: true,
+//   executablePath: '/usr/bin/chromium-browser', // 또는 "/usr/bin/chromium"
+//   args: [
+//     '--no-sandbox',
+//     '--disable-setuid-sandbox',
+//     '--disable-dev-shm-usage', // 리눅스 메모리 제한 대응
+//     '--disable-gpu',
+//     '--disable-infobars',
+//     '--single-process',
+//     '--window-size=1920,1080',
+//   ],
+// });
+
 const browser = await puppeteer.launch({
   headless: true,
-  executablePath: '/usr/bin/chromium-browser', // 또는 "/usr/bin/chromium"
-  args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage', // 리눅스 메모리 제한 대응
-    '--disable-gpu',
-    '--disable-infobars',
-    '--single-process',
-    '--window-size=1920,1080',
-  ],
+  args: ['--no-sandbox', '--disable-setuid-sandbox'],
 });
 
 const page = await browser.newPage();
