@@ -34,12 +34,6 @@ jobs:
         working-directory: packages/crawling
         run: pnpm install
 
-      - name: Install puppeteer dependencies
-        working-directory: packages/crawling
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium
-
       - name: Create .env file
         working-directory: packages/crawling
         run: |
