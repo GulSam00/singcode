@@ -68,13 +68,9 @@ const failedSongs = loadCrawlYoutubeFailedKYSongs();
 console.log('getSongsKyNullDB : ', data.length);
 console.log(failedSongs.size);
 let index = 0;
+let successCount = 0;
 
 for (const song of data) {
-  // 테스트를 위해 100회 반복 후 종료시키기
-  if (index >= 100) {
-    break;
-  }
-
   const query = song.title + '-' + song.artist;
 
   if (failedSongs.has(query)) {
@@ -102,12 +98,14 @@ for (const song of data) {
       continue;
     } else {
       await updateData({ ...song, num_ky: resultKyNum });
+      successCount++;
     }
   } else saveCrawlYoutubeFailedKYSongs(song.title, song.artist);
 
   index++;
   console.log(query);
   console.log('scrapeSongNumber : ', index);
+  console.log('successCount : ', successCount);
 }
 
 browser.close();
