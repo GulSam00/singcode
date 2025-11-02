@@ -101,3 +101,15 @@ export async function getTransDictionariesDBByOriginal(
 
   return data[0] ?? null;
 }
+
+export async function getInvalidKYSongsDB(): Promise<
+  { id: string; title: string; artist: string }[]
+> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase.from('invalid_ky_songs').select('*');
+
+  if (error) throw error;
+
+  return data;
+}
