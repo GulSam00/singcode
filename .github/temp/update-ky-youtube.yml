@@ -1,5 +1,6 @@
 name: Update ky by Youtube
 
+# 실행 일시 중지
 on:
   schedule:
     - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
