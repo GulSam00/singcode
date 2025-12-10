@@ -9,9 +9,12 @@ import useAuthStore from '@/stores/useAuthStore';
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { checkAuth } = useAuthStore();
+  const { isAuthenticated, checkAuth } = useAuthStore();
 
   useEffect(() => {
+    if (isAuthenticated) {
+      return;
+    }
     const handleAuth = async () => {
       const allowPaths = ['/', '/popular', '/login', '/signup', '/recent', '/update-password'];
 
@@ -25,7 +28,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     };
 
     handleAuth();
-  }, [pathname, router, checkAuth]);
+  }, [pathname, router, checkAuth, isAuthenticated]);
 
   return <>{children}</>;
 }

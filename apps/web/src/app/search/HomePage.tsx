@@ -24,7 +24,7 @@ export default function SearchPage() {
     setSearch,
 
     searchResults,
-    isLoading,
+    isPendingSearch,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -42,6 +42,9 @@ export default function SearchPage() {
     postSaveSong,
     patchSaveSong,
   } = useSearchSong();
+
+  console.log('searchResults', searchResults);
+  console.log('isPendingSearch', isPendingSearch);
 
   const { ref, inView } = useInView();
 
@@ -128,7 +131,9 @@ export default function SearchPage() {
             />
           </div>
 
-          <Button onClick={handleSearchClick}>검색</Button>
+          <Button className="w-[60px]" onClick={handleSearchClick} disabled={isPendingSearch}>
+            {isPendingSearch ? <Loader2 className="h-4 w-4 animate-spin" /> : '검색'}
+          </Button>
         </div>
         {searchHistory.length > 0 && (
           <div className="m-2 flex gap-2 overflow-x-auto pt-2">
@@ -191,7 +196,7 @@ export default function SearchPage() {
           </div>
         )}
       </ScrollArea>
-      {isLoading && <StaticLoading />}
+
       {selectedSaveSong && (
         <AddFolderModal
           modalType={saveModalType}
