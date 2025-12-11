@@ -66,7 +66,7 @@ export default function LoginPage() {
       <div className="w-full space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold">로그인</h1>
-          <p className="text-muted-foreground text-sm">계정에 로그인하여 서비스를 이용하세요</p>
+          <p className="text-muted-foreground text-sm">로그인해서 더 많은 서비스를 이용하세요</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
