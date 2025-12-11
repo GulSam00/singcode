@@ -42,9 +42,6 @@ export default function SearchPage() {
     patchSaveSong,
   } = useSearchSong();
 
-  console.log('searchResults', searchResults);
-  console.log('isPendingSearch', isPendingSearch);
-
   const { ref, inView } = useInView();
 
   let searchSongs: SearchSong[] = [];
