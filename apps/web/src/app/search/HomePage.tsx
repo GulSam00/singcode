@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
 
-import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';

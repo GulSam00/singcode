@@ -11,7 +11,7 @@ const ALLOW_PATHS = ['/', '/popular', '/login', '/signup', '/recent', '/update-p
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, checkAuth } = useAuthStore();
+  const { checkAuth } = useAuthStore();
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const redirectingRef = useRef(false);
   const currentPathRef = useRef(pathname);
