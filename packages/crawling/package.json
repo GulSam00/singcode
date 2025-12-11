@@ -10,6 +10,7 @@
     "ky-open": "tsx src/findKYByOpen.ts",
     "ky-youtube": "tsx src/crawling/crawlYoutube.ts",
     "ky-youtube-ubuntu": "tsx src/crawling/crawlYoutubeUbuntu.ts",
+    "ky-valid": "tsx src/crawling/crawlYoutubeValid.ts",
     "ky-update": "pnpm run ky-youtube & pnpm run ky-valid",
     "trans": "tsx src/postTransDictionary.ts",
     "recent-tj": "tsx src/crawling/crawlRecentTJ.ts",

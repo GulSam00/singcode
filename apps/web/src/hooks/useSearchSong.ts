@@ -35,7 +35,7 @@ export default function useSearchSong() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
+    isLoading: isPendingSearch,
     isError,
   } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
@@ -113,7 +113,7 @@ export default function useSearchSong() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
+    isPendingSearch,
     isError,
 
     searchType,

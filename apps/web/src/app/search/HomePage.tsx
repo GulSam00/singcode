@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
 
-import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -24,7 +23,7 @@ export default function SearchPage() {
     setSearch,
 
     searchResults,
-    isLoading,
+    isPendingSearch,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -128,7 +127,9 @@ export default function SearchPage() {
             />
           </div>
 
-          <Button onClick={handleSearchClick}>검색</Button>
+          <Button className="w-[60px]" onClick={handleSearchClick} disabled={isPendingSearch}>
+            {isPendingSearch ? <Loader2 className="h-4 w-4 animate-spin" /> : '검색'}
+          </Button>
         </div>
         {searchHistory.length > 0 && (
           <div className="m-2 flex gap-2 overflow-x-auto pt-2">
@@ -178,7 +179,14 @@ export default function SearchPage() {
             )}
           </div>
         )}
-        {searchSongs.length === 0 && query && (
+        {isPendingSearch && (
+          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <p className="m-2">검색 중입니다...</p>
+          </div>
+        )}
+
+        {!isPendingSearch && searchSongs.length === 0 && query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
             <SearchX className="h-8 w-8 opacity-50" />
             <p className="m-2">검색 결과가 없습니다.</p>
@@ -191,7 +199,7 @@ export default function SearchPage() {
           </div>
         )}
       </ScrollArea>
-      {isLoading && <StaticLoading />}
+
       {selectedSaveSong && (
         <AddFolderModal
           modalType={saveModalType}

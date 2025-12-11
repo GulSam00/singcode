@@ -1,14 +1,11 @@
 import * as cheerio from 'cheerio';
 import puppeteer from 'puppeteer';
 
-import { getSongsKyNullDB } from '@/supabase/getDB';
+import { getInvalidKYSongsDB, getSongsKyNullDB } from '@/supabase/getDB';
+import { postInvalidKYSongsDB } from '@/supabase/postDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
 import { Song } from '@/types';
-import {
-  loadCrawlYoutubeFailedKYSongs,
-  saveCrawlYoutubeFailedKYSongs,
-  updateDataLog,
-} from '@/utils/logData';
+import { saveCrawlYoutubeFailedKYSongs, updateDataLog } from '@/utils/logData';
 
 import { isValidKYExistNumber } from './isValidKYExistNumber';
 
@@ -58,29 +55,25 @@ const extractKaraokeNumber = (title: string) => {
 
 const updateData = async (data: Song) => {
   const result = await updateSongsKyDB(data);
+  console.log(result);
   updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
   updateDataLog(result.failed, 'crawlYoutubeFailed.txt');
 };
 
+// failedSongs을 가져와서 실패한 노래를 건너뛰는 게 아니라 실패 시 update_date를 수정해 작업 순위를 뒤로 미룬다면?
 const data = await getSongsKyNullDB();
-const failedSongs = loadCrawlYoutubeFailedKYSongs();
+const failedSongs = await getInvalidKYSongsDB();
 
 console.log('getSongsKyNullDB : ', data.length);
-console.log(failedSongs.size);
+console.log('failedSongs : ', failedSongs.length);
 let index = 0;
+let successCount = 0;
 
 for (const song of data) {
-  // 테스트를 위해 100회 반복 후 종료시키기
-  if (index >= 100) {
-    break;
-  }
-
-  const query = song.title + '-' + song.artist;
-
-  if (failedSongs.has(query)) {
-    console.log('failedSongs has : ', query);
+  if (failedSongs.find(failedSong => failedSong.id === song.id)) {
     continue;
   }
+  const query = song.title + '-' + song.artist;
 
   let resultKyNum = null;
   try {
@@ -98,16 +91,19 @@ for (const song of data) {
     }
 
     if (!isValid) {
-      saveCrawlYoutubeFailedKYSongs(song.title, song.artist);
+      await postInvalidKYSongsDB(song);
       continue;
     } else {
       await updateData({ ...song, num_ky: resultKyNum });
+      console.log('update song : ', resultKyNum);
+      successCount++;
     }
-  } else saveCrawlYoutubeFailedKYSongs(song.title, song.artist);
+  } else await postInvalidKYSongsDB(song);
 
   index++;
   console.log(query);
   console.log('scrapeSongNumber : ', index);
+  console.log('successCount : ', successCount);
 }
 
 browser.close();
