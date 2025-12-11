@@ -183,7 +183,14 @@ export default function SearchPage() {
             )}
           </div>
         )}
-        {searchSongs.length === 0 && query && (
+        {isPendingSearch && (
+          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <p className="m-2">검색 중입니다...</p>
+          </div>
+        )}
+
+        {!isPendingSearch && searchSongs.length === 0 && query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
             <SearchX className="h-8 w-8 opacity-50" />
             <p className="m-2">검색 결과가 없습니다.</p>
