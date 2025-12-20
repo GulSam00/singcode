@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 import useAuthStore from '@/stores/useAuthStore';
 
-const ALLOW_PATHS = ['/', '/popular', '/login', '/signup', '/recent', '/update-password'];
+const ALLOW_PATHS = ['/', '/popular', '/login', '/signup', '/recent', '/update-password', '/chat'];
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
