@@ -2,13 +2,19 @@
 
 import { useState } from 'react';
 
-type ChatMessage = {
+import { ChatResponseType, safeParseJson } from '@/utils/safeParseJson';
+
+import { MusicCard } from './MusicCard';
+
+interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
-};
+}
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [recommendation, setRecommendation] = useState<ChatResponseType | null>(null);
+
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,27 +28,22 @@ export default function ChatPage() {
 
     setMessages(prev => [...prev, userMessage]);
     setInput('');
+    setRecommendation(null);
     setIsLoading(true);
 
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, userMessage],
-        }),
-      });
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [...messages, userMessage],
+      }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      setMessages(prev => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: data.content,
-        },
-      ]);
-    } catch {
+    const parsedData = safeParseJson(data.content);
+
+    if (!parsedData) {
       setMessages(prev => [
         ...prev,
         {
@@ -50,9 +51,17 @@ export default function ChatPage() {
           content: '오류가 발생했어요. 다시 시도해 주세요.',
         },
       ]);
-    } finally {
-      setIsLoading(false);
+    } else {
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: parsedData.intro,
+        },
+      ]);
     }
+    setRecommendation(parsedData);
+    setIsLoading(false);
   };
 
   return (
@@ -81,6 +90,19 @@ export default function ChatPage() {
             </div>
           ))}
 
+          {recommendation && (
+            <div className="mt-4 grid grid-cols-1 gap-3">
+              {recommendation.recommendations.map((music, idx) => (
+                <MusicCard
+                  key={idx}
+                  title={music.title}
+                  artist={music.artist}
+                  reason={music.reason}
+                />
+              ))}
+            </div>
+          )}
+
           {isLoading && (
             <div className="mr-auto max-w-[60%] rounded-lg bg-white px-4 py-2 text-sm text-gray-400 shadow">
               AI가 생각 중이에요…
@@ -95,6 +117,7 @@ export default function ChatPage() {
           value={input}
           onChange={e => setInput(e.target.value)}
           rows={2}
+          maxLength={100}
           placeholder="오늘 기분이나 듣고 싶은 분위기를 적어보세요"
           className="flex-1 resize-none rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
