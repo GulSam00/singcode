@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { ChatResponseType, safeParseJson } from '@/utils/safeParseJson';
 
-import { MusicCard } from './MusicCard';
+import { MusicCard } from '../search/MusicCard';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
