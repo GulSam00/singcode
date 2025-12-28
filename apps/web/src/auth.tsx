@@ -41,7 +41,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         // 항상 인증 체크 수행 (세션 만료 등 확인)
         const authResult = await checkAuth();
 
-        console.log('authResult', authResult);
         // 인증되지 않은 경우 리다이렉트
         if (!authResult) {
           redirectingRef.current = true;
