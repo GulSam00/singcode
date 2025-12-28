@@ -1,6 +1,6 @@
 'use client';
 
-import { Bot, Loader2, Send } from 'lucide-react';
+import { Bot, Loader2, RefreshCcw, Send } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -83,6 +83,12 @@ export function ChatBot() {
       e.preventDefault();
       sendMessage();
     }
+  };
+
+  const handleReset = () => {
+    setMessages([]);
+    setRecommendation(null);
+    setInput('');
   };
 
   return (
@@ -182,6 +188,11 @@ export function ChatBot() {
             ) : (
               <Send className="h-4 w-4" />
             )}
+          </Button>
+
+          {/* 초기화 버튼 */}
+          <Button variant="outline" size="icon" onClick={handleReset}>
+            <RefreshCcw className="h-4 w-4" />
           </Button>
         </div>
       </div>
