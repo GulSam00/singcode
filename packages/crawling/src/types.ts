@@ -7,7 +7,7 @@ export interface ArgList {
 }
 
 export interface Song {
-  id: string;
+  id?: string;
   title: string;
   artist: string;
   num_tj: string | null;

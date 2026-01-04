@@ -12,6 +12,8 @@ import useAuthStore from '@/stores/useAuthStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
+import { useSearchHistory } from './useSearchHistory';
+
 type SearchType = 'all' | 'title' | 'artist';
 
 type SaveModalType = '' | 'POST' | 'PATCH';
@@ -39,11 +41,15 @@ export default function useSearchSong() {
     isError,
   } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
+  const { addToHistory } = useSearchHistory();
+
   const handleSearch = () => {
-    const trimmedSearch = search.trim();
-    if (trimmedSearch) {
-      setQuery(trimmedSearch);
-      setSearch(trimmedSearch);
+    // trim, 공백 제거
+    const parsedSearch = search.trim().replace(/ /g, '');
+    if (parsedSearch) {
+      setQuery(parsedSearch);
+      setSearch(parsedSearch);
+      addToHistory(parsedSearch);
     }
   };
 
