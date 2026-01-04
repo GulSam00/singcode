@@ -13,7 +13,7 @@
     "NODE_ENV",
     "NEXT_PUBLIC_POSTHOG_KEY",
     "NEXT_PUBLIC_POSTHOG_HOST",
-    "NEXT_PUBLIC_OPENAI_API_KEY"
+    "OPENAI_API_KEY"
   ],
   "tasks": {
     "build": {
