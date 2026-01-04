@@ -27,8 +27,14 @@ export default function useSearchSong() {
   const [saveModalType, setSaveModalType] = useState<SaveModalType>('');
   const [selectedSaveSong, setSelectedSaveSong] = useState<SearchSong | null>(null);
   // const { data: searchResults, isLoading } = useSearchSongQuery(query, searchType, isAuthenticated);
-  const { mutate: toggleToSing, isPending: isToggleToSingPending } = useToggleToSingMutation();
-  const { mutate: toggleLike, isPending: isToggleLikePending } = useToggleLikeMutation();
+  const { mutate: toggleToSing, isPending: isToggleToSingPending } = useToggleToSingMutation(
+    query,
+    searchType,
+  );
+  const { mutate: toggleLike, isPending: isToggleLikePending } = useToggleLikeMutation(
+    query,
+    searchType,
+  );
   const { mutate: postSong, isPending: isPostSongPending } = useSaveMutation();
   const { mutate: moveSong, isPending: isMoveSongPending } = useMoveSaveSongMutation();
 
@@ -67,7 +73,7 @@ export default function useSearchSong() {
       toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
       return;
     }
-    toggleToSing({ songId, method, query, searchType });
+    toggleToSing({ songId, method });
   };
 
   const handleToggleLike = async (songId: string, method: Method) => {
@@ -80,7 +86,7 @@ export default function useSearchSong() {
       toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
       return;
     }
-    toggleLike({ songId, method, query, searchType });
+    toggleLike({ songId, method });
   };
 
   const handleToggleSave = async (song: SearchSong, method: Method) => {
