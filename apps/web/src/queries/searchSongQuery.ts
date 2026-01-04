@@ -21,6 +21,18 @@ interface NextPageParamType {
   pageParam: number[];
 }
 
+interface SongProps {
+  songId: string;
+  method: Method;
+}
+
+interface FolderProps {
+  songId: string;
+  folderName: string;
+  query: string;
+  searchType: string;
+}
+
 export const useInfiniteSearchSongQuery = (
   search: string,
   searchType: string,
@@ -73,30 +85,20 @@ export const useSearchSongQuery = (
   });
 };
 
-export const useToggleToSingMutation = () => {
+export const useToggleToSingMutation = (query: string, searchType: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     // 낙관적 업데이트 검증 코드
     // mutationFn: async ({ songId, method }: { songId: string; method: Method }) => {
     //   await new Promise(resolve => setTimeout(resolve, 2000));
-    mutationFn: async ({ songId, method }: { songId: string; method: Method }) => {
+    mutationFn: async ({ songId, method }: SongProps) => {
       if (method === 'POST') {
         return postToSingSong({ songId });
       } else {
         return deleteToSingSong({ songId });
       }
     },
-    onMutate: async ({
-      songId,
-      method,
-      query,
-      searchType,
-    }: {
-      songId: string;
-      method: Method;
-      query: string;
-      searchType: string;
-    }) => {
+    onMutate: async ({ songId, method }: SongProps) => {
       queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
       const isToSing = method === 'POST';
@@ -123,13 +125,13 @@ export const useToggleToSingMutation = () => {
       alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
-    onSettled: (data, error, context) => {
+    onSettled: () => {
       if (invalidateToSingTimeout) {
         clearTimeout(invalidateToSingTimeout);
       }
       invalidateToSingTimeout = setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['searchSong', context?.query, context?.searchType],
+          queryKey: ['searchSong', query, searchType],
         });
         queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
         queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
@@ -138,11 +140,11 @@ export const useToggleToSingMutation = () => {
   });
 };
 
-export const useToggleLikeMutation = () => {
+export const useToggleLikeMutation = (query: string, searchType: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ songId, method }: { songId: string; method: Method }) => {
+    mutationFn: ({ songId, method }: SongProps) => {
       if (method === 'POST') {
         return Promise.all([
           postLikeSong({ songId }),
@@ -155,17 +157,7 @@ export const useToggleLikeMutation = () => {
         ]);
       }
     },
-    onMutate: async ({
-      songId,
-      method,
-      query,
-      searchType,
-    }: {
-      songId: string;
-      method: Method;
-      query: string;
-      searchType: string;
-    }) => {
+    onMutate: async ({ songId, method }: SongProps) => {
       queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
       const isLike = method === 'POST';
@@ -191,13 +183,13 @@ export const useToggleLikeMutation = () => {
       alert(error.message ?? 'POST 실패');
       queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
-    onSettled: (data, error, context) => {
+    onSettled: () => {
       if (invalidateLikeTimeout) {
         clearTimeout(invalidateLikeTimeout);
       }
       invalidateLikeTimeout = setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['searchSong', context?.query, context?.searchType],
+          queryKey: ['searchSong', query, searchType],
         });
         queryClient.invalidateQueries({ queryKey: ['likeSong'] });
         queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
@@ -210,19 +202,10 @@ export const useSaveMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ songId, folderName }: { songId: string; folderName: string }) => {
+    mutationFn: ({ songId, folderName }: FolderProps) => {
       return postSaveSong({ songId, folderName });
     },
-    onMutate: async ({
-      songId,
-      query,
-      searchType,
-    }: {
-      songId: string;
-      folderName: string;
-      query: string;
-      searchType: string;
-    }) => {
+    onMutate: async ({ songId, query, searchType }: FolderProps) => {
       queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
 
