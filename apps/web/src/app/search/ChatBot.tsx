@@ -11,9 +11,21 @@ import { ChatResponseType, safeParseJson } from '@/utils/safeParseJson';
 
 import { MusicCard } from './MusicCard';
 
-export function ChatBot() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [recommendation, setRecommendation] = useState<ChatResponseType | null>(null);
+interface ChatBotProps {
+  messages: ChatMessage[];
+  recommendation: ChatResponseType | null;
+  setInputSearch: React.Dispatch<React.SetStateAction<string>>;
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  setRecommendation: React.Dispatch<React.SetStateAction<ChatResponseType | null>>;
+}
+
+export function ChatBot({
+  messages,
+  recommendation,
+  setInputSearch,
+  setMessages,
+  setRecommendation,
+}: ChatBotProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -91,6 +103,10 @@ export function ChatBot() {
     setInput('');
   };
 
+  const handleClickInputSearch = (value: string) => {
+    setInputSearch(value);
+  };
+
   return (
     <div className="flex h-full flex-col">
       {/* 메시지 영역 */}
@@ -143,6 +159,7 @@ export function ChatBot() {
                     title={music.title}
                     artist={music.artist}
                     reason={music.reason}
+                    onClick={handleClickInputSearch}
                   />
                 ))}
               </div>
