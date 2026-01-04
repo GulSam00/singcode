@@ -11,7 +11,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 import useSearchSong from '@/hooks/useSearchSong';
+import { type ChatMessage } from '@/lib/api/openAIchat';
 import { SearchSong } from '@/types/song';
+import { ChatResponseType } from '@/utils/safeParseJson';
 
 import AddFolderModal from './AddFolderModal';
 import { ChatBot } from './ChatBot';
@@ -19,6 +21,8 @@ import SearchResultCard from './SearchResultCard';
 
 export default function SearchPage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatRecommendation, setChatRecommendation] = useState<ChatResponseType | null>(null);
 
   const {
     search,
@@ -53,13 +57,12 @@ export default function SearchPage() {
     searchSongs = searchResults.pages.flatMap(page => page.data);
   }
 
-  const { searchHistory, addToHistory, removeFromHistory } = useSearchHistory();
+  const { searchHistory, removeFromHistory } = useSearchHistory();
 
   // 엔터 키 처리
   const handleKeyUp = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
-      addToHistory(search);
     }
   };
 
@@ -74,14 +77,12 @@ export default function SearchPage() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   const handleSearchClick = () => {
-    const trimmedSearch = search.trim();
-    if (!trimmedSearch) {
+    if (!search.trim()) {
       toast.error('검색어를 입력해주세요.');
       return;
     }
 
     handleSearch();
-    addToHistory(trimmedSearch);
   };
 
   const handleHistoryClick = (term: string) => {
@@ -240,7 +241,13 @@ export default function SearchPage() {
             </div>
             {/* 챗봇 컨텐츠 */}
             <div className="flex-1 overflow-hidden">
-              <ChatBot />
+              <ChatBot
+                messages={chatMessages}
+                recommendation={chatRecommendation}
+                setMessages={setChatMessages}
+                setRecommendation={setChatRecommendation}
+                setInputSearch={setSearch}
+              />
             </div>
           </div>
         )}
