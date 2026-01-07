@@ -11,7 +11,7 @@ import { isValidKYExistNumber } from './isValidKYExistNumber';
 
 // --- Constants ---
 const BASE_YOUTUBE_SEARCH_URL = 'https://www.youtube.com/@KARAOKEKY/search';
-
+const BATCH_LIMIT = 100; // ✅ 한 번 실행 시 최대 처리 개수 제한
 // --- Helper Functions ---
 
 /**
@@ -92,8 +92,11 @@ const main = async () => {
       getInvalidKYSongsDB(),
     ]);
 
-    console.log(`📊 처리 대상 곡: ${targetSongs.length}개`);
-    console.log(`🚫 이미 실패한 곡: ${failedSongs.length}개`);
+    const targetBatchSongs = targetSongs.slice(0, BATCH_LIMIT);
+
+    console.log(`📊 ky가 null인 대상 곡: ${targetSongs.length}개`);
+    console.log(`🎯 작업 대상 곡 개수: ${targetBatchSongs.length}개`);
+    console.log(`🚫 이미 실패한 곡(유효하지 않은 KY 노래방 번호): ${failedSongs.length}개`);
 
     // 3. 최적화: 실패한 곡 ID를 Set으로 변환 (검색 속도 O(1)로 향상)
     const failedSongIds = new Set(failedSongs.map(s => s.id));
@@ -102,7 +105,7 @@ const main = async () => {
     let successCount = 0;
 
     // 4. 순차 처리 루프
-    for (const song of targetSongs) {
+    for (const song of targetBatchSongs) {
       processedCount++;
       const query = `${song.title}-${song.artist}`;
 
@@ -111,13 +114,14 @@ const main = async () => {
         continue;
       }
 
-      console.log(`[${processedCount}/${targetSongs.length}] 검색 중: ${query}`);
+      console.log(`[${processedCount}/${targetBatchSongs.length}] 검색 중: ${query}`);
 
       // 4-2. 스크래핑 시도
       const resultKyNum = await scrapeSongNumber(page, query);
 
       if (!resultKyNum) {
         // 검색 결과 없음 -> 실패 처리
+        console.log(`❌ 검색 결과 없음: ${query}`);
         await handleFailure(song);
         continue;
       }
