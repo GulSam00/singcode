@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
+        with:
+          ref: feat/songUpdate
+          persist-credentials: false # 수동 인증으로 푸시 제어
 
       - name: Use Node.js 20
         uses: actions/setup-node@v4
@@ -41,3 +44,20 @@ jobs:
       - name: run update script - packages/crawling/crawlYoutube.ts
         working-directory: packages/crawling
         run: pnpm run ky-youtube
+
+      - name: Commit and push changes to feat/songUpdate branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout feat/songUpdate
+
+          git add .
+          if git diff --cached --quiet; then
+            echo "✅ No changes to commit"
+          else
+            git commit -m "chore: update crawled TJ song data [skip ci]"
+            git push origin feat/songUpdate
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -5,13 +5,12 @@ import { getInvalidKYSongsDB, getSongsKyNullDB } from '@/supabase/getDB';
 import { postInvalidKYSongsDB } from '@/supabase/postDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
 import { Song } from '@/types';
-import { updateDataLog } from '@/utils/logData';
 
 import { isValidKYExistNumber } from './isValidKYExistNumber';
 
 // --- Constants ---
 const BASE_YOUTUBE_SEARCH_URL = 'https://www.youtube.com/@KARAOKEKY/search';
-const BATCH_LIMIT = 100; // ✅ 한 번 실행 시 최대 처리 개수 제한
+const BATCH_LIMIT = 1000; // ✅ 한 번 실행 시 최대 처리 개수 제한
 // --- Helper Functions ---
 
 /**
@@ -60,7 +59,7 @@ const scrapeSongNumber = async (page: Page, query: string): Promise<string | nul
 const handleSuccess = async (song: Song, kyNum: string) => {
   const result = await updateSongsKyDB({ ...song, num_ky: kyNum });
   // console.log(`[Update Success] ${song.title}: ${kyNum}`, result); // 로그 너무 많으면 주석 처리
-  updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
+  // updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
 };
 
 /**
@@ -68,7 +67,7 @@ const handleSuccess = async (song: Song, kyNum: string) => {
  */
 const handleFailure = async (song: Song) => {
   await postInvalidKYSongsDB(song);
-  updateDataLog(false, 'crawlYoutubeFailed.txt'); // false 로그 처리 방식에 따라 수정 필요
+  // updateDataLog(false, 'crawlYoutubeFailed.txt'); // false 로그 처리 방식에 따라 수정 필요
 };
 
 // --- Main Logic ---
