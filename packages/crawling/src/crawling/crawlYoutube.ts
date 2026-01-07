@@ -5,13 +5,12 @@ import { getInvalidKYSongsDB, getSongsKyNullDB } from '@/supabase/getDB';
 import { postInvalidKYSongsDB } from '@/supabase/postDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
 import { Song } from '@/types';
-import { updateDataLog } from '@/utils/logData';
 
 import { isValidKYExistNumber } from './isValidKYExistNumber';
 
 // --- Constants ---
 const BASE_YOUTUBE_SEARCH_URL = 'https://www.youtube.com/@KARAOKEKY/search';
-
+const BATCH_LIMIT = 1000; // ✅ 한 번 실행 시 최대 처리 개수 제한
 // --- Helper Functions ---
 
 /**
@@ -60,7 +59,7 @@ const scrapeSongNumber = async (page: Page, query: string): Promise<string | nul
 const handleSuccess = async (song: Song, kyNum: string) => {
   const result = await updateSongsKyDB({ ...song, num_ky: kyNum });
   // console.log(`[Update Success] ${song.title}: ${kyNum}`, result); // 로그 너무 많으면 주석 처리
-  updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
+  // updateDataLog(result.success, 'crawlYoutubeSuccess.txt');
 };
 
 /**
@@ -68,7 +67,7 @@ const handleSuccess = async (song: Song, kyNum: string) => {
  */
 const handleFailure = async (song: Song) => {
   await postInvalidKYSongsDB(song);
-  updateDataLog(false, 'crawlYoutubeFailed.txt'); // false 로그 처리 방식에 따라 수정 필요
+  // updateDataLog(false, 'crawlYoutubeFailed.txt'); // false 로그 처리 방식에 따라 수정 필요
 };
 
 // --- Main Logic ---
@@ -92,8 +91,11 @@ const main = async () => {
       getInvalidKYSongsDB(),
     ]);
 
-    console.log(`📊 처리 대상 곡: ${targetSongs.length}개`);
-    console.log(`🚫 이미 실패한 곡: ${failedSongs.length}개`);
+    const targetBatchSongs = targetSongs.slice(0, BATCH_LIMIT);
+
+    console.log(`📊 ky가 null인 대상 곡: ${targetSongs.length}개`);
+    console.log(`🎯 작업 대상 곡 개수: ${targetBatchSongs.length}개`);
+    console.log(`🚫 이미 실패한 곡(유효하지 않은 KY 노래방 번호): ${failedSongs.length}개`);
 
     // 3. 최적화: 실패한 곡 ID를 Set으로 변환 (검색 속도 O(1)로 향상)
     const failedSongIds = new Set(failedSongs.map(s => s.id));
@@ -102,7 +104,7 @@ const main = async () => {
     let successCount = 0;
 
     // 4. 순차 처리 루프
-    for (const song of targetSongs) {
+    for (const song of targetBatchSongs) {
       processedCount++;
       const query = `${song.title}-${song.artist}`;
 
@@ -111,13 +113,14 @@ const main = async () => {
         continue;
       }
 
-      console.log(`[${processedCount}/${targetSongs.length}] 검색 중: ${query}`);
+      console.log(`[${processedCount}/${targetBatchSongs.length}] 검색 중: ${query}`);
 
       // 4-2. 스크래핑 시도
       const resultKyNum = await scrapeSongNumber(page, query);
 
       if (!resultKyNum) {
         // 검색 결과 없음 -> 실패 처리
+        console.log(`❌ 검색 결과 없음: ${query}`);
         await handleFailure(song);
         continue;
       }
