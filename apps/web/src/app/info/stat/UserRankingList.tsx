@@ -11,7 +11,7 @@ interface RankingListProps {
 }
 export default function UserRankingList({ title, items, className }: RankingListProps) {
   return (
-    // <Card className={cn('w-[360px]', className)}>
+    // <Card className={cn('max-w-md w-full', className)}>
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">{title}</CardTitle>

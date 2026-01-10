@@ -83,7 +83,7 @@ export default function Sidebar() {
           <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="fixed right-1/2 w-[360px] translate-x-1/2 p-4">
+      <SheetContent className="fixed right-1/2 w-full max-w-md translate-x-1/2 p-4">
         <SheetHeader>
           <SheetTitle>메뉴</SheetTitle>
         </SheetHeader>

@@ -21,7 +21,7 @@ export default function Footer() {
   const navPath = pathname.split('/')[1];
 
   return (
-    <footer className="bg-background fixed bottom-0 flex h-8 w-[360px] justify-between">
+    <footer className="bg-background fixed bottom-0 flex h-8 w-full max-w-md justify-between">
       {navigation.map(item => {
         const isActive = '/' + navPath === item.href;
         return (
