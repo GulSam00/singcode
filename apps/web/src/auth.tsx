@@ -30,10 +30,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       return;
     }
 
-    // if (isPublicPath) {
-    //   setIsAuthChecked(true);
-    //   return;
-    // }
+    if (isPublicPath) {
+       setIsAuthChecked(true);
+       return;
+     }
 
     // 이미 인증된 상태면 바로 통과 (하지만 체크는 수행)
     const handleAuth = async () => {
