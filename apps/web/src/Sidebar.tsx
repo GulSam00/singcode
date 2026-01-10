@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, Menu, Pencil, User } from 'lucide-react';
+import { Check, LogOut, Menu, Pencil, User, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -83,7 +83,7 @@ export default function Sidebar() {
           <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="fixed right-1/2 w-full max-w-md translate-x-1/2 p-4">
+      <SheetContent className="fixed right-1/2 w-full max-w-md translate-x-1/2 p-4 sm:max-w-md">
         <SheetHeader>
           <SheetTitle>메뉴</SheetTitle>
         </SheetHeader>
@@ -105,10 +105,10 @@ export default function Sidebar() {
                     />
                     <div className="absolute right-0 flex items-center gap-1">
                       <Button size="icon" onClick={handleEditSave}>
-                        저장
+                        <Check className="h-4 w-4" />
                       </Button>
-                      <Button size="icon" variant="ghost" onClick={handleEditCancel}>
-                        취소
+                      <Button size="icon" variant="outline" onClick={handleEditCancel}>
+                        <X className="h-4 w-4" />
                       </Button>
                     </div>
                   </>

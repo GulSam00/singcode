@@ -32,6 +32,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     }
 
     // 공개 경로는 바로 통과
+    // auth 이슈 확실히 고쳐야함
     if (isPublicPath) {
       setIsAuthChecked(true);
       return;

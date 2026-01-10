@@ -15,7 +15,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-background sticky top-0 z-50 flex h-16 w-full max-w-md items-center justify-between p-2 shadow-sm">
+    <header className="bg-background sticky top-0 z-50 flex h-16 w-full max-w-md items-center justify-between p-4 shadow-sm">
       <div
         className="font-barcode hover:text-accent cursor-pointer text-5xl transition-colors"
         onClick={() => router.push('/')}
