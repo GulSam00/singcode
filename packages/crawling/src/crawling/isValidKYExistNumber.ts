@@ -44,11 +44,7 @@ export const isValidKYExistNumber = async (
     return true;
   }
 
-  console.log(number, ' - 금영 노래방과 일치하지 않는 번호와 데이터');
-  console.log('title : ');
-  console.log('검색 쿼리 : ', parsedTitle, ' | ', '번호 결과 : ', titleResult);
-  console.log('artist : ');
-  console.log('검색 쿼리 : ', parsedArtist, ' | ', '번호 결과 : ', artistResult);
-
+  console.log('검색 쿼리 : ', parsedTitle, ' - ', parsedArtist);
+  console.log('KY 노래방 검색 결과 : ', titleResult, ' - ', artistResult);
   return false;
 };
