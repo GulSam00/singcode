@@ -101,9 +101,10 @@ export default function RootLayout({
 
   const AppContent = () => (
     <ErrorWrapper>
-      <div className="relative flex h-full w-[360px] flex-col">
+      <div className="relative flex h-full w-full max-w-md flex-col">
         <Header />
-        {children}
+        <div className="h-full p-4 shadow-sm">{children}</div>
+
         <Footer />
       </div>
 
@@ -129,7 +130,7 @@ export default function RootLayout({
         <MonitoringScripts />
         <meta name="naver-site-verification" content="85db7c6070d2f26d08e995cdab5a70caac28e80d" />
       </head>
-      <body className="m-0 flex h-[100dvh] w-full justify-center">
+      <body className="m-0 flex h-dvh w-full justify-center">
         <QueryProvider>
           <AuthProvider>
             <AppContent />

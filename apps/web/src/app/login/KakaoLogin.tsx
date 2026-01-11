@@ -15,7 +15,7 @@ export default function KakaoLogin() {
 
   return (
     <div
-      className="relative flex h-[50px] w-full cursor-pointer items-center justify-center"
+      className="relative flex h-[60px] w-full cursor-pointer items-center justify-center"
       onClick={handleKakaoLogin}
     >
       <Image src="/kakao_login.svg" alt="kakao" fill />

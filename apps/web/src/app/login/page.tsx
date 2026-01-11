@@ -2,7 +2,7 @@
 
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -23,6 +23,8 @@ export default function LoginPage() {
   const { isLoading, isAuthenticated, login, checkAuth } = useAuthStore();
   const { openMessage } = useModalStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isAlert = searchParams.get('alert');
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,7 +61,17 @@ export default function LoginPage() {
       });
       router.push('/');
     }
-  }, [isAuthenticated, router]);
+
+    if (isAlert) {
+      setTimeout(() => {
+        toast.error('로그인이 필요해요.', {
+          description: '로그인 후 이용해주세요.',
+          duration: 5000,
+        });
+        router.replace('/login', { scroll: false });
+      }, 0);
+    }
+  }, [router, isAuthenticated, isAlert]);
 
   return (
     <div className="bg-background flex h-dvh flex-col justify-center px-4">
