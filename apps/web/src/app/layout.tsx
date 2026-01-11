@@ -11,7 +11,7 @@ import AuthProvider from '@/auth';
 // import LoadingOverlay from '@/components/LoadingOverlay';
 import MessageDialog from '@/components/messageDialog';
 import '@/globals.css';
-import { PostHogProvider } from '@/posthog';
+// import { PostHogProvider } from '@/posthog';
 import QueryProvider from '@/query';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -133,13 +133,14 @@ export default function RootLayout({
       <body className="m-0 flex h-dvh w-full justify-center">
         <QueryProvider>
           <AuthProvider>
-            {isDevelopment ? (
+            <AppContent />
+            {/* {isDevelopment ? (
               <AppContent />
             ) : (
               <PostHogProvider>
                 <AppContent />
               </PostHogProvider>
-            )}
+            )} */}
           </AuthProvider>
         </QueryProvider>
       </body>
