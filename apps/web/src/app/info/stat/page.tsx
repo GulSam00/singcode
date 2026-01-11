@@ -16,9 +16,9 @@ export default function StatsPage() {
   const { userStat, isLoading } = useUserStat();
 
   return (
-    <div className="bg-background h-full">
+    <div className="bg-background flex h-full flex-col gap-4">
       {isLoading && <StaticLoading />}
-      <div className="mb-6 flex items-center px-2 py-4 shadow-sm">
+      <div className="flex items-center">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>

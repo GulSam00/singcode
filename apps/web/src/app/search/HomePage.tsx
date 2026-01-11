@@ -102,15 +102,10 @@ export default function SearchPage() {
 
   return (
     <div className="bg-background">
-      <div className="bg-background p-2 pt-4 shadow-sm">
-        <h1 className="mb-3 text-2xl font-bold">노래 검색</h1>
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold">노래 검색</h1>
 
-        <Tabs
-          defaultValue="all"
-          value={searchType}
-          onValueChange={handleSearchTypeChange}
-          className="mb-3"
-        >
+        <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="all">전체</TabsTrigger>
             <TabsTrigger value="title">제목</TabsTrigger>
@@ -136,7 +131,7 @@ export default function SearchPage() {
           </Button>
         </div>
         {searchHistory.length > 0 && (
-          <div className="m-2 flex gap-2 overflow-x-auto pt-2">
+          <div className="flex gap-2 overflow-x-auto pb-4">
             {searchHistory.map((term, index) => (
               <div
                 key={index}
@@ -164,7 +159,7 @@ export default function SearchPage() {
       </div>
       <ScrollArea className="h-[calc(100vh-24rem)]">
         {searchSongs.length > 0 && (
-          <div className="flex w-full max-w-md flex-col gap-3 px-2 py-4">
+          <div className="flex w-full max-w-md flex-col gap-4 py-4">
             {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}

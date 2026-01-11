@@ -5,7 +5,7 @@ export default function RecentSongCard({ song }: { song: Song }) {
   const { title, artist, num_tj, num_ky } = song;
 
   return (
-    <div className="w-full gap-4 px-3">
+    <div className="w-full gap-4">
       {/* 노래 정보 */}
       <div className="flex flex-col">
         {/* 제목 및 가수 */}

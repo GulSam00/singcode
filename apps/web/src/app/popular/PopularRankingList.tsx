@@ -10,7 +10,7 @@ interface RankingListProps {
 }
 export default function PopularRankingList({ title, songStats }: RankingListProps) {
   return (
-    // <Card className={cn('w-[360px]')}>
+    // <Card className={cn('max-w-md w-full')}>
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">{title}</CardTitle>

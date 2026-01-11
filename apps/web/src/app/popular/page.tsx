@@ -19,15 +19,15 @@ export default function PopularPage() {
   if (isLoading || isPending || !data) return <StaticLoading />;
 
   return (
-    <div className="bg-background h-full px-2 py-4 shadow-sm">
-      <h1 className="mb-6 text-2xl font-bold">인기 노래</h1>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">인기 노래</h1>
 
       <Tabs
         value={typeTab}
         onValueChange={value => setTypeTab(value as CountType)}
-        className="w-full"
+        className="flex w-full flex-col gap-4"
       >
-        <TabsList className="mb-6 grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="sing_count">부른 곡</TabsTrigger>
           <TabsTrigger value="like_count">좋아요</TabsTrigger>
         </TabsList>
@@ -47,19 +47,19 @@ export default function PopularPage() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="all" className="mt-4">
+            <TabsContent value="all" className="py-4">
               <ScrollArea className="h-[calc(100vh-20rem)]">
                 <PopularRankingList title="전체 부른 곡 순위" songStats={data} />
               </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="year" className="mt-4">
+            <TabsContent value="year" className="py-4">
               <ScrollArea className="h-[calc(100vh-20rem)]">
                 <PopularRankingList title="연간 부른 곡 순위" songStats={data} />
               </ScrollArea>
             </TabsContent>
 
-            <TabsContent value="month" className="mt-4">
+            <TabsContent value="month" className="py-4">
               <ScrollArea className="h-[calc(100vh-20rem)]">
                 <PopularRankingList title="월간 부른 곡 순위" songStats={data} />
               </ScrollArea>
