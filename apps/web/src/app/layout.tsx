@@ -103,7 +103,8 @@ export default function RootLayout({
     <ErrorWrapper>
       <div className="relative flex h-full w-full max-w-md flex-col">
         <Header />
-        {children}
+        <div className="h-full p-4 shadow-sm">{children}</div>
+
         <Footer />
       </div>
 
