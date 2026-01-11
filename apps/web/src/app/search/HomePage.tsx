@@ -131,7 +131,7 @@ export default function SearchPage() {
           </Button>
         </div>
         {searchHistory.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto">
+          <div className="flex gap-2 overflow-x-auto pb-4">
             {searchHistory.map((term, index) => (
               <div
                 key={index}
@@ -159,7 +159,7 @@ export default function SearchPage() {
       </div>
       <ScrollArea className="h-[calc(100vh-24rem)]">
         {searchSongs.length > 0 && (
-          <div className="flex w-full max-w-md flex-col gap-3 px-2 py-4">
+          <div className="flex w-full max-w-md flex-col gap-4 py-4">
             {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}

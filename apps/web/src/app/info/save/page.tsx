@@ -135,7 +135,7 @@ export default function Page() {
 
   return (
     <div className="bg-background h-full">
-      <div className="flex items-center px-2 py-4 shadow-sm">
+      <div className="flex items-center">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -191,8 +191,8 @@ export default function Page() {
         )}
       </div>
 
-      <ScrollArea className="h-[calc(100vh-16rem)] p-2">
-        <div className="space-y-2">
+      <ScrollArea className="h-[calc(100vh-16rem)]">
+        <div className="space-y-4">
           {saveSongFolderList &&
             saveSongFolderList.map((folder, index) => (
               <FolderCard
