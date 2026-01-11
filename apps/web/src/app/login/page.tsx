@@ -63,7 +63,6 @@ export default function LoginPage() {
     }
 
     if (isAlert) {
-      console.log('isAlert ', isAlert);
       setTimeout(() => {
         toast.error('로그인이 필요해요.', {
           description: '로그인 후 이용해주세요.',
