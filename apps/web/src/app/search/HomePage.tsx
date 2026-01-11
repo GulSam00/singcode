@@ -210,9 +210,9 @@ export default function SearchPage() {
       )}
 
       {/* 챗봇 위젯 */}
-      <div className="fixed right-10 bottom-10 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
+      <div className="fixed right-4 bottom-10 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
         {isChatOpen && (
-          <div className="bg-background animate-in slide-in-from-bottom-5 fade-in-0 flex h-[500px] w-[calc(100vw-2rem)] max-w-[400px] flex-col rounded-lg border shadow-2xl duration-300 sm:h-[600px]">
+          <div className="bg-background animate-in slide-in-from-bottom-5 fade-in-0 flex h-[500px] w-[calc(100vw-4rem)] max-w-[400px] flex-col rounded-lg border shadow-2xl duration-300 sm:h-[600px]">
             {/* 헤더 */}
             <div className="flex items-center justify-between border-b p-3 sm:p-4">
               <div className="flex items-center gap-2">
