@@ -59,7 +59,7 @@ export default function LibraryPage() {
       </div>
 
       {recentAddSongs && recentAddSongs.length > 0 ? (
-        <div className="flex flex-col">
+        <div className="flex h-[calc(100vh-16rem)] flex-col overflow-y-auto">
           {recentAddSongs.map(song => (
             <RecentSongCard key={song.id} song={song} />
           ))}

@@ -9,7 +9,7 @@ interface RankingListProps {
 
   className?: string;
 }
-export default function UserRankingList({ title, items, className }: RankingListProps) {
+export default function UserRankingList({ title, items }: RankingListProps) {
   return (
     // <Card className={cn('max-w-md w-full', className)}>
     <Card>
