@@ -45,19 +45,7 @@ export async function getSongsKyNullDB(max: number = 50000) {
 
   if (error) throw error;
 
-  console.log('data', data.length);
-
   return data;
-
-  // const isKYNULLData: Song[] = [];
-
-  // data.forEach((song) => {
-  //   if (song.num_ky === null) {
-  //     isKYNULLData.push(song);
-  //   }
-  // });
-
-  // return isKYNULLData.slice(0, max);
 }
 
 export async function getSongsKyNotNullDB(max: number = 50000) {

@@ -17,10 +17,9 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const currentPathRef = useRef(pathname);
 
   useEffect(() => {
-    const isPublicPath = ALLOW_PATHS.includes(pathname);
-
     // 경로가 변경되면 체크 상태 리셋
     if (currentPathRef.current !== pathname) {
+      console.log(currentPathRef.current);
       setIsAuthChecked(false);
       redirectingRef.current = false;
       currentPathRef.current = pathname;
@@ -34,9 +33,9 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     // 공개 경로는 바로 통과
     // auth 이슈 확실히 고쳐야함
     if (isPublicPath) {
-      setIsAuthChecked(true);
-      return;
-    }
+       setIsAuthChecked(true);
+       return;
+     }
 
     // 이미 인증된 상태면 바로 통과 (하지만 체크는 수행)
     const handleAuth = async () => {
