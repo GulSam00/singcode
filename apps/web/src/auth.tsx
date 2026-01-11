@@ -1,8 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { useEffect, useState } from 'react';
 
 import useAuthStore from '@/stores/useAuthStore';
 
@@ -13,29 +12,9 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const pathname = usePathname();
   const { checkAuth } = useAuthStore();
   const [isAuthChecked, setIsAuthChecked] = useState(false);
-  const redirectingRef = useRef(false);
-  const currentPathRef = useRef(pathname);
 
   useEffect(() => {
-    // 경로가 변경되면 체크 상태 리셋
-    if (currentPathRef.current !== pathname) {
-      console.log(currentPathRef.current);
-      setIsAuthChecked(false);
-      redirectingRef.current = false;
-      currentPathRef.current = pathname;
-    }
-
-    // 이미 리다이렉트 중이면 무시
-    if (redirectingRef.current) {
-      return;
-    }
-
-    // 공개 경로는 바로 통과
-    // auth 이슈 확실히 고쳐야함
-    if (isPublicPath) {
-       setIsAuthChecked(true);
-       return;
-     }
+    const isPublicPath = ALLOW_PATHS.includes(pathname);
 
     // 이미 인증된 상태면 바로 통과 (하지만 체크는 수행)
     const handleAuth = async () => {
@@ -44,20 +23,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         const authResult = await checkAuth();
 
         // 인증되지 않은 경우 리다이렉트
-        if (!authResult) {
-          redirectingRef.current = true;
-          toast.error('로그인이 필요해요.', {
-            description: '로그인 후 이용해주세요.',
-          });
+        if (authResult) {
+          setIsAuthChecked(true);
+        } else if (!isPublicPath) {
           // replace를 사용하여 히스토리에 남기지 않고 강제 리다이렉트
-          router.replace('/login');
+          router.replace('/login?alert=login');
           return;
         }
-
-        setIsAuthChecked(true);
       } catch (error) {
         console.error('인증 체크 오류:', error);
-        redirectingRef.current = true;
         router.replace('/login');
       }
     };
