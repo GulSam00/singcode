@@ -164,7 +164,7 @@ export default function SearchPage() {
       </div>
       <ScrollArea className="h-[calc(100vh-24rem)]">
         {searchSongs.length > 0 && (
-          <div className="flex w-[360px] flex-col gap-3 px-2 py-4">
+          <div className="flex w-full max-w-md flex-col gap-3 px-2 py-4">
             {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
@@ -215,7 +215,7 @@ export default function SearchPage() {
       )}
 
       {/* 챗봇 위젯 */}
-      <div className="fixed right-4 bottom-4 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
+      <div className="fixed right-10 bottom-10 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
         {isChatOpen && (
           <div className="bg-background animate-in slide-in-from-bottom-5 fade-in-0 flex h-[500px] w-[calc(100vw-2rem)] max-w-[400px] flex-col rounded-lg border shadow-2xl duration-300 sm:h-[600px]">
             {/* 헤더 */}
