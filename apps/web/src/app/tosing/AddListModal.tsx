@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import useAddListModal from '@/hooks/useAddSongList';
+import useAddSongList, { type TabType } from '@/hooks/useAddSongList';
 import { useLikeSongQuery } from '@/queries/likeSongQuery';
 // import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
 import { useSaveSongQuery } from '@/queries/saveSongQuery';
@@ -30,7 +30,7 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
     handleToggleSelect,
     handleConfirmAdd,
     totalSelectedCount,
-  } = useAddListModal();
+  } = useAddSongList();
 
   const { data: likedSongs, isLoading: isLoadingLikedSongs } = useLikeSongQuery();
 
@@ -53,14 +53,13 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
         <div className="flex flex-1 flex-col overflow-hidden px-6">
           <Tabs
             value={activeTab}
-            onValueChange={setActiveTab}
+            onValueChange={value => setActiveTab(value as TabType)}
             className="flex w-full flex-1 flex-col overflow-y-auto"
           >
             <div>
-              <TabsList className="my-2 grid w-full grid-cols-3">
+              <TabsList className="my-2 grid w-full grid-cols-2">
                 <TabsTrigger value="like">좋아요</TabsTrigger>
                 <TabsTrigger value="save">재생목록</TabsTrigger>
-                <TabsTrigger value="recent">최근곡</TabsTrigger>
               </TabsList>
             </div>
 
