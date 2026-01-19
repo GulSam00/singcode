@@ -30,7 +30,6 @@ export default function SongList() {
     handleDelete,
     handleMoveToTop,
     handleMoveToBottom,
-    handleSung,
   } = useSong();
 
   const sensors = useSensors(
@@ -69,7 +68,6 @@ export default function SongList() {
             <SongCard
               key={item.songs.id}
               song={item.songs}
-              onSung={() => handleSung(item.songs.id)}
               onDelete={() => handleDelete(item.songs.id)}
               onMoveToTop={() => handleMoveToTop(item.songs.id, index)}
               onMoveToBottom={() => handleMoveToBottom(item.songs.id, index)}
