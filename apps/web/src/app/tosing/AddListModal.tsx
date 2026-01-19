@@ -12,7 +12,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useAddListModal from '@/hooks/useAddSongList';
 import { useLikeSongQuery } from '@/queries/likeSongQuery';
-import { useRecentSingLogQuery } from '@/queries/recentSingLogQuery';
 // import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
 import { useSaveSongQuery } from '@/queries/saveSongQuery';
 
@@ -34,11 +33,10 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
   } = useAddListModal();
 
   const { data: likedSongs, isLoading: isLoadingLikedSongs } = useLikeSongQuery();
-  const { data: recentSongs, isLoading: isLoadingRecentSongs } = useRecentSingLogQuery();
 
   const { data: saveSongFolders, isLoading: isLoadingSongFolders } = useSaveSongQuery();
 
-  const isLoading = isLoadingLikedSongs || isLoadingRecentSongs || isLoadingSongFolders;
+  const isLoading = isLoadingLikedSongs || isLoadingSongFolders;
 
   const handleClickConfirm = () => {
     handleConfirmAdd();
@@ -87,7 +85,7 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
                     saveSongFolders.map((songFolder, index) => {
                       return (
                         <div key={songFolder.folder_id + index}>
-                          <div className="flex justify-between border-b-1 text-lg font-bold">
+                          <div className="flex justify-between border-b text-lg font-bold">
                             <h3>{songFolder.folder_name}</h3>
 
                             <span className="text-muted-foreground text-sm">
@@ -105,20 +103,6 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
                         </div>
                       );
                     })}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="recent" className="mt-0 h-full">
-                <div className="h-full pr-2">
-                  {recentSongs &&
-                    recentSongs.map((song, index) => (
-                      <ModalSongItem
-                        key={song.song_id + 'recent' + index}
-                        song={song}
-                        isSelected={songSelected.includes(song.song_id)}
-                        onToggleSelect={handleToggleSelect}
-                      />
-                    ))}
                 </div>
               </TabsContent>
             </div>
