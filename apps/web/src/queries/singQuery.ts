@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { postSingLog } from '@/lib/api/singLog';
-import { postTotalStat } from '@/lib/api/totalStat';
 
 let invalidateTimeout: NodeJS.Timeout | null = null;
 
@@ -10,10 +9,7 @@ export const usePostSingMutation = () => {
 
   return useMutation({
     mutationFn: (songId: string) => {
-      return Promise.all([
-        postSingLog(songId),
-        postTotalStat({ songId, countType: 'sing_count', isMinus: false }),
-      ]);
+      return postSingLog(songId);
     },
     onSuccess: () => {
       if (invalidateTimeout) {
