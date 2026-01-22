@@ -9,7 +9,7 @@ import Footer from '@/Footer';
 import Header from '@/Header';
 import AuthProvider from '@/auth';
 // import LoadingOverlay from '@/components/LoadingOverlay';
-import MessageDialog from '@/components/messageDialog';
+import MessageDialog from '@/components/MessageDialog';
 import '@/globals.css';
 // import { PostHogProvider } from '@/posthog';
 import QueryProvider from '@/query';
