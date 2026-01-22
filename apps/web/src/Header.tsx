@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
 import Sidebar from './Sidebar';
-import CheckIn from './components/CheckIn';
+import CheckInModal from './components/CheckInModal';
 
 export default function Header() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export default function Header() {
         SINGCODE
       </div>
       <div className="flex items-center gap-2">
-        <CheckIn />
+        <CheckInModal />
 
         <Button variant="outline" className="justify-start" onClick={() => handleClickContact()}>
           <MessageCircleQuestion className="h-4 w-4" />

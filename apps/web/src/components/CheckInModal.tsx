@@ -3,6 +3,8 @@
 import { CalendarCheck, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import AnimatedContent from '@/components/reactBits/AnimatedContent';
+import SplitText from '@/components/reactBits/SplitText';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -13,7 +15,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-export default function CheckIn() {
+export default function CheckInModal() {
   const [open, setOpen] = useState(false);
   const [serverTime, setServerTime] = useState<Date | null>(null);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
@@ -89,7 +91,9 @@ export default function CheckIn() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>출석체크</DialogTitle>
-          <DialogDescription>매일 출석하고 보상을 받아가세요!</DialogDescription>
+          <DialogDescription>
+            <SplitText text="매일 출석하고 보상을 받아가세요!" />
+          </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col items-center justify-center gap-4 p-6">
           <div className="bg-muted rounded-full p-4 text-4xl font-bold">
