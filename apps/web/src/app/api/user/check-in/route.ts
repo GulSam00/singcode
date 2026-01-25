@@ -38,14 +38,23 @@ export async function PATCH(): Promise<NextResponse<ApiResponse<void>>> {
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
-    const { error } = await supabase
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('point')
+      .eq('id', userId)
+      .single();
+
+    if (userError) throw userError;
+
+    const { error: updateError } = await supabase
       .from('users')
       .update({
         last_check_in: new Date(),
+        point: user.point + 10,
       })
       .eq('id', userId);
 
-    if (error) throw error;
+    if (updateError) throw updateError;
 
     return NextResponse.json({ success: true });
   } catch (error) {

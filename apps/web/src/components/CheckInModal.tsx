@@ -45,8 +45,6 @@ export default function CheckInModal() {
     }
   }, [open, isLoading, userCheckIn]);
 
-  const isAvailable = serverTime && !isCheckedIn;
-
   const handleClickCheckIn = () => {
     patchUserCheckIn();
     setIsCheckedIn(true);
@@ -60,7 +58,7 @@ export default function CheckInModal() {
           출석체크
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="h-[400px] sm:max-w-md">
         <DialogHeader>
           <DialogTitle>출석체크</DialogTitle>
           <DialogDescription>
@@ -68,48 +66,36 @@ export default function CheckInModal() {
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col items-center justify-center gap-4 p-6">
-          {isAvailable ? (
-            <ActionAnimationFlow
-              animationData={Checked}
-              clickCallback={handleClickCheckIn}
-              // 1. 대기 화면 (trigger 함수를 받아서 버튼에 연결)
-              idleView={trigger => (
-                <div className="text-center">
-                  <h2 className="mb-4 text-lg font-bold">오늘 출석하시겠어요?</h2>
-                  <button
-                    onClick={trigger} // 👈 여기서 애니메이션 시작!
-                    className="rounded-full bg-blue-500 px-6 py-2 text-white active:scale-95"
-                  >
-                    출석하기
-                  </button>
-                </div>
-              )}
-              // 2. 결과 화면
-              doneView={
-                <div className="w-full space-y-2 text-center">
-                  <p className="text-muted-foreground">다음 출석까지 남은 시간</p>
-                  <div className="text-primary flex items-center justify-center gap-2 font-mono text-3xl font-bold">
-                    <Clock className="h-6 w-6" />
-                    {timeRemaining || 'Loading...'}
-                  </div>
-                  <Button disabled className="w-full" variant="secondary">
-                    출석 완료
-                  </Button>
-                </div>
-              }
-            />
-          ) : (
-            <div className="w-full space-y-2 text-center">
-              <p className="text-muted-foreground">다음 출석까지 남은 시간</p>
-              <div className="text-primary flex items-center justify-center gap-2 font-mono text-3xl font-bold">
-                <Clock className="h-6 w-6" />
-                {timeRemaining || 'Loading...'}
+          <ActionAnimationFlow
+            animationData={Checked}
+            clickCallback={handleClickCheckIn}
+            initalStatus={isCheckedIn ? 'DONE' : 'IDLE'}
+            // 1. 대기 화면 (trigger 함수를 받아서 버튼에 연결)
+            idleView={trigger => (
+              <div className="text-center">
+                <h2 className="mb-4 text-lg font-bold">오늘 출석하시겠어요?</h2>
+                <Button
+                  onClick={trigger} // 👈 여기서 애니메이션 시작!
+                  className="rounded-full bg-blue-500 px-6 py-2 text-white active:scale-95"
+                >
+                  출석하기
+                </Button>
               </div>
-              <Button disabled className="w-full" variant="secondary">
-                출석 완료
-              </Button>
-            </div>
-          )}
+            )}
+            // 2. 결과 화면
+            doneView={
+              <div className="w-full space-y-2 text-center">
+                <p className="text-muted-foreground">다음 출석까지 남은 시간</p>
+                <div className="text-primary flex items-center justify-center gap-2 font-mono text-3xl font-bold">
+                  <Clock className="h-6 w-6" />
+                  {timeRemaining || '00:00:00'}
+                </div>
+                <Button disabled className="w-full" variant="secondary">
+                  출석 완료
+                </Button>
+              </div>
+            }
+          />
         </div>
       </DialogContent>
     </Dialog>

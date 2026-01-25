@@ -13,6 +13,7 @@ interface ActionAnimationFlowProps {
   // (옵션) 애니메이션 크기 등 스타일
   className?: string;
   clickCallback?: () => void;
+  initalStatus?: 'IDLE' | 'PLAYING' | 'DONE';
 }
 
 export default function ActionAnimationFlow({
@@ -21,8 +22,9 @@ export default function ActionAnimationFlow({
   doneView,
   className = 'w-64 h-64',
   clickCallback,
+  initalStatus = 'IDLE',
 }: ActionAnimationFlowProps) {
-  const [status, setStatus] = useState<'IDLE' | 'PLAYING' | 'DONE'>('IDLE');
+  const [status, setStatus] = useState<'IDLE' | 'PLAYING' | 'DONE'>(initalStatus);
 
   const trigger = () => {
     if (clickCallback) {
