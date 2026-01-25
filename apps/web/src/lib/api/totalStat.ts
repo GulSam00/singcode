@@ -10,17 +10,3 @@ export async function getTotalStat(countType: CountType, periodType: PeriodType)
   );
   return response.data;
 }
-
-// export async function postTotalStat(body: { songId: string; countType: string; isMinus: boolean }) {
-//   const response = await instance.post<ApiResponse<void>>('/total-stats', body);
-//   return response.data;
-// }
-
-// export async function postTotalStatArray(body: {
-//   songIds: string[];
-//   countType: string;
-//   isMinus: boolean;
-// }) {
-//   const response = await instance.post<ApiResponse<void>>('/total-stats/array', body);
-//   return response.data;
-// }

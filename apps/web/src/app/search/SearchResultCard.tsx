@@ -19,7 +19,7 @@ export default function SearchResultCard({
   onToggleLike,
   onClickSave,
 }: IProps) {
-  const { title, artist, num_tj, num_ky, isToSing, isLike, isSave } = song;
+  const { id, title, artist, num_tj, num_ky, isToSing, isLike, isSave } = song;
 
   return (
     <Card className="relative overflow-hidden">
@@ -42,7 +42,7 @@ export default function SearchResultCard({
               </DialogTrigger>
 
               <DialogContent>
-                <ThumbUpModal />
+                <ThumbUpModal songId={id} />
               </DialogContent>
             </Dialog>
           </div>

@@ -12,3 +12,8 @@ export async function patchUserCheckIn() {
   const response = await instance.patch<ApiResponse<void>>('/user/check-in');
   return response.data;
 }
+
+export async function patchUserSpendPoint(body: { point: number }) {
+  const response = await instance.patch<ApiResponse<void>>('/user/spend-point', body);
+  return response.data;
+}

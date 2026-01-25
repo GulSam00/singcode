@@ -8,19 +8,36 @@ import SplitText from '@/components/reactBits/SplitText';
 import { Button } from '@/components/ui/button';
 import { DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
+import { useSongThumbMutation } from '@/queries/songThumbQuery';
 import { useUserQuery } from '@/queries/userQuery';
+import { usePatchSetPointMutation } from '@/queries/userQuery';
 
-export default function ThumbUpModal() {
+import FallingIcons from './FallingIcons';
+
+interface ThumbUpModalProps {
+  songId: string;
+}
+
+export default function ThumbUpModal({ songId }: ThumbUpModalProps) {
   const [value, setValue] = useState([0]);
 
   const { data: user } = useUserQuery();
 
+  const { mutate: patchSongThumb, isPending: isPendingSongThumb } = useSongThumbMutation();
+  const { mutate: patchSetPoint, isPending: isPendingSetPoint } = usePatchSetPointMutation();
+
   const point = user?.point ?? 0;
 
-  console.log(value);
+  const handleClickThumb = () => {
+    patchSongThumb({ songId, point: value[0] });
+    patchSetPoint({ point: point - value[0] });
+    setValue([0]);
+  };
+
+  const isPending = isPendingSongThumb || isPendingSetPoint;
 
   return (
-    <div className="flex h-[400px] flex-col sm:max-w-md">
+    <div className="flex flex-col sm:max-w-md">
       <DialogHeader>
         <DialogTitle>노래 추천하기</DialogTitle>
         <DialogDescription>
@@ -37,9 +54,19 @@ export default function ThumbUpModal() {
           max={point}
           step={1}
           showValueLabel
-          className="cursor-pointer"
+          className="z-50 cursor-pointer"
         />
-        <Button className="mt-8 w-full font-bold" size="lg" disabled={value[0] === 0}>
+
+        <div className="relative w-full">
+          <FallingIcons count={value[0]} />
+        </div>
+
+        <Button
+          className="mt-8 w-full font-bold"
+          size="lg"
+          onClick={handleClickThumb}
+          disabled={value[0] === 0 || isPending}
+        >
           추천하기 ({value[0]}P)
         </Button>
       </div>
