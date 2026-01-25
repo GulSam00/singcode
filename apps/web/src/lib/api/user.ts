@@ -1,9 +1,10 @@
 import { ApiResponse } from '@/types/apiRoute';
+import { User } from '@/types/user';
 
 import { instance } from './client';
 
-export async function getUserCheckIn() {
-  const response = await instance.get<ApiResponse<Date>>('/user/check-in');
+export async function getUser() {
+  const response = await instance.get<ApiResponse<User>>('/user');
   return response.data;
 }
 

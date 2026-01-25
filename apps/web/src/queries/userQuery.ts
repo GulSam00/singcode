@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { getUserCheckIn, patchUserCheckIn } from '@/lib/api/userCheckIn';
+import { getUser, patchUserCheckIn } from '@/lib/api/user';
 
-export const useUserCheckInQuery = () => {
+export const useUserQuery = () => {
   return useQuery({
     queryKey: ['userCheckIn'],
     queryFn: async () => {
-      const response = await getUserCheckIn();
+      const response = await getUser();
 
       if (!response.success) {
         return null;

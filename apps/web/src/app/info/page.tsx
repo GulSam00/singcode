@@ -1,9 +1,11 @@
 'use client';
 
-import { BarChart2, Folder, Heart } from 'lucide-react';
+import { CircleDollarSign, Folder, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import CountUp from '@/components/reactBits/CountUp';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useUserQuery } from '@/queries/userQuery';
 
 const menuItems = [
   {
@@ -24,10 +26,16 @@ const menuItems = [
 export default function LibraryPage() {
   const router = useRouter();
 
+  const { data: user } = useUserQuery();
   return (
     <div className="bg-background h-full space-y-4">
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">내 정보</h1>
+
+        <div className="flex items-center gap-1 text-2xl font-bold text-yellow-400">
+          <CircleDollarSign />
+          <CountUp to={user?.point ?? 0} duration={0.2} />
+        </div>
       </div>
 
       {menuItems.map(item => (

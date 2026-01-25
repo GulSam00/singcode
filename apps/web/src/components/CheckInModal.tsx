@@ -16,7 +16,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useCheckInTimer } from '@/hooks/useCheckInTimer';
-import { usePatchUserCheckInMutation, useUserCheckInQuery } from '@/queries/userCheckInQuery';
+import { usePatchUserCheckInMutation, useUserQuery } from '@/queries/userQuery';
 
 import ActionAnimationFlow from './ActionAnimationFlow';
 
@@ -26,24 +26,28 @@ export default function CheckInModal() {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const timeRemaining = useCheckInTimer(serverTime);
 
-  const { data: userCheckIn, isLoading } = useUserCheckInQuery();
+  const { data: user, isLoading } = useUserQuery();
   const { mutate: patchUserCheckIn } = usePatchUserCheckInMutation();
 
   // Mock fetching server time
   useEffect(() => {
-    if (open && !isLoading && userCheckIn) {
-      setServerTime(userCheckIn);
+    if (open && !isLoading && user) {
+      if (!user.last_check_in) {
+        return;
+      }
+
+      setServerTime(user.last_check_in);
 
       const todayDate = new Date();
 
-      const lastCheckIn = format(new Date(userCheckIn), 'yyyy-MM-dd');
+      const lastCheckIn = format(new Date(user.last_check_in), 'yyyy-MM-dd');
       const today = format(todayDate, 'yyyy-MM-dd');
 
       if (lastCheckIn >= today) {
         setIsCheckedIn(true);
       }
     }
-  }, [open, isLoading, userCheckIn]);
+  }, [open, isLoading, user]);
 
   const handleClickCheckIn = () => {
     patchUserCheckIn();
