@@ -42,6 +42,7 @@
     "clsx": "^2.1.1",
     "gsap": "^3.14.2",
     "immer": "^10.1.1",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.483.0",
     "next": "15.2.7",
     "next-sitemap": "^4.2.3",

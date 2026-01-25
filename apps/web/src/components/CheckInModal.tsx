@@ -3,7 +3,7 @@
 import { CalendarCheck, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import AnimatedContent from '@/components/reactBits/AnimatedContent';
+import Checked from '@/assets/lotties/Checked.json';
 import SplitText from '@/components/reactBits/SplitText';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,12 +14,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useCheckInTimer } from '@/hooks/useCheckInTimer';
+
+import ActionAnimationFlow from './ActionAnimationFlow';
 
 export default function CheckInModal() {
   const [open, setOpen] = useState(false);
   const [serverTime, setServerTime] = useState<Date | null>(null);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState<string>('');
+  const timeRemaining = useCheckInTimer(serverTime);
 
   // Mock fetching server time
   useEffect(() => {
@@ -32,43 +35,6 @@ export default function CheckInModal() {
       // For now, we rely on local state or we can reset it if needed.
     }
   }, [open]);
-
-  // Timer logic
-  useEffect(() => {
-    if (!serverTime) return;
-
-    const timer = setInterval(() => {
-      const now = new Date(); // Current local time as proxy for server time in loop
-
-      // Calculate KST times
-      // UTC+9
-      const kstOffset = 9 * 60 * 60 * 1000;
-      const nowKst = new Date(now.getTime() + now.getTimezoneOffset() * 60000 + kstOffset);
-
-      // Tomorrow 00:00 KST
-      const tomorrowKst = new Date(nowKst);
-      tomorrowKst.setDate(tomorrowKst.getDate() + 1);
-      tomorrowKst.setHours(0, 0, 0, 0);
-
-      const diff = tomorrowKst.getTime() - nowKst.getTime();
-
-      if (diff < 0) {
-        // Should ideally reset
-        setTimeRemaining('00:00:00');
-        // setIsCheckedIn(false); // Reset for new day?
-      } else {
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        setTimeRemaining(
-          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
-        );
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [serverTime, isCheckedIn]);
 
   // Check condition: Time > Today 00:00 KST
   // We effectively check if "now" is valid.
@@ -92,21 +58,39 @@ export default function CheckInModal() {
         <DialogHeader>
           <DialogTitle>출석체크</DialogTitle>
           <DialogDescription>
-            <SplitText text="매일 출석하고 보상을 받아가세요!" />
+            <SplitText text="매일 출석하고 보상을 받아가세요!" tag="span" />
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col items-center justify-center gap-4 p-6">
-          <div className="bg-muted rounded-full p-4 text-4xl font-bold">
-            {isCheckedIn ? '✅' : '👋'}
-          </div>
-
           {isAvailable ? (
-            <div className="space-y-2 text-center">
-              <p className="text-lg font-medium">출석체크가 가능합니다!</p>
-              <Button onClick={handleCheckIn} className="h-12 w-full text-lg">
-                출석하기
-              </Button>
-            </div>
+            <ActionAnimationFlow
+              animationData={Checked}
+              // 1. 대기 화면 (trigger 함수를 받아서 버튼에 연결)
+              idleView={trigger => (
+                <div className="text-center">
+                  <h2 className="mb-4 text-lg font-bold">오늘 출석하시겠어요?</h2>
+                  <button
+                    onClick={trigger} // 👈 여기서 애니메이션 시작!
+                    className="rounded-full bg-blue-500 px-6 py-2 text-white active:scale-95"
+                  >
+                    출석하기
+                  </button>
+                </div>
+              )}
+              // 2. 결과 화면
+              doneView={
+                <div className="w-full space-y-2 text-center">
+                  <p className="text-muted-foreground">다음 출석까지 남은 시간</p>
+                  <div className="text-primary flex items-center justify-center gap-2 font-mono text-3xl font-bold">
+                    <Clock className="h-6 w-6" />
+                    {timeRemaining || 'Loading...'}
+                  </div>
+                  <Button disabled className="w-full" variant="secondary">
+                    출석 완료
+                  </Button>
+                </div>
+              }
+            />
           ) : (
             <div className="w-full space-y-2 text-center">
               <p className="text-muted-foreground">다음 출석까지 남은 시간</p>
