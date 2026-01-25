@@ -14,7 +14,5 @@ export const useTotalStatQuery = (countType: CountType, periodType: PeriodType) 
       }
       return response.data || [];
     },
-    staleTime: 1000 * 60,
-    gcTime: 1000 * 60,
   });
 };

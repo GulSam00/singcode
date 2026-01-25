@@ -1,5 +1,6 @@
 'use client';
 
+import { format } from 'date-fns';
 import { CalendarCheck, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -15,6 +16,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useCheckInTimer } from '@/hooks/useCheckInTimer';
+import { usePatchUserCheckInMutation, useUserCheckInQuery } from '@/queries/userCheckInQuery';
 
 import ActionAnimationFlow from './ActionAnimationFlow';
 
@@ -24,25 +26,29 @@ export default function CheckInModal() {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const timeRemaining = useCheckInTimer(serverTime);
 
+  const { data: userCheckIn, isLoading } = useUserCheckInQuery();
+  const { mutate: patchUserCheckIn } = usePatchUserCheckInMutation();
+
   // Mock fetching server time
   useEffect(() => {
-    if (open) {
-      // Simulate API call
-      const now = new Date();
-      setServerTime(now);
+    if (open && !isLoading && userCheckIn) {
+      setServerTime(userCheckIn);
 
-      // In a real app, we would also fetch "isCheckedIn" status here.
-      // For now, we rely on local state or we can reset it if needed.
+      const todayDate = new Date();
+
+      const lastCheckIn = format(new Date(userCheckIn), 'yyyy-MM-dd');
+      const today = format(todayDate, 'yyyy-MM-dd');
+
+      if (lastCheckIn >= today) {
+        setIsCheckedIn(true);
+      }
     }
-  }, [open]);
+  }, [open, isLoading, userCheckIn]);
 
-  // Check condition: Time > Today 00:00 KST
-  // We effectively check if "now" is valid.
-  // We combine this with "isCheckedIn" to toggle the UI state as requested ("Otherwise... timer").
   const isAvailable = serverTime && !isCheckedIn;
 
-  const handleCheckIn = () => {
-    // Mock API call to check in
+  const handleClickCheckIn = () => {
+    patchUserCheckIn();
     setIsCheckedIn(true);
   };
 
@@ -65,6 +71,7 @@ export default function CheckInModal() {
           {isAvailable ? (
             <ActionAnimationFlow
               animationData={Checked}
+              clickCallback={handleClickCheckIn}
               // 1. 대기 화면 (trigger 함수를 받아서 버튼에 연결)
               idleView={trigger => (
                 <div className="text-center">

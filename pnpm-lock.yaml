@@ -214,6 +214,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       gsap:
         specifier: ^3.14.2
         version: 3.14.2

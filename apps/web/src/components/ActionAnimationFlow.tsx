@@ -12,6 +12,7 @@ interface ActionAnimationFlowProps {
   doneView: ReactNode;
   // (옵션) 애니메이션 크기 등 스타일
   className?: string;
+  clickCallback?: () => void;
 }
 
 export default function ActionAnimationFlow({
@@ -19,10 +20,16 @@ export default function ActionAnimationFlow({
   idleView,
   doneView,
   className = 'w-64 h-64',
+  clickCallback,
 }: ActionAnimationFlowProps) {
   const [status, setStatus] = useState<'IDLE' | 'PLAYING' | 'DONE'>('IDLE');
 
-  const trigger = () => setStatus('PLAYING');
+  const trigger = () => {
+    if (clickCallback) {
+      clickCallback();
+    }
+    setStatus('PLAYING');
+  };
   const handleComplete = () => setStatus('DONE');
 
   return (

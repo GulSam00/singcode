@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
 import { ApiResponse } from '@/types/apiRoute';
-import { PersonalSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 export async function GET(): Promise<NextResponse<ApiResponse<Date>>> {
@@ -34,16 +33,17 @@ export async function GET(): Promise<NextResponse<ApiResponse<Date>>> {
   }
 }
 
-export async function POST(request: Request): Promise<NextResponse<ApiResponse<void>>> {
+export async function PATCH(): Promise<NextResponse<ApiResponse<void>>> {
   try {
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
-    const { songId } = await request.json();
-
     const { error } = await supabase
-      .from('like_activities')
-      .insert({ user_id: userId, song_id: songId });
+      .from('users')
+      .update({
+        last_check_in: new Date(),
+      })
+      .eq('id', userId);
 
     if (error) throw error;
 
