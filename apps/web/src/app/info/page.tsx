@@ -4,6 +4,7 @@ import { CircleDollarSign, Folder, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import CountUp from '@/components/reactBits/CountUp';
+import GradientText from '@/components/reactBits/GradientText';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useUserQuery } from '@/queries/userQuery';
 
@@ -27,14 +28,19 @@ export default function LibraryPage() {
   const router = useRouter();
 
   const { data: user } = useUserQuery();
+
+  const point = user?.point ?? 0;
   return (
     <div className="bg-background h-full space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">내 정보</h1>
 
-        <div className="flex items-center gap-1 text-2xl font-bold text-yellow-400">
+        <div className="flex items-center gap-1 text-2xl font-bold text-[#FFC300]">
           <CircleDollarSign />
-          <CountUp to={user?.point ?? 0} duration={0.2} />
+
+          <GradientText className="text-2xl" colors={['#FFC300', '#FFF59D', '#FB8C00']}>
+            <CountUp to={point} duration={0.2} />
+          </GradientText>
         </div>
       </div>
 

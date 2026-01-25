@@ -1,20 +1,12 @@
 'use client';
 
 import { format } from 'date-fns';
-import { CalendarCheck, Clock } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Clock } from 'lucide-react';
 
 import Checked from '@/assets/lotties/Checked.json';
 import SplitText from '@/components/reactBits/SplitText';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useCheckInTimer } from '@/hooks/useCheckInTimer';
 import { usePatchUserCheckInMutation, useUserQuery } from '@/queries/userQuery';
 
@@ -32,10 +24,6 @@ export default function CheckInModal({ lastCheckIn }: CheckInModalProps) {
   const today = format(new Date(), 'yyyy-MM-dd');
 
   const parseLastCheckIn = format(new Date(lastCheckIn), 'yyyy-MM-dd');
-
-  // Mock fetching server time
-
-  console.log('parseLastCheckIn', parseLastCheckIn);
 
   const handleClickCheckIn = () => {
     patchUserCheckIn();
