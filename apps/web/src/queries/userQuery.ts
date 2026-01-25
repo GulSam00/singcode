@@ -11,7 +11,7 @@ export const useUserQuery = () => {
       if (!response.success) {
         return null;
       }
-      return response.data || null;
+      return response.data;
     },
   });
 };
