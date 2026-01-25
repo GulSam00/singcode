@@ -1,10 +1,10 @@
 import { ApiResponse } from '@/types/apiRoute';
-import { Song } from '@/types/song';
+import { ThumbUpSong } from '@/types/song';
 
 import { instance } from './client';
 
 export async function getSongThumbList() {
-  const response = await instance.get<ApiResponse<Song[]>>('/songs/thumb-up');
+  const response = await instance.get<ApiResponse<ThumbUpSong[]>>('/songs/thumb-up');
   return response.data;
 }
 

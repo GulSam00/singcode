@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import createClient from '@/lib/supabase/server';
 import { ApiResponse } from '@/types/apiRoute';
 import { Song } from '@/types/song';
-import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 interface ThumbUpSong extends Song {
   total_thumb: number;
