@@ -11,7 +11,7 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
           queries: {
             refetchOnWindowFocus: false,
             retry: 1,
-            throwOnError: true,
+            // throwOnError: true,
             staleTime: 1000 * 60 * 5,
             gcTime: 1000 * 60 * 5,
           },
