@@ -13,6 +13,7 @@ export const useUserQuery = () => {
       }
       return response.data;
     },
+
     staleTime: 1000 * 60,
   });
 };
