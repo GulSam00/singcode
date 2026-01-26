@@ -1,9 +1,12 @@
 import { Heart, ListPlus, ListRestart, MinusCircle, PlusCircle, ThumbsUp } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 import ThumbUpModal from '@/components/ThumbUpModal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import useAuthStore from '@/stores/useAuthStore';
 import { SearchSong } from '@/types/song';
 
 interface IProps {
@@ -20,6 +23,17 @@ export default function SearchResultCard({
   onClickSave,
 }: IProps) {
   const { id, title, artist, num_tj, num_ky, isToSing, isLike, isSave } = song;
+  const { isAuthenticated } = useAuthStore();
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickThumbsUp = () => {
+    if (!isAuthenticated) {
+      toast.error('로그인이 필요해요.');
+      return;
+    }
+    setOpen(true);
+  };
 
   return (
     <Card className="relative overflow-hidden">
@@ -34,15 +48,18 @@ export default function SearchResultCard({
               <p className="text-muted-foreground truncate text-sm">{artist}</p>
             </div>
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label={'추천하기'}>
-                  <ThumbsUp />
-                </Button>
-              </DialogTrigger>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={'추천하기'}
+                onClick={handleClickThumbsUp}
+              >
+                <ThumbsUp />
+              </Button>
 
               <DialogContent>
-                <ThumbUpModal songId={id} />
+                <ThumbUpModal songId={id} handleClose={() => setOpen(false)} />
               </DialogContent>
             </Dialog>
           </div>

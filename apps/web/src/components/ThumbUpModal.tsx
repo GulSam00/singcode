@@ -16,22 +16,24 @@ import FallingIcons from './FallingIcons';
 
 interface ThumbUpModalProps {
   songId: string;
+  handleClose: () => void;
 }
 
-export default function ThumbUpModal({ songId }: ThumbUpModalProps) {
+export default function ThumbUpModal({ songId, handleClose }: ThumbUpModalProps) {
   const [value, setValue] = useState([0]);
 
   const { data: user } = useUserQuery();
 
+  const point = user?.point ?? 0;
+
   const { mutate: patchSongThumb, isPending: isPendingSongThumb } = useSongThumbMutation();
   const { mutate: patchSetPoint, isPending: isPendingSetPoint } = usePatchSetPointMutation();
-
-  const point = user?.point ?? 0;
 
   const handleClickThumb = () => {
     patchSongThumb({ songId, point: value[0] });
     patchSetPoint({ point: point - value[0] });
-    setValue([0]);
+
+    handleClose();
   };
 
   const isPending = isPendingSongThumb || isPendingSetPoint;

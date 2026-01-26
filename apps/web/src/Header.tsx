@@ -16,13 +16,18 @@ export default function Header() {
 
   const router = useRouter();
 
-  const { data: user, isLoading: isLoadingUser } = useUserQuery();
+  const { data: user, isLoading, error } = useUserQuery();
 
   const lastCheckIn = user?.last_check_in ?? new Date();
 
   const handleClickContact = () => {
     const contactUrl = 'https://walla.my/survey/K79c5bC6alDqc1qiaaES';
     window.open(contactUrl, '_blank');
+  };
+
+  const handleNavigateLogin = () => {
+    router.push('/login');
+    setOpen(false);
   };
 
   return (
@@ -36,14 +41,18 @@ export default function Header() {
       <div className="flex items-center gap-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="justify-start" disabled={isLoadingUser}>
+            <Button variant="outline" className="justify-start" disabled={isLoading}>
               <CalendarCheck className="h-4 w-4" />
               출석체크
             </Button>
           </DialogTrigger>
 
           <DialogContent>
-            <CheckInModal lastCheckIn={lastCheckIn} />
+            <CheckInModal
+              lastCheckIn={lastCheckIn}
+              isLogin={!!user}
+              handleNavigateLogin={handleNavigateLogin}
+            />
           </DialogContent>
         </Dialog>
 
