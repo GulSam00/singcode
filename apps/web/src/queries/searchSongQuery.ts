@@ -4,7 +4,6 @@ import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
 import { postSaveSong } from '@/lib/api/saveSong';
 import { getInfiniteSearchSong, getSearchSong } from '@/lib/api/searchSong';
 import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
-import { postTotalStat } from '@/lib/api/totalStat';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
@@ -146,15 +145,9 @@ export const useToggleLikeMutation = (query: string, searchType: string) => {
   return useMutation({
     mutationFn: ({ songId, method }: SongProps) => {
       if (method === 'POST') {
-        return Promise.all([
-          postLikeSong({ songId }),
-          postTotalStat({ songId, countType: 'like_count', isMinus: false }),
-        ]);
+        return postLikeSong({ songId });
       } else {
-        return Promise.all([
-          deleteLikeSong({ songId }),
-          postTotalStat({ songId, countType: 'like_count', isMinus: true }),
-        ]);
+        return deleteLikeSong({ songId });
       }
     },
     onMutate: async ({ songId, method }: SongProps) => {

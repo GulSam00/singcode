@@ -4,8 +4,10 @@ import { useState } from 'react';
 
 import { usePostToSingSongMutation } from '@/queries/tosingSongQuery';
 
+export type TabType = 'like' | 'save';
+
 export default function useAddSongList() {
-  const [activeTab, setActiveTab] = useState('liked');
+  const [activeTab, setActiveTab] = useState<TabType>('like');
 
   const [songSelected, setSongSelected] = useState<string[]>([]);
 

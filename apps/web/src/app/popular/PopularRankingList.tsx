@@ -2,11 +2,11 @@ import { Construction } from 'lucide-react';
 
 import RankingItem from '@/components/RankingItem';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { SongStat } from '@/types/totalStat';
+import { ThumbUpSong } from '@/types/song';
 
 interface RankingListProps {
   title: string;
-  songStats: SongStat[];
+  songStats: ThumbUpSong[];
 }
 export default function PopularRankingList({ title, songStats }: RankingListProps) {
   return (
@@ -19,7 +19,7 @@ export default function PopularRankingList({ title, songStats }: RankingListProp
         <div className="space-y-0">
           {songStats.length > 0 ? (
             songStats.map((item, index) => (
-              <RankingItem key={index} {...item} rank={index + 1} value={item.value} />
+              <RankingItem key={index} {...item} rank={index + 1} value={item.total_thumb} />
             ))
           ) : (
             <div className="flex h-64 flex-col items-center justify-center gap-4">

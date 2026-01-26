@@ -1,14 +1,25 @@
 'use client';
 
-import { MessageCircleQuestion } from 'lucide-react';
+import { CalendarCheck, MessageCircleQuestion } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { useUserQuery } from '@/queries/userQuery';
 
 import Sidebar from './Sidebar';
+import CheckInModal from './components/CheckInModal';
 
 export default function Header() {
+  const [open, setOpen] = useState(false);
+
   const router = useRouter();
+
+  const { data: user, isLoading: isLoadingUser } = useUserQuery();
+
+  const lastCheckIn = user?.last_check_in ?? new Date();
+
   const handleClickContact = () => {
     const contactUrl = 'https://walla.my/survey/K79c5bC6alDqc1qiaaES';
     window.open(contactUrl, '_blank');
@@ -23,6 +34,19 @@ export default function Header() {
         SINGCODE
       </div>
       <div className="flex items-center gap-2">
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="justify-start" disabled={isLoadingUser}>
+              <CalendarCheck className="h-4 w-4" />
+              출석체크
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent>
+            <CheckInModal lastCheckIn={lastCheckIn} />
+          </DialogContent>
+        </Dialog>
+
         <Button variant="outline" className="justify-start" onClick={() => handleClickContact()}>
           <MessageCircleQuestion className="h-4 w-4" />
           문의

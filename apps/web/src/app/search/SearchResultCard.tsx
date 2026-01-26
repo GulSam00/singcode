@@ -1,7 +1,9 @@
-import { Heart, ListPlus, ListRestart, MinusCircle, PlusCircle } from 'lucide-react';
+import { Heart, ListPlus, ListRestart, MinusCircle, PlusCircle, ThumbsUp } from 'lucide-react';
 
+import ThumbUpModal from '@/components/ThumbUpModal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { SearchSong } from '@/types/song';
 
 interface IProps {
@@ -17,7 +19,7 @@ export default function SearchResultCard({
   onToggleLike,
   onClickSave,
 }: IProps) {
-  const { title, artist, num_tj, num_ky, isToSing, isLike, isSave } = song;
+  const { id, title, artist, num_tj, num_ky, isToSing, isLike, isSave } = song;
 
   return (
     <Card className="relative overflow-hidden">
@@ -26,9 +28,23 @@ export default function SearchResultCard({
         {/* 노래 정보 */}
         <div className="mb-8 flex flex-col">
           {/* 제목 및 가수 */}
-          <div className="mb-1">
-            <h3 className="truncate text-base font-medium">{title}</h3>
-            <p className="text-muted-foreground truncate text-sm">{artist}</p>
+          <div className="mb-1 flex justify-between pr-6">
+            <div>
+              <h3 className="truncate text-base font-medium">{title}</h3>
+              <p className="text-muted-foreground truncate text-sm">{artist}</p>
+            </div>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label={'추천하기'}>
+                  <ThumbsUp />
+                </Button>
+              </DialogTrigger>
+
+              <DialogContent>
+                <ThumbUpModal songId={id} />
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* 노래방 번호 */}

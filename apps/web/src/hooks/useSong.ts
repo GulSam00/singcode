@@ -2,7 +2,6 @@
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 
-import { usePostSingMutation } from '@/queries/singQuery';
 import {
   useDeleteToSingSongMutation,
   usePatchToSingSongMutation,
@@ -13,7 +12,6 @@ export default function useSong() {
   const { data, isLoading } = useToSingSongQuery();
   const { mutate: patchToSingSong } = usePatchToSingSongMutation();
   const { mutate: deleteToSingSong } = useDeleteToSingSongMutation();
-  const { mutate: postSingLog } = usePostSingMutation();
   const toSingSongs = data ?? [];
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -81,11 +79,6 @@ export default function useSong() {
     });
   };
 
-  const handleSung = async (songId: string) => {
-    // 통계 업데이트
-    await Promise.all([postSingLog(songId), handleDelete(songId)]);
-  };
-
   return {
     toSingSongs,
     isLoading,
@@ -93,6 +86,5 @@ export default function useSong() {
     handleDelete,
     handleMoveToTop,
     handleMoveToBottom,
-    handleSung,
   };
 }
