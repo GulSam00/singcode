@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Check, ChevronsDown, ChevronsUp, GripVertical, Trash } from 'lucide-react';
+import { ChevronsDown, ChevronsUp, GripVertical, Trash } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -10,19 +10,12 @@ import { Song } from '@/types/song';
 
 interface SongCardProps {
   song: Song;
-  onSung: () => void;
   onDelete: () => void;
   onMoveToTop: () => void;
   onMoveToBottom: () => void;
 }
 
-export default function SongCard({
-  song,
-  onSung,
-  onDelete,
-  onMoveToTop,
-  onMoveToBottom,
-}: SongCardProps) {
+export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }: SongCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: song.id,
   });
@@ -64,11 +57,11 @@ export default function SongCard({
             variant="ghost"
             size="icon"
             className={`h-13 flex-1 flex-col items-center justify-center`}
-            aria-label="노래 부르기"
-            onClick={onSung}
+            aria-label="삭제"
+            onClick={onMoveToTop}
           >
-            <Check className="text-check h-5 w-5" />
-            <span className="text-xs">노래 부르기</span>
+            <ChevronsUp className="h-5 w-5" />
+            <span className="text-xs">최상위 순서</span>
           </Button>
 
           <Button
@@ -80,17 +73,6 @@ export default function SongCard({
           >
             <Trash className="text-destructive h-5 w-5" />
             <span className="text-xs">삭제</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`h-13 flex-1 flex-col items-center justify-center`}
-            aria-label="삭제"
-            onClick={onMoveToTop}
-          >
-            <ChevronsUp className="h-5 w-5" />
-            <span className="text-xs">최상위 순서</span>
           </Button>
 
           <Button

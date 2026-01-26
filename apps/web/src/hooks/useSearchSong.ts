@@ -50,8 +50,16 @@ export default function useSearchSong() {
   const { addToHistory } = useSearchHistory();
 
   const handleSearch = () => {
-    // trim, 공백 제거
-    const parsedSearch = search.trim().replace(/ /g, '');
+    // trim 제거
+    const trimSearch = search.trim();
+
+    // 한글이 있다면 공백 제거
+    let parsedSearch = trimSearch;
+    const hasKorean = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(trimSearch);
+    if (hasKorean) {
+      parsedSearch = parsedSearch.replace(/ /g, '');
+    }
+
     if (parsedSearch) {
       setQuery(parsedSearch);
       setSearch(parsedSearch);

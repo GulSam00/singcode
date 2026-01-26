@@ -70,3 +70,7 @@ export interface AddListModalSong extends Song {
   song_id: string;
   user_id: string;
 }
+
+export interface ThumbUpSong extends Song {
+  total_thumb: number;
+}

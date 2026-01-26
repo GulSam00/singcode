@@ -1,9 +1,12 @@
 'use client';
 
-import { BarChart2, Folder, Heart } from 'lucide-react';
+import { CircleDollarSign, Folder, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import CountUp from '@/components/reactBits/CountUp';
+import GradientText from '@/components/reactBits/GradientText';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useUserQuery } from '@/queries/userQuery';
 
 const menuItems = [
   {
@@ -19,21 +22,26 @@ const menuItems = [
     description: '재생목록을 관리합니다',
     icon: <Folder className="h-5 w-5" />,
   },
-  {
-    id: 'stat',
-    title: '노래 통계',
-    description: '내가 불렀던 노래 통계를 확인합니다',
-    icon: <BarChart2 className="h-5 w-5" />,
-  },
 ];
 
 export default function LibraryPage() {
   const router = useRouter();
 
+  const { data: user } = useUserQuery();
+
+  const point = user?.point ?? 0;
   return (
     <div className="bg-background h-full space-y-4">
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">내 정보</h1>
+
+        <div className="flex items-center gap-1 text-2xl font-bold text-[#FFC300]">
+          <CircleDollarSign />
+
+          <GradientText className="text-2xl" colors={['#FFC300', '#FFF59D', '#FB8C00']}>
+            <CountUp to={point} duration={0.2} />
+          </GradientText>
+        </div>
       </div>
 
       {menuItems.map(item => (
