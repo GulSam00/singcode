@@ -36,14 +36,14 @@ export default function SearchResultCard({
   };
 
   return (
-    <Card className="relative overflow-hidden">
+    <Card className="w-full overflow-hidden p-4">
       {/* 메인 콘텐츠 영역 */}
-      <div className="h-[150px] w-full gap-4 p-3">
+      <div className="gap-4">
         {/* 노래 정보 */}
         <div className="mb-8 flex flex-col">
           {/* 제목 및 가수 */}
-          <div className="mb-1 flex justify-between pr-6">
-            <div>
+          <div className="mb-1 flex justify-between pr-2">
+            <div className="w-[calc(100%-40px)]">
               <h3 className="truncate text-base font-medium">{title}</h3>
               <p className="text-muted-foreground truncate text-sm">{artist}</p>
             </div>
@@ -79,7 +79,7 @@ export default function SearchResultCard({
         </div>
 
         {/* 버튼 영역 - 우측 하단에 고정 */}
-        <div className="absolute bottom-3 flex w-full space-x-2 pr-6">
+        <div className="flex w-full space-x-2">
           <Button
             variant="ghost"
             size="icon"

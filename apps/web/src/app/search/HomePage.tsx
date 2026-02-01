@@ -157,9 +157,9 @@ export default function SearchPage() {
           </div>
         )}
       </div>
-      <ScrollArea className="h-[calc(100vh-24rem)]">
+      <div className="h-[calc(100vh-24rem)] overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
-          <div className="flex w-full max-w-md flex-col gap-4 py-4">
+          <div className="flex w-full max-w-md flex-col gap-4 p-4">
             {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
@@ -197,7 +197,7 @@ export default function SearchPage() {
             <p className="m-2">노래 제목이나 가수를 검색해보세요</p>
           </div>
         )}
-      </ScrollArea>
+      </div>
 
       {selectedSaveSong && (
         <AddFolderModal
