@@ -14,6 +14,7 @@ interface IProps {
   onToggleToSing: () => void;
   onToggleLike: () => void;
   onClickSave: () => void;
+  onClickArtist: () => void;
 }
 
 export default function SearchResultCard({
@@ -21,6 +22,7 @@ export default function SearchResultCard({
   onToggleToSing,
   onToggleLike,
   onClickSave,
+  onClickArtist,
 }: IProps) {
   const { id, title, artist, num_tj, num_ky, isToSing, isLike, isSave } = song;
   const { isAuthenticated } = useAuthStore();
@@ -45,7 +47,12 @@ export default function SearchResultCard({
           <div className="mb-1 flex justify-between pr-2">
             <div className="w-[calc(100%-40px)]">
               <h3 className="truncate text-base font-medium">{title}</h3>
-              <p className="text-muted-foreground truncate text-sm">{artist}</p>
+              <span
+                className="text-muted-foreground cursor-pointer truncate text-sm hover:underline"
+                onClick={onClickArtist}
+              >
+                {artist}
+              </span>
             </div>
 
             <Dialog open={open} onOpenChange={setOpen}>

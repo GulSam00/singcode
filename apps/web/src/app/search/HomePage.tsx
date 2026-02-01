@@ -169,6 +169,7 @@ export default function SearchPage() {
                 }
                 onToggleLike={() => handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST')}
                 onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
+                onClickArtist={() => setSearch(song.artist)}
               />
             ))}
             {hasNextPage && !isFetchingNextPage && (
