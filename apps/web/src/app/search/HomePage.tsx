@@ -9,9 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSearchHistory } from '@/hooks/useSearchHistory';
 import useSearchSong from '@/hooks/useSearchSong';
 import { type ChatMessage } from '@/lib/api/openAIchat';
+import { useSearchHistoryStore } from '@/stores/useSearchHistoryStore';
 import { SearchSong } from '@/types/song';
 import { ChatResponseType } from '@/utils/safeParseJson';
 
@@ -57,7 +57,7 @@ export default function SearchPage() {
     searchSongs = searchResults.pages.flatMap(page => page.data);
   }
 
-  const { searchHistory, removeFromHistory } = useSearchHistory();
+  const { searchHistory, removeFromHistory } = useSearchHistoryStore();
 
   // 엔터 키 처리
   const handleKeyUp = (e: React.KeyboardEvent) => {
@@ -65,16 +65,6 @@ export default function SearchPage() {
       handleSearch();
     }
   };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (inView && hasNextPage && !isFetchingNextPage && !isError) {
-        fetchNextPage();
-      }
-    }, 1000); // 1000ms 정도 지연
-
-    return () => clearTimeout(timeout);
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   const handleSearchClick = () => {
     if (!search.trim()) {
@@ -99,6 +89,16 @@ export default function SearchPage() {
         return '전체 키워드 검색';
     }
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (inView && hasNextPage && !isFetchingNextPage && !isError) {
+        fetchNextPage();
+      }
+    }, 1000); // 1000ms 정도 지연
+
+    return () => clearTimeout(timeout);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   return (
     <div className="bg-background">
@@ -157,9 +157,9 @@ export default function SearchPage() {
           </div>
         )}
       </div>
-      <ScrollArea className="h-[calc(100vh-24rem)]">
+      <div className="h-[calc(100vh-24rem)] overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
-          <div className="flex w-full max-w-md flex-col gap-4 py-4">
+          <div className="flex w-full max-w-md flex-col gap-4 p-4">
             {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
@@ -169,6 +169,7 @@ export default function SearchPage() {
                 }
                 onToggleLike={() => handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST')}
                 onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
+                onClickArtist={() => setSearch(song.artist)}
               />
             ))}
             {hasNextPage && !isFetchingNextPage && (
@@ -197,7 +198,7 @@ export default function SearchPage() {
             <p className="m-2">노래 제목이나 가수를 검색해보세요</p>
           </div>
         )}
-      </ScrollArea>
+      </div>
 
       {selectedSaveSong && (
         <AddFolderModal
