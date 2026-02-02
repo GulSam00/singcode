@@ -9,7 +9,7 @@ import {
   useToggleToSingMutation,
 } from '@/queries/searchSongQuery';
 import useAuthStore from '@/stores/useAuthStore';
-import { useSearchHistoryStore } from '@/stores/useSearchHistoryStore';
+import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
 
@@ -59,7 +59,6 @@ export default function useSearchSong() {
     }
 
     if (parsedSearch) {
-      console.log('parsedSearch ', parsedSearch);
       setQuery(parsedSearch);
       setSearch(parsedSearch);
       addToHistory(parsedSearch);

@@ -15,7 +15,7 @@ const initialState = {
   searchHistory: [] as string[],
 };
 
-export const useSearchHistoryStore = create(
+const useSearchHistoryStore = create(
   persist<SearchHistoryState>(
     set => ({
       ...initialState,
@@ -43,3 +43,5 @@ export const useSearchHistoryStore = create(
     },
   ),
 );
+
+export default useSearchHistoryStore;
