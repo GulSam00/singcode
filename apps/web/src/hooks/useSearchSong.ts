@@ -9,10 +9,9 @@ import {
   useToggleToSingMutation,
 } from '@/queries/searchSongQuery';
 import useAuthStore from '@/stores/useAuthStore';
+import { useSearchHistoryStore } from '@/stores/useSearchHistoryStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
-
-import { useSearchHistory } from './useSearchHistory';
 
 type SearchType = 'all' | 'title' | 'artist';
 
@@ -46,7 +45,7 @@ export default function useSearchSong() {
     isError,
   } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
-  const { addToHistory } = useSearchHistory();
+  const { addToHistory } = useSearchHistoryStore();
 
   const handleSearch = () => {
     // trim 제거
@@ -60,6 +59,7 @@ export default function useSearchSong() {
     }
 
     if (parsedSearch) {
+      console.log('parsedSearch ', parsedSearch);
       setQuery(parsedSearch);
       setSearch(parsedSearch);
       addToHistory(parsedSearch);

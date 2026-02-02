@@ -9,9 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSearchHistory } from '@/hooks/useSearchHistory';
 import useSearchSong from '@/hooks/useSearchSong';
 import { type ChatMessage } from '@/lib/api/openAIchat';
+import { useSearchHistoryStore } from '@/stores/useSearchHistoryStore';
 import { SearchSong } from '@/types/song';
 import { ChatResponseType } from '@/utils/safeParseJson';
 
@@ -57,7 +57,7 @@ export default function SearchPage() {
     searchSongs = searchResults.pages.flatMap(page => page.data);
   }
 
-  const { searchHistory, removeFromHistory } = useSearchHistory();
+  const { searchHistory, removeFromHistory } = useSearchHistoryStore();
 
   // 엔터 키 처리
   const handleKeyUp = (e: React.KeyboardEvent) => {
@@ -65,16 +65,6 @@ export default function SearchPage() {
       handleSearch();
     }
   };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (inView && hasNextPage && !isFetchingNextPage && !isError) {
-        fetchNextPage();
-      }
-    }, 1000); // 1000ms 정도 지연
-
-    return () => clearTimeout(timeout);
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   const handleSearchClick = () => {
     if (!search.trim()) {
@@ -99,6 +89,16 @@ export default function SearchPage() {
         return '전체 키워드 검색';
     }
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (inView && hasNextPage && !isFetchingNextPage && !isError) {
+        fetchNextPage();
+      }
+    }, 1000); // 1000ms 정도 지연
+
+    return () => clearTimeout(timeout);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   return (
     <div className="bg-background">
