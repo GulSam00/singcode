@@ -23,13 +23,17 @@ interface ModalState {
   closeMessage: () => void;
 }
 
-const useModalStore = create<ModalState>(set => ({
+const initialState = {
   isOpen: false,
-  title: undefined,
-  message: '',
-  variant: 'default',
-  buttonText: undefined,
-  onButtonClick: undefined,
+  title: undefined as string | undefined,
+  message: '' as React.ReactNode,
+  variant: 'default' as MessageVariant,
+  buttonText: undefined as string | undefined,
+  onButtonClick: undefined as (() => void) | undefined,
+};
+
+const useModalStore = create<ModalState>(set => ({
+  ...initialState,
   // onButtonClick 없어도 closeMessage는 기본적으로 호출 된다
 
   openMessage: ({ title, message, variant = 'default', buttonText, onButtonClick }) => {
@@ -45,7 +49,7 @@ const useModalStore = create<ModalState>(set => ({
   },
 
   closeMessage: () => {
-    set({ isOpen: false });
+    set(initialState);
   },
 }));
 

@@ -37,11 +37,15 @@ interface ModalResponseState {
   message: string;
 }
 
+const initialState: Pick<AuthState, 'user' | 'isLoading' | 'isAuthenticated'> = {
+  user: null,
+  isLoading: false,
+  isAuthenticated: false,
+};
+
 const useAuthStore = create(
   immer<AuthState>((set, get) => ({
-    user: null,
-    isLoading: false,
-    isAuthenticated: false,
+    ...initialState,
 
     register: async (email, password) => {
       return await withLoading(set, get, async () => {
@@ -123,7 +127,7 @@ const useAuthStore = create(
 
       const { error } = await supabase.auth.signOut();
       if (!error) {
-        set({ user: null, isAuthenticated: false });
+        set(initialState);
         return true;
       }
       return false;
