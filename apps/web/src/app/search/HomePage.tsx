@@ -11,7 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSearchSong from '@/hooks/useSearchSong';
 import { type ChatMessage } from '@/lib/api/openAIchat';
-import { useSearchHistoryStore } from '@/stores/useSearchHistoryStore';
+import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { SearchSong } from '@/types/song';
 import { ChatResponseType } from '@/utils/safeParseJson';
 
