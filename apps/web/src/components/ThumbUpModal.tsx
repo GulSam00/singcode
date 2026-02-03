@@ -43,7 +43,7 @@ export default function ThumbUpModal({ songId, handleClose }: ThumbUpModalProps)
       <DialogHeader>
         <DialogTitle>노래 추천하기</DialogTitle>
         <DialogDescription>
-          <SplitText text="포인트를 사용해서 노래를 추천할 수 있습니다." tag="span" />
+          <SplitText text="출석하고 얻은 포인트로 남들에게 노래를 추천하세요!" tag="span" />
         </DialogDescription>
       </DialogHeader>
       <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">

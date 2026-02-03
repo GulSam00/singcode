@@ -9,6 +9,7 @@ import {
   useToggleToSingMutation,
 } from '@/queries/searchSongQuery';
 import useAuthStore from '@/stores/useAuthStore';
+import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
@@ -46,6 +47,7 @@ export default function useSearchSong() {
   } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
   const { addToHistory } = useSearchHistoryStore();
+  const { addSong, removeSong } = useGuestToSingStore();
 
   const handleSearch = () => {
     // trim 제거
@@ -71,7 +73,11 @@ export default function useSearchSong() {
 
   const handleToggleToSing = async (songId: string, method: Method) => {
     if (!isAuthenticated) {
-      toast.error('로그인이 필요해요.');
+      if (method === 'POST') {
+        addSong(songId);
+      } else {
+        removeSong(songId);
+      }
       return;
     }
 
@@ -145,5 +151,7 @@ export default function useSearchSong() {
     selectedSaveSong,
     postSaveSong,
     patchSaveSong,
+
+    isAuthenticated,
   };
 }
