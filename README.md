@@ -7,14 +7,10 @@
 매번 인터넷에서 노래방 번호를 검색해야 했었다면. <br/>
 내가 어떤 노래를 가장 많이 불렀는지 궁금하다면. <br/>
 
-Singcode는 당신만의 노래 리스트를 만들고, 좋아하는 곡을 저장하고, 부른 기록까지 남길 수 있는 서비스를 제공합니다.  <br/>
+Singcode는 평소 노래방에서 부르고 싶던 노래 번호를 저장하고, 당신만의 노래 리스트를 만들고, 좋아하는 곡을 저장할 수 있습니다. <br/>
 Supabase를 활용한 자체 DB를 통해 금영, TJ 노래방의 번호를 한 눈에 확인할 수 있습니다.
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-
-![프로젝트 썸네일1](https://github.com/user-attachments/assets/dd6ce355-d961-4075-984b-a2d500f3d852)
-![프로젝트 썸네일2](https://github.com/user-attachments/assets/e4d3fb2c-7bee-48fd-b73c-eb833f48f1e0)
-![프로젝트 썸네일3](https://github.com/user-attachments/assets/133bb11e-18e6-47f3-ab86-6ef1fb2865c1)
 
 
 </div>
@@ -70,11 +66,11 @@ sing-code/
 ## ✨ 주요 기능
 
 ### 검색 페이지
+
 * 제목, 가수 이름으로 곡을 검색할 수 있습니다.
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
   
-![검색-곡추가](https://github.com/user-attachments/assets/c9636b94-f07a-4841-8f88-5c8c9d99a9fe)
 
 </div>
 
@@ -84,8 +80,6 @@ sing-code/
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
 
-![검색-재생목록 저장1](https://github.com/user-attachments/assets/8a747aff-2a32-44f6-b144-4f280a0a72f7)
-![검색-재생목록 저장2](https://github.com/user-attachments/assets/5ab8ee4c-c62b-46cb-92c2-e90689fec987)
 
 </div>
 
@@ -97,29 +91,24 @@ sing-code/
   
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
 
-![부를곡](https://github.com/user-attachments/assets/8f36e52a-64b1-4d75-b386-031306310ffd)
 
 </div>
 
-* 좋아요 표시한 곡이나 재생목록에 저장한 곡, 최근 부른 곡 중에서 부를곡을 추가할 수 있습니다.
+* 좋아요 표시한 곡이나 재생목록에 저장한 곡에서 빠르게 부를곡을 추가할 수 있습니다.
 
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
 
-![부를곡-모달추가1](https://github.com/user-attachments/assets/1c17666c-57db-4d48-8ad5-e9f402d2667b)
-![부를곡-모달추가2](https://github.com/user-attachments/assets/ae4c71aa-068a-4862-8e12-78bc29bd150a)
 
 </div>
 
 
 ### 인기곡 페이지
 
-* 모든 사용자들이 노래 부른 곡 순위나, 좋아요 한 곡 순위를 집계하여 보여줍니다.
+* 곡의 추천 순위를 집계해서 보여줍니다.
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
 
-![인기곡-통계](https://github.com/user-attachments/assets/750ba410-ce3e-4c98-a191-bb8f9cf6e62d)
-![인기곡-좋아요](https://github.com/user-attachments/assets/59d98e20-a735-4c52-8ed2-bc8ee9418a3f)
 
 </div>
 
@@ -132,22 +121,36 @@ sing-code/
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
   
-![라이브러리](https://github.com/user-attachments/assets/8bae1b21-387d-47e0-b394-8e576a6816fb)
-![라이브러리-부른곡 통계](https://github.com/user-attachments/assets/93f38c68-5ab4-4be8-9efa-3840ff053834)
-![라이브러리-재생목록 관리](https://github.com/user-attachments/assets/668acd87-f78b-4f15-8d05-8aeefd640ff6)
-![라이브러리-좋아요 관리](https://github.com/user-attachments/assets/e681e512-c9cb-4f2f-b0fb-7640b6c5d935)
 
 </div>
 
+### 출석 체크 기능
+
+* 회원일 경우 하루에 한 번 출석 체크를 통해 포인트를 획득할 수 있습니다. 매일 12시 마다 초기화됩니다.
+
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+
+
+</div>
+
+### 곡 추천 기능
+
+* 출석 체크로 획득한 포인트를 사용해서 곡을 추천할 수 있습니다. 1 포인트 당 1 추천입니다.
+
+<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+
+
+</div>
+
+
+
+
 ### 로그인 & 회원가입 지원
 
-* Supabase DB에 사용자 아이디를 외래키로 하여 데이터를 저장 및 관리하기에 모든 서비스는 회원가입이 필수입니다.
+* 몇몇 추가적인 기능을 사용하려면 회원가입을 진행해야 합니다.
 * 이메일 인증 회원가입과 카카오 회원가입을 지원합니다.
   
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-
-![로그인](https://github.com/user-attachments/assets/72674739-f85a-42d6-8b8f-c1003b6fd896)
-![회원가입](https://github.com/user-attachments/assets/653b05a1-126d-423a-8bd6-fca8e4c40e25)
 
 </div>
 
