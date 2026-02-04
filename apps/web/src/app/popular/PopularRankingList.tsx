@@ -1,24 +1,28 @@
+'use client';
+
 import { Construction } from 'lucide-react';
 
 import RankingItem from '@/components/RankingItem';
+import StaticLoading from '@/components/StaticLoading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ThumbUpSong } from '@/types/song';
+import { useSongThumbQuery } from '@/queries/songThumbQuery';
 
-interface RankingListProps {
-  title: string;
-  songStats: ThumbUpSong[];
-}
-export default function PopularRankingList({ title, songStats }: RankingListProps) {
+export default function PopularRankingList() {
+  const { data, isPending } = useSongThumbQuery();
+
+  if (isPending) {
+    return <StaticLoading />;
+  }
+
   return (
-    // <Card className={cn('max-w-md w-full')}>
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-xl">{title}</CardTitle>
+        <CardTitle className="text-xl">추천 곡 순위</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
         <div className="space-y-0">
-          {songStats.length > 0 ? (
-            songStats.map((item, index) => (
+          {data && data.length > 0 ? (
+            data.map((item, index) => (
               <RankingItem key={index} {...item} rank={index + 1} value={item.total_thumb} />
             ))
           ) : (

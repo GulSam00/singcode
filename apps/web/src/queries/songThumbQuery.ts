@@ -9,11 +9,10 @@ export const useSongThumbQuery = () => {
       const response = await getSongThumbList();
 
       if (!response.success) {
-        return null;
+        return [];
       }
       return response.data;
     },
-    staleTime: 1000 * 60,
   });
 };
 
