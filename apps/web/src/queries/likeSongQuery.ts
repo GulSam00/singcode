@@ -4,7 +4,7 @@ import { deleteLikeSongArray, getLikeSong } from '@/lib/api/likeSong';
 import { PersonalSong } from '@/types/song';
 
 // 🎵 좋아요 한 곡 리스트 가져오기
-export function useLikeSongQuery() {
+export function useLikeSongQuery(isAuthenticated: boolean) {
   return useQuery({
     queryKey: ['likeSong'],
     queryFn: async () => {
@@ -14,6 +14,7 @@ export function useLikeSongQuery() {
       }
       return response.data || [];
     },
+    enabled: isAuthenticated,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5,
   });

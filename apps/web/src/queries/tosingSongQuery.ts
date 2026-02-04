@@ -11,7 +11,7 @@ import { ToSingSong } from '@/types/song';
 let invalidateTimeout: NodeJS.Timeout | null = null;
 
 // 🎵 부를 노래 목록 가져오기
-export function useToSingSongQuery() {
+export function useToSingSongQuery(isAuthenticated: boolean) {
   return useQuery({
     queryKey: ['toSingSong'],
     queryFn: async () => {
@@ -21,7 +21,7 @@ export function useToSingSongQuery() {
       }
       return response.data || [];
     },
-    // DB의 값은 고정된 값이므로 캐시를 유지한다
+    enabled: isAuthenticated,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5,
   });

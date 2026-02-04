@@ -7,9 +7,11 @@ import {
   usePatchToSingSongMutation,
   useToSingSongQuery,
 } from '@/queries/tosingSongQuery';
+import useAuthStore from '@/stores/useAuthStore';
 
 export default function useSong() {
-  const { data, isLoading } = useToSingSongQuery();
+  const { isAuthenticated } = useAuthStore();
+  const { data, isLoading } = useToSingSongQuery(isAuthenticated);
   const { mutate: patchToSingSong } = usePatchToSingSongMutation();
   const { mutate: deleteToSingSong } = useDeleteToSingSongMutation();
   const toSingSongs = data ?? [];
