@@ -31,8 +31,6 @@ export function useSaveSongQuery(isAuthenticated: boolean) {
       return songFolders;
     },
     enabled: isAuthenticated,
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
   });
 }
 

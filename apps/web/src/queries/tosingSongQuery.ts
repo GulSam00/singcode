@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   deleteToSingSong,
   getToSingSong,
+  getToSingSongGuest,
   patchToSingSong,
   postToSingSongArray,
 } from '@/lib/api/tosing';
@@ -11,19 +12,21 @@ import { ToSingSong } from '@/types/song';
 let invalidateTimeout: NodeJS.Timeout | null = null;
 
 // 🎵 부를 노래 목록 가져오기
-export function useToSingSongQuery(isAuthenticated: boolean) {
+export function useToSingSongQuery(isAuthenticated: boolean, localToSingSongIds: string[]) {
   return useQuery({
-    queryKey: ['toSingSong'],
+    queryKey: ['toSingSong', localToSingSongIds],
     queryFn: async () => {
-      const response = await getToSingSong();
+      let response;
+      if (isAuthenticated) {
+        response = await getToSingSong();
+      } else {
+        response = await getToSingSongGuest(localToSingSongIds);
+      }
       if (!response.success) {
         return [];
       }
       return response.data || [];
     },
-    enabled: isAuthenticated,
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
   });
 }
 
