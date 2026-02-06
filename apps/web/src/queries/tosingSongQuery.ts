@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   deleteToSingSong,
   getToSingSong,
-  getToSingSongGuest,
   patchToSingSong,
   postToSingSongArray,
 } from '@/lib/api/tosing';
@@ -12,20 +11,21 @@ import { ToSingSong } from '@/types/song';
 let invalidateTimeout: NodeJS.Timeout | null = null;
 
 // 🎵 부를 노래 목록 가져오기
-export function useToSingSongQuery(isAuthenticated: boolean, localToSingSongIds: string[]) {
+export function useToSingSongQuery(isAuthenticated: boolean, guestToSingSongs: ToSingSong[]) {
   return useQuery({
-    queryKey: ['toSingSong', localToSingSongIds],
+    queryKey: isAuthenticated ? ['toSingSong', 'auth'] : ['toSingSong', 'guest', guestToSingSongs],
     queryFn: async () => {
-      let response;
+      console.log(isAuthenticated, guestToSingSongs);
       if (isAuthenticated) {
-        response = await getToSingSong();
+        const response = await getToSingSong();
+        if (!response.success) {
+          return [];
+        }
+        return response.data || [];
       } else {
-        response = await getToSingSongGuest(localToSingSongIds);
+        // 게스트의 경우 로컬 스토리지 데이터 반환 (서버 요청 X)
+        return guestToSingSongs;
       }
-      if (!response.success) {
-        return [];
-      }
-      return response.data || [];
     },
   });
 }

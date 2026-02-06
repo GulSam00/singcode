@@ -12,7 +12,7 @@ import useAuthStore from '@/stores/useAuthStore';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { Method } from '@/types/common';
-import { SearchSong } from '@/types/song';
+import { SearchSong, Song } from '@/types/song';
 
 type SearchType = 'all' | 'title' | 'artist';
 
@@ -71,12 +71,12 @@ export default function useSearchSong() {
     setSearchType(value as SearchType);
   };
 
-  const handleToggleToSing = async (songId: string, method: Method) => {
+  const handleToggleToSing = async (song: Song, method: Method) => {
     if (!isAuthenticated) {
       if (method === 'POST') {
-        addGuestToSingSong(songId);
+        addGuestToSingSong(song);
       } else {
-        removeGuestToSingSong(songId);
+        removeGuestToSingSong(song.id);
       }
       return;
     }
@@ -85,7 +85,7 @@ export default function useSearchSong() {
       toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
       return;
     }
-    toggleToSing({ songId, method });
+    toggleToSing({ songId: song.id, method });
   };
 
   const handleToggleLike = async (songId: string, method: Method) => {

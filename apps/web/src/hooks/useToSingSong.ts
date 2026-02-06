@@ -12,21 +12,28 @@ import useGuestToSingStore from '@/stores/useGuestToSingStore';
 
 export default function useToSingSong() {
   const { isAuthenticated } = useAuthStore();
-  const { localToSingSongIds, swapGuestToSingSongs } = useGuestToSingStore();
+  const { guestToSingSongs, swapGuestToSingSongs, removeGuestToSingSong } = useGuestToSingStore();
 
-  const { data, isLoading } = useToSingSongQuery(isAuthenticated, localToSingSongIds);
+  const { data, isLoading } = useToSingSongQuery(isAuthenticated, guestToSingSongs);
   const { mutate: patchToSingSong } = usePatchToSingSongMutation();
   const { mutate: deleteToSingSong } = useDeleteToSingSongMutation();
   const toSingSongs = data ?? [];
 
-  console.log('localToSingSongIds', localToSingSongIds);
   const handleDragEnd = (event: DragEndEvent) => {
     // 일단 guest일 때는 return 조치, 후에 local단에서 순서 조정 가능
-    if (!isAuthenticated) return;
-
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
+
+    if (!isAuthenticated) {
+      const oldIndex = toSingSongs.findIndex(item => item.songs.id === active.id);
+      const newIndex = toSingSongs.findIndex(item => item.songs.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+        swapGuestToSingSongs(active.id as string, newIndex);
+      }
+      return;
+    }
 
     const oldIndex = toSingSongs.findIndex(item => item.songs.id === active.id);
     const newIndex = toSingSongs.findIndex(item => item.songs.id === over.id);
@@ -58,6 +65,10 @@ export default function useToSingSong() {
   };
 
   const handleDelete = (songId: string) => {
+    if (!isAuthenticated) {
+      removeGuestToSingSong(songId);
+      return;
+    }
     deleteToSingSong(songId);
   };
 

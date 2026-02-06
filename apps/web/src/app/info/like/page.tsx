@@ -9,12 +9,14 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import useSongInfo from '@/hooks/useSongInfo';
 import { useLikeSongQuery } from '@/queries/likeSongQuery';
+import useAuthStore from '@/stores/useAuthStore';
 
 import SongItem from './SongItem';
 
 export default function LikePage() {
   const router = useRouter();
-  const { data, isLoading } = useLikeSongQuery();
+  const { isAuthenticated } = useAuthStore();
+  const { data, isLoading } = useLikeSongQuery(isAuthenticated);
   const { deleteLikeSelected, handleToggleSelect, handleDeleteArray } = useSongInfo();
   const likedSongs = data ?? [];
 

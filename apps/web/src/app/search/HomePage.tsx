@@ -54,11 +54,11 @@ export default function SearchPage() {
   const { ref, inView } = useInView();
 
   const { searchHistory, removeFromHistory } = useSearchHistoryStore();
-  const { localToSingSongIds } = useGuestToSingStore();
+  const { guestToSingSongs } = useGuestToSingStore();
 
   const isToSing = (song: SearchSong, songId: string) => {
     if (!isAuthenticated) {
-      return localToSingSongIds?.includes(songId);
+      return guestToSingSongs?.some(item => item.songs.id === songId);
     }
     return song.isToSing;
   };
@@ -184,7 +184,7 @@ export default function SearchPage() {
                 isLike={song.isLike}
                 isSave={song.isSave}
                 onToggleToSing={() =>
-                  handleToggleToSing(song.id, isToSing(song, song.id) ? 'DELETE' : 'POST')
+                  handleToggleToSing(song, isToSing(song, song.id) ? 'DELETE' : 'POST')
                 }
                 onToggleLike={() => handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST')}
                 onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
