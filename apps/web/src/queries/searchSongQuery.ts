@@ -133,7 +133,6 @@ export const useToggleToSingMutation = (query: string, searchType: string) => {
           queryKey: ['searchSong', query, searchType],
         });
         queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
-        queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
       }, 1000);
     },
   });
@@ -185,7 +184,6 @@ export const useToggleLikeMutation = (query: string, searchType: string) => {
           queryKey: ['searchSong', query, searchType],
         });
         queryClient.invalidateQueries({ queryKey: ['likeSong'] });
-        queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
       }, 1000);
     },
   });
@@ -230,7 +228,6 @@ export const useSaveMutation = () => {
       });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolderList'] });
-      queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
     },
   });
 };

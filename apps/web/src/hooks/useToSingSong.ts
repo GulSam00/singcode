@@ -10,15 +10,16 @@ import {
 import useAuthStore from '@/stores/useAuthStore';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
 
-export default function useSong() {
+export default function useToSingSong() {
   const { isAuthenticated } = useAuthStore();
-  const { localToSingSongIds } = useGuestToSingStore();
+  const { localToSingSongIds, swapGuestToSingSongs } = useGuestToSingStore();
 
   const { data, isLoading } = useToSingSongQuery(isAuthenticated, localToSingSongIds);
   const { mutate: patchToSingSong } = usePatchToSingSongMutation();
   const { mutate: deleteToSingSong } = useDeleteToSingSongMutation();
   const toSingSongs = data ?? [];
 
+  console.log('localToSingSongIds', localToSingSongIds);
   const handleDragEnd = (event: DragEndEvent) => {
     // 일단 guest일 때는 return 조치, 후에 local단에서 순서 조정 가능
     if (!isAuthenticated) return;
@@ -62,9 +63,13 @@ export default function useSong() {
 
   const handleMoveToTop = (songId: string, oldIndex: number) => {
     // 일단 guest일 때는 return 조치, 후에 local단에서 순서 조정 가능
-    if (!isAuthenticated) return;
 
     if (oldIndex === 0) return;
+
+    if (!isAuthenticated) {
+      swapGuestToSingSongs(songId, 0);
+      return;
+    }
 
     const newItems = arrayMove(toSingSongs, oldIndex, 0);
     const newWeight = toSingSongs[0].order_weight - 1;
@@ -78,10 +83,14 @@ export default function useSong() {
 
   const handleMoveToBottom = (songId: string, oldIndex: number) => {
     // 일단 guest일 때는 return 조치, 후에 local단에서 순서 조정 가능
-    if (!isAuthenticated) return;
 
     const lastIndex = toSingSongs.length - 1;
     if (oldIndex === lastIndex) return;
+
+    if (!isAuthenticated) {
+      swapGuestToSingSongs(songId, lastIndex);
+      return;
+    }
 
     const newItems = arrayMove(toSingSongs, oldIndex, lastIndex);
     const newWeight = toSingSongs[lastIndex].order_weight + 1;

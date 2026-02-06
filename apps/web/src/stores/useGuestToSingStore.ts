@@ -3,10 +3,10 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface GuestToSingState {
   localToSingSongIds: string[];
-  addSong: (songId: string) => void;
-  removeSong: (songId: string) => void;
-  swapSongs: (fromIndex: number, toIndex: number) => void;
-  clearSongs: () => void;
+  addGuestToSingSong: (songId: string) => void;
+  removeGuestToSingSong: (songId: string) => void;
+  swapGuestToSingSongs: (targetId: string, moveIndex: number) => void;
+  clearGuestToSingSongs: () => void;
 }
 
 const GUEST_TO_SING_KEY = 'guest_to_sing';
@@ -19,35 +19,29 @@ const useGuestToSingStore = create(
   persist<GuestToSingState>(
     set => ({
       ...initialState,
-      addSong: (songId: string) => {
+      addGuestToSingSong: (songId: string) => {
         set(state => {
           // 중복 방지 (필요 시 정책 변경 가능)
           if (state.localToSingSongIds.includes(songId)) return state;
           return { localToSingSongIds: [...state.localToSingSongIds, songId] };
         });
       },
-      removeSong: (songId: string) => {
+      removeGuestToSingSong: (songId: string) => {
         set(state => ({
           localToSingSongIds: state.localToSingSongIds.filter(id => id !== songId),
         }));
       },
-      swapSongs: (fromIndex: number, toIndex: number) => {
+      swapGuestToSingSongs: (targetId: string, moveIndex: number) => {
         set(state => {
           const newSongIds = [...state.localToSingSongIds];
-          if (
-            fromIndex < 0 ||
-            fromIndex >= newSongIds.length ||
-            toIndex < 0 ||
-            toIndex >= newSongIds.length
-          ) {
-            return state;
-          }
-          const [movedItem] = newSongIds.splice(fromIndex, 1);
-          newSongIds.splice(toIndex, 0, movedItem);
+
+          const targetIndex = newSongIds.findIndex(id => id === targetId);
+          const [movedItem] = newSongIds.splice(targetIndex, 1);
+          newSongIds.splice(moveIndex, 0, movedItem);
           return { localToSingSongIds: newSongIds };
         });
       },
-      clearSongs: () => {
+      clearGuestToSingSongs: () => {
         set(initialState);
       },
     }),

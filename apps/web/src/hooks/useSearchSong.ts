@@ -47,7 +47,7 @@ export default function useSearchSong() {
   } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
   const { addToHistory } = useSearchHistoryStore();
-  const { addSong, removeSong } = useGuestToSingStore();
+  const { addGuestToSingSong, removeGuestToSingSong } = useGuestToSingStore();
 
   const handleSearch = () => {
     // trim 제거
@@ -74,9 +74,9 @@ export default function useSearchSong() {
   const handleToggleToSing = async (songId: string, method: Method) => {
     if (!isAuthenticated) {
       if (method === 'POST') {
-        addSong(songId);
+        addGuestToSingSong(songId);
       } else {
-        removeSong(songId);
+        removeGuestToSingSong(songId);
       }
       return;
     }
