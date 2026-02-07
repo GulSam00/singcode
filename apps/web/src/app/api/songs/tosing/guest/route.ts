@@ -9,6 +9,10 @@ export async function GET(request: NextRequest): Promise<NextResponse<ApiRespons
     const searchParams = request.nextUrl.searchParams;
     const ids = searchParams.getAll('songIds[]');
 
+    if (!ids || ids.length === 0) {
+      return NextResponse.json({ success: true, data: [] });
+    }
+
     const supabase = await createClient();
 
     const { data, error } = await supabase

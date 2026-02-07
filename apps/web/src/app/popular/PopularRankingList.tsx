@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSongThumbQuery } from '@/queries/songThumbQuery';
 
 export default function PopularRankingList() {
-  const { data, isPending, refetch, isFetching } = useSongThumbQuery();
+  const { data, isPending, refetch } = useSongThumbQuery();
 
   if (isPending) {
     return <StaticLoading />;
