@@ -7,17 +7,33 @@ import {
   usePatchToSingSongMutation,
   useToSingSongQuery,
 } from '@/queries/tosingSongQuery';
+import useAuthStore from '@/stores/useAuthStore';
+import useGuestToSingStore from '@/stores/useGuestToSingStore';
 
-export default function useSong() {
-  const { data, isLoading } = useToSingSongQuery();
+export default function useToSingSong() {
+  const { isAuthenticated } = useAuthStore();
+  const { guestToSingSongs, swapGuestToSingSongs, removeGuestToSingSong } = useGuestToSingStore();
+
+  const { data, isLoading } = useToSingSongQuery(isAuthenticated, guestToSingSongs);
   const { mutate: patchToSingSong } = usePatchToSingSongMutation();
   const { mutate: deleteToSingSong } = useDeleteToSingSongMutation();
   const toSingSongs = data ?? [];
 
   const handleDragEnd = (event: DragEndEvent) => {
+    // 일단 guest일 때는 return 조치, 후에 local단에서 순서 조정 가능
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
+
+    if (!isAuthenticated) {
+      const oldIndex = toSingSongs.findIndex(item => item.songs.id === active.id);
+      const newIndex = toSingSongs.findIndex(item => item.songs.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+        swapGuestToSingSongs(active.id as string, newIndex);
+      }
+      return;
+    }
 
     const oldIndex = toSingSongs.findIndex(item => item.songs.id === active.id);
     const newIndex = toSingSongs.findIndex(item => item.songs.id === over.id);
@@ -49,11 +65,22 @@ export default function useSong() {
   };
 
   const handleDelete = (songId: string) => {
+    if (!isAuthenticated) {
+      removeGuestToSingSong(songId);
+      return;
+    }
     deleteToSingSong(songId);
   };
 
   const handleMoveToTop = (songId: string, oldIndex: number) => {
+    // 일단 guest일 때는 return 조치, 후에 local단에서 순서 조정 가능
+
     if (oldIndex === 0) return;
+
+    if (!isAuthenticated) {
+      swapGuestToSingSongs(songId, 0);
+      return;
+    }
 
     const newItems = arrayMove(toSingSongs, oldIndex, 0);
     const newWeight = toSingSongs[0].order_weight - 1;
@@ -66,8 +93,15 @@ export default function useSong() {
   };
 
   const handleMoveToBottom = (songId: string, oldIndex: number) => {
+    // 일단 guest일 때는 return 조치, 후에 local단에서 순서 조정 가능
+
     const lastIndex = toSingSongs.length - 1;
     if (oldIndex === lastIndex) return;
+
+    if (!isAuthenticated) {
+      swapGuestToSingSongs(songId, lastIndex);
+      return;
+    }
 
     const newItems = arrayMove(toSingSongs, oldIndex, lastIndex);
     const newWeight = toSingSongs[lastIndex].order_weight + 1;

@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteSaveSong, getSaveSong, patchSaveSong } from '@/lib/api/saveSong';
 import { SaveSong, SaveSongFolder } from '@/types/song';
 
-export function useSaveSongQuery() {
+export function useSaveSongQuery(isAuthenticated: boolean) {
   return useQuery({
     queryKey: ['saveSongFolder'],
     queryFn: async () => {
@@ -30,8 +30,7 @@ export function useSaveSongQuery() {
 
       return songFolders;
     },
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
+    enabled: isAuthenticated,
   });
 }
 

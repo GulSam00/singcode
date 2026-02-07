@@ -14,6 +14,7 @@ import useAddSongList, { type TabType } from '@/hooks/useAddSongList';
 import { useLikeSongQuery } from '@/queries/likeSongQuery';
 // import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
 import { useSaveSongQuery } from '@/queries/saveSongQuery';
+import useAuthStore from '@/stores/useAuthStore';
 
 import ModalSongItem from './ModalSongItem';
 
@@ -32,9 +33,12 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
     totalSelectedCount,
   } = useAddSongList();
 
-  const { data: likedSongs, isLoading: isLoadingLikedSongs } = useLikeSongQuery();
+  const { isAuthenticated } = useAuthStore();
 
-  const { data: saveSongFolders, isLoading: isLoadingSongFolders } = useSaveSongQuery();
+  const { data: likedSongs, isLoading: isLoadingLikedSongs } = useLikeSongQuery(isAuthenticated);
+
+  const { data: saveSongFolders, isLoading: isLoadingSongFolders } =
+    useSaveSongQuery(isAuthenticated);
 
   const isLoading = isLoadingLikedSongs || isLoadingSongFolders;
 

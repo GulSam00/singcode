@@ -17,7 +17,7 @@ import {
 } from '@dnd-kit/sortable';
 
 import StaticLoading from '@/components/StaticLoading';
-import useSong from '@/hooks/useSong';
+import useToSingSong from '@/hooks/useToSingSong';
 import { ToSingSong } from '@/types/song';
 
 import SongCard from './SongCard';
@@ -30,7 +30,7 @@ export default function SongList() {
     handleDelete,
     handleMoveToTop,
     handleMoveToBottom,
-  } = useSong();
+  } = useToSingSong();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
