@@ -1,6 +1,8 @@
 'use client';
 
 import { Construction } from 'lucide-react';
+// import IntervalProgress from '@/components/ui/IntervalProgress';
+import { RotateCw } from 'lucide-react';
 
 import RankingItem from '@/components/RankingItem';
 import StaticLoading from '@/components/StaticLoading';
@@ -8,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSongThumbQuery } from '@/queries/songThumbQuery';
 
 export default function PopularRankingList() {
-  const { data, isPending } = useSongThumbQuery();
+  const { data, isPending, refetch, isFetching } = useSongThumbQuery();
 
   if (isPending) {
     return <StaticLoading />;
@@ -16,8 +18,11 @@ export default function PopularRankingList() {
 
   return (
     <Card>
-      <CardHeader className="pb-2">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl">추천 곡 순위</CardTitle>
+        {/* <IntervalProgress duration={5000} onComplete={() => refetch()} isLoading={isFetching} /> */}
+
+        <RotateCw onClick={() => refetch()} className="cursor-pointer hover:animate-spin" />
       </CardHeader>
       <CardContent className="pt-0">
         <div className="space-y-0">
