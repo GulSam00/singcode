@@ -13,7 +13,9 @@ import { ToSingSong } from '@/types/song';
 // 부를 노래 목록 가져오기
 export function useToSingSongQuery(isAuthenticated: boolean, guestToSingSongs: ToSingSong[]) {
   return useQuery({
-    queryKey: isAuthenticated ? ['toSingSong'] : ['toSingSong', 'guest', guestToSingSongs],
+    queryKey: isAuthenticated
+      ? ['toSingSong']
+      : ['toSingSong', 'guest', guestToSingSongs.map(song => song.songs.id)],
     queryFn: async () => {
       if (isAuthenticated) {
         const response = await getToSingSong();

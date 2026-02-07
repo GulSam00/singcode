@@ -41,6 +41,7 @@ const useGuestToSingStore = create(
       },
       swapGuestToSingSongs: (targetId: string, moveIndex: number) => {
         set(state => {
+          if (moveIndex < 0 || moveIndex >= state.guestToSingSongs.length) return state;
           const newSongs = [...state.guestToSingSongs];
           const targetIndex = newSongs.findIndex(item => item.songs.id === targetId);
 
