@@ -3,21 +3,21 @@ import { create } from 'zustand';
 export type FooterKey = 'SEARCH' | 'RECENT' | 'TOSING' | 'POPULAR' | 'INFO' | null;
 
 interface FooterStore {
-  activeFooterItem: FooterKey;
-  triggerFooterAnimation: (key: FooterKey) => void;
+  footerAnimateKey: FooterKey;
+  setFooterAnimateKey: (key: FooterKey) => void;
 }
 
 const initialState = {
-  activeFooterItem: null,
+  footerAnimateKey: null,
 };
 
 const useFooterAnimateStore = create<FooterStore>(set => ({
   ...initialState,
 
-  triggerFooterAnimation: key => {
-    set({ activeFooterItem: key });
+  setFooterAnimateKey: key => {
+    set({ footerAnimateKey: key });
     setTimeout(() => {
-      set({ activeFooterItem: null });
+      set({ footerAnimateKey: null });
     }, 300);
   },
 }));

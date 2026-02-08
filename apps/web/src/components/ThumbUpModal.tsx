@@ -30,13 +30,13 @@ export default function ThumbUpModal({ songId, handleClose }: ThumbUpModalProps)
   const { mutate: patchSongThumb, isPending: isPendingSongThumb } = useSongThumbMutation();
   const { mutate: patchSetPoint, isPending: isPendingSetPoint } = usePatchSetPointMutation();
 
-  const { triggerFooterAnimation } = useFooterAnimateStore();
+  const { setFooterAnimateKey } = useFooterAnimateStore();
 
   const handleClickThumb = () => {
     patchSongThumb({ songId, point: value[0] });
     patchSetPoint({ point: point - value[0] });
 
-    triggerFooterAnimation('POPULAR');
+    setFooterAnimateKey('POPULAR');
 
     handleClose();
   };

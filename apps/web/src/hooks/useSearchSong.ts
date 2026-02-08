@@ -47,7 +47,7 @@ export default function useSearchSong() {
     isError,
   } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
-  const { triggerFooterAnimation } = useFooterAnimateStore();
+  const { setFooterAnimateKey } = useFooterAnimateStore();
   const { addToHistory } = useSearchHistoryStore();
   const { addGuestToSingSong, removeGuestToSingSong } = useGuestToSingStore();
 
@@ -77,7 +77,7 @@ export default function useSearchSong() {
     if (!isAuthenticated) {
       if (method === 'POST') {
         addGuestToSingSong(song);
-        triggerFooterAnimation('TOSING');
+        setFooterAnimateKey('TOSING');
       } else {
         removeGuestToSingSong(song.id);
       }
@@ -90,7 +90,7 @@ export default function useSearchSong() {
     }
 
     if (method === 'POST') {
-      triggerFooterAnimation('TOSING');
+      setFooterAnimateKey('TOSING');
     }
     toggleToSing({ songId: song.id, method });
   };
@@ -107,7 +107,7 @@ export default function useSearchSong() {
     }
 
     if (method === 'POST') {
-      triggerFooterAnimation('INFO');
+      setFooterAnimateKey('INFO');
     }
     toggleLike({ songId, method });
   };
@@ -128,7 +128,7 @@ export default function useSearchSong() {
       return;
     }
 
-    triggerFooterAnimation('INFO');
+    setFooterAnimateKey('INFO');
     postSong({ songId, folderName, query, searchType });
   };
 
@@ -138,7 +138,7 @@ export default function useSearchSong() {
       return;
     }
 
-    triggerFooterAnimation('INFO');
+    setFooterAnimateKey('INFO');
     moveSong({ songIdArray: [songId], folderId });
   };
 

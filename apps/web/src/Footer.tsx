@@ -26,14 +26,14 @@ const navigation: Navigation[] = [
 
 export default function Footer() {
   const pathname = usePathname();
-  const { activeFooterItem } = useFooterAnimateStore();
+  const { footerAnimateKey } = useFooterAnimateStore();
   const navPath = pathname.split('/')[1];
 
   return (
     <footer className="bg-background fixed bottom-0 flex h-8 w-full max-w-md justify-between">
       {navigation.map(item => {
         const isActive = '/' + navPath === item.href;
-        const isAnimating = activeFooterItem === item.key;
+        const isAnimating = footerAnimateKey === item.key;
 
         return (
           <div key={item.name} className="relative flex-1">
