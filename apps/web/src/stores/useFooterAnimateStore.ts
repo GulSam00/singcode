@@ -4,21 +4,32 @@ export type FooterKey = 'SEARCH' | 'RECENT' | 'TOSING' | 'POPULAR' | 'INFO' | nu
 
 interface FooterStore {
   footerAnimateKey: FooterKey;
+  timeoutId: ReturnType<typeof setTimeout> | null;
   setFooterAnimateKey: (key: FooterKey) => void;
 }
 
 const initialState = {
   footerAnimateKey: null,
+  timeoutId: null,
 };
 
-const useFooterAnimateStore = create<FooterStore>(set => ({
+const useFooterAnimateStore = create<FooterStore>((set, get) => ({
   ...initialState,
 
   setFooterAnimateKey: key => {
+    const { timeoutId } = get();
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
     set({ footerAnimateKey: key });
-    setTimeout(() => {
-      set({ footerAnimateKey: null });
+
+    const newTimeoutId = setTimeout(() => {
+      set({ footerAnimateKey: null, timeoutId: null });
     }, 300);
+
+    set({ timeoutId: newTimeoutId });
   },
 }));
 
