@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
 import { useSaveSongQuery } from '@/queries/saveSongQuery';
+import useAuthStore from '@/stores/useAuthStore';
 
 import AddFolderModal from './AddFolderModal';
 import DeleteFolderModal from './DeleteFolderModal';
@@ -20,8 +21,12 @@ import RenameFolderModal from './RenameFolderModal';
 type ModalType = null | 'move' | 'delete' | 'addFolder' | 'renameFolder' | 'deleteFolder';
 
 export default function Page() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
+
   // 상태 관리
-  const { data: saveSongFolders, isLoading: isLoadingSongFolders } = useSaveSongQuery();
+  const { data: saveSongFolders, isLoading: isLoadingSongFolders } =
+    useSaveSongQuery(isAuthenticated);
   const { data: saveSongFolderList, isLoading: isLoadingSaveFolderList } = useSaveSongFolderQuery();
   const isLoading = isLoadingSongFolders || isLoadingSaveFolderList;
 
@@ -31,8 +36,6 @@ export default function Page() {
   const [modalType, setModalType] = useState<ModalType>(null);
   const [selectedFolderId, setSelectedFolderId] = useState<string>('');
   const [selectedFolderName, setSelectedFolderName] = useState<string>('');
-
-  const router = useRouter();
 
   // 전체 선택된 곡 수 계산
   const totalSelectedSongs = Object.values(selectedSongs).filter(Boolean).length;

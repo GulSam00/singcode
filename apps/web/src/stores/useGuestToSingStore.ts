@@ -1,53 +1,59 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { Song, ToSingSong } from '@/types/song';
+
 interface GuestToSingState {
-  localToSingSongIds: string[];
-  addSong: (songId: string) => void;
-  removeSong: (songId: string) => void;
-  swapSongs: (fromIndex: number, toIndex: number) => void;
-  clearSongs: () => void;
+  guestToSingSongs: ToSingSong[];
+  addGuestToSingSong: (song: Song) => void;
+  removeGuestToSingSong: (songId: string) => void;
+  swapGuestToSingSongs: (targetId: string, moveIndex: number) => void;
+  clearGuestToSingSongs: () => void;
 }
 
 const GUEST_TO_SING_KEY = 'guest_to_sing';
 
 const initialState = {
-  localToSingSongIds: [] as string[],
+  guestToSingSongs: [] as ToSingSong[],
 };
 
 const useGuestToSingStore = create(
   persist<GuestToSingState>(
     set => ({
       ...initialState,
-      addSong: (songId: string) => {
+      addGuestToSingSong: (song: Song) => {
         set(state => {
-          // 중복 방지 (필요 시 정책 변경 가능)
-          if (state.localToSingSongIds.includes(songId)) return state;
-          return { localToSingSongIds: [...state.localToSingSongIds, songId] };
+          // 중복 방지
+          if (state.guestToSingSongs.some(item => item.songs.id === song.id)) return state;
+
+          const newToSingSong: ToSingSong = {
+            order_weight: 0, // 로컬에서는 index가 순서이므로 weight는 의미 없음 (0으로 고정)
+            songs: song, // song 객체 전체 저장
+          };
+
+          return { guestToSingSongs: [...state.guestToSingSongs, newToSingSong] };
         });
       },
-      removeSong: (songId: string) => {
+      removeGuestToSingSong: (songId: string) => {
         set(state => ({
-          localToSingSongIds: state.localToSingSongIds.filter(id => id !== songId),
+          guestToSingSongs: state.guestToSingSongs.filter(item => item.songs.id !== songId),
         }));
       },
-      swapSongs: (fromIndex: number, toIndex: number) => {
+      swapGuestToSingSongs: (targetId: string, moveIndex: number) => {
         set(state => {
-          const newSongIds = [...state.localToSingSongIds];
-          if (
-            fromIndex < 0 ||
-            fromIndex >= newSongIds.length ||
-            toIndex < 0 ||
-            toIndex >= newSongIds.length
-          ) {
-            return state;
-          }
-          const [movedItem] = newSongIds.splice(fromIndex, 1);
-          newSongIds.splice(toIndex, 0, movedItem);
-          return { localToSingSongIds: newSongIds };
+          if (moveIndex < 0 || moveIndex >= state.guestToSingSongs.length) return state;
+          const newSongs = [...state.guestToSingSongs];
+          const targetIndex = newSongs.findIndex(item => item.songs.id === targetId);
+
+          if (targetIndex === -1) return state;
+
+          const [movedItem] = newSongs.splice(targetIndex, 1);
+          newSongs.splice(moveIndex, 0, movedItem);
+
+          return { guestToSingSongs: newSongs };
         });
       },
-      clearSongs: () => {
+      clearGuestToSingSongs: () => {
         set(initialState);
       },
     }),

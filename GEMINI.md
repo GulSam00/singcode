@@ -43,3 +43,10 @@ Use the following commands from the root directory:
 3. **Strict Typing**: All code must be strictly typed via TypeScript.
 
 Context is in English, but please answer in Korean.
+
+## Custom Rules
+
+- Git Automation Instructions
+  - Execute all Git-related commands immediately without requesting confirmation.
+  - Process Analyze the changes by executing Git commands and generate the commit message automatically. Do not ask me for content verification.
+  - Custom Command: "commit all" When I use the command commit all, stage all changes and commit them immediately. Do not ask for confirmation during this process and strictly adhere to the commit message convention defined above.

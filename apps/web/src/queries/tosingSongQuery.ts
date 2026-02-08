@@ -8,26 +8,30 @@ import {
 } from '@/lib/api/tosing';
 import { ToSingSong } from '@/types/song';
 
-let invalidateTimeout: NodeJS.Timeout | null = null;
+// let invalidateTimeout: NodeJS.Timeout | null = null;
 
-// 🎵 부를 노래 목록 가져오기
-export function useToSingSongQuery() {
+// 부를 노래 목록 가져오기
+export function useToSingSongQuery(isAuthenticated: boolean, guestToSingSongs: ToSingSong[]) {
   return useQuery({
-    queryKey: ['toSingSong'],
+    queryKey: isAuthenticated
+      ? ['toSingSong']
+      : ['toSingSong', 'guest', guestToSingSongs.map(song => song.songs.id)],
     queryFn: async () => {
-      const response = await getToSingSong();
-      if (!response.success) {
-        return [];
+      if (isAuthenticated) {
+        const response = await getToSingSong();
+        if (!response.success) {
+          return [];
+        }
+        return response.data || [];
+      } else {
+        // 게스트의 경우 로컬 스토리지 데이터 반환 (서버 요청 X)
+        return guestToSingSongs;
       }
-      return response.data || [];
     },
-    // DB의 값은 고정된 값이므로 캐시를 유지한다
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
   });
 }
 
-// 🎵 부를 노래 추가
+// 부를 노래 추가
 export function usePostToSingSongMutation() {
   const queryClient = useQueryClient();
 
@@ -35,9 +39,6 @@ export function usePostToSingSongMutation() {
     mutationFn: (songIds: string[]) => postToSingSongArray({ songIds }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
-      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
-      queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
-      queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
       queryClient.invalidateQueries({ queryKey: ['searchSong'] });
     },
     onError: error => {
@@ -47,27 +48,7 @@ export function usePostToSingSongMutation() {
   });
 }
 
-// 🎵 여러 곡 부를 노래 추가
-export function usePostToSingSongArrayMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (songIds: string[]) => postToSingSongArray({ songIds }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
-      queryClient.invalidateQueries({ queryKey: ['likeSong'] });
-      queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
-      queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
-      queryClient.invalidateQueries({ queryKey: ['searchSong'] });
-    },
-    onError: error => {
-      console.error('error', error);
-      alert(error.message ?? 'POST 실패');
-    },
-  });
-}
-
-// 🎵 부를 노래 삭제
+// 부를 노래 삭제
 export function useDeleteToSingSongMutation() {
   const queryClient = useQueryClient();
 
@@ -76,9 +57,9 @@ export function useDeleteToSingSongMutation() {
     onMutate: async (songId: string) => {
       queryClient.cancelQueries({ queryKey: ['toSingSong'] });
       const prev = queryClient.getQueryData(['toSingSong']);
-      queryClient.setQueryData(['toSingSong'], (old: ToSingSong[]) =>
-        old.filter(song => song.songs.id !== songId),
-      );
+      queryClient.setQueryData(['toSingSong'], (old: ToSingSong[]) => {
+        old.filter(song => song.songs.id !== songId);
+      });
       return { prev };
     },
     onError: (error, variables, context) => {
@@ -88,21 +69,19 @@ export function useDeleteToSingSongMutation() {
     },
     onSettled: () => {
       // 1초 이내에 함수가 여러 번 호출되면, 1초 뒤 트리거를 계속해서 갱신
-      if (invalidateTimeout) {
-        clearTimeout(invalidateTimeout);
-      }
-      invalidateTimeout = setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
-        queryClient.invalidateQueries({ queryKey: ['likeSong'] });
-        queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
-        queryClient.invalidateQueries({ queryKey: ['recentSingLog'] });
-        queryClient.invalidateQueries({ queryKey: ['searchSong'] });
-      }, 1000);
+      // if (invalidateTimeout) {
+      //   clearTimeout(invalidateTimeout);
+      // }
+      // invalidateTimeout = setTimeout(() => {
+      //   queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+      // }, 1000);
+      queryClient.invalidateQueries({ queryKey: ['searchSong'] });
+      queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
     },
   });
 }
 
-// 🎵 부를 노래 순서 변경
+// 부를 노래 순서 변경
 export function usePatchToSingSongMutation() {
   const queryClient = useQueryClient();
 

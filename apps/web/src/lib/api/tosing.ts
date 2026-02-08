@@ -8,6 +8,13 @@ export async function getToSingSong() {
   return response.data;
 }
 
+export async function getToSingSongGuest(songIds: string[]) {
+  const response = await instance.get<ApiResponse<ToSingSong[]>>('/songs/tosing/guest', {
+    params: { songIds },
+  });
+  return response.data;
+}
+
 export async function patchToSingSong(body: { songId: string; newWeight: number }) {
   const response = await instance.patch<ApiResponse<void>>('/songs/tosing', body);
   return response.data;
