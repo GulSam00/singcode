@@ -5,7 +5,15 @@ import { useEffect, useState } from 'react';
 
 import useAuthStore from '@/stores/useAuthStore';
 
-const ALLOW_PATHS = ['/', '/popular', '/login', '/signup', '/recent', '/update-password'];
+const ALLOW_PATHS = [
+  '/',
+  '/popular',
+  '/login',
+  '/signup',
+  '/recent',
+  '/tosing',
+  '/update-password',
+];
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();

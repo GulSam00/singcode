@@ -11,6 +11,9 @@ import { SearchSong } from '@/types/song';
 
 interface IProps {
   song: SearchSong;
+  isToSing: boolean;
+  isLike: boolean;
+  isSave: boolean;
   onToggleToSing: () => void;
   onToggleLike: () => void;
   onClickSave: () => void;
@@ -19,12 +22,15 @@ interface IProps {
 
 export default function SearchResultCard({
   song,
+  isToSing,
+  isLike,
+  isSave,
   onToggleToSing,
   onToggleLike,
   onClickSave,
   onClickArtist,
 }: IProps) {
-  const { id, title, artist, num_tj, num_ky, isToSing, isLike, isSave } = song;
+  const { id, title, artist, num_tj, num_ky } = song;
   const { isAuthenticated } = useAuthStore();
 
   const [open, setOpen] = useState(false);

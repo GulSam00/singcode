@@ -41,10 +41,9 @@ yarn-error.log*
 # Crawling
 **/log/*.txt
 
-# Gemini
-.gemini/
 
 .cursorrules
 .gitmessage.txt
 
 temp/
+.vscode

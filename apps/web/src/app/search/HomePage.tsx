@@ -7,10 +7,10 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSearchSong from '@/hooks/useSearchSong';
 import { type ChatMessage } from '@/lib/api/openAIchat';
+import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { SearchSong } from '@/types/song';
 import { ChatResponseType } from '@/utils/safeParseJson';
@@ -47,17 +47,25 @@ export default function SearchPage() {
     handleToggleSave,
     postSaveSong,
     patchSaveSong,
+
+    isAuthenticated,
   } = useSearchSong();
 
   const { ref, inView } = useInView();
 
-  let searchSongs: SearchSong[] = [];
-
-  if (searchResults) {
-    searchSongs = searchResults.pages.flatMap(page => page.data);
-  }
-
   const { searchHistory, removeFromHistory } = useSearchHistoryStore();
+  const { guestToSingSongs } = useGuestToSingStore();
+
+  const isToSing = (song: SearchSong, songId: string) => {
+    if (!isAuthenticated) {
+      return guestToSingSongs?.some(item => item.songs.id === songId);
+    }
+    return song.isToSing;
+  };
+
+  const searchSongs: SearchSong[] = searchResults
+    ? searchResults.pages.flatMap(page => page.data)
+    : [];
 
   // 엔터 키 처리
   const handleKeyUp = (e: React.KeyboardEvent) => {
@@ -103,7 +111,15 @@ export default function SearchPage() {
   return (
     <div className="bg-background">
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">노래 검색</h1>
+        <div className="flex flex-col">
+          <h1 className="text-2xl font-bold">노래 검색</h1>
+
+          {!isAuthenticated && (
+            <span className="text-muted-foreground text-sm">
+              Guest 상태에서는 [부를곡 추가] 만 가능합니다.
+            </span>
+          )}
+        </div>
 
         <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>
           <TabsList className="grid w-full grid-cols-3">
@@ -164,8 +180,11 @@ export default function SearchPage() {
               <SearchResultCard
                 key={song.artist + song.title + index}
                 song={song}
+                isToSing={isToSing(song, song.id)}
+                isLike={song.isLike}
+                isSave={song.isSave}
                 onToggleToSing={() =>
-                  handleToggleToSing(song.id, song.isToSing ? 'DELETE' : 'POST')
+                  handleToggleToSing(song, isToSing(song, song.id) ? 'DELETE' : 'POST')
                 }
                 onToggleLike={() => handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST')}
                 onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
