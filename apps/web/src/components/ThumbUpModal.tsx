@@ -11,6 +11,7 @@ import { Slider } from '@/components/ui/slider';
 import { useSongThumbMutation } from '@/queries/songThumbQuery';
 import { useUserQuery } from '@/queries/userQuery';
 import { usePatchSetPointMutation } from '@/queries/userQuery';
+import useFooterAnimateStore from '@/stores/useFooterAnimateStore';
 
 import FallingIcons from './FallingIcons';
 
@@ -29,9 +30,13 @@ export default function ThumbUpModal({ songId, handleClose }: ThumbUpModalProps)
   const { mutate: patchSongThumb, isPending: isPendingSongThumb } = useSongThumbMutation();
   const { mutate: patchSetPoint, isPending: isPendingSetPoint } = usePatchSetPointMutation();
 
+  const { triggerFooterAnimation } = useFooterAnimateStore();
+
   const handleClickThumb = () => {
     patchSongThumb({ songId, point: value[0] });
     patchSetPoint({ point: point - value[0] });
+
+    triggerFooterAnimation('POPULAR');
 
     handleClose();
   };

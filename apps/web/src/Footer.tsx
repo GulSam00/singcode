@@ -3,33 +3,30 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { useFooterStore } from '@/stores/useFooterStore';
+import useFooterAnimateStore, { FooterKey } from '@/stores/useFooterAnimateStore';
 import { cn } from '@/utils/cn';
 
-const FOOTER_KEY = {
-  SEARCH: 'SEARCH',
-  RECENT: 'RECENT',
-  TOSING: 'TOSING',
-  POPULAR: 'POPULAR',
-  INFO: 'INFO',
-};
+interface Navigation {
+  name: string;
+  href: string;
+  key: FooterKey;
+}
 
-const navigation = [
-  { name: '최신 곡', href: '/recent', key: FOOTER_KEY.RECENT },
+const navigation: Navigation[] = [
+  { name: '최신 곡', href: '/recent', key: 'RECENT' },
 
-  { name: '부를 곡', href: '/tosing', key: FOOTER_KEY.TOSING },
-  { name: '검색', href: '/', key: FOOTER_KEY.SEARCH },
+  { name: '부를 곡', href: '/tosing', key: 'TOSING' },
+  { name: '검색', href: '/', key: 'SEARCH' },
 
-  { name: '인기곡', href: '/popular', key: FOOTER_KEY.POPULAR },
-  { name: '정보', href: '/info', key: FOOTER_KEY.INFO },
+  { name: '인기곡', href: '/popular', key: 'POPULAR' },
+  { name: '정보', href: '/info', key: 'INFO' },
 ];
 
 export default function Footer() {
   const pathname = usePathname();
-  const { activeFooterItem } = useFooterStore();
+  const { activeFooterItem } = useFooterAnimateStore();
   const navPath = pathname.split('/')[1];
 
   return (
@@ -42,9 +39,9 @@ export default function Footer() {
           <div key={item.name} className="relative flex-1">
             {isAnimating && (
               <motion.div
-                className="bg-accent absolute top-0 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full"
+                className="bg-accent absolute top-0 left-1/2 z-0 h-4 w-4 -translate-x-1/2 rounded-full"
                 initial={{ y: -50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                animate={{ y: 10, opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
               />
@@ -60,7 +57,7 @@ export default function Footer() {
               <Link href={item.href}>
                 <motion.span
                   className="inline-block"
-                  animate={isAnimating ? { scale: 1.2 } : { scale: 1 }}
+                  animate={isAnimating ? { scale: 1.4 } : { scale: 1 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
                   {item.name}
