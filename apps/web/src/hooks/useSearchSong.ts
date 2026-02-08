@@ -9,6 +9,7 @@ import {
   useToggleToSingMutation,
 } from '@/queries/searchSongQuery';
 import useAuthStore from '@/stores/useAuthStore';
+import useFooterAnimateStore from '@/stores/useFooterAnimateStore';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { Method } from '@/types/common';
@@ -46,6 +47,7 @@ export default function useSearchSong() {
     isError,
   } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
 
+  const { setFooterAnimateKey } = useFooterAnimateStore();
   const { addToHistory } = useSearchHistoryStore();
   const { addGuestToSingSong, removeGuestToSingSong } = useGuestToSingStore();
 
@@ -75,6 +77,7 @@ export default function useSearchSong() {
     if (!isAuthenticated) {
       if (method === 'POST') {
         addGuestToSingSong(song);
+        setFooterAnimateKey('TOSING');
       } else {
         removeGuestToSingSong(song.id);
       }
@@ -84,6 +87,10 @@ export default function useSearchSong() {
     if (isToggleToSingPending) {
       toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
       return;
+    }
+
+    if (method === 'POST') {
+      setFooterAnimateKey('TOSING');
     }
     toggleToSing({ songId: song.id, method });
   };
@@ -97,6 +104,10 @@ export default function useSearchSong() {
     if (isToggleLikePending) {
       toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
       return;
+    }
+
+    if (method === 'POST') {
+      setFooterAnimateKey('INFO');
     }
     toggleLike({ songId, method });
   };
@@ -116,6 +127,8 @@ export default function useSearchSong() {
       toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
       return;
     }
+
+    setFooterAnimateKey('INFO');
     postSong({ songId, folderName, query, searchType });
   };
 
@@ -125,6 +138,7 @@ export default function useSearchSong() {
       return;
     }
 
+    setFooterAnimateKey('INFO');
     moveSong({ songIdArray: [songId], folderId });
   };
 
