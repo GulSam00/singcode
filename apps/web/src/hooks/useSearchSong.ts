@@ -97,7 +97,7 @@ export default function useSearchSong() {
 
   const handleToggleLike = async (songId: string, method: Method) => {
     if (!isAuthenticated) {
-      toast.error('로그인이 필요해요.');
+      toast.error('로그인하고 곡을 저장해보세요!');
       return;
     }
 
@@ -114,7 +114,7 @@ export default function useSearchSong() {
 
   const handleToggleSave = async (song: SearchSong, method: Method) => {
     if (!isAuthenticated) {
-      toast.error('로그인이 필요해요.');
+      toast.error('로그인하고 곡을 저장해보세요!');
       return;
     }
 

@@ -37,7 +37,7 @@ export default function SearchResultCard({
 
   const handleClickThumbsUp = () => {
     if (!isAuthenticated) {
-      toast.error('로그인이 필요해요.');
+      toast.error('로그인하고 곡 추천 기능을 사용해보세요!');
       return;
     }
     setOpen(true);
