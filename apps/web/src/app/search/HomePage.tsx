@@ -1,7 +1,7 @@
 'use client';
 
-import { Loader2, Search, SearchX, UserRoundSearch, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Loader2, Search, SearchX, X } from 'lucide-react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
 
@@ -14,12 +14,11 @@ import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { SearchSong } from '@/types/song';
 
 import AddFolderModal from './AddFolderModal';
-import { ChatBot } from './ChatBot';
+import ChatBot from './ChatBot';
+import JpnAristList from './JpnAristList';
 import SearchResultCard from './SearchResultCard';
 
 export default function SearchPage() {
-  const [isArtistListOpen, setIsArtistListOpen] = useState(false);
-
   const {
     search,
     query,
@@ -117,10 +116,7 @@ export default function SearchPage() {
               </span>
             )}
           </div>
-          <Button variant="outline" onClick={() => setIsArtistListOpen(true)}>
-            <UserRoundSearch className="h-4 w-4" />
-            일본 가수 찾기
-          </Button>
+          <JpnAristList onSelectArtist={setSearch} />
         </div>
 
         <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>

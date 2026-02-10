@@ -15,7 +15,7 @@ interface ChatBotProps {
   setInputSearch: (value: string) => void;
 }
 
-export function ChatBot({ setInputSearch }: ChatBotProps) {
+export default function ChatBot({ setInputSearch }: ChatBotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [recommendation, setRecommendation] = useState<ChatResponseType | null>(null);

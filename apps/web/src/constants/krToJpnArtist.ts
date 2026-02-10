@@ -1,7 +1,7 @@
 export const krToJpnArtistSort = {
   // A-Z
   Aimer: 'Aimer',
-  DECO27: 'DECO*27(Feat.初音ミク)',
+  DECO27: 'DECO*27',
 
   // 가
   '결속 밴드': '結束バンド',
