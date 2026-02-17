@@ -17,6 +17,7 @@ import AddFolderModal from './AddFolderModal';
 import ChatBot from './ChatBot';
 import JpnAristList from './JpnAristList';
 import SearchResultCard from './SearchResultCard';
+import SearchAutocomplete from './SearchAutocomplete';
 
 export default function SearchPage() {
   const {
@@ -82,6 +83,10 @@ export default function SearchPage() {
     setSearch(term);
   };
 
+  const handleAutocompleteClick = (term: string) => {
+    setSearch(term);
+  };
+
   const getPlaceholder = (type: string) => {
     switch (type) {
       case 'title':
@@ -103,6 +108,7 @@ export default function SearchPage() {
     return () => clearTimeout(timeout);
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
+  const tempList = ["test1", "test2"]
   return (
     <div className="bg-background">
       <div className="flex flex-col gap-4">
@@ -138,6 +144,12 @@ export default function SearchPage() {
               onChange={e => setSearch(e.target.value)}
               onKeyUp={handleKeyUp}
             />
+            <SearchAutocomplete
+              items={tempList}
+              onSelect={handleAutocompleteClick}
+            />
+
+
           </div>
 
           <Button className="w-[60px]" onClick={handleSearchClick} disabled={isPendingSearch}>
