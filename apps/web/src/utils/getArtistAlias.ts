@@ -1,16 +1,11 @@
-const ARTIST_DATA = {
-  嵐: ['아라시', 'arashi'],
-  東方神起: ['동방신기', 'tvxq'],
-  NewJeans: ['뉴진스', 'new jeans'],
-  IU: ['아이유', '이지금'],
-} as const;
+import { artistAlias } from '@/constants/artistAlias';
 
-type SearchCandidate = { label: string; value: string };
+export type SearchCandidate = { label: string; value: string };
 
 const createCandidateList = (): SearchCandidate[] => {
   const list: SearchCandidate[] = [];
 
-  Object.entries(ARTIST_DATA).forEach(([officialName, aliases]) => {
+  Object.entries(artistAlias).forEach(([officialName, aliases]) => {
     // 공식 명칭 검색 후보에 추가
     list.push({ label: officialName, value: officialName });
 

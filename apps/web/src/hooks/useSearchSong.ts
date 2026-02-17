@@ -27,6 +27,7 @@ export default function useSearchSong() {
   const [searchType, setSearchType] = useState<SearchType>('all');
   const [saveModalType, setSaveModalType] = useState<SaveModalType>('');
   const [selectedSaveSong, setSelectedSaveSong] = useState<SearchSong | null>(null);
+
   const { mutate: toggleToSing, isPending: isToggleToSingPending } = useToggleToSingMutation(
     query,
     searchType,

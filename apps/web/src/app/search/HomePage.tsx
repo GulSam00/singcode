@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader2, Search, SearchX, X } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
 
@@ -16,8 +16,8 @@ import { SearchSong } from '@/types/song';
 import AddFolderModal from './AddFolderModal';
 import ChatBot from './ChatBot';
 import JpnAristList from './JpnAristList';
-import SearchResultCard from './SearchResultCard';
 import SearchAutocomplete from './SearchAutocomplete';
+import SearchResultCard from './SearchResultCard';
 
 export default function SearchPage() {
   const {
@@ -47,6 +47,8 @@ export default function SearchPage() {
     isAuthenticated,
   } = useSearchSong();
 
+  const [isFocusAuto, setIsFocusAuto] = useState(false);
+
   const { ref, inView } = useInView();
 
   const { searchHistory, removeFromHistory } = useSearchHistoryStore();
@@ -67,6 +69,7 @@ export default function SearchPage() {
   const handleKeyUp = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
+      setIsFocusAuto(false);
     }
   };
 
@@ -77,6 +80,12 @@ export default function SearchPage() {
     }
 
     handleSearch();
+    setIsFocusAuto(false);
+  };
+
+  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setIsFocusAuto(true);
   };
 
   const handleHistoryClick = (term: string) => {
@@ -85,6 +94,7 @@ export default function SearchPage() {
 
   const handleAutocompleteClick = (term: string) => {
     setSearch(term);
+    setIsFocusAuto(false);
   };
 
   const getPlaceholder = (type: string) => {
@@ -108,7 +118,8 @@ export default function SearchPage() {
     return () => clearTimeout(timeout);
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
-  const tempList = ["test1", "test2"]
+  console.log('isFocusAuto', isFocusAuto);
+
   return (
     <div className="bg-background">
       <div className="flex flex-col gap-4">
@@ -118,7 +129,8 @@ export default function SearchPage() {
 
             {!isAuthenticated && (
               <span className="text-muted-foreground text-sm">
-                Guest 상태에서는 [부를곡 추가] 만 가능합니다.
+                Guest 상태에서는 <br />
+                [부를곡 추가]만 가능합니다.
               </span>
             )}
           </div>
@@ -141,15 +153,14 @@ export default function SearchPage() {
               placeholder={getPlaceholder(searchType)}
               className="pl-8"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={handleChangeSearch}
               onKeyUp={handleKeyUp}
+              onFocus={() => setIsFocusAuto(true)}
+              onBlur={() => setIsFocusAuto(false)}
             />
-            <SearchAutocomplete
-              items={tempList}
-              onSelect={handleAutocompleteClick}
-            />
-
-
+            {isFocusAuto && (
+              <SearchAutocomplete search={search} onSelect={handleAutocompleteClick} />
+            )}
           </div>
 
           <Button className="w-[60px]" onClick={handleSearchClick} disabled={isPendingSearch}>
