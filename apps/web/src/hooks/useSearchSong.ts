@@ -23,18 +23,18 @@ export default function useSearchSong() {
   const { isAuthenticated } = useAuthStore();
 
   const [search, setSearch] = useState('');
-  const [query, setQuery] = useState('');
   const [searchType, setSearchType] = useState<SearchType>('all');
+  const [query, setQuery] = useState('');
+  const [queryType, setQueryType] = useState<SearchType>('all');
   const [saveModalType, setSaveModalType] = useState<SaveModalType>('');
   const [selectedSaveSong, setSelectedSaveSong] = useState<SearchSong | null>(null);
-
   const { mutate: toggleToSing, isPending: isToggleToSingPending } = useToggleToSingMutation(
     query,
-    searchType,
+    queryType,
   );
   const { mutate: toggleLike, isPending: isToggleLikePending } = useToggleLikeMutation(
     query,
-    searchType,
+    queryType,
   );
   const { mutate: postSong, isPending: isPostSongPending } = useSaveMutation();
   const { mutate: moveSong, isPending: isMoveSongPending } = useMoveSaveSongMutation();
@@ -46,7 +46,7 @@ export default function useSearchSong() {
     isFetchingNextPage,
     isLoading: isPendingSearch,
     isError,
-  } = useInfiniteSearchSongQuery(query, searchType, isAuthenticated);
+  } = useInfiniteSearchSongQuery(query, queryType, isAuthenticated);
 
   const { setFooterAnimateKey } = useFooterAnimateStore();
   const { addToHistory } = useSearchHistoryStore();
@@ -66,6 +66,7 @@ export default function useSearchSong() {
     if (parsedSearch) {
       setQuery(parsedSearch);
       setSearch(parsedSearch);
+      setQueryType(searchType);
       addToHistory(parsedSearch);
     }
   };
@@ -130,7 +131,7 @@ export default function useSearchSong() {
     }
 
     setFooterAnimateKey('INFO');
-    postSong({ songId, folderName, query, searchType });
+    postSong({ songId, folderName, query, searchType: queryType });
   };
 
   const patchSaveSong = async (songId: string, folderId: string) => {

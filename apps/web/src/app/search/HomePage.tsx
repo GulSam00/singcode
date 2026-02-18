@@ -131,7 +131,10 @@ export default function SearchPage() {
               </span>
             )}
           </div>
-          <JpnAristList onSelectArtist={setSearch} />
+          <JpnAristList
+            onSelectArtist={setSearch}
+            callback={() => handleSearchTypeChange('artist')}
+          />
         </div>
 
         <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>

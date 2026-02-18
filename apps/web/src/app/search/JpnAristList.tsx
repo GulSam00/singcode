@@ -16,13 +16,15 @@ import { krToJpnArtistSort } from '@/constants/krToJpnArtist';
 
 interface JpnAristListProps {
   onSelectArtist: (keyword: string) => void;
+  callback: () => void;
 }
 
-export default function JpnAristList({ onSelectArtist }: JpnAristListProps) {
+export default function JpnAristList({ onSelectArtist, callback }: JpnAristListProps) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (keyword: string) => {
     onSelectArtist(keyword);
+    callback();
     setOpen(false);
   };
 
