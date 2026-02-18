@@ -15,7 +15,6 @@ export default function SearchAutocomplete({
   className,
 }: SearchAutocompleteProps) {
   const autoCompleteList = getAutoCompleteSuggestions(search);
-  console.log('autoCompleteSuggestions', autoCompleteList);
 
   if (autoCompleteList.length === 0) return null;
 

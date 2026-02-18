@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2, Search, SearchX, X } from 'lucide-react';
+import { Loader2, Search, SearchX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
@@ -10,13 +10,13 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSearchSong from '@/hooks/useSearchSong';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
-import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { SearchSong } from '@/types/song';
 
 import AddFolderModal from './AddFolderModal';
 import ChatBot from './ChatBot';
 import JpnAristList from './JpnAristList';
 import SearchAutocomplete from './SearchAutocomplete';
+import SearchHistory from './SearchHistory';
 import SearchResultCard from './SearchResultCard';
 
 export default function SearchPage() {
@@ -51,7 +51,6 @@ export default function SearchPage() {
 
   const { ref, inView } = useInView();
 
-  const { searchHistory, removeFromHistory } = useSearchHistoryStore();
   const { guestToSingSongs } = useGuestToSingStore();
 
   const isToSing = (song: SearchSong, songId: string) => {
@@ -118,8 +117,6 @@ export default function SearchPage() {
     return () => clearTimeout(timeout);
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
-  console.log('isFocusAuto', isFocusAuto);
-
   return (
     <div className="bg-background">
       <div className="flex flex-col gap-4">
@@ -167,32 +164,8 @@ export default function SearchPage() {
             {isPendingSearch ? <Loader2 className="h-4 w-4 animate-spin" /> : '검색'}
           </Button>
         </div>
-        {searchHistory.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto pb-4">
-            {searchHistory.map((term, index) => (
-              <div
-                key={index}
-                className="bg-background flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-sm"
-              >
-                <button
-                  type="button"
-                  className="hover:text-primary"
-                  onClick={() => handleHistoryClick(term)}
-                >
-                  {term}
-                </button>
-                <button
-                  type="button"
-                  className="hover:text-destructive"
-                  onClick={() => removeFromHistory(term)}
-                  title="검색 기록 삭제"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* 검색 기록 */}
+        <SearchHistory onHistoryClick={handleHistoryClick} />
       </div>
       <div className="h-[calc(100vh-24rem)] overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
