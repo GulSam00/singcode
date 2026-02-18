@@ -1,5 +1,7 @@
 'use client';
 
+import { useDeferredValue, useMemo } from 'react';
+
 import { cn } from '@/utils/cn';
 import { getAutoCompleteSuggestions } from '@/utils/getArtistAlias';
 
@@ -14,7 +16,13 @@ export default function SearchAutocomplete({
   onSelect,
   className,
 }: SearchAutocompleteProps) {
-  const autoCompleteList = getAutoCompleteSuggestions(search);
+  // 자동완성 목록은 지연되도 괜찮기에, useDeferredValue으로 낮은 우선순위 부여
+  const deferredSearch = useDeferredValue(search);
+
+  const autoCompleteList = useMemo(
+    () => getAutoCompleteSuggestions(deferredSearch),
+    [deferredSearch],
+  );
 
   if (autoCompleteList.length === 0) return null;
 
