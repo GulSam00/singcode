@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useDeferredValue, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useMoveSaveSongMutation } from '@/queries/saveSongQuery';
@@ -14,6 +14,7 @@ import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { Method } from '@/types/common';
 import { SearchSong, Song } from '@/types/song';
+import { getAutoCompleteSuggestions } from '@/utils/getArtistAlias';
 
 type SearchType = 'all' | 'title' | 'artist';
 
@@ -52,15 +53,28 @@ export default function useSearchSong() {
   const { addToHistory } = useSearchHistoryStore();
   const { addGuestToSingSong, removeGuestToSingSong } = useGuestToSingStore();
 
+  const deferredSearch = useDeferredValue(search);
+
+  const autoCompleteList = useMemo(
+    () => getAutoCompleteSuggestions(deferredSearch),
+    [deferredSearch],
+  );
+
   const handleSearch = () => {
     // trim 제거
     const trimSearch = search.trim();
 
-    // 한글이 있다면 공백 제거
     let parsedSearch = trimSearch;
-    const hasKorean = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(trimSearch);
-    if (hasKorean) {
-      parsedSearch = parsedSearch.replace(/ /g, '');
+
+    if (autoCompleteList.length === 1) {
+      // 자동완성 리스트가 하나(정확히 일치하면) 해당 alias의 value로 자동 치환
+      parsedSearch = autoCompleteList[0].value;
+    } else {
+      // 한글이 있다면 공백 제거
+      const hasKorean = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(trimSearch);
+      if (hasKorean) {
+        parsedSearch = parsedSearch.replace(/ /g, '');
+      }
     }
 
     if (parsedSearch) {
@@ -147,6 +161,8 @@ export default function useSearchSong() {
   return {
     search,
     setSearch,
+    searchType,
+    autoCompleteList,
     query,
 
     searchResults,
@@ -156,7 +172,6 @@ export default function useSearchSong() {
     isPendingSearch,
     isError,
 
-    searchType,
     handleSearchTypeChange,
     handleSearch,
     handleToggleToSing,

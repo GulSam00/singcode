@@ -22,8 +22,10 @@ import SearchResultCard from './SearchResultCard';
 export default function SearchPage() {
   const {
     search,
-    query,
+    searchType,
     setSearch,
+    autoCompleteList,
+    query,
 
     searchResults,
     isPendingSearch,
@@ -35,7 +37,6 @@ export default function SearchPage() {
     saveModalType,
     setSaveModalType,
     selectedSaveSong,
-    searchType,
     handleSearchTypeChange,
     handleSearch,
     handleToggleToSing,
@@ -159,7 +160,10 @@ export default function SearchPage() {
               onBlur={() => setIsFocusAuto(false)}
             />
             {isFocusAuto && (
-              <SearchAutocomplete search={search} onSelect={handleAutocompleteClick} />
+              <SearchAutocomplete
+                autoCompleteList={autoCompleteList}
+                onSelect={handleAutocompleteClick}
+              />
             )}
           </div>
 
