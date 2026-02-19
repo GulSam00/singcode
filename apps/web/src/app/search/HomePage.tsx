@@ -56,7 +56,13 @@ export default function SearchPage() {
   const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
   const [isFocusAuto, setIsFocusAuto] = useState(false);
 
-  const { ref, inView } = useInView();
+  const [scrollRef, setScrollRef] = useState<HTMLDivElement | null>(null);
+  const { ref, inView } = useInView({
+    root: scrollRef,
+    rootMargin: '0px 0px 800px 0px', // 스크롤 하단 600px 이전에 미리 로딩
+  });
+
+  console.log('inView', inView);
 
   const { guestToSingSongs } = useGuestToSingStore();
 
@@ -178,7 +184,7 @@ export default function SearchPage() {
         {/* 검색 기록 */}
         <SearchHistory onHistoryClick={handleHistoryClick} />
       </div>
-      <div className="h-[calc(100vh-24rem)] overflow-x-hidden overflow-y-auto">
+      <div ref={setScrollRef} className="h-[calc(100vh-24rem)] overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
           <div className="flex w-full max-w-md flex-col gap-4 p-4">
             {searchSongs.map((song, index) => (
