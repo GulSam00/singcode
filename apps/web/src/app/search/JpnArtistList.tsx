@@ -15,30 +15,38 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { krToJpnArtistSort } from '@/constants/krToJpnArtist';
 
 interface JpnArtistListProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onSelectArtist: (keyword: string) => void;
   callback: () => void;
 }
 
-export default function JpnArtistList({ onSelectArtist, callback }: JpnArtistListProps) {
-  const [open, setOpen] = useState(false);
-
+export default function JpnArtistList({
+  open,
+  onOpenChange,
+  onSelectArtist,
+  callback,
+}: JpnArtistListProps) {
   const handleSelect = (keyword: string) => {
-    onSelectArtist(keyword);
-    callback();
-    setOpen(false);
+    onOpenChange(false);
+    // 모달이 닫히는 애니메이션과 부모 상태 업데이트가 겹치지 않도록 지연
+    setTimeout(() => {
+      onSelectArtist(keyword);
+      callback();
+    }, 0);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">
           <UserRoundSearch className="h-4 w-4" />
-          일본 가수 찾기
+          J-POP 가수 찾기
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[80vh]">
         <DialogHeader>
-          <DialogTitle>일본 가수 리스트</DialogTitle>
+          <DialogTitle>J-POP 가수 리스트</DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-[60vh] pr-4">
           <div className="flex flex-col gap-2">

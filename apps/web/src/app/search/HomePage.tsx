@@ -53,6 +53,7 @@ export default function SearchPage() {
     patchSaveSong,
   } = useSaveSongModal(query, queryType);
 
+  const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
   const [isFocusAuto, setIsFocusAuto] = useState(false);
 
   const { ref, inView } = useInView();
@@ -134,6 +135,8 @@ export default function SearchPage() {
             )}
           </div>
           <JpnArtistList
+            open={isJpnArtistModalOpen}
+            onOpenChange={setIsJpnArtistModalOpen}
             onSelectArtist={setSearch}
             callback={() => handleSearchTypeChange('artist')}
           />
