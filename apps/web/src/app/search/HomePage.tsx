@@ -1,6 +1,6 @@
 'use client';
 
-import { Bot, Loader2, Search, SearchX, X } from 'lucide-react';
+import { Loader2, Search, SearchX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
@@ -8,26 +8,26 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import useSaveSongModal from '@/hooks/useSaveSongModal';
 import useSearchSong from '@/hooks/useSearchSong';
-import { type ChatMessage } from '@/lib/api/openAIchat';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
-import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { SearchSong } from '@/types/song';
-import { ChatResponseType } from '@/utils/safeParseJson';
 
 import AddFolderModal from './AddFolderModal';
-import { ChatBot } from './ChatBot';
+import ChatBot from './ChatBot';
+import JpnArtistList from './JpnArtistList';
+import SearchAutocomplete from './SearchAutocomplete';
+import SearchHistory from './SearchHistory';
 import SearchResultCard from './SearchResultCard';
 
 export default function SearchPage() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [chatRecommendation, setChatRecommendation] = useState<ChatResponseType | null>(null);
-
   const {
     search,
-    query,
+    searchType,
     setSearch,
+    autoCompleteList,
+    query,
+    queryType,
 
     searchResults,
     isPendingSearch,
@@ -36,24 +36,28 @@ export default function SearchPage() {
     isFetchingNextPage,
     isError,
 
-    saveModalType,
-    setSaveModalType,
-    selectedSaveSong,
-    searchType,
     handleSearchTypeChange,
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
-    handleToggleSave,
-    postSaveSong,
-    patchSaveSong,
 
     isAuthenticated,
   } = useSearchSong();
 
+  const {
+    saveModalType,
+    setSaveModalType,
+    selectedSaveSong,
+    handleToggleSave,
+    postSaveSong,
+    patchSaveSong,
+  } = useSaveSongModal(query, queryType);
+
+  const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
+  const [isFocusAuto, setIsFocusAuto] = useState(false);
+
   const { ref, inView } = useInView();
 
-  const { searchHistory, removeFromHistory } = useSearchHistoryStore();
   const { guestToSingSongs } = useGuestToSingStore();
 
   const isToSing = (song: SearchSong, songId: string) => {
@@ -71,6 +75,7 @@ export default function SearchPage() {
   const handleKeyUp = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
+      setIsFocusAuto(false);
     }
   };
 
@@ -81,10 +86,21 @@ export default function SearchPage() {
     }
 
     handleSearch();
+    setIsFocusAuto(false);
+  };
+
+  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setIsFocusAuto(true);
   };
 
   const handleHistoryClick = (term: string) => {
     setSearch(term);
+  };
+
+  const handleAutocompleteClick = (term: string) => {
+    setSearch(term);
+    setIsFocusAuto(false);
   };
 
   const getPlaceholder = (type: string) => {
@@ -99,26 +115,31 @@ export default function SearchPage() {
   };
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (inView && hasNextPage && !isFetchingNextPage && !isError) {
-        fetchNextPage();
-      }
-    }, 1000); // 1000ms 정도 지연
-
-    return () => clearTimeout(timeout);
+    if (inView && hasNextPage && !isFetchingNextPage && !isError) {
+      fetchNextPage();
+    }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   return (
     <div className="bg-background">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-bold">노래 검색</h1>
+        <div className="flex justify-between">
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold">노래 검색</h1>
 
-          {!isAuthenticated && (
-            <span className="text-muted-foreground text-sm">
-              Guest 상태에서는 [부를곡 추가] 만 가능합니다.
-            </span>
-          )}
+            {!isAuthenticated && (
+              <span className="text-muted-foreground text-sm">
+                Guest 상태에서는 <br />
+                [부를곡 추가]만 가능합니다.
+              </span>
+            )}
+          </div>
+          <JpnArtistList
+            open={isJpnArtistModalOpen}
+            onOpenChange={setIsJpnArtistModalOpen}
+            onSelectArtist={setSearch}
+            callback={() => handleSearchTypeChange('artist')}
+          />
         </div>
 
         <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>
@@ -137,41 +158,25 @@ export default function SearchPage() {
               placeholder={getPlaceholder(searchType)}
               className="pl-8"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={handleChangeSearch}
               onKeyUp={handleKeyUp}
+              onFocus={() => setIsFocusAuto(true)}
+              onBlur={() => setIsFocusAuto(false)}
             />
+            {isFocusAuto && (
+              <SearchAutocomplete
+                autoCompleteList={autoCompleteList}
+                onSelect={handleAutocompleteClick}
+              />
+            )}
           </div>
 
           <Button className="w-[60px]" onClick={handleSearchClick} disabled={isPendingSearch}>
             {isPendingSearch ? <Loader2 className="h-4 w-4 animate-spin" /> : '검색'}
           </Button>
         </div>
-        {searchHistory.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto pb-4">
-            {searchHistory.map((term, index) => (
-              <div
-                key={index}
-                className="bg-background flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-sm"
-              >
-                <button
-                  type="button"
-                  className="hover:text-primary"
-                  onClick={() => handleHistoryClick(term)}
-                >
-                  {term}
-                </button>
-                <button
-                  type="button"
-                  className="hover:text-destructive"
-                  onClick={() => removeFromHistory(term)}
-                  title="검색 기록 삭제"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* 검색 기록 */}
+        <SearchHistory onHistoryClick={handleHistoryClick} />
       </div>
       <div className="h-[calc(100vh-24rem)] overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
@@ -230,51 +235,7 @@ export default function SearchPage() {
       )}
 
       {/* 챗봇 위젯 */}
-      <div className="fixed right-4 bottom-10 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
-        {isChatOpen && (
-          <div className="bg-background animate-in slide-in-from-bottom-5 fade-in-0 flex h-[500px] w-[calc(100vw-4rem)] max-w-[400px] flex-col rounded-lg border shadow-2xl duration-300 sm:h-[600px]">
-            {/* 헤더 */}
-            <div className="flex items-center justify-between border-b p-3 sm:p-4">
-              <div className="flex items-center gap-2">
-                <Bot className="text-primary h-5 w-5 shrink-0" />
-                <div className="min-w-0">
-                  <h3 className="text-sm font-semibold">AI 노래 추천 챗봇</h3>
-                  <p className="text-muted-foreground hidden text-xs sm:block">
-                    기분이나 상황을 말씀해주시면 <br />
-                    맞는 노래를 추천해드려요
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 shrink-0"
-                onClick={() => setIsChatOpen(false)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            {/* 챗봇 컨텐츠 */}
-            <div className="flex-1 overflow-hidden">
-              <ChatBot
-                messages={chatMessages}
-                recommendation={chatRecommendation}
-                setMessages={setChatMessages}
-                setRecommendation={setChatRecommendation}
-                setInputSearch={setSearch}
-              />
-            </div>
-          </div>
-        )}
-        {/* 챗봇 버튼 */}
-        <Button
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          size="lg"
-          className="h-14 w-14 rounded-full shadow-lg"
-        >
-          <Bot className="h-6 w-6" />
-        </Button>
-      </div>
+      <ChatBot setInputSearch={setSearch} />
     </div>
   );
 }

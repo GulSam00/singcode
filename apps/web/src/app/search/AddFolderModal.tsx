@@ -49,7 +49,7 @@ export default function AddFolderModal({
 
   const LOGIC_TEXT = modalType === 'POST' ? '저장' : '수정';
 
-  const handlevalueChange = (folderName: string) => {
+  const handleValueChange = (folderName: string) => {
     if (!saveSongFolderList) return;
     setFolderName(folderName);
   };
@@ -120,7 +120,7 @@ export default function AddFolderModal({
           {/* 재생목록 선택 */}
           <div>
             <Label htmlFor="playlist-select">재생목록 선택</Label>
-            <Select disabled={isLoading} value={folderName} onValueChange={handlevalueChange}>
+            <Select disabled={isLoading} value={folderName} onValueChange={handleValueChange}>
               <SelectTrigger id="playlist-select" className="mt-1 w-full">
                 <SelectValue placeholder="재생목록을 선택하세요" />
               </SelectTrigger>

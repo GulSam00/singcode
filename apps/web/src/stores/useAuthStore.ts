@@ -251,8 +251,6 @@ const useAuthStore = create(
             message: '비밀번호가 성공적으로 변경되었어요.',
           };
         } catch (error) {
-          // console.log(error);
-          // console.log(Object.entries(error));
           const { code } = error as AuthError;
           return getSupabaseErrorMessage(code as string);
         }

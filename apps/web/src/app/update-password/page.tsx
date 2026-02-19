@@ -85,9 +85,6 @@ export default function UpdatePasswordPage() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async event => {
-      // console.log('Auth event:', event); // 디버깅용
-      // console.log('Session:', session); // 디버깅용
-
       if (event === 'SIGNED_IN') {
         setStep('reset');
         toast.success('이메일 인증 확인', { description: '비밀번호를 재설정 해주세요.' });

@@ -37,7 +37,7 @@ export default function SearchResultCard({
 
   const handleClickThumbsUp = () => {
     if (!isAuthenticated) {
-      toast.error('로그인이 필요해요.');
+      toast.error('로그인하고 곡 추천 기능을 사용해보세요!');
       return;
     }
     setOpen(true);
@@ -54,7 +54,7 @@ export default function SearchResultCard({
             <div className="w-[calc(100%-40px)]">
               <h3 className="truncate text-base font-medium">{title}</h3>
               <span
-                className="text-muted-foreground cursor-pointer truncate text-sm hover:underline"
+                className="text-muted-foreground hover:text-accent cursor-pointer truncate text-sm hover:underline hover:underline-offset-4"
                 onClick={onClickArtist}
               >
                 {artist}
