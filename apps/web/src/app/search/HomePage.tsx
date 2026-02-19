@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import useSaveSongModal from '@/hooks/useSaveSongModal';
 import useSearchSong from '@/hooks/useSearchSong';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import { SearchSong } from '@/types/song';
@@ -26,6 +27,7 @@ export default function SearchPage() {
     setSearch,
     autoCompleteList,
     query,
+    queryType,
 
     searchResults,
     isPendingSearch,
@@ -34,19 +36,22 @@ export default function SearchPage() {
     isFetchingNextPage,
     isError,
 
-    saveModalType,
-    setSaveModalType,
-    selectedSaveSong,
     handleSearchTypeChange,
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
-    handleToggleSave,
-    postSaveSong,
-    patchSaveSong,
 
     isAuthenticated,
   } = useSearchSong();
+
+  const {
+    saveModalType,
+    setSaveModalType,
+    selectedSaveSong,
+    handleToggleSave,
+    postSaveSong,
+    patchSaveSong,
+  } = useSaveSongModal(query, queryType);
 
   const [isFocusAuto, setIsFocusAuto] = useState(false);
 
@@ -109,13 +114,9 @@ export default function SearchPage() {
   };
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (inView && hasNextPage && !isFetchingNextPage && !isError) {
-        fetchNextPage();
-      }
-    }, 500); // 다음 페이지 로딩 500ms 정도 지연
-
-    return () => clearTimeout(timeout);
+    if (inView && hasNextPage && !isFetchingNextPage && !isError) {
+      fetchNextPage();
+    }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   return (
