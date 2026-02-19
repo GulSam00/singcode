@@ -58,7 +58,9 @@ sing-code/
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
 
-![supabase DB](https://github.com/user-attachments/assets/a5130f5e-c4bd-419e-b1d5-a9f217b456f7)
+
+
+<img width="700" height="725" alt="image" src="https://github.com/user-attachments/assets/17080dc1-1b63-4cfb-a325-429d207c52d6" />
 
 </div>
 
@@ -176,6 +178,8 @@ sing-code/
 - 2025.10.26 : 버전 1.8.0 배포. 최근곡 기능 추가. 비동기 요청 포기, isPending으로 제어
 - 2026.1.4 : 버전 1.9.0 배포. OPENAI 활용 챗봇 기능 추가.
 - 2026.1.27 : 버전 2.0.0 배포. DB 재설계 및 로직 리펙토링. 출석 체크, 유저 별 포인트, 곡 추천 기능 추가.
+- 2026.2.8 : 버전 2.1.0 배포. 비회원 상태로 곡 부를곡 추가가 가능, Footer 애니메이션 추가.
+
   
 ## 📝 회고
 

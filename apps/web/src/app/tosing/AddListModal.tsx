@@ -1,6 +1,5 @@
 'use client';
 
-// import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -12,7 +11,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useAddSongList, { type TabType } from '@/hooks/useAddSongList';
 import { useLikeSongQuery } from '@/queries/likeSongQuery';
-// import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
 import { useSaveSongQuery } from '@/queries/saveSongQuery';
 import useAuthStore from '@/stores/useAuthStore';
 
