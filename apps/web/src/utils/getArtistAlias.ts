@@ -1,3 +1,5 @@
+import { getChoseong } from 'es-hangul';
+
 import { artistAlias } from '@/constants/artistAlias';
 
 export type SearchCandidate = { label: string; value: string };
@@ -29,7 +31,9 @@ export const getAutoCompleteSuggestions = (query: string): SearchCandidate[] => 
   // 배열 필터링 (여기가 핵심)
   // includes: 중간에 포함된 것도 찾음 ("라시" -> "아라시")
   // startsWith: 앞에서부터 일치하는 것만 찾음 ("아" -> "아라시") -> 보통 자동완성은 이걸 씀
-  return SEARCH_CANDIDATES.filter(candidate =>
-    candidate.label.toLowerCase().startsWith(normalizedQuery),
+  return SEARCH_CANDIDATES.filter(
+    candidate =>
+      candidate.label.toLowerCase().startsWith(normalizedQuery) ||
+      getChoseong(candidate.label).startsWith(normalizedQuery),
   ).slice(0, 10); // 성능을 위해 상위 10개만 자름
 };
