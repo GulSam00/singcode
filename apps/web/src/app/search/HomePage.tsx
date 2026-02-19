@@ -14,7 +14,7 @@ import { SearchSong } from '@/types/song';
 
 import AddFolderModal from './AddFolderModal';
 import ChatBot from './ChatBot';
-import JpnAristList from './JpnAristList';
+import JpnArtistList from './JpnArtistList';
 import SearchAutocomplete from './SearchAutocomplete';
 import SearchHistory from './SearchHistory';
 import SearchResultCard from './SearchResultCard';
@@ -131,7 +131,7 @@ export default function SearchPage() {
               </span>
             )}
           </div>
-          <JpnAristList
+          <JpnArtistList
             onSelectArtist={setSearch}
             callback={() => handleSearchTypeChange('artist')}
           />

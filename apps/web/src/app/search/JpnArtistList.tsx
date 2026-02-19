@@ -14,12 +14,12 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { krToJpnArtistSort } from '@/constants/krToJpnArtist';
 
-interface JpnAristListProps {
+interface JpnArtistListProps {
   onSelectArtist: (keyword: string) => void;
   callback: () => void;
 }
 
-export default function JpnAristList({ onSelectArtist, callback }: JpnAristListProps) {
+export default function JpnArtistList({ onSelectArtist, callback }: JpnArtistListProps) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (keyword: string) => {
