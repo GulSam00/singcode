@@ -1,3 +1,4 @@
+import MarqueeText from '@/components/MarqueeText';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AddListModalSong } from '@/types/song';
 import { cn } from '@/utils/cn';
@@ -20,8 +21,8 @@ export default function SongItem({
         onCheckedChange={() => onToggleSelect(song.song_id)}
       />
       <div className="min-w-0 flex-1">
-        <h4 className="truncate text-sm font-medium">{song.title}</h4>
-        <p className="text-muted-foreground truncate text-xs">{song.artist}</p>
+        <MarqueeText className="text-sm font-medium">{song.title}</MarqueeText>
+        <MarqueeText className="text-muted-foreground text-xs">{song.artist}</MarqueeText>
       </div>
     </div>
   );

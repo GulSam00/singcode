@@ -2,10 +2,11 @@ import { Heart, ListPlus, ListRestart, MinusCircle, PlusCircle, ThumbsUp } from 
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import MarqueeText from '@/components/MarqueeText';
 import ThumbUpModal from '@/components/ThumbUpModal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import useAuthStore from '@/stores/useAuthStore';
 import { SearchSong } from '@/types/song';
 
@@ -51,14 +52,14 @@ export default function SearchResultCard({
         <div className="mb-8 flex flex-col">
           {/* 제목 및 가수 */}
           <div className="mb-1 flex justify-between pr-2">
-            <div className="w-[calc(100%-40px)]">
-              <h3 className="truncate text-base font-medium">{title}</h3>
-              <span
-                className="text-muted-foreground hover:text-accent cursor-pointer truncate text-sm hover:underline hover:underline-offset-4"
+            <div className="flex w-[calc(100%-40px)] flex-col truncate">
+              <MarqueeText className="text-base font-medium">{title}</MarqueeText>
+              <MarqueeText
+                className="text-muted-foreground hover:text-accent cursor-pointer text-sm hover:underline hover:underline-offset-4"
                 onClick={onClickArtist}
               >
                 {artist}
-              </span>
+              </MarqueeText>
             </div>
 
             <Dialog open={open} onOpenChange={setOpen}>

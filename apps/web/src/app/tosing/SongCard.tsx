@@ -4,6 +4,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ChevronsDown, ChevronsUp, GripVertical, Trash } from 'lucide-react';
 
+import MarqueeText from '@/components/MarqueeText';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Song } from '@/types/song';
@@ -34,8 +35,8 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
         <div className="mb-8 flex cursor-grab flex-col active:cursor-grabbing">
           {/* 제목 및 가수 */}
           <div className="mb-1 w-[290px]">
-            <h3 className="truncate text-base font-medium">{title}</h3>
-            <p className="text-muted-foreground truncate text-sm">{artist}</p>
+            <MarqueeText className="text-base font-medium">{title}</MarqueeText>
+            <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
           </div>
 
           {/* 노래방 번호 */}
