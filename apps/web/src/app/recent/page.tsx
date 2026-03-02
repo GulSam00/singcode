@@ -5,13 +5,19 @@ import { useState } from 'react';
 
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useRecentAddSongQuery } from '@/queries/recentAddSongQuery';
 
 import RecentSongCard from './RecentSongCard';
 
-export default function LibraryPage() {
+export default function RecentSongPage() {
   const [today, setToday] = useState(new Date());
-  const [prevAction, setPrevAction] = useState<'prev' | 'next' | null>(null);
 
   const { data: recentAddSongs, isLoading: isLoadingRecentAddSongs } = useRecentAddSongQuery(
     today.getFullYear(),
@@ -20,40 +26,60 @@ export default function LibraryPage() {
 
   const handlePrevMonth = () => {
     setToday(new Date(today.getFullYear(), today.getMonth() - 1, 1));
-    setPrevAction('prev');
   };
 
   const handleNextMonth = () => {
     setToday(new Date(today.getFullYear(), today.getMonth() + 1, 1));
-    setPrevAction('next');
   };
+
+  const handleYearChange = (year: string) => {
+    setToday(new Date(Number(year), today.getMonth(), 1));
+  };
+
+  const handleMonthChange = (month: string) => {
+    setToday(new Date(today.getFullYear(), Number(month), 1));
+  };
+
+  const years = Array.from({ length: 20 }, (_, i) => new Date().getFullYear() - i);
+  const months = Array.from({ length: 12 }, (_, i) => i);
 
   return (
     <div className="bg-background h-full space-y-4">
       <div className="flex items-center justify-between">
-        <Button
-          disabled={prevAction === 'prev' && recentAddSongs?.length === 0}
-          variant="ghost"
-          size="icon"
-          onClick={handlePrevMonth}
-          className="m-2"
-        >
+        <Button variant="ghost" size="icon" onClick={handlePrevMonth} className="m-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
 
         <div className="flex items-center gap-2 px-2 py-4 text-2xl font-bold">
-          <span>{today.getFullYear()}년</span>
-          <span>{today.getMonth() + 1}월</span>
+          <Select value={today.getFullYear().toString()} onValueChange={handleYearChange}>
+            <SelectTrigger className="border-none p-0 text-2xl font-bold shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {years.map(year => (
+                <SelectItem key={year} value={year.toString()}>
+                  {year}년
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={today.getMonth().toString()} onValueChange={handleMonthChange}>
+            <SelectTrigger className="border-none p-0 text-2xl font-bold shadow-none focus-visible:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {months.map(month => (
+                <SelectItem key={month} value={month.toString()}>
+                  {month + 1}월
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <h1>최신곡</h1>
         </div>
 
-        <Button
-          disabled={prevAction === 'next' && recentAddSongs?.length === 0}
-          variant="ghost"
-          size="icon"
-          onClick={handleNextMonth}
-          className="m-2"
-        >
+        <Button variant="ghost" size="icon" onClick={handleNextMonth} className="m-2">
           <ArrowRight className="h-5 w-5" />
         </Button>
       </div>

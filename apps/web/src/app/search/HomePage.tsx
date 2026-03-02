@@ -62,8 +62,6 @@ export default function SearchPage() {
     rootMargin: '0px 0px 800px 0px', // 스크롤 하단 600px 이전에 미리 로딩
   });
 
-  console.log('inView', inView);
-
   const { guestToSingSongs } = useGuestToSingStore();
 
   const isToSing = (song: SearchSong, songId: string) => {

@@ -1,3 +1,4 @@
+import MarqueeText from '@/components/MarqueeText';
 import { Separator } from '@/components/ui/separator';
 import { Song } from '@/types/song';
 
@@ -10,9 +11,9 @@ export default function RecentSongCard({ song }: { song: Song }) {
       <div className="flex flex-col">
         {/* 제목 및 가수 */}
         <div className="flex justify-between">
-          <div className="flex w-[70%] flex-col">
-            <h3 className="truncate text-base font-medium">{title}</h3>
-            <p className="text-muted-foreground truncate text-sm">{artist}</p>
+          <div className="max-w-[250px] min-w-[100px]">
+            <MarqueeText className="text-base font-medium">{title}</MarqueeText>
+            <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
           </div>
 
           <div className="flex flex-col space-x-4">

@@ -21,7 +21,7 @@ export async function PATCH(): Promise<NextResponse<ApiResponse<void>>> {
       .from('users')
       .update({
         last_check_in: new Date(),
-        point: user.point + 10,
+        point: user.point + 30,
       })
       .eq('id', userId);
 

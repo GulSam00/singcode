@@ -155,3 +155,19 @@
 button {
   @apply cursor-pointer;
 }
+
+/* 스크롤 애니메이션 */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  } /* 텍스트가 반복되도록 50%만 밀기 */
+}
+
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 10s linear infinite;
+}
