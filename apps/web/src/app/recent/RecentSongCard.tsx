@@ -11,7 +11,7 @@ export default function RecentSongCard({ song }: { song: Song }) {
       <div className="flex flex-col">
         {/* 제목 및 가수 */}
         <div className="flex justify-between">
-          <div className="flex w-[70%] flex-col">
+          <div className="max-w-[250px] min-w-[100px]">
             <MarqueeText className="text-base font-medium">{title}</MarqueeText>
             <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
           </div>

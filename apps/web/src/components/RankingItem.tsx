@@ -2,6 +2,7 @@ import { ThumbsUp } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import MarqueeText from '@/components/MarqueeText';
 import ThumbUpModal from '@/components/ThumbUpModal';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -13,6 +14,8 @@ interface RankingItemProps {
   rank: number;
   title: string;
   artist: string;
+  num_tj: string;
+  num_ky: string;
   value: number;
   className?: string;
 }
@@ -22,6 +25,8 @@ export default function RankingItem({
   rank,
   title,
   artist,
+  num_tj,
+  num_ky,
   value,
   className,
 }: RankingItemProps) {
@@ -51,7 +56,7 @@ export default function RankingItem({
   };
 
   return (
-    <div className={cn('flex items-start space-x-3 border-b py-3 last:border-0', className)}>
+    <div className={cn('flex gap-4 border-b py-3 last:border-0', className)}>
       <div
         className={cn(
           'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
@@ -60,11 +65,25 @@ export default function RankingItem({
       >
         {rank}
       </div>
-      <div className="flex w-full justify-between">
-        <div className="max-w-[200px] min-w-0 flex-1">
-          <h4 className="truncate text-sm font-medium">{title}</h4>
-          <p className="text-muted-foreground truncate text-xs">{artist}</p>
+      <div className="flex w-full justify-between gap-2">
+        <div className="flex gap-2">
+          <div className="w-[150px] shrink-0">
+            <MarqueeText className="text-sm font-medium">{title}</MarqueeText>
+            <MarqueeText className="text-muted-foreground text-xs">{artist}</MarqueeText>
+          </div>
+
+          <div>
+            <div className="flex items-center">
+              <span className="text-brand-tj mr-1 w-8 text-xs">TJ</span>
+              <span className="text-sm font-medium">{num_tj}</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-brand-ky mr-1 w-8 text-xs">금영</span>
+              <span className="text-sm font-medium">{num_ky}</span>
+            </div>
+          </div>
         </div>
+
         <div className="flex items-center gap-2">
           <Dialog open={open} onOpenChange={setOpen}>
             <Button
