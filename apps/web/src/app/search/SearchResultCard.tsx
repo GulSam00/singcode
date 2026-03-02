@@ -24,8 +24,7 @@ interface IProps {
   isToSing: boolean;
   isLike: boolean;
   isSave: boolean;
-  search: string;
-  searchType: string;
+
   onToggleToSing: () => void;
   onToggleLike: () => void;
   onClickSave: () => void;
@@ -37,8 +36,7 @@ export default function SearchResultCard({
   isToSing,
   isLike,
   isSave,
-  search,
-  searchType,
+
   onToggleToSing,
   onToggleLike,
   onClickSave,
@@ -85,7 +83,7 @@ export default function SearchResultCard({
                 aria-label={'추천하기'}
                 onClick={handleClickThumbsUp}
               >
-                <div className="flex flex-col">
+                <div className="flex flex-col items-center">
                   <ThumbsUp />
                   <span>{thumb}</span>
                 </div>
@@ -97,8 +95,6 @@ export default function SearchResultCard({
                   title={title}
                   artist={artist}
                   thumb={thumb}
-                  search={search}
-                  searchType={searchType}
                   handleClose={() => setOpen(false)}
                 />
               </DialogContent>

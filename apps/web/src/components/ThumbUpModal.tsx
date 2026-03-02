@@ -20,8 +20,6 @@ interface ThumbUpModalProps {
   title: string;
   artist: string;
   thumb: number;
-  search: string;
-  searchType: string;
   handleClose: () => void;
 }
 
@@ -30,8 +28,6 @@ export default function ThumbUpModal({
   title,
   artist,
   thumb,
-  search,
-  searchType,
   handleClose,
 }: ThumbUpModalProps) {
   const [value, setValue] = useState([0]);
@@ -40,10 +36,7 @@ export default function ThumbUpModal({
 
   const point = user?.point ?? 0;
 
-  const { mutate: patchSongThumb, isPending: isPendingSongThumb } = useSongThumbMutation({
-    search,
-    searchType,
-  });
+  const { mutate: patchSongThumb, isPending: isPendingSongThumb } = useSongThumbMutation();
   const { mutate: patchSetPoint, isPending: isPendingSetPoint } = usePatchSetPointMutation();
 
   const { setFooterAnimateKey } = useFooterAnimateStore();

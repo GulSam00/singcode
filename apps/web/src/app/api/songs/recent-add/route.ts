@@ -25,9 +25,9 @@ export async function GET(
     const { data, error: recentError } = await supabase
       .from('songs') // songs 테이블에서 검색
       .select(`*`)
-      .gte('created_at', startDate.toISOString())
-      .lte('created_at', endDate.toISOString())
-      .order('created_at', { ascending: false })
+      .gte('release', startDate.toISOString())
+      .lte('release', endDate.toISOString())
+      .order('release', { ascending: false })
       .limit(100); // 단순히 songs의 created_at으로 정렬
 
     if (recentError) throw recentError;

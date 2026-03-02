@@ -192,8 +192,6 @@ export default function SearchPage() {
                 isToSing={isToSing(song, song.id)}
                 isLike={song.isLike}
                 isSave={song.isSave}
-                search={search}
-                searchType={searchType}
                 onToggleToSing={() =>
                   handleToggleToSing(song, isToSing(song, song.id) ? 'DELETE' : 'POST')
                 }
