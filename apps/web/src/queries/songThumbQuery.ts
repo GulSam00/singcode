@@ -24,6 +24,7 @@ export const useSongThumbMutation = () => {
     mutationFn: (body: { songId: string; point: number }) => patchSongThumb(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['songThumb'] });
+      queryClient.invalidateQueries({ queryKey: ['searchSong'] });
     },
     onError: error => {
       console.error('error', error);

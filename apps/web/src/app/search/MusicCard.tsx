@@ -1,3 +1,5 @@
+import MarqueeText from '@/components/MarqueeText';
+
 type MusicCardProps = {
   title: string;
   artist: string;
@@ -11,16 +13,16 @@ export function MusicCard({ title, artist, reason, onClick }: MusicCardProps) {
       <button
         type="button"
         onClick={() => onClick(title)}
-        className="mb-1 cursor-pointer text-left text-sm font-semibold transition-colors hover:text-blue-500 hover:underline"
+        className="mb-1 w-full cursor-pointer text-left text-sm font-semibold transition-colors hover:text-blue-500 hover:underline"
       >
-        {title}
+        <MarqueeText>{title}</MarqueeText>
       </button>
       <button
         type="button"
         onClick={() => onClick(artist)}
-        className="text-muted-foreground mb-2 cursor-pointer text-left text-xs transition-colors hover:text-blue-500 hover:underline"
+        className="text-muted-foreground mb-2 w-full cursor-pointer text-left text-xs transition-colors hover:text-blue-500 hover:underline"
       >
-        {artist}
+        <MarqueeText>{artist}</MarqueeText>
       </button>
       <p className="text-muted-foreground text-sm">{reason}</p>
     </div>

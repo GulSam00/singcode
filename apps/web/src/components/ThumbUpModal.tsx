@@ -17,10 +17,19 @@ import FallingIcons from './FallingIcons';
 
 interface ThumbUpModalProps {
   songId: string;
+  title: string;
+  artist: string;
+  thumb: number;
   handleClose: () => void;
 }
 
-export default function ThumbUpModal({ songId, handleClose }: ThumbUpModalProps) {
+export default function ThumbUpModal({
+  songId,
+  title,
+  artist,
+  thumb,
+  handleClose,
+}: ThumbUpModalProps) {
   const [value, setValue] = useState([0]);
 
   const { data: user } = useUserQuery();
@@ -52,9 +61,29 @@ export default function ThumbUpModal({ songId, handleClose }: ThumbUpModalProps)
         </DialogDescription>
       </DialogHeader>
       <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-        <GradientText className="text-4xl" colors={['#FFC300', '#FFF59D', '#FB8C00']}>
-          <CountUp to={point} duration={0.2} />
-        </GradientText>
+        <div className="flex flex-col items-center">
+          {/* 레이블 추가로 가독성 향상 */}
+          <span className="mb-1 text-xs font-bold tracking-widest text-gray-400 uppercase">
+            Total Points
+          </span>
+
+          <div className="relative flex items-center gap-2">
+            <GradientText
+              className="text-4xl font-black tracking-tighter"
+              colors={['#FFC300', '#FFF59D', '#FB8C00']}
+            >
+              <CountUp to={thumb} duration={0.5} separator="," />
+            </GradientText>
+
+            <div>
+              <GradientText className="text-xl font-bold" colors={['#00F260', '#0575E6']}>
+                <span>+</span>
+                <CountUp to={value[0]} duration={0.8} />
+              </GradientText>
+            </div>
+          </div>
+        </div>
+
         <Slider
           value={value}
           onValueChange={setValue}
@@ -66,6 +95,10 @@ export default function ThumbUpModal({ songId, handleClose }: ThumbUpModalProps)
 
         <div className="relative w-full">
           <FallingIcons count={value[0]} />
+          <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center px-4 text-center opacity-50">
+            <div className="text-lg font-bold">{title}</div>
+            <div className="text-muted-foreground text-sm">{artist}</div>
+          </div>
         </div>
 
         <Button

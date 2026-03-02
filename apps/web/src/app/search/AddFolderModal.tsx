@@ -3,6 +3,7 @@
 import { CheckCircle, PlusCircle, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import MarqueeText from '@/components/MarqueeText';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -112,8 +113,8 @@ export default function AddFolderModal({
 
         {/* 곡 정보 */}
         <div className="bg-muted mb-4 rounded-md p-3">
-          <h3 className="text-base font-medium">{title}</h3>
-          <p className="text-muted-foreground text-sm">{artist}</p>
+          <MarqueeText className="text-base font-medium">{title}</MarqueeText>
+          <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
         </div>
 
         <div className="w-full space-y-4 py-2">

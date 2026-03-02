@@ -5,6 +5,7 @@ export interface Song {
   num_tj: string;
   num_ky: string;
 
+  thumb?: number;
   release?: string;
   created_at?: string;
 }
