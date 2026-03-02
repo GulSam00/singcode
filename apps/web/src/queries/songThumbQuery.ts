@@ -18,12 +18,19 @@ export const useSongThumbQuery = () => {
   });
 };
 
-export const useSongThumbMutation = () => {
+export const useSongThumbMutation = ({
+  search,
+  searchType,
+}: {
+  search: string;
+  searchType: string;
+}) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: { songId: string; point: number }) => patchSongThumb(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['songThumb'] });
+      queryClient.invalidateQueries({ queryKey: ['searchSong', search, searchType] });
     },
     onError: error => {
       console.error('error', error);

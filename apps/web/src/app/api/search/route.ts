@@ -6,6 +6,9 @@ import { SearchSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 interface DBSong extends Song {
+  total_stats: {
+    total_thumb: number;
+  };
   tosings: {
     user_id: string;
   }[];
@@ -44,7 +47,14 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const supabase = await createClient();
 
     if (!authenticated) {
-      const baseQuery = supabase.from('songs').select('*', { count: 'exact' });
+      const baseQuery = supabase.from('songs').select(
+        `*, 
+        total_stats (
+          *
+        )
+        `,
+        { count: 'exact' },
+      );
 
       if (type === 'all') {
         baseQuery.or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
@@ -64,17 +74,16 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
         );
       }
 
-      const songs: SearchSong[] = data.map((song: Song) => ({
+      const songs: SearchSong[] = data.map((song: DBSong) => ({
         id: song.id,
         title: song.title,
         artist: song.artist,
         num_tj: song.num_tj,
         num_ky: song.num_ky,
-        // like_activities에서 현재 사용자의 데이터가 있는지 확인
         isLike: false,
-        // tosings에서 현재 사용자의 데이터가 있는지 확인
         isToSing: false,
         isSave: false,
+        thumb: song.total_stats?.total_thumb ?? 0,
       }));
 
       return NextResponse.json({
@@ -90,6 +99,9 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const baseQuery = supabase.from('songs').select(
       `
         *,
+        total_stats (
+          *
+        ),
         tosings (
           user_id
         ),
@@ -129,11 +141,10 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       num_tj: song.num_tj,
       num_ky: song.num_ky,
 
-      // tosings에서 현재 사용자의 데이터가 있는지 확인
       isToSing: song.tosings?.some(tosing => tosing.user_id === userId) ?? false,
-      // like_activities에서 현재 사용자의 데이터가 있는지 확인
       isLike: song.like_activities?.some(like => like.user_id === userId) ?? false,
       isSave: song.save_activities?.some(save => save.user_id === userId) ?? false,
+      thumb: song.total_stats?.total_thumb ?? 0,
     }));
 
     return NextResponse.json({

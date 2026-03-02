@@ -24,6 +24,8 @@ interface IProps {
   isToSing: boolean;
   isLike: boolean;
   isSave: boolean;
+  search: string;
+  searchType: string;
   onToggleToSing: () => void;
   onToggleLike: () => void;
   onClickSave: () => void;
@@ -35,12 +37,15 @@ export default function SearchResultCard({
   isToSing,
   isLike,
   isSave,
+  search,
+  searchType,
   onToggleToSing,
   onToggleLike,
   onClickSave,
   onClickArtist,
 }: IProps) {
-  const { id, title, artist, num_tj, num_ky } = song;
+  const { id, title, artist, num_tj, num_ky, thumb } = song;
+
   const { isAuthenticated } = useAuthStore();
 
   const [open, setOpen] = useState(false);
@@ -57,7 +62,7 @@ export default function SearchResultCard({
   return (
     <Card className="w-full overflow-hidden p-4">
       {/* 메인 콘텐츠 영역 */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         {/* 노래 정보 */}
         <div className="flex flex-col">
           {/* 제목 및 가수 */}
@@ -76,14 +81,26 @@ export default function SearchResultCard({
               <Button
                 variant="ghost"
                 size="icon"
+                className="h-10 w-10"
                 aria-label={'추천하기'}
                 onClick={handleClickThumbsUp}
               >
-                <ThumbsUp />
+                <div className="flex flex-col">
+                  <ThumbsUp />
+                  <span>{thumb}</span>
+                </div>
               </Button>
 
               <DialogContent>
-                <ThumbUpModal songId={id} handleClose={() => setOpen(false)} />
+                <ThumbUpModal
+                  songId={id}
+                  title={title}
+                  artist={artist}
+                  thumb={thumb}
+                  search={search}
+                  searchType={searchType}
+                  handleClose={() => setOpen(false)}
+                />
               </DialogContent>
             </Dialog>
           </div>
@@ -103,8 +120,7 @@ export default function SearchResultCard({
 
             <Button
               variant="ghost"
-              size="sm"
-              className="h-9 w-9 p-0"
+              className="h-10 w-10"
               onClick={() => setIsExpanded(!isExpanded)}
             >
               <ChevronDown
