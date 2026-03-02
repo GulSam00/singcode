@@ -4,8 +4,8 @@ export interface Song {
   artist: string;
   num_tj: string;
   num_ky: string;
-  thumb: number;
 
+  thumb?: number;
   release?: string;
   created_at?: string;
 }

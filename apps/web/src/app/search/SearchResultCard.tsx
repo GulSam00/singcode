@@ -94,7 +94,7 @@ export default function SearchResultCard({
                   songId={id}
                   title={title}
                   artist={artist}
-                  thumb={thumb}
+                  thumb={thumb || 0}
                   handleClose={() => setOpen(false)}
                 />
               </DialogContent>
