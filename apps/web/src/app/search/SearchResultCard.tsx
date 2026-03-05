@@ -62,7 +62,7 @@ export default function SearchResultCard({
       {/* 메인 콘텐츠 영역 */}
       <div className="flex flex-col gap-4">
         {/* 노래 정보 */}
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           {/* 제목 및 가수 */}
           <div className="flex justify-between">
             <div className="flex w-[calc(100%-40px)] flex-col truncate">
@@ -102,7 +102,10 @@ export default function SearchResultCard({
           </div>
 
           {/* 노래방 번호 */}
-          <div className="flex items-center justify-between">
+          <div
+            className="hover:bg-muted/40 active:bg-muted/60 flex cursor-pointer items-center justify-between rounded-md border-b p-1 transition-colors"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
             <div className="flex space-x-4">
               <div className="flex w-[70px] items-center">
                 <span className="text-brand-tj mr-1 text-xs font-bold">TJ</span>
@@ -117,7 +120,10 @@ export default function SearchResultCard({
             <Button
               variant="ghost"
               className="h-10 w-10"
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={e => {
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
             >
               <ChevronDown
                 className={`h-5 w-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}

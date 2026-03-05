@@ -13,6 +13,7 @@ interface MarqueeTextProps {
 export default function MarqueeText({ children, className, onClick }: MarqueeTextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const [isAnimationPaused, setIsAnimationPaused] = useState(false);
 
   const checkOverflow = () => {
     if (containerRef.current) {
@@ -32,18 +33,22 @@ export default function MarqueeText({ children, className, onClick }: MarqueeTex
     <div
       ref={containerRef}
       className={cn('group w-full overflow-hidden', className)}
-      onClick={onClick}
+      onClick={() => {
+        if (isOverflowing) setIsAnimationPaused(p => !p);
+        onClick?.();
+      }}
     >
       <div
         className={cn(
           'flex w-max items-center',
-          isOverflowing && 'animate-marquee group-hover:!animate-none',
+          isOverflowing && 'animate-marquee group-hover:animate-none!',
+          isAnimationPaused && 'animate-none!',
         )}
       >
         <span className="whitespace-nowrap">{children}</span>
         {/* 오버플로우 시에만 복제본을 렌더링 */}
         {isOverflowing && (
-          <span className="pl-4 whitespace-nowrap" aria-hidden="true">
+          <span className="px-4 whitespace-nowrap" aria-hidden="true">
             {children}
           </span>
         )}

@@ -102,7 +102,7 @@ export default function ChatBot({ setInputSearch }: ChatBotProps) {
   };
 
   return (
-    <div className="fixed right-4 bottom-10 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
+    <div className="fixed right-10 bottom-20 z-50 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">
       {isOpen && (
         <div className="bg-background animate-in slide-in-from-bottom-5 fade-in-0 flex h-[500px] w-[calc(100vw-4rem)] max-w-[400px] flex-col rounded-lg border shadow-2xl duration-300 sm:h-[600px]">
           {/* 헤더 */}
