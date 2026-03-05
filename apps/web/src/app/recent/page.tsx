@@ -45,14 +45,14 @@ export default function RecentSongPage() {
 
   return (
     <div className="bg-background h-full space-y-4">
-      <div className="flex items-center justify-between">
-        <Button variant="ghost" size="icon" onClick={handlePrevMonth} className="m-2">
+      <div className="flex items-center justify-between px-2">
+        <Button variant="ghost" size="icon" onClick={handlePrevMonth}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
 
-        <div className="flex items-center gap-2 px-2 py-4 text-2xl font-bold">
+        <div className="flex items-center gap-1 text-xl font-bold whitespace-nowrap">
           <Select value={today.getFullYear().toString()} onValueChange={handleYearChange}>
-            <SelectTrigger className="border-none p-0 text-2xl font-bold shadow-none focus-visible:ring-0">
+            <SelectTrigger className="border-none p-0 text-xl font-bold shadow-none focus-visible:ring-0">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -65,7 +65,7 @@ export default function RecentSongPage() {
           </Select>
 
           <Select value={today.getMonth().toString()} onValueChange={handleMonthChange}>
-            <SelectTrigger className="border-none p-0 text-2xl font-bold shadow-none focus-visible:ring-0">
+            <SelectTrigger className="border-none p-0 text-xl font-bold shadow-none focus-visible:ring-0">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -76,10 +76,10 @@ export default function RecentSongPage() {
               ))}
             </SelectContent>
           </Select>
-          <h1>최신곡</h1>
+          <span>최신곡</span>
         </div>
 
-        <Button variant="ghost" size="icon" onClick={handleNextMonth} className="m-2">
+        <Button variant="ghost" size="icon" onClick={handleNextMonth}>
           <ArrowRight className="h-5 w-5" />
         </Button>
       </div>
