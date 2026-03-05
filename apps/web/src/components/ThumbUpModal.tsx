@@ -7,6 +7,7 @@ import GradientText from '@/components/reactBits/GradientText';
 import SplitText from '@/components/reactBits/SplitText';
 import { Button } from '@/components/ui/button';
 import { DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { useSongThumbMutation } from '@/queries/songThumbQuery';
 import { useUserQuery } from '@/queries/userQuery';
@@ -92,6 +93,23 @@ export default function ThumbUpModal({
           showValueLabel
           className="z-50 cursor-pointer"
         />
+
+        <div className="flex w-full items-center gap-2">
+          <Input
+            type="number"
+            min={0}
+            max={point}
+            value={value[0]}
+            onChange={e => {
+              const parsed = Number(e.target.value);
+              if (isNaN(parsed)) return;
+              const clamped = Math.min(Math.max(parsed, 0), point);
+              setValue([clamped]);
+            }}
+            className="text-center text-lg font-bold"
+          />
+          <span className="text-muted-foreground text-sm font-bold">P</span>
+        </div>
 
         <div className="relative w-full">
           <FallingIcons count={value[0]} />
