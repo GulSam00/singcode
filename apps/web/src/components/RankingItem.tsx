@@ -66,21 +66,19 @@ export default function RankingItem({
         {rank}
       </div>
       <div className="flex w-full justify-between gap-2">
-        <div className="flex gap-2">
-          <div className="w-[150px] shrink-0">
-            <MarqueeText className="text-sm font-medium">{title}</MarqueeText>
-            <MarqueeText className="text-muted-foreground text-xs">{artist}</MarqueeText>
-          </div>
+        <div className="w-[100px] shrink-0">
+          <MarqueeText className="text-sm font-medium">{title}</MarqueeText>
+          <MarqueeText className="text-muted-foreground text-xs">{artist}</MarqueeText>
+        </div>
 
-          <div>
-            <div className="flex items-center">
-              <span className="text-brand-tj mr-1 w-8 text-xs">TJ</span>
-              <span className="text-sm font-medium">{num_tj}</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-brand-ky mr-1 w-8 text-xs">금영</span>
-              <span className="text-sm font-medium">{num_ky}</span>
-            </div>
+        <div>
+          <div className="flex items-center">
+            <span className="text-brand-tj mr-1 w-8 text-xs">TJ</span>
+            <span className="text-sm font-medium">{num_tj}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="text-brand-ky mr-1 w-8 text-xs">금영</span>
+            <span className="text-sm font-medium">{num_ky}</span>
           </div>
         </div>
 

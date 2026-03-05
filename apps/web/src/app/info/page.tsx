@@ -38,7 +38,7 @@ export default function LibraryPage() {
         <div className="flex items-center gap-1 text-2xl font-bold text-[#FFC300]">
           <CircleDollarSign />
 
-          <GradientText className="text-2xl" colors={['#FFC300', '#FFF59D', '#FB8C00']}>
+          <GradientText className="text-2xl" colors={['#FFD700', '#FFA000', '#E65100']}>
             <CountUp to={point} duration={0.2} />
           </GradientText>
         </div>
