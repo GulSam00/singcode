@@ -6,7 +6,9 @@ import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSaveSongModal from '@/hooks/useSaveSongModal';
 import useSearchSong from '@/hooks/useSearchSong';
@@ -55,6 +57,11 @@ export default function SearchPage() {
 
   const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
   const [isFocusAuto, setIsFocusAuto] = useState(false);
+  const [isChatBotEnabled, setIsChatBotEnabled] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const stored = localStorage.getItem('chatbot-enabled');
+    return stored === null ? true : stored === 'true';
+  });
 
   const [scrollRef, setScrollRef] = useState<HTMLDivElement | null>(null);
   const { ref, inView } = useInView({
@@ -63,6 +70,11 @@ export default function SearchPage() {
   });
 
   const { guestToSingSongs } = useGuestToSingStore();
+
+  const handleToggleChatBot = (checked: boolean) => {
+    setIsChatBotEnabled(checked);
+    localStorage.setItem('chatbot-enabled', String(checked));
+  };
 
   const isToSing = (song: SearchSong, songId: string) => {
     if (!isAuthenticated) {
@@ -138,12 +150,27 @@ export default function SearchPage() {
               </span>
             )}
           </div>
-          <JpnArtistList
-            open={isJpnArtistModalOpen}
-            onOpenChange={setIsJpnArtistModalOpen}
-            onSelectArtist={setSearch}
-            callback={() => handleSearchTypeChange('artist')}
-          />
+          <div className="flex flex-col items-end gap-2">
+            <JpnArtistList
+              open={isJpnArtistModalOpen}
+              onOpenChange={setIsJpnArtistModalOpen}
+              onSelectArtist={setSearch}
+              callback={() => handleSearchTypeChange('artist')}
+            />
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="chatbot-toggle"
+                checked={isChatBotEnabled}
+                onCheckedChange={handleToggleChatBot}
+              />
+              <Label
+                htmlFor="chatbot-toggle"
+                className="text-muted-foreground cursor-pointer text-xs"
+              >
+                AI 챗봇
+              </Label>
+            </div>
+          </div>
         </div>
 
         <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>
@@ -182,7 +209,7 @@ export default function SearchPage() {
         {/* 검색 기록 */}
         <SearchHistory onHistoryClick={handleHistoryClick} />
       </div>
-      <div ref={setScrollRef} className="h-[calc(100vh-24rem)] overflow-x-hidden overflow-y-auto">
+      <div ref={setScrollRef} className="h-[calc(100vh-26rem)] overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
           <div className="flex w-full max-w-md flex-col gap-4 p-4">
             {searchSongs.map((song, index) => (
@@ -239,7 +266,7 @@ export default function SearchPage() {
       )}
 
       {/* 챗봇 위젯 */}
-      <ChatBot setInputSearch={setSearch} />
+      {isChatBotEnabled && <ChatBot setInputSearch={setSearch} />}
     </div>
   );
 }
