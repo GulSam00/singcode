@@ -6,9 +6,9 @@ import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+// import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+// import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSaveSongModal from '@/hooks/useSaveSongModal';
 import useSearchSong from '@/hooks/useSearchSong';
@@ -16,7 +16,7 @@ import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import { SearchSong } from '@/types/song';
 
 import AddFolderModal from './AddFolderModal';
-import ChatBot from './ChatBot';
+// import ChatBot from './ChatBot';
 import JpnArtistList from './JpnArtistList';
 import SearchAutocomplete from './SearchAutocomplete';
 import SearchHistory from './SearchHistory';
@@ -57,11 +57,11 @@ export default function SearchPage() {
 
   const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
   const [isFocusAuto, setIsFocusAuto] = useState(false);
-  const [isChatBotEnabled, setIsChatBotEnabled] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    const stored = localStorage.getItem('chatbot-enabled');
-    return stored === null ? true : stored === 'true';
-  });
+  // const [isChatBotEnabled, setIsChatBotEnabled] = useState(() => {
+  //   if (typeof window === 'undefined') return true;
+  //   const stored = localStorage.getItem('chatbot-enabled');
+  //   return stored === null ? true : stored === 'true';
+  // });
 
   const [scrollRef, setScrollRef] = useState<HTMLDivElement | null>(null);
   const { ref, inView } = useInView({
@@ -71,10 +71,10 @@ export default function SearchPage() {
 
   const { guestToSingSongs } = useGuestToSingStore();
 
-  const handleToggleChatBot = (checked: boolean) => {
-    setIsChatBotEnabled(checked);
-    localStorage.setItem('chatbot-enabled', String(checked));
-  };
+  // const handleToggleChatBot = (checked: boolean) => {
+  //   setIsChatBotEnabled(checked);
+  //   localStorage.setItem('chatbot-enabled', String(checked));
+  // };
 
   const isToSing = (song: SearchSong, songId: string) => {
     if (!isAuthenticated) {
@@ -157,7 +157,7 @@ export default function SearchPage() {
               onSelectArtist={setSearch}
               callback={() => handleSearchTypeChange('artist')}
             />
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <Checkbox
                 id="chatbot-toggle"
                 checked={isChatBotEnabled}
@@ -169,7 +169,7 @@ export default function SearchPage() {
               >
                 AI 챗봇
               </Label>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -266,7 +266,7 @@ export default function SearchPage() {
       )}
 
       {/* 챗봇 위젯 */}
-      {isChatBotEnabled && <ChatBot setInputSearch={setSearch} />}
+      {/* {isChatBotEnabled && <ChatBot setInputSearch={setSearch} />} */}
     </div>
   );
 }
