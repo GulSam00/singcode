@@ -71,7 +71,7 @@ export default function ThumbUpModal({
           <div className="relative flex items-center gap-2">
             <GradientText
               className="text-4xl font-black tracking-tighter"
-              colors={['#FFC300', '#FFF59D', '#FB8C00']}
+              colors={['#FFD700', '#FFA000', '#E65100']}
             >
               <CountUp to={thumb} duration={0.5} separator="," />
             </GradientText>
