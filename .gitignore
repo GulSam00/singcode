@@ -45,5 +45,8 @@ yarn-error.log*
 .cursorrules
 .gitmessage.txt
 
+# Claude Code local settings (contains secrets)
+.claude/*
+
 temp/
 .vscode
