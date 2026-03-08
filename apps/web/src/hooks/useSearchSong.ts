@@ -60,8 +60,10 @@ export default function useSearchSong() {
     let parsedSearch = trimSearch;
 
     if (autoCompleteList.length === 1) {
-      // 자동완성 리스트가 하나(정확히 일치하면) 해당 alias의 value로 자동 치환
-      parsedSearch = autoCompleteList[0].value;
+      if (autoCompleteList[0].label === trimSearch) {
+        // 자동완성 리스트가 하나(정확히 일치하면)고 label도 일치하면 해당 alias의 value로 자동 치환
+        parsedSearch = autoCompleteList[0].value;
+      }
     } else {
       // 한글이 있다면 공백 제거
       const hasKorean = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(trimSearch);
