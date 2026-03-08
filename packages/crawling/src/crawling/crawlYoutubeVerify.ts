@@ -1,34 +1,28 @@
 import puppeteer from 'puppeteer';
 
-import { getSongsKyNotNullDB } from '@/supabase/getDB';
+import { getSongsKyNotNullDB, getVerifyKySongsDB } from '@/supabase/getDB';
+import { postVerifyKySongsDB } from '@/supabase/postDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
-import { Song } from '@/types';
-// import { loadValidKYSongs, saveValidKYSongs } from '@/utils/logData';
 
 import { isValidKYExistNumber } from './isValidKYExistNumber';
 
 // 기존에 등록된 KY 노래방 번호가 실제로 KY 노래방과 일치하는지 검증
-// crawlYoutube와는 다르게 끝이 정해진 작업
+// 유효한 곡은 verify_ky_songs 테이블에 insert
 
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
-const updateData = async (data: Song) => {
-  await updateSongsKyDB(data);
-};
-
 const data = await getSongsKyNotNullDB();
-// const vaildSongs = loadValidKYSongs();
+const verifiedIds = await getVerifyKySongsDB();
 
 console.log('getSongsKyNotNullDB : ', data.length);
+console.log('이미 검증된 곡 수 : ', verifiedIds.size);
 let index = 0;
 
 for (const song of data) {
-  // const query = song.title + '-' + song.artist;
-
-  // if (vaildSongs.has(query)) {
-  //   continue;
-  // }
+  if (verifiedIds.has(song.id!)) {
+    continue;
+  }
 
   console.log(song.title, ' - ', song.artist + ' : ', song.num_ky);
   let isValid = true;
@@ -39,14 +33,14 @@ for (const song of data) {
     continue;
   }
 
-  if (!isValid) {
-    // stackData.push({ ...song, num_ky: null });
-    // totalData.push({ ...song, num_ky: null });
-    await updateData({ ...song, num_ky: null });
-  } // else saveValidKYSongs(song.title, song.artist);
+  if (isValid) {
+    await postVerifyKySongsDB(song);
+  } else {
+    await updateSongsKyDB({ ...song, num_ky: null });
+  }
 
   index++;
-  console.log('crawlYoutubeValid : ', index);
+  console.log('crawlYoutubeVerify : ', index);
 }
 
 browser.close();

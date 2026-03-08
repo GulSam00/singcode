@@ -3,7 +3,7 @@ import { sleep } from 'openai/core';
 import { getSongsJpnDB, getTransDictionariesDBByOriginal } from '@/supabase/getDB';
 import { postTransDictionariesDB } from '@/supabase/postDB';
 import { TransDictionary, TransSong } from '@/types';
-import { loadDictionariesLog, saveDictionariesLog, updateDataLog } from '@/utils/logData';
+// import { loadDictionariesLog, saveDictionariesLog } from '@/utils/logData';
 import { transChatGPT } from '@/utils/transChatGPT';
 
 const data: TransSong[] = await getSongsJpnDB();
@@ -18,14 +18,10 @@ const transData: TransDictionary[] = [];
 const refreshData = async () => {
   console.log('refreshData');
 
-  const result = await postTransDictionariesDB(transData);
-  for (const song of transData) {
-    saveDictionariesLog(song.original_japanese);
-  }
-
-  updateDataLog(result.success, 'postTransDictionarySuccess.txt');
-  updateDataLog(result.failed, 'postTransDictionaryFailed.txt');
-  unknownData.length > 0 && updateDataLog(unknownData, 'postTransDictionaryUnknown.txt');
+  await postTransDictionariesDB(transData);
+  // for (const song of transData) {
+  //   saveDictionariesLog(song.original_japanese);
+  // }
 
   transData.length = 0;
   unknownData.length = 0;
@@ -33,7 +29,7 @@ const refreshData = async () => {
 
 let count = 0;
 
-const tryLogs = loadDictionariesLog();
+// const tryLogs = loadDictionariesLog();
 
 for (const song of data) {
   if (count >= 10) {
@@ -43,14 +39,14 @@ for (const song of data) {
   console.log('count : ', count++);
   await sleep(150); // 0.15초(150ms) 대기
 
-  if (tryLogs.has(song.artist)) {
-    continue;
-  }
+  // if (tryLogs.has(song.artist)) {
+  //   continue;
+  // }
 
   const dupArtistTrans = await getTransDictionariesDBByOriginal(song.artist);
 
   if (dupArtistTrans) {
-    saveDictionariesLog(song.artist);
+    // saveDictionariesLog(song.artist);
     continue;
   }
 
