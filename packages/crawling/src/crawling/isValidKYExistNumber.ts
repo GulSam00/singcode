@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import { Page } from 'puppeteer';
+
 import { validateSongMatch } from '../utils/validateSongMatch';
 
 export const isValidKYExistNumber = async (
@@ -27,8 +28,8 @@ export const isValidKYExistNumber = async (
     return false;
   }
 
-  console.log(`검색 쿼리 : ${title} - ${artist}`);
-  console.log(`KY 노래방 검색 결과 : ${titleResult} - ${artistResult}`);
+  console.log(`(TJ 기준) 검색 쿼리 : ${title} - ${artist}`);
+  console.log(`(KY 노래방) 검색 결과 : ${titleResult} - ${artistResult}`);
 
   const isValid = await validateSongMatch(title, artist, titleResult, artistResult);
 
