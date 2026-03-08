@@ -3,7 +3,6 @@ import { sleep } from 'openai/core';
 import { getSongsJpnDB } from '@/supabase/getDB';
 import { updateSongsJpnDB } from '@/supabase/updateDB';
 import { TransSong } from '@/types';
-import { updateDataLog } from '@/utils/logData';
 import { transChatGPT } from '@/utils/transChatGPT';
 
 const data = await getSongsJpnDB();
@@ -55,11 +54,3 @@ for (const song of transData) {
   }
 }
 
-// 만약 unknownData가 있다면 해당 데이터를 배열에 담아서 끝났을 때 error.txt에 저장
-if (unknownData.length > 0) {
-  updateDataLog(unknownData, 'errorLog.txt');
-}
-
-if (transData.length > 0) {
-  updateDataLog(transData, 'transDataLog.txt');
-}

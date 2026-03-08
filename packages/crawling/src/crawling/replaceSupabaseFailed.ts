@@ -1,10 +1,10 @@
 import { getSongsKyNullDB } from '@/supabase/getDB';
 import { postInvalidKYSongsDB } from '@/supabase/postDB';
 import { Song } from '@/types';
-import { loadCrawlYoutubeFailedKYSongs, loadValidKYSongs } from '@/utils/logData';
+import { loadCrawlYoutubeFailedKYSongs } from '@/utils/logData';
 
 const data: Song[] = await getSongsKyNullDB();
-const failedSongs = loadValidKYSongs();
+const failedSongs = loadCrawlYoutubeFailedKYSongs();
 
 console.log('getSongsKyNullDB : ', data.length);
 console.log('size : ', failedSongs.size);
