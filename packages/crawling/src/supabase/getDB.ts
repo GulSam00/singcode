@@ -101,3 +101,13 @@ export async function getInvalidKYSongsDB(): Promise<
 
   return data;
 }
+
+export async function getVerifyKySongsDB(): Promise<Set<string>> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase.from('verify_ky_songs').select('id');
+
+  if (error) throw error;
+
+  return new Set(data.map(row => row.id));
+}
