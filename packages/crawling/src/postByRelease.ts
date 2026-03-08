@@ -1,8 +1,7 @@
 import { getRelease } from '@repo/open-api';
 
 import { postSongsDB } from '@/supabase/postDB';
-import { LogData, Song } from '@/types';
-import { updateDataLog } from '@/utils/logData';
+import { Song } from '@/types';
 
 const parseMonth = (month: number) => {
   return month < 10 ? `0${month}` : month;
@@ -38,7 +37,4 @@ console.log('songs', songs.length);
 
 // TJ 2007~2025 38519곡
 
-const result: LogData<Song> = await postSongsDB(songs);
-
-updateDataLog(result.success, 'postByReleaseSuccess.txt');
-updateDataLog(result.failed, 'postByReleaseFailed.txt');
+await postSongsDB(songs);

@@ -72,12 +72,28 @@ export async function postTransDictionariesDB(dictionaries: TransDictionary[]) {
   return results;
 }
 
+export async function postVerifyKySongsDB(song: Song) {
+  const supabase = getClient();
+
+  try {
+    const { id, title, artist } = song;
+    const { error } = await supabase.from('verify_ky_songs').insert({ id, title, artist }).select();
+    if (error) {
+      console.error('postVerifyKySongsDB error : ', error);
+    }
+    return true;
+  } catch (error) {
+    console.error('catch - postVerifyKySongsDB error : ', error);
+    return error;
+  }
+}
+
 export async function postInvalidKYSongsDB(song: Song) {
   const supabase = getClient();
 
   try {
     const { id, title, artist } = song;
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('invalid_ky_songs')
       .insert({ id, title, artist })
       .select();

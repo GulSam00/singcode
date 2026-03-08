@@ -5,7 +5,6 @@ import puppeteer from 'puppeteer';
 
 import { postSongsDB } from '@/supabase/postDB';
 import { LogData, Song } from '@/types';
-import { updateDataLog } from '@/utils/logData';
 import { parseNumber } from '@/utils/parseNumber';
 import { parseText } from '@/utils/parseString';
 
@@ -61,7 +60,6 @@ console.log('실패 개수 : ', result.failed.length);
 console.log('성공 데이터 : ', result.success);
 console.log('실패 데이터 : ', result.failed);
 
-updateDataLog(result.success, 'postByRecentTJSuccess.txt');
-updateDataLog(result.failed, 'postByRecentTJFailed.txt');
+
 
 await browser.close();

@@ -4,8 +4,7 @@ import path from 'path';
 import { getSong } from '@repo/open-api';
 
 import { postSongsDB } from '@/supabase/postDB';
-import { LogData, Song } from '@/types';
-import { updateDataLog } from '@/utils/logData';
+import { Song } from '@/types';
 
 const START_CODE = 0xac00; // '가'
 const END_CODE = 0xd7a3; // '힣'
@@ -68,10 +67,7 @@ async function getHangulSongs() {
       num_ky: null,
       release: item.release === '0000-00-00' ? null : item.release,
     }));
-    const result: LogData<Song> = await postSongsDB(songs);
-
-    updateDataLog(result.success, 'postByAllOpenSuccess.txt');
-    updateDataLog(result.failed, 'postByAllOpenFailed.txt');
+    await postSongsDB(songs);
 
     saveProgress(index);
     index++;
@@ -99,10 +95,7 @@ async function getAlphaSongs() {
       num_ky: null,
       release: item.release === '0000-00-00' ? null : item.release,
     }));
-    const result: LogData<Song> = await postSongsDB(songs);
-
-    updateDataLog(result.success, 'postByAllOpenSuccess.txt');
-    updateDataLog(result.failed, 'postByAllOpenFailed.txt');
+    await postSongsDB(songs);
 
     saveAlphaProgress(index);
     index++;
@@ -130,10 +123,7 @@ async function getNumberSongs() {
       num_ky: null,
       release: item.release === '0000-00-00' ? null : item.release,
     }));
-    const result: LogData<Song> = await postSongsDB(songs);
-
-    updateDataLog(result.success, 'postByAllOpenSuccess.txt');
-    updateDataLog(result.failed, 'postByAllOpenFailed.txt');
+    await postSongsDB(songs);
 
     saveAlphaProgress(index);
     index++;
