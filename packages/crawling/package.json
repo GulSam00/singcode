@@ -9,9 +9,8 @@
   "scripts": {
     "ky-open": "tsx src/findKYByOpen.ts",
     "ky-youtube": "tsx src/crawling/crawlYoutube.ts",
-    "ky-valid": "tsx src/crawling/crawlYoutubeValid.ts",
     "ky-verify": "tsx src/crawling/crawlYoutubeVerify.ts",
-    "ky-update": "pnpm run ky-youtube & pnpm run ky-valid & pnpm run ky-verify",
+    "ky-update": "pnpm run ky-youtube & pnpm run ky-verify",
     "trans": "tsx src/postTransDictionary.ts",
     "recent-tj": "tsx src/crawling/crawlRecentTJ.ts",
     "lint": "eslint . --ext .ts,.js",
