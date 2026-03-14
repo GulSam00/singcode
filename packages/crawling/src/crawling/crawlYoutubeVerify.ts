@@ -9,7 +9,11 @@ import { isValidKYExistNumber } from './isValidKYExistNumber';
 // 기존에 등록된 KY 노래방 번호가 실제로 KY 노래방과 일치하는지 검증
 // 유효한 곡은 verify_ky_songs 테이블에 insert
 
-const browser = await puppeteer.launch();
+// action 우분투 환경에서의 호환을 위해 추가
+const browser = await puppeteer.launch({
+  headless: true,
+  args: ['--no-sandbox', '--disable-setuid-sandbox'],
+});
 const page = await browser.newPage();
 
 const data = await getSongsKyNotNullDB();
