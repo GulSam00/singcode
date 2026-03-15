@@ -45,7 +45,7 @@ export default function LikePage() {
 
       <Separator className="mb-4" />
 
-      <ScrollArea className="h-[calc(100vh-16rem)]">
+      <ScrollArea className="h-[calc(100vh-20rem)]">
         {likedSongs.map(song => (
           <SongItem
             key={song.song_id}
