@@ -58,6 +58,26 @@ See [apps/web/CLAUDE.md](apps/web/CLAUDE.md) for full detail. Key points:
 - **Tailwind CSS v4** + **shadcn/ui** in `src/components/ui/` (do not modify directly)
 - Path alias `@/` → `src/`
 
+## Git Workflows
+
+### "branch 정리해줘"
+
+원격에서 merge 후 삭제된 브랜치를 로컬에서도 동기화한다.
+
+```bash
+# 1. 원격 삭제된 브랜치 참조 정리
+git fetch --prune
+
+# 2. 원격에 없는 로컬 브랜치 목록 확인
+git branch -vv | grep ': gone]'
+
+# 3. 삭제 대상 브랜치 제거 (main, develop, 현재 브랜치 제외)
+git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -d
+```
+
+- `-d` 플래그 사용 (merge되지 않은 브랜치는 삭제 안 됨, 안전)
+- 삭제 전 목록을 사용자에게 보여주고 확인 후 진행
+
 ## Git Conventions
 
 Branch format: `<type>/<camelCaseName>` — flow: `feat/*` → `develop` → `main`
