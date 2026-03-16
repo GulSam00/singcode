@@ -45,6 +45,8 @@ for (const song of data) {
 
   index++;
   console.log('crawlYoutubeVerify : ', index);
+
+  if (index >= 2000) break;
 }
 
 browser.close();

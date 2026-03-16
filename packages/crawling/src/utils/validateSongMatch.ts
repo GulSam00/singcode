@@ -25,22 +25,35 @@ export const validateSongMatch = async (
     messages: [
       {
         role: 'system',
-        content:
-          'Decide if two (title, artist) pairs refer to the same song. Allow spelling variants (spaces, en/kr, case). Return JSON: {"isValid":boolean}',
+        content: `
+        You are a music database expert. 
+        Decide if two (title, artist) pairs refer to the same song recording.
+        
+        Rules:
+        1. Ignore additional info in parentheses like "(Original Artist Name)", "(Movie OST)", or "Remake".
+        2. Allow spelling variants, spaces, case, and Language mix (KR/EN/JP).
+        3. If the song title and the PERFORMING artist are the same, it is a MATCH, even if the original composer/artist is mentioned in the found title.
+        
+        Return JSON: {"isValid": boolean}
+      `,
       },
       {
         role: 'user',
-        content: `"${inputTitle}"(${inputArtist}) vs "${foundTitle}"(${foundArtist})`,
+        content: `Pair A: "${inputTitle}" by "${inputArtist}"\nPair B: "${foundTitle}" by "${foundArtist}"`,
       },
     ],
     response_format: { type: 'json_object' },
     temperature: 0,
-    max_tokens: 20,
+    max_tokens: 50,
   });
 
   const content = response.choices[0].message.content;
   if (!content) return false;
 
-  const result: { isValid: boolean } = JSON.parse(content);
-  return result.isValid;
+  try {
+    const result = JSON.parse(content);
+    return result.isValid === true;
+  } catch {
+    return false;
+  }
 };
