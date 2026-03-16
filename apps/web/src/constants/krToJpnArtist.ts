@@ -2,7 +2,6 @@ export const krToJpnArtistSort = {
   // A-Z
   Ado: 'Ado',
   Aimer: 'Aimer',
-  'ASIAN KUNG-FU GENERATION': '아시안 쿵푸 제너레이션',
 
   DECO27: 'DECO*27',
   Eve: 'Eve',
@@ -39,6 +38,7 @@ export const krToJpnArtistSort = {
   // 아
   아라시: '嵐',
   아마자라시: 'amazarashi',
+  '아시안 쿵푸 제너레이션': 'ASIAN KUNG-FU GENERATION',
   아이묭: 'あいみょん',
   엘레가든: 'ELLEGARDEN',
   '오이시 마사요시': 'オーイシマサヨシ',
