@@ -32,7 +32,7 @@
 
    ## 💬 추가 참고 사항
 
-   - 관련 이슈: #<번호>
+   - close #<번호>
    ```
 
    - PR 제목: `[Type] : 작업 내용 요약 (#이슈번호)` (한국어)
@@ -49,10 +49,13 @@
 
 7. Qodo AI 코드 리뷰를 위해 댓글을 순서대로 작성한다.
 
+   Windows Git Bash에서 `/`로 시작하는 문자열이 경로로 변환되는 것을 방지하기 위해
+   `MSYS_NO_PATHCONV=1` 환경변수를 설정한다.
+
    ```
-   gh pr comment <PR번호> --body "/describe"
-   gh pr comment <PR번호> --body "/review"
-   gh pr comment <PR번호> --body "/improve"
+   MSYS_NO_PATHCONV=1 gh pr comment <PR번호> --body "/describe"
+   MSYS_NO_PATHCONV=1 gh pr comment <PR번호> --body "/review"
+   MSYS_NO_PATHCONV=1 gh pr comment <PR번호> --body "/improve"
    ```
 
 8. 완료 후 아래 형식으로 출력한다.
