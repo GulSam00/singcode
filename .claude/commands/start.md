@@ -11,6 +11,10 @@
 ## Steps
 
 1. `$ARGUMENTS` 를 분석해 아래 항목을 결정한다.
+
+   **`$ARGUMENTS` 가 비어 있는 경우:**
+   `git diff` 와 `git status` 로 현재 변경 사항을 파악하고,
+   변경 내용을 기반으로 작업 유형, 이슈 제목, 이슈 본문을 자동으로 결정한다.
    - **작업 유형**: `feat` | `fix` | `hotfix` | `chore` | `refactor` | `doc`
    - **이슈 제목**: 한국어, 간결하게
    - **이슈 본문**: 구현할 내용을 bullet으로 정리
@@ -51,17 +55,17 @@
 
 ### 👉 다음 단계
 
-| 명령어    | 설명                     |
-| --------- | ------------------------ |
-| `/spsc`   | 작업 범위 정의 (권장)    |
-| `/red`    | 테스트 먼저 작성         |
-| `/green`  | 바로 구현 시작           |
+| 명령어   | 설명                  |
+| -------- | --------------------- |
+| `/spsc`  | 작업 범위 정의 (권장) |
+| `/red`   | 테스트 먼저 작성      |
+| `/green` | 바로 구현 시작        |
 
 ### 🔄 워크플로우 사이클
 
 ```
-일반:  /start → /spsc → /red → /green → /refactor → /verify → /commit
-단축:  /start → /spsc → /green → /verify → /commit
+일반:  /start → /spsc → /red → /green → /refactor → /verify → /commit → /pr
+단축:  /start → /spsc → /green → /verify → /commit → /pr
 ```
 
 - `/red` ~ `/refactor` 사이클은 상황에 따라 생략 가능하다.
@@ -72,5 +76,5 @@
 
 ## Notes
 
-- `$ARGUMENTS` 가 비어 있으면 "작업 내용을 입력해주세요." 를 출력하고 중단한다.
+- `$ARGUMENTS` 가 비어 있으면 현재 변경 사항(`git diff`, `git status`)을 분석해 자동으로 판단한다.
 - 이슈 생성 실패 시 에러 메시지를 출력하고 중단한다.

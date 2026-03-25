@@ -53,4 +53,3 @@ for (const song of transData) {
     updateSongsJpnDB(song);
   }
 }
-

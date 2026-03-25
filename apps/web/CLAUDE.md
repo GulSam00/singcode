@@ -25,6 +25,7 @@ No test suite is configured.
 ### Monorepo Structure
 
 This is a pnpm workspace monorepo. The web app lives at `apps/web/`. Key workspace packages:
+
 - `@repo/open-api` — wrapper around the external karaoke open API (used in API routes)
 - `@repo/query` — shared TanStack Query setup
 - `@repo/eslint-config`, `@repo/format-config` — shared tooling configs
@@ -49,6 +50,7 @@ This is a pnpm workspace monorepo. The web app lives at `apps/web/`. Key workspa
 ### Supabase Client Variants
 
 Three different Supabase clients for different contexts:
+
 - `src/lib/supabase/client.ts` — browser client (`createBrowserClient`), uses `NEXT_PUBLIC_` env vars
 - `src/lib/supabase/server.ts` — server/route handler client (`createServerClient`)
 - `src/lib/supabase/api.ts` — legacy API routes client (Next.js Pages-style `req/res`)
@@ -87,6 +89,7 @@ Song searches go through `GET /api/open_songs/[type]/[param]` which proxies to `
 ## Environment Variables
 
 Required in `.env` / `.env.development.local`:
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_URL` (server-only, used in legacy API client)
@@ -99,12 +102,12 @@ Required in `.env` / `.env.development.local`:
 
 Format: `<type>/<camelCaseName>`
 
-| type | usage |
-|------|-------|
-| `feat` | new feature |
-| `fix` | bug fix |
-| `hotfix` | urgent fix |
-| `chore` | maintenance, docs, config |
+| type      | usage                          |
+| --------- | ------------------------------ |
+| `feat`    | new feature                    |
+| `fix`     | bug fix                        |
+| `hotfix`  | urgent fix                     |
+| `chore`   | maintenance, docs, config      |
 | `release` | release (e.g. `release/2.1.0`) |
 
 The part after the slash uses camelCase (e.g. `feat/scrollText`, `feat/FooterNavbar`, `fix/loginAuth`).
@@ -115,16 +118,17 @@ Branch flow: `feat/*` → `develop` → `main`
 
 Format: `<type> : <Korean description>` — one space before and after the colon.
 
-| type | usage |
-|------|-------|
-| `feat` | new feature |
-| `fix` | bug fix |
-| `hotfix` | urgent bug fix |
-| `chore` | version bump, config, format, cleanup |
-| `refactor` | refactoring |
-| `doc` | documentation |
+| type       | usage                                 |
+| ---------- | ------------------------------------- |
+| `feat`     | new feature                           |
+| `fix`      | bug fix                               |
+| `hotfix`   | urgent bug fix                        |
+| `chore`    | version bump, config, format, cleanup |
+| `refactor` | refactoring                           |
+| `doc`      | documentation                         |
 
 Examples:
+
 ```
 feat : MarqueeText 자동 스크롤 텍스트 적용
 fix : SongCard css 수정

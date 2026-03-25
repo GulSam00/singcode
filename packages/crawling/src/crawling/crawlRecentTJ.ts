@@ -60,6 +60,4 @@ console.log('실패 개수 : ', result.failed.length);
 console.log('성공 데이터 : ', result.success);
 console.log('실패 데이터 : ', result.failed);
 
-
-
 await browser.close();
