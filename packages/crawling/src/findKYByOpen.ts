@@ -76,4 +76,3 @@ console.log(`
     - 성공: ${resultsLog.success.length}곡
     - 실패: ${resultsLog.failed.length}곡
   `);
-

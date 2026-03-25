@@ -11,9 +11,8 @@
     "ky-youtube": "tsx src/crawling/crawlYoutube.ts",
     "ky-verify": "tsx src/crawling/crawlYoutubeVerify.ts",
     "ky-update": "pnpm run ky-youtube & pnpm run ky-verify",
-    "trans": "tsx src/postTransDictionary.ts",
     "recent-tj": "tsx src/crawling/crawlRecentTJ.ts",
-    "lint": "eslint . --ext .ts,.js",
+    "lint": "eslint .",
     "test": "vitest run",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
