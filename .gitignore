@@ -49,5 +49,4 @@ yarn-error.log*
 
 temp/
 .vscode
-
 settings.local.json

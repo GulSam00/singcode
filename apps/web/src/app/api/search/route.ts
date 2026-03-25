@@ -6,9 +6,9 @@ import { SearchSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 interface DBSong extends Song {
-  total_stats: {
-    total_thumb: number;
-  };
+  thumb_logs: {
+    thumb_count: number;
+  }[] | null;
   tosings: {
     user_id: string;
   }[];
@@ -49,7 +49,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     if (!authenticated) {
       const baseQuery = supabase.from('songs').select(
         `*, 
-        total_stats (
+        thumb_logs (
           *
         )
         `,
@@ -83,7 +83,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
         isLike: false,
         isToSing: false,
         isSave: false,
-        thumb: song.total_stats?.total_thumb ?? 0,
+        thumb: song.thumb_logs?.reduce((sum, log) => sum + log.thumb_count, 0) ?? 0,
       }));
 
       return NextResponse.json({
@@ -99,7 +99,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const baseQuery = supabase.from('songs').select(
       `
         *,
-        total_stats (
+        thumb_logs (
           *
         ),
         tosings (
@@ -144,7 +144,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       isToSing: song.tosings?.some(tosing => tosing.user_id === userId) ?? false,
       isLike: song.like_activities?.some(like => like.user_id === userId) ?? false,
       isSave: song.save_activities?.some(save => save.user_id === userId) ?? false,
-      thumb: song.total_stats?.total_thumb ?? 0,
+      thumb: song.thumb_logs?.reduce((sum, log) => sum + log.thumb_count, 0) ?? 0,
     }));
 
     return NextResponse.json({

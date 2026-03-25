@@ -73,5 +73,5 @@ export interface AddListModalSong extends Song {
 }
 
 export interface ThumbUpSong extends Song {
-  total_thumb: number;
+  thumb_count: number;
 }
