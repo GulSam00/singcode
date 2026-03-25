@@ -1,4 +1,4 @@
-import { TransDictionary, TransSong } from '@/types';
+import { TransSong } from '@/types';
 import { containsJapanese } from '@/utils/parseString';
 
 import { getClient } from './getClient';
@@ -61,33 +61,6 @@ export async function getSongsKyNotNullDB(max: number = 50000) {
   if (error) throw error;
 
   return data;
-}
-
-export async function getTransDictionariesDB(): Promise<TransDictionary[]> {
-  const supabase = getClient();
-
-  // artist 정렬
-  const { data, error } = await supabase.from('trans_dictionaries').select('*');
-
-  if (error) throw error;
-
-  return data;
-}
-export async function getTransDictionariesDBByOriginal(
-  original: string,
-): Promise<TransDictionary | null> {
-  const supabase = getClient();
-
-  // artist 정렬
-  const { data, error } = await supabase
-    .from('trans_dictionaries')
-    .select('*')
-    .eq('original_japanese', original)
-    .limit(1);
-
-  if (error) throw error;
-
-  return data[0] ?? null;
 }
 
 export async function getInvalidKYSongsDB(): Promise<

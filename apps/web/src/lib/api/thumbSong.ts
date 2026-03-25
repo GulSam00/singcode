@@ -8,7 +8,7 @@ export async function getSongThumbList() {
   return response.data;
 }
 
-export async function patchSongThumb(body: { songId: string; point: number }) {
-  const response = await instance.patch<ApiResponse<void>>('/songs/thumb-up', body);
+export async function postSongThumb(body: { songId: string; point: number }) {
+  const response = await instance.post<ApiResponse<void>>('/songs/thumb-up', body);
   return response.data;
 }
