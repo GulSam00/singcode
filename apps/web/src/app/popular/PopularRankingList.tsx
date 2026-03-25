@@ -32,7 +32,7 @@ export default function PopularRankingList() {
           <div className="space-y-0">
             {data && data.length > 0 ? (
               data.map((item, index) => (
-                <RankingItem key={index} {...item} rank={index + 1} value={item.total_thumb} />
+                <RankingItem key={index} {...item} rank={index + 1} value={item.thumb_count} />
               ))
             ) : (
               <div className="flex h-64 flex-col items-center justify-center gap-4">

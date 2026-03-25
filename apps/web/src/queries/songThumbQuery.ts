@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { getSongThumbList, patchSongThumb } from '@/lib/api/thumbSong';
+import { getSongThumbList, postSongThumb } from '@/lib/api/thumbSong';
 
 export const useSongThumbQuery = () => {
   return useQuery({
@@ -21,14 +21,14 @@ export const useSongThumbQuery = () => {
 export const useSongThumbMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: { songId: string; point: number }) => patchSongThumb(body),
+    mutationFn: (body: { songId: string; point: number }) => postSongThumb(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['songThumb'] });
       queryClient.invalidateQueries({ queryKey: ['searchSong'] });
     },
     onError: error => {
       console.error('error', error);
-      alert(error.message ?? 'PATCH 실패');
+      alert(error.message ?? 'POST 실패');
     },
   });
 };
