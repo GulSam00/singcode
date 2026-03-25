@@ -10,6 +10,14 @@
    git branch --show-current
    ```
 
+   **브랜치가 `develop` 또는 `main` 인 경우 즉시 중단한다.**
+   아래 메시지를 출력하고 더 이상 진행하지 않는다.
+
+   ```
+   ⛔ `develop` / `main` 브랜치에서는 PR을 생성할 수 없습니다.
+   `/start <작업 설명>` 으로 이슈를 생성하고 작업 브랜치를 만들어 주세요.
+   ```
+
 2. 브랜치 이름에서 작업 유형과 이슈 번호를 추출한다.
    - 규칙: `<type>/<issue-number>-<camelCaseName>`
    - 예: `feat/42-addSearchFilter` → type=`feat`, issue=`42`

@@ -13,7 +13,6 @@ pnpm ky-open       # Open API(금영)로 KY 번호 수집
 pnpm ky-youtube    # YouTube 크롤링으로 KY 번호 수집 + AI 검증
 pnpm ky-verify     # 기존 KY 번호의 실제 존재 여부 재검증 (체크포인트 지원)
 pnpm ky-update     # ky-youtube + ky-verify 병렬 실행
-pnpm trans         # 일본어 아티스트명 → 한국어 번역 후 DB 저장
 pnpm test          # vitest 실행
 pnpm lint          # ESLint
 ```
@@ -74,24 +73,14 @@ findKYByOpen.ts
   └─ 제목 + 아티스트 문자열 비교로 KY 번호 매칭
 ```
 
-**일본어 번역**
-
-```
-postTransDictionary.ts
-  └─ getSongsJpnDB()             # 일본어 포함된 곡 필터링
-  └─ transChatGPT()              # GPT-4-turbo로 아티스트명 번역
-  └─ postTransDictionariesDB()   # trans_dictionaries 테이블에 저장
-```
-
 ### 핵심 패턴: 진행 상태 저장 (체크포인트)
 
 장시간 실행되는 스크립트가 중단됐을 때 재시작하면 처음부터 다시 하지 않도록, `src/assets/`에 텍스트 파일로 진행 상태를 기록한다.
 
-| 파일                                      | 용도                               |
-| ----------------------------------------- | ---------------------------------- |
-| `src/assets/transList.txt`                | 이미 번역 시도한 일본어 아티스트명 |
-| `src/assets/crawlKYValidList.txt`         | 검증 완료된 (제목-아티스트) 쌍     |
-| `src/assets/crawlKYYoutubeFailedList.txt` | YouTube 크롤링 실패 목록           |
+| 파일                                      | 용도                           |
+| ----------------------------------------- | ------------------------------ |
+| `src/assets/crawlKYValidList.txt`         | 검증 완료된 (제목-아티스트) 쌍 |
+| `src/assets/crawlKYYoutubeFailedList.txt` | YouTube 크롤링 실패 목록       |
 
 `logData.ts`의 `save*` / `load*` 함수로 관리. 스크립트 시작 시 로드해 `Set`으로 변환 후 O(1) 검색으로 스킵 처리.
 
@@ -101,11 +90,10 @@ postTransDictionary.ts
 
 ### Supabase 테이블
 
-| 테이블               | 용도                             |
-| -------------------- | -------------------------------- |
-| `songs`              | 메인 곡 데이터 (TJ/KY 번호 포함) |
-| `invalid_ky_songs`   | KY 번호 수집 실패 목록           |
-| `trans_dictionaries` | 일본어 → 한국어 번역 사전        |
+| 테이블             | 용도                             |
+| ------------------ | -------------------------------- |
+| `songs`            | 메인 곡 데이터 (TJ/KY 번호 포함) |
+| `invalid_ky_songs` | KY 번호 수집 실패 목록           |
 
 ### AI 유틸
 
