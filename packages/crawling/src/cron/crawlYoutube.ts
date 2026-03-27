@@ -6,7 +6,7 @@ import { postInvalidKYSongsDB } from '@/supabase/postDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
 import { Song } from '@/types';
 
-import { isValidKYExistNumber } from './isValidKYExistNumber';
+import { isValidKYExistNumber } from '../crawling/isValidKYExistNumber';
 
 // --- Constants ---
 const BASE_YOUTUBE_SEARCH_URL = 'https://www.youtube.com/@KARAOKEKY/search';
