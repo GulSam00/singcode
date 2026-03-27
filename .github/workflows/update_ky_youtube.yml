@@ -38,6 +38,6 @@ jobs:
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
-      - name: run update script - packages/crawling/crawlYoutube.ts
+      - name: run update script - crawlYoutube.ts
         working-directory: packages/crawling
         run: pnpm run ky-youtube
