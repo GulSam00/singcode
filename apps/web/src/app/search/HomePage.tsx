@@ -3,7 +3,6 @@
 import { Loader2, Search, SearchX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 // import { Checkbox } from '@/components/ui/checkbox';
@@ -18,6 +17,7 @@ import { SearchSong } from '@/types/song';
 import AddFolderModal from './AddFolderModal';
 // import ChatBot from './ChatBot';
 import JpnArtistList from './JpnArtistList';
+import PopularSearchHistory from './PopularSearchHistory';
 import SearchAutocomplete from './SearchAutocomplete';
 import SearchHistory from './SearchHistory';
 import SearchResultCard from './SearchResultCard';
@@ -96,11 +96,6 @@ export default function SearchPage() {
   };
 
   const handleSearchClick = () => {
-    if (!search.trim()) {
-      toast.error('검색어를 입력해주세요.');
-      return;
-    }
-
     handleSearch();
     setIsFocusAuto(false);
   };
@@ -206,10 +201,8 @@ export default function SearchPage() {
             {isPendingSearch ? <Loader2 className="h-4 w-4 animate-spin" /> : '검색'}
           </Button>
         </div>
-        {/* 검색 기록 */}
-        <SearchHistory onHistoryClick={handleHistoryClick} />
       </div>
-      <div ref={setScrollRef} className="h-[calc(100vh-26rem)] overflow-x-hidden overflow-y-auto">
+      <div ref={setScrollRef} className="h-[calc(100vh-22rem)] overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
           <div className="flex w-full max-w-md flex-col gap-4 p-4">
             {searchSongs.map((song, index) => (
@@ -247,10 +240,18 @@ export default function SearchPage() {
             <p className="m-2">검색 결과가 없습니다.</p>
           </div>
         )}
-        {searchSongs.length === 0 && !query && (
+
+        {/* {searchSongs.length === 0 && !query && (
           <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
             <Search className="h-8 w-8 opacity-50" />
             <p className="m-2">노래 제목이나 가수를 검색해보세요</p>
+          </div>
+        )} */}
+
+        {searchSongs.length === 0 && !query && (
+          <div className="flex h-full flex-col justify-center gap-2">
+            <SearchHistory onHistoryClick={handleHistoryClick} />
+            <PopularSearchHistory onHistoryClick={handleHistoryClick} />
           </div>
         )}
       </div>
