@@ -30,9 +30,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<ThumbUpSong[]>>> {
     }
 
     // 3) 상위 50개 song_id 추출
-    const sorted = [...thumbMap.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 50);
+    const sorted = [...thumbMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 50);
 
     const songIds = sorted.map(([songId]) => songId);
 
