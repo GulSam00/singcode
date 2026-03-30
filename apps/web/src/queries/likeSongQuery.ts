@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteLikeSongArray, getLikeSong } from '@/lib/api/likeSong';
 import { PersonalSong } from '@/types/song';
 
-// 🎵 좋아요 한 곡 리스트 가져오기
+// 🎵 즐겨찾기 한 곡 리스트 가져오기
 export function useLikeSongQuery(isAuthenticated: boolean) {
   return useQuery({
     queryKey: ['likeSong'],
@@ -18,7 +18,7 @@ export function useLikeSongQuery(isAuthenticated: boolean) {
   });
 }
 
-// 🎵 여러 곡 좋아요 취소
+// 🎵 여러 곡 즐겨찾기 취소
 export function useDeleteLikeSongArrayMutation() {
   const queryClient = useQueryClient();
 

@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
-  Heart,
   ListPlus,
   ListRestart,
   MinusCircle,
   PlusCircle,
+  Star,
   ThumbsUp,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -158,11 +158,11 @@ export default function SearchResultCard({
                   variant="ghost"
                   size="icon"
                   className={`h-13 flex-1 flex-col items-center justify-center`}
-                  aria-label={isLike ? '좋아요 취소' : '좋아요'}
+                  aria-label={isLike ? '즐겨찾기 취소' : '즐겨찾기'}
                   onClick={onToggleLike}
                 >
-                  <Heart className={`${isLike ? 'fill-current text-red-500' : ''}`} />
-                  <span className="text-xs">{isLike ? '좋아요 취소' : '좋아요'}</span>
+                  <Star className={`${isLike ? 'fill-current text-yellow-500' : ''}`} />
+                  <span className="text-xs">{isLike ? '즐겨찾기 취소' : '즐겨찾기'}</span>
                 </Button>
 
                 <Button
