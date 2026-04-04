@@ -6,9 +6,11 @@ import { SearchSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 interface DBSong extends Song {
-  thumb_logs: {
-    thumb_count: number;
-  }[] | null;
+  thumb_logs:
+    | {
+        thumb_count: number;
+      }[]
+    | null;
   tosings: {
     user_id: string;
   }[];

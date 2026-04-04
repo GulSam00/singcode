@@ -1,4 +1,4 @@
-name: Update ky by Youtube
+name: Tagging Songs
 
 on:
   schedule:
@@ -38,6 +38,6 @@ jobs:
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
-      - name: run update script - crawlYoutube.ts
+      - name: run tagging script - taggingSongs.ts
         working-directory: packages/crawling
-        run: pnpm run ky-youtube
+        run: pnpm run tag-songs
