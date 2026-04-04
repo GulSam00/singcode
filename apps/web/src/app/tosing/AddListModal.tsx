@@ -60,7 +60,7 @@ export default function AddListModal({ isOpen, onClose }: AddListModalProps) {
           >
             <div>
               <TabsList className="my-2 grid w-full grid-cols-2">
-                <TabsTrigger value="like">좋아요</TabsTrigger>
+                <TabsTrigger value="like">즐겨찾기</TabsTrigger>
                 <TabsTrigger value="save">재생목록</TabsTrigger>
               </TabsList>
             </div>

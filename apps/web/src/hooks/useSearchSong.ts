@@ -1,6 +1,7 @@
 import { useDeferredValue, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { usePostSearchLogMutation } from '@/queries/searchLogQuery';
 import {
   useInfiniteSearchSongQuery,
   useToggleLikeMutation,
@@ -42,6 +43,8 @@ export default function useSearchSong() {
     isError,
   } = useInfiniteSearchSongQuery(query, queryType, isAuthenticated);
 
+  const { mutate: postSearchLog } = usePostSearchLogMutation();
+
   const { setFooterAnimateKey } = useFooterAnimateStore();
   const { addToHistory } = useSearchHistoryStore();
   const { addGuestToSingSong, removeGuestToSingSong } = useGuestToSingStore();
@@ -56,6 +59,11 @@ export default function useSearchSong() {
   const handleSearch = () => {
     // trim 제거
     const trimSearch = search.trim();
+
+    if (!trimSearch) {
+      setQuery('');
+      return;
+    }
 
     let parsedSearch = trimSearch;
 
@@ -77,6 +85,7 @@ export default function useSearchSong() {
       setSearch(parsedSearch);
       setQueryType(searchType);
       addToHistory(parsedSearch);
+      postSearchLog(parsedSearch);
     }
   };
 
