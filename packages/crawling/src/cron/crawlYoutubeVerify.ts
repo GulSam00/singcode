@@ -4,7 +4,7 @@ import { getSongsKyNotNullDB, getVerifyKySongsDB } from '@/supabase/getDB';
 import { postVerifyKySongsDB } from '@/supabase/postDB';
 import { updateSongsKyDB } from '@/supabase/updateDB';
 
-import { isValidKYExistNumber } from './isValidKYExistNumber';
+import { isValidKYExistNumber } from '../crawling/isValidKYExistNumber';
 
 // 기존에 등록된 KY 노래방 번호가 실제로 KY 노래방과 일치하는지 검증
 // 유효한 곡은 verify_ky_songs 테이블에 insert
@@ -44,9 +44,8 @@ for (const song of data) {
   }
 
   index++;
-  console.log('crawlYoutubeVerify : ', index);
 
-  if (index >= 2000) break;
+  if (index >= 5000) break;
 }
 
 browser.close();

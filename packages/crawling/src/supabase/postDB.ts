@@ -52,6 +52,18 @@ export async function postVerifyKySongsDB(song: Song) {
   }
 }
 
+export async function postSongTagsDB(songId: string, tagIds: number[]) {
+  const supabase = getClient();
+  const rows = tagIds.map(tagId => ({ song_id: songId, tag_id: tagId }));
+
+  const { error } = await supabase.from('song_tags').insert(rows);
+  if (error) {
+    console.error('postSongTagsDB error:', error);
+    return false;
+  }
+  return true;
+}
+
 export async function postInvalidKYSongsDB(song: Song) {
   const supabase = getClient();
 

@@ -13,6 +13,8 @@ pnpm ky-open       # Open API(금영)로 KY 번호 수집
 pnpm ky-youtube    # YouTube 크롤링으로 KY 번호 수집 + AI 검증
 pnpm ky-verify     # 기존 KY 번호의 실제 존재 여부 재검증 (체크포인트 지원)
 pnpm ky-update     # ky-youtube + ky-verify 병렬 실행
+pnpm recent-tj     # TJ 최신곡 크롤링
+pnpm tag-songs     # AI 기반 곡 자동 태깅
 pnpm test          # vitest 실행
 pnpm lint          # ESLint
 ```
@@ -94,8 +96,33 @@ findKYByOpen.ts
 | ------------------ | -------------------------------- |
 | `songs`            | 메인 곡 데이터 (TJ/KY 번호 포함) |
 | `invalid_ky_songs` | KY 번호 수집 실패 목록           |
+| `tags`             | 태그 마스터 (id, name, category) |
+| `song_tags`        | 곡-태그 매핑 (song_id, tag_id)   |
+| `verify_ky_songs`  | KY 번호 검증 완료 목록           |
 
 ### AI 유틸
 
 - `utils/validateSongMatch.ts` — `gpt-4o-mini`로 두 (제목, 아티스트) 쌍이 같은 곡인지 판단. `temperature: 0`, `max_tokens: 20`, 완전 일치 시 API 호출 생략.
 - `utils/transChatGPT.ts` — `gpt-4-turbo`로 일본어 → 한국어 번역.
+- `utils/getSongTag.ts` — `gpt-4o-mini`로 곡에 적절한 태그 ID 자동 할당. DB의 `tags` 테이블에서 태그 목록을 캐싱하여 프롬프트에 포함.
+
+### 곡 태깅 파이프라인
+
+```
+taggingSongs.ts
+  └─ getSongsAllDB()              # 전체 곡 조회
+  └─ getSongTagSongIdsDB()        # 이미 태그된 곡 ID Set 로드 (스킵 처리)
+  └─ autoTagSong(title, artist)   # AI로 태그 ID 추출 (1~4개)
+  └─ postSongTagsDB(songId, tagIds)  # song_tags 테이블에 insert
+```
+
+### GitHub Actions 워크플로우
+
+| 워크플로우 파일          | 스케줄 (UTC) | 실행 스크립트         |
+| ----------------------- | ------------ | -------------------- |
+| `crawl_recent_tj.yml`   | 매일 14:00   | `pnpm recent-tj`     |
+| `tagging_song.yml`      | 매일 14:00   | `pnpm tag-songs`     |
+| `update_ky_youtube.yml` | 수동         | `pnpm ky-youtube`    |
+| `verify_ky_youtube.yml` | 수동         | `pnpm ky-verify`     |
+
+모든 워크플로우는 `workflow_dispatch`로 수동 실행도 가능하다.
