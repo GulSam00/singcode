@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
+import { ThemeProvider } from 'next-themes';
 import Script from 'next/script';
 import { Toaster } from 'sonner';
 
@@ -102,7 +103,7 @@ export default function RootLayout({
     <ErrorWrapper>
       <div className="relative flex h-full w-full max-w-md flex-col">
         <Header />
-        <div className="h-full p-4 shadow-sm">{children}</div>
+        <div className="h-full p-4">{children}</div>
 
         <Footer />
       </div>
@@ -123,24 +124,20 @@ export default function RootLayout({
   );
 
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <MonitoringScripts />
+        <meta name="theme-color" content="#1a1a2e" />
         <meta name="naver-site-verification" content="85db7c6070d2f26d08e995cdab5a70caac28e80d" />
       </head>
       <body className="m-0 flex h-dvh w-full justify-center">
-        <QueryProvider>
-          <AuthProvider>
-            <AppContent />
-            {/* {isDevelopment ? (
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <QueryProvider>
+            <AuthProvider>
               <AppContent />
-            ) : (
-              <PostHogProvider>
-                <AppContent />
-              </PostHogProvider>
-            )} */}
-          </AuthProvider>
-        </QueryProvider>
+            </AuthProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -58,7 +58,7 @@ export default function DeleteModal({
           </DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <p className="text-center text-gray-600">
+          <p className="text-muted-foreground text-center">
             {songIdArray.length}개의 노래를 재생목록에서 삭제하시겠습니까?
             <br />이 작업은 되돌릴 수 없습니다.
           </p>

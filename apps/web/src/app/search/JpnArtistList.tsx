@@ -38,7 +38,10 @@ export default function JpnArtistList({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          className="dark:hover:bg-primary dark:hover:text-primary-foreground"
+        >
           <UserRoundSearch className="h-4 w-4" />
           J-POP 가수 찾기
         </Button>

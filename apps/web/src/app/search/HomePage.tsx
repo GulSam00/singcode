@@ -169,10 +169,22 @@ export default function SearchPage() {
         </div>
 
         <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="all">전체</TabsTrigger>
-            <TabsTrigger value="title">제목</TabsTrigger>
-            <TabsTrigger value="artist">가수</TabsTrigger>
+          <TabsList className="dark:bg-muted/50 grid w-full grid-cols-3 dark:border">
+            {(
+              [
+                ['all', '전체'],
+                ['title', '제목'],
+                ['artist', '가수'],
+              ] as const
+            ).map(([value, label]) => (
+              <TabsTrigger
+                key={value}
+                value={value}
+                className="dark:data-[state=active]:bg-accent/15 dark:data-[state=active]:text-accent dark:data-[state=active]:shadow-(--glow-accent)"
+              >
+                {label}
+              </TabsTrigger>
+            ))}
           </TabsList>
         </Tabs>
 

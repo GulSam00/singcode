@@ -139,7 +139,11 @@ export default function Sidebar() {
 
           {isAuthenticated ? (
             <>
-              <Button variant="outline" className="w-full" onClick={handleLogout}>
+              <Button
+                variant="outline"
+                className="dark:hover:bg-primary dark:hover:text-primary-foreground w-full"
+                onClick={handleLogout}
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 로그아웃
               </Button>

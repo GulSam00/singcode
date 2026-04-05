@@ -9,18 +9,18 @@ type MusicCardProps = {
 
 export function MusicCard({ title, artist, reason, onClick }: MusicCardProps) {
   return (
-    <div className="bg-card flex flex-col rounded-lg border p-4 shadow-sm">
+    <div className="bg-card flex flex-col rounded-lg border p-4">
       <button
         type="button"
         onClick={() => onClick(title)}
-        className="mb-1 w-full cursor-pointer text-left text-sm font-semibold transition-colors hover:text-blue-500 hover:underline"
+        className="hover:text-accent mb-1 w-full cursor-pointer text-left text-sm font-semibold transition-colors hover:underline"
       >
         <MarqueeText>{title}</MarqueeText>
       </button>
       <button
         type="button"
         onClick={() => onClick(artist)}
-        className="text-muted-foreground mb-2 w-full cursor-pointer text-left text-xs transition-colors hover:text-blue-500 hover:underline"
+        className="text-muted-foreground hover:text-accent mb-2 w-full cursor-pointer text-left text-xs transition-colors hover:underline"
       >
         <MarqueeText>{artist}</MarqueeText>
       </button>
