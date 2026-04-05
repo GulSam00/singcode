@@ -59,7 +59,7 @@ export default function CheckInModal({
             idleView={trigger => (
               <div className="flex flex-col items-center gap-4 text-center">
                 <h2 className="text-lg font-bold">오늘 출석하시겠어요?</h2>
-                <div className="flex w-full flex-col items-center gap-1 rounded-lg bg-gray-200 p-4">
+                <div className="bg-muted flex w-full flex-col items-center gap-1 rounded-lg p-4">
                   <span className="text-muted-foreground text-xs font-bold tracking-widest uppercase">
                     Current Points
                   </span>
@@ -77,7 +77,7 @@ export default function CheckInModal({
                 </div>
                 <Button
                   onClick={trigger} // 👈 여기서 애니메이션 시작!
-                  className="rounded-full bg-blue-500 px-6 py-2 text-white active:scale-95"
+                  className="bg-accent text-accent-foreground rounded-full px-6 py-2 active:scale-95"
                 >
                   출석하기
                 </Button>

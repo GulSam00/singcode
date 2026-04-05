@@ -1,9 +1,9 @@
 name: Tagging Songs
 
 on:
-  schedule:
-    - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
-  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
+  # workflow_dispatch:
 
 permissions:
   contents: write # push 권한을 위해 필요
