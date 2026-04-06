@@ -33,6 +33,6 @@ jobs:
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
 
-      - name: run crawl script
+      - name: run crawl script - crawlRecentTJ.ts
         working-directory: packages/crawling
         run: pnpm run recent-tj

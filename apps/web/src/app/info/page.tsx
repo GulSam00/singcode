@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleDollarSign, Folder, Heart } from 'lucide-react';
+import { CircleDollarSign, Folder, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import CountUp from '@/components/reactBits/CountUp';
@@ -11,9 +11,9 @@ import { useUserQuery } from '@/queries/userQuery';
 const menuItems = [
   {
     id: 'like',
-    title: '좋아요 곡 관리',
+    title: '즐겨찾기 곡 관리',
     description: '좋아요를 누른 노래를 관리합니다',
-    icon: <Heart className="h-5 w-5" />,
+    icon: <Star className="h-5 w-5" />,
   },
 
   {

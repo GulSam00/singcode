@@ -64,7 +64,7 @@ export default function ThumbUpModal({
       <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
         <div className="flex flex-col items-center">
           {/* 레이블 추가로 가독성 향상 */}
-          <span className="mb-1 text-xs font-bold tracking-widest text-gray-400 uppercase">
+          <span className="text-muted-foreground mb-1 text-xs font-bold tracking-widest uppercase">
             Total Points
           </span>
 

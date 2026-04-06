@@ -64,7 +64,7 @@ export default function MessageDialog() {
                 variant === 'success' && 'text-green-500',
                 variant === 'error' && 'text-red-500',
                 variant === 'warning' && 'text-yellow-500',
-                variant === 'info' && 'text-blue-500',
+                variant === 'info' && 'text-accent',
               )}
             />
             {title && <DialogTitle>{title}</DialogTitle>}
@@ -82,7 +82,7 @@ export default function MessageDialog() {
               variant === 'success' && 'bg-green-500 hover:bg-green-600',
               variant === 'error' && 'bg-red-500 hover:bg-red-600',
               variant === 'warning' && 'bg-yellow-500 hover:bg-yellow-600',
-              variant === 'info' && 'bg-blue-500 hover:bg-blue-600',
+              variant === 'info' && 'bg-accent hover:bg-accent/90 text-accent-foreground',
             )}
           >
             {buttonText || '확인'}

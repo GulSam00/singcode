@@ -84,3 +84,27 @@ export async function getVerifyKySongsDB(): Promise<Set<string>> {
 
   return new Set(data.map(row => row.id));
 }
+
+export async function getSongsAllDB(max: number = 50000) {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('songs')
+    .select('id, title, artist')
+    .order('created_at', { ascending: false })
+    .limit(max);
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function getSongTagSongIdsDB(): Promise<Set<string>> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase.from('song_tags').select('song_id').limit(50000);
+
+  if (error) throw error;
+
+  return new Set(data.map(row => row.song_id));
+}

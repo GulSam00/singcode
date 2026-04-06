@@ -44,7 +44,7 @@ packages/
   eslint-config/   — Shared ESLint config (@repo/eslint-config)
   format-config/   — Shared Prettier config (@repo/format-config)
   typescript-config/ — Shared tsconfig bases
-  crawling/ — One-off data crawling scripts (not a published package)
+  crawling/ — Data crawling & tagging scripts (see packages/crawling/CLAUDE.md)
 ```
 
 ## Web App Architecture
