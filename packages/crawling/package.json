@@ -13,6 +13,7 @@
     "ky-update": "pnpm run ky-youtube & pnpm run ky-verify",
     "recent-tj": "tsx src/cron/crawlRecentTJ.ts",
     "tag-songs": "tsx src/cron/taggingSongs.ts",
+    "trans-jpn": "tsx src/cron/translationJpn.ts",
     "lint": "eslint .",
     "test": "vitest run",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

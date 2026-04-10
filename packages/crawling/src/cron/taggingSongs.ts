@@ -14,7 +14,6 @@ const [allSongs, taggedSongIds] = await Promise.all([getSongsAllDB(), getSongTag
 console.log('전체 곡 수:', allSongs.length);
 console.log('이미 태그된 곡 수:', taggedSongIds.size);
 
-// 2. 순차 순회 (테스트: 5회만 실행)
 let processedCount = 0;
 for (const song of allSongs) {
   if (processedCount >= 5000) break;

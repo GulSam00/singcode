@@ -99,6 +99,20 @@ export async function getSongsAllDB(max: number = 50000) {
   return data;
 }
 
+export async function getJpopSongsForTranslationDB() {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('songs')
+    .select('id, title, artist, title_ko, artist_ko, song_tags!inner(tag_id)')
+    .eq('song_tags.tag_id', 101)
+    .limit(50000);
+
+  if (error) throw error;
+
+  return data;
+}
+
 export async function getSongTagSongIdsDB(): Promise<Set<string>> {
   const supabase = getClient();
 
