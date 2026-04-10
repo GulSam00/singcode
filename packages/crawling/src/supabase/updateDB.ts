@@ -40,3 +40,19 @@ export const updateSongsKyDB = async (song: Song | Song[]) => {
 
   return results;
 };
+
+export const updateSongKoTranslationDB = async (
+  songId: string,
+  title_ko: string,
+  artist_ko: string,
+) => {
+  const supabase = getClient();
+
+  const { error } = await supabase.from('songs').update({ title_ko, artist_ko }).eq('id', songId);
+
+  if (error) {
+    console.error('updateSongKoTranslationDB error:', error);
+    return false;
+  }
+  return true;
+};

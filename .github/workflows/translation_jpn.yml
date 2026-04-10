@@ -1,0 +1,43 @@
+name: Translation J-POP Songs
+
+on:
+  schedule:
+    - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-npm-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        working-directory: packages/crawling
+        run: pnpm install
+
+      - name: Create .env file
+        working-directory: packages/crawling
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+
+      - name: Run translation script - translationJpn.ts
+        working-directory: packages/crawling
+        run: pnpm run trans-jpn
