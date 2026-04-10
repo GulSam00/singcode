@@ -1,5 +1,6 @@
 'use client';
 
+import { format } from 'date-fns';
 import { CalendarCheck, MessageCircleQuestion, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
@@ -58,6 +59,8 @@ export default function Header() {
   const { data: user, isLoading } = useUserQuery();
 
   const lastCheckIn = user?.last_check_in ?? new Date();
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const isCheckedIn = format(new Date(lastCheckIn), 'yyyy-MM-dd') >= today;
 
   const handleClickContact = () => {
     const contactUrl = 'https://walla.my/survey/K79c5bC6alDqc1qiaaES';
@@ -77,6 +80,12 @@ export default function Header() {
       setExpanded(key);
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && !!user && !isCheckedIn) {
+      setOpen(true);
+    }
+  }, [isLoading, user, isCheckedIn]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -124,6 +133,7 @@ export default function Header() {
           <DialogContent>
             <CheckInModal
               lastCheckIn={lastCheckIn}
+              isCheckedIn={isCheckedIn}
               isLogin={!!user}
               handleNavigateLogin={handleNavigateLogin}
             />

@@ -1,6 +1,5 @@
 'use client';
 
-import { format } from 'date-fns';
 import { Clock } from 'lucide-react';
 
 import Checked from '@/assets/lotties/Checked.json';
@@ -16,12 +15,14 @@ import ActionAnimationFlow from './ActionAnimationFlow';
 
 interface CheckInModalProps {
   lastCheckIn: Date;
+  isCheckedIn: boolean;
   isLogin: boolean;
   handleNavigateLogin: () => void;
 }
 
 export default function CheckInModal({
   lastCheckIn,
+  isCheckedIn,
   isLogin,
   handleNavigateLogin,
 }: CheckInModalProps) {
@@ -32,10 +33,6 @@ export default function CheckInModal({
   const CHECK_IN_REWARD = 30;
 
   const { mutate: patchUserCheckIn } = usePatchUserCheckInMutation();
-
-  const today = format(new Date(), 'yyyy-MM-dd');
-
-  const parseLastCheckIn = format(new Date(lastCheckIn), 'yyyy-MM-dd');
 
   const handleClickCheckIn = () => {
     patchUserCheckIn();
@@ -54,7 +51,7 @@ export default function CheckInModal({
           <ActionAnimationFlow
             animationData={Checked}
             clickCallback={handleClickCheckIn}
-            initalStatus={parseLastCheckIn >= today ? 'DONE' : 'IDLE'}
+            initalStatus={isCheckedIn ? 'DONE' : 'IDLE'}
             // 1. 대기 화면 (trigger 함수를 받아서 버튼에 연결)
             idleView={trigger => (
               <div className="flex flex-col items-center gap-4 text-center">
