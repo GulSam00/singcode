@@ -154,5 +154,5 @@ export default function FallingIcons({ count }: FallingIconsProps) {
     }
   }, [count]);
 
-  return <div ref={sceneRef} className="h-[300px] w-full overflow-hidden bg-amber-50" />;
+  return <div ref={sceneRef} className="h-[300px] w-full overflow-hidden border" />;
 }
