@@ -1,6 +1,6 @@
 import { getSongTagSongIdsDB, getSongsAllDB } from '@/supabase/getDB';
 import { postSongTagsDB } from '@/supabase/postDB';
-import { autoTagSong } from '@/utils/getSongTag';
+import { autoTagSong, getTagsForPrompt } from '@/utils/getSongTag';
 
 const resultsLog = {
   success: 0,
@@ -8,8 +8,12 @@ const resultsLog = {
   skipped: 0,
 };
 
-// 1. 전체 곡 조회 + 이미 태그된 곡 ID 로드
-const [allSongs, taggedSongIds] = await Promise.all([getSongsAllDB(), getSongTagSongIdsDB()]);
+// 1. 전체 곡 조회 + 이미 태그된 곡 ID + 태그 프롬프트 로드
+const [allSongs, taggedSongIds, tagsPrompt] = await Promise.all([
+  getSongsAllDB(),
+  getSongTagSongIdsDB(),
+  getTagsForPrompt(),
+]);
 
 console.log('전체 곡 수:', allSongs.length);
 console.log('이미 태그된 곡 수:', taggedSongIds.size);
@@ -23,7 +27,7 @@ for (const song of allSongs) {
   }
 
   try {
-    const tagIds = await autoTagSong(song.title, song.artist);
+    const tagIds = await autoTagSong(song.title, song.artist, tagsPrompt);
 
     if (tagIds.length === 0) {
       resultsLog.failed++;
