@@ -16,14 +16,10 @@ interface Tag {
   category: string;
 }
 
-let cachedTagsPrompt: string | null = null;
-
 /**
  * DB에서 전체 태그 목록을 읽어와 AI 프롬프트용 텍스트로 변환한다.
  */
-const getTagsForPrompt = async (): Promise<string> => {
-  if (cachedTagsPrompt) return cachedTagsPrompt;
-
+export const getTagsForPrompt = async (): Promise<string> => {
   const supabase = getClient();
   const { data: tags, error } = await supabase
     .from('tags')
@@ -36,34 +32,51 @@ const getTagsForPrompt = async (): Promise<string> => {
   }
 
   // AI가 읽기 편하게 "ID: 이름 (카테고리)" 형식으로 변환
-  cachedTagsPrompt = tags.map((tag: Tag) => `${tag.id}: ${tag.name} (${tag.category})`).join('\n');
-  return cachedTagsPrompt;
+  return tags.map((tag: Tag) => `${tag.id}: ${tag.name} (${tag.category})`).join('\n');
 };
 
-/**
- * AI를 활용해 노래에 적절한 태그 ID들을 추출한다.
- */
-export const autoTagSong = async (title: string, artist: string): Promise<number[]> => {
+export const autoTagSong = async (
+  title: string,
+  artist: string,
+  tagsPrompt: string,
+): Promise<number[]> => {
   try {
-    // 1단계: 프롬프트용 태그 리스트 준비
-    const tagsPrompt = await getTagsForPrompt();
     if (!tagsPrompt) return [];
+
+    // 1단계: 정규식을 이용한 문자열 사전 분석 (Harness)
+    const hasHangul = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(title + artist);
+    const hasKana = /[ぁ-んァ-ヶ]/.test(title + artist);
+
+    // LLM에게 줄 강력한 힌트 생성
+    const languageHints = `
+      - [Detected Script] Hangul Present: ${hasHangul}, Japanese Kana Present: ${hasKana}
+    `.trim();
 
     // 2단계: OpenAI API 호출
     const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini', // 가성비가 좋은 모델 사용
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
           content: `
-            You are a music database expert. Based on the song title and artist, categorize the song by selecting appropriate tag IDs from the provided list.
+            You are a music database expert specializing in global artist categorization.
 
-            Guidelines:
-            1. Select at least one tag, but no more than 4.
-            2. Prioritize Language (100s), then Genre (200s), then Origin (300s).
-            3. If it's Japanese music, ALWAYS include 101 (J-POP).
-            4. Be precise. If it's from an Anime, use 302 (애니메이션).
-            5. Return only JSON: {"tag_ids": [number, number, ...]}
+            [Language Selection Strategy]
+            - **Do NOT** assume a song is 102 (팝송) solely based on English/Latin characters.
+            - If title/artist are in English, research the **artist's origin and primary market**.
+            - Priority Logic:
+              1. If Hangul is detected OR the artist is a K-Pop artist: Select 100 (한국노래).
+              2. If Kana is detected OR the artist is a J-Pop/Japanese artist: Select 101 (일본노래).
+              3. Select 102 (팝송) ONLY if the artist is primarily from Western/English-speaking regions.
+              4. For all other cases or truly global/mixed origins, use 103 (글로벌).
+
+            [Selection Rules]
+            - Language Slot (100-199): EXACTLY 1 tag.
+            - Genre Slot (200-299): EXACTLY 1 tag.
+            - Origin Slot (300-399): 1 to 2 tags, sorted by relevance.
+
+            [Contextual Hints]
+            ${languageHints}
 
             Allowed Tags List:
             ${tagsPrompt}
@@ -75,14 +88,12 @@ export const autoTagSong = async (title: string, artist: string): Promise<number
         },
       ],
       response_format: { type: 'json_object' },
-      temperature: 0, // 결과의 일관성을 위해 0으로 설정
-      max_tokens: 50, // 결과가 짧으므로 토큰 제한
+      temperature: 0,
     });
 
     const content = response.choices[0].message.content;
     if (!content) return [];
 
-    // 3단계: 결과 파싱 및 반환
     const result: { tag_ids: number[] } = JSON.parse(content);
     return result.tag_ids;
   } catch (error) {
