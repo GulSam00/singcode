@@ -74,6 +74,13 @@ export const autoTagSong = async (
             - Language Slot (100-199): EXACTLY 1 tag.
             - Genre Slot (200-299): EXACTLY 1 tag.
             - Origin Slot (300-399): 1 to 2 tags, sorted by relevance.
+            - **Return the final result strictly in JSON format.**
+
+            [Output Instructions]
+            - **Combine all selected IDs into a single flat array.**
+            - **The final output must be a JSON object with a single key "tag_ids".**
+            - **Example: {"tag_ids":}**
+            - **Do not use keys like "language", "genre", or "origin" in the JSON.**
 
             [Contextual Hints]
             ${languageHints}
