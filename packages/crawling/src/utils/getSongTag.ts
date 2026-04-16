@@ -9,6 +9,14 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// 언어 태그 ID 범위 (100~199)
+const LANGUAGE_TAG_MIN = 100;
+const LANGUAGE_TAG_MAX = 200;
+
+// 확정 분류용 언어 태그 ID
+const TAG_KOREAN = 100;
+const TAG_JAPANESE = 101;
+
 // 태그 정보를 담을 타입 정의
 interface Tag {
   id: number;
@@ -24,6 +32,8 @@ export const getTagsForPrompt = async (): Promise<string> => {
   const { data: tags, error } = await supabase
     .from('tags')
     .select('id, name, category')
+    .gte('id', LANGUAGE_TAG_MIN)
+    .lt('id', LANGUAGE_TAG_MAX)
     .order('id');
 
   if (error) {
@@ -39,53 +49,53 @@ export const autoTagSong = async (
   title: string,
   artist: string,
   tagsPrompt: string,
-): Promise<number[]> => {
+): Promise<number | null> => {
   try {
-    if (!tagsPrompt) return [];
+    if (!tagsPrompt) return null;
 
-    // 1단계: 정규식을 이용한 문자열 사전 분석 (Harness)
-    const hasHangul = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(title + artist);
-    const hasKana = /[ぁ-んァ-ヶ]/.test(title + artist);
+    const titleAndArtist = title + artist;
+    const hasHangul = /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(titleAndArtist);
+    const hasKana = /[ぁ-んァ-ヶ]/.test(titleAndArtist);
 
-    // LLM에게 줄 강력한 힌트 생성
-    const languageHints = `
-      - [Detected Script] Hangul Present: ${hasHangul}, Japanese Kana Present: ${hasKana}
-    `.trim();
+    // 1단계: 확실한 케이스는 API 호출 없이 바로 분류
+    if (hasHangul) return TAG_KOREAN;
+    if (hasKana) return TAG_JAPANESE;
 
-    // 2단계: OpenAI API 호출
+    // 2단계: 같은 아티스트의 기존 태그가 있으면 재사용
+    const supabase = getClient();
+    const { data: existingTags } = await supabase
+      .from('songs')
+      .select('song_tags!inner(tag_id)')
+      .eq('artist', artist)
+      .gte('song_tags.tag_id', LANGUAGE_TAG_MIN)
+      .lt('song_tags.tag_id', LANGUAGE_TAG_MAX)
+      .limit(1);
+
+    const existingTagId = (existingTags as { song_tags: { tag_id: number }[] }[] | null)?.[0]
+      ?.song_tags?.[0]?.tag_id;
+    if (existingTagId) return existingTagId;
+
+    // 3단계: 영문 전용 곡만 LLM으로 판별
     const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-5.4-mini',
       messages: [
         {
           role: 'system',
           content: `
-            You are a music database expert specializing in global artist categorization.
+            You are a music database expert. Select EXACTLY 1 language tag for the given song.
+            The title and artist are in English/Latin script only.
 
-            [Language Selection Strategy]
-            - **Do NOT** assume a song is 102 (팝송) solely based on English/Latin characters.
-            - If title/artist are in English, research the **artist's origin and primary market**.
-            - Priority Logic:
-              1. If Hangul is detected OR the artist is a K-Pop artist: Select 100 (한국노래).
-              2. If Kana is detected OR the artist is a J-Pop/Japanese artist: Select 101 (일본노래).
-              3. Select 102 (팝송) ONLY if the artist is primarily from Western/English-speaking regions.
-              4. For all other cases or truly global/mixed origins, use 103 (글로벌).
+            [Rules]
+            - If the artist is a K-Pop/Korean artist: Select 100 (한국노래).
+            - If the artist is a J-Pop/Japanese artist: Select 101 (일본노래).
+            - If the artist is from Western/English-speaking regions: Select 102 (팝송).
+            - Otherwise: Select 103 (글로벌).
 
-            [Selection Rules]
-            - Language Slot (100-199): EXACTLY 1 tag.
-            - Genre Slot (200-299): EXACTLY 1 tag.
-            - Origin Slot (300-399): 1 to 2 tags, sorted by relevance.
-            - **Return the final result strictly in JSON format.**
+            [Output]
+            Return JSON: {"tag_id": <number>}
+            Example: {"tag_id": 102}
 
-            [Output Instructions]
-            - **Combine all selected IDs into a single flat array.**
-            - **The final output must be a JSON object with a single key "tag_ids".**
-            - **Example: {"tag_ids":}**
-            - **Do not use keys like "language", "genre", or "origin" in the JSON.**
-
-            [Contextual Hints]
-            ${languageHints}
-
-            Allowed Tags List:
+            Allowed Tags:
             ${tagsPrompt}
           `,
         },
@@ -99,12 +109,14 @@ export const autoTagSong = async (
     });
 
     const content = response.choices[0].message.content;
-    if (!content) return [];
+    if (!content) return null;
 
-    const result: { tag_ids: number[] } = JSON.parse(content);
-    return result.tag_ids;
+    const result: { tag_id: number } = JSON.parse(content);
+    return result.tag_id >= LANGUAGE_TAG_MIN && result.tag_id < LANGUAGE_TAG_MAX
+      ? result.tag_id
+      : null;
   } catch (error) {
     console.error('Error auto-tagging song:', error);
-    return [];
+    return null;
   }
 };

@@ -44,7 +44,6 @@ export const validateSongMatch = async (
     ],
     response_format: { type: 'json_object' },
     temperature: 0,
-    max_tokens: 50,
   });
 
   const content = response.choices[0].message.content;

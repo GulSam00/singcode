@@ -103,9 +103,10 @@ findKYByOpen.ts
 
 ### AI 유틸
 
-- `utils/validateSongMatch.ts` — `gpt-4o-mini`로 두 (제목, 아티스트) 쌍이 같은 곡인지 판단. `temperature: 0`, `max_tokens: 20`, 완전 일치 시 API 호출 생략.
+- `utils/validateSongMatch.ts` — `gpt-4o-mini`로 두 (제목, 아티스트) 쌍이 같은 곡인지 판단. `temperature: 0`, 완전 일치 시 API 호출 생략.
 - `utils/transChatGPT.ts` — `gpt-4-turbo`로 일본어 → 한국어 번역.
-- `utils/getSongTag.ts` — `gpt-4o-mini`로 곡에 적절한 태그 ID 자동 할당. DB의 `tags` 테이블에서 태그 목록을 캐싱하여 프롬프트에 포함.
+- `utils/translateJpnToKo.ts` — `gpt-5.4-mini`로 J-POP 곡 제목/아티스트 한국어 번역.
+- `utils/getSongTag.ts` — 곡에 언어 태그(100~199) 1개를 자동 할당. 한글/가나 감지 시 즉시 분류, 동일 아티스트 태그 재사용, 영문 전용 곡만 `gpt-5.4-mini`로 판별.
 
 ### 곡 태깅 파이프라인
 
@@ -113,8 +114,8 @@ findKYByOpen.ts
 taggingSongs.ts
   └─ getSongsAllDB()              # 전체 곡 조회
   └─ getSongTagSongIdsDB()        # 이미 태그된 곡 ID Set 로드 (스킵 처리)
-  └─ autoTagSong(title, artist)   # AI로 태그 ID 추출 (1~4개)
-  └─ postSongTagsDB(songId, tagIds)  # song_tags 테이블에 insert
+  └─ autoTagSong(title, artist, tagsPrompt)  # 언어 태그 1개 반환 (한글/가나 → 즉시, 영문 → LLM)
+  └─ postSongTagsDB(songId, [tagId])  # song_tags 테이블에 insert
 ```
 
 ### GitHub Actions 워크플로우

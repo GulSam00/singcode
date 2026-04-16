@@ -24,7 +24,6 @@ let processedCount = 0;
 for (const song of songs) {
   if (processedCount >= 5000) break;
 
-  console.log('song : ', song);
   // 이미 번역된 곡 스킵
   if (song.title_ko && song.artist_ko) {
     resultsLog.skipped++;
@@ -47,14 +46,15 @@ for (const song of songs) {
       continue;
     }
 
-    console.log('result : ', result);
-    // const success = await updateSongKoTranslationDB(song.id, result.title_ko, result.artist_ko);
-    // if (success) {
-    //   resultsLog.success++;
-    //   console.log(`[OK] ${song.title} → ${result.title_ko} / ${song.artist} → ${result.artist_ko}`);
-    // } else {
-    //   resultsLog.failed++;
-    // }
+    console.log(result);
+
+    const success = await updateSongKoTranslationDB(song.id, result.title_ko, result.artist_ko);
+    if (success) {
+      resultsLog.success++;
+      console.log(`[OK] ${song.title} → ${result.title_ko} / ${song.artist} → ${result.artist_ko}`);
+    } else {
+      resultsLog.failed++;
+    }
   } catch (error) {
     resultsLog.failed++;
     console.error(`[ERROR] ${song.title} - ${song.artist}:`, error);

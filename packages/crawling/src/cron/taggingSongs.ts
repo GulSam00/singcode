@@ -27,18 +27,18 @@ for (const song of allSongs) {
   }
 
   try {
-    const tagIds = await autoTagSong(song.title, song.artist, tagsPrompt);
+    const tagId = await autoTagSong(song.title, song.artist, tagsPrompt);
 
-    if (tagIds.length === 0) {
+    if (tagId === null) {
       resultsLog.failed++;
       console.log(`[FAIL] ${song.title} - ${song.artist}: 태그 없음`);
       continue;
     }
 
-    const success = await postSongTagsDB(song.id, tagIds);
+    const success = await postSongTagsDB(song.id, [tagId]);
     if (success) {
       resultsLog.success++;
-      console.log(`[OK] ${song.title} - ${song.artist}: [${tagIds.join(', ')}]`);
+      console.log(`[OK] ${song.title} - ${song.artist}: [${tagId}]`);
     } else {
       resultsLog.failed++;
     }

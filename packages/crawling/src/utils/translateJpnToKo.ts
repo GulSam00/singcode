@@ -18,7 +18,7 @@ export async function translateJpnToKo(
 ): Promise<TranslationResult | null> {
   try {
     const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-5.4-mini',
       messages: [
         {
           role: 'system',
@@ -40,7 +40,6 @@ Rules:
       ],
       response_format: { type: 'json_object' },
       temperature: 0,
-      max_tokens: 200,
     });
 
     const content = response.choices[0].message.content;
