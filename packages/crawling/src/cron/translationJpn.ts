@@ -1,3 +1,5 @@
+import { artistAlias } from '@repo/constants';
+
 import { getJpopSongsForTranslationDB } from '@/supabase/getDB';
 import { updateSongKoTranslationDB } from '@/supabase/updateDB';
 import { translateJpnToKo } from '@/utils/translateJpnToKo';
@@ -6,6 +8,7 @@ const resultsLog = {
   success: 0,
   failed: 0,
   skipped: 0,
+  usedAlias: 0,
 };
 
 // 히라가나, 카타카나, CJK 한자 범위로 일본어 포함 여부 판단
@@ -15,14 +18,18 @@ function containsJapanese(text: string): boolean {
   return JAPANESE_REGEX.test(text);
 }
 
-// 1. J-POP 곡 조회
+// artistAlias 로부터 artist 원어 → 한국어 대표 표기(별명 배열의 0번째) 맵 생성
+const artistAliasMap = new Map<string, string>(
+  Object.entries(artistAlias).map(([artist, aliases]) => [artist, aliases[0]]),
+);
+
 const songs = await getJpopSongsForTranslationDB();
 
 console.log('J-POP 곡 수:', songs.length);
 
 let processedCount = 0;
 for (const song of songs) {
-  if (processedCount >= 5000) break;
+  if (processedCount >= 10000) break;
 
   // 이미 번역된 곡 스킵
   if (song.title_ko && song.artist_ko) {
@@ -46,15 +53,26 @@ for (const song of songs) {
       continue;
     }
 
-    console.log(result);
+    // artistAlias 에 등록된 아티스트면 artist_ko 를 고정 값(alias 배열 0번째)으로 덮어쓰기
+    // title_ko 는 AI 번역 결과를 그대로 사용
+    const aliasArtistKo = artistAliasMap.get(song.artist);
+    const finalArtistKo = aliasArtistKo ?? result.artist_ko;
 
-    const success = await updateSongKoTranslationDB(song.id, result.title_ko, result.artist_ko);
-    if (success) {
-      resultsLog.success++;
-      console.log(`[OK] ${song.title} → ${result.title_ko} / ${song.artist} → ${result.artist_ko}`);
-    } else {
+    const success = await updateSongKoTranslationDB(song.id, result.title_ko, finalArtistKo);
+    if (!success) {
       resultsLog.failed++;
+      continue;
     }
+
+    if (aliasArtistKo) {
+      resultsLog.usedAlias++;
+    } else {
+      resultsLog.success++;
+    }
+    const logPrefix = aliasArtistKo ? '[ALIAS]' : '[OK]';
+    console.log(
+      `${logPrefix} ${song.title} → ${result.title_ko} / ${song.artist} → ${finalArtistKo}`,
+    );
   } catch (error) {
     resultsLog.failed++;
     console.error(`[ERROR] ${song.title} - ${song.artist}:`, error);
@@ -70,6 +88,7 @@ for (const song of songs) {
 console.log(`
   총 ${songs.length}곡 중:
   - 스킵 (이미 번역됨): ${resultsLog.skipped}곡
-  - 성공: ${resultsLog.success}곡
+  - 성공 (AI 번역): ${resultsLog.success}곡
+  - 성공 (artist_ko alias 적용): ${resultsLog.usedAlias}곡
   - 실패: ${resultsLog.failed}곡
 `);
