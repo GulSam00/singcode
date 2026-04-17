@@ -20,7 +20,7 @@ console.log('이미 태그된 곡 수:', taggedSongIds.size);
 
 let processedCount = 0;
 for (const song of allSongs) {
-  if (processedCount >= 5000) break;
+  if (processedCount >= 20000) break;
   if (taggedSongIds.has(song.id)) {
     resultsLog.skipped++;
     continue;
