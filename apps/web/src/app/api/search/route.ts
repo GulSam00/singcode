@@ -179,6 +179,8 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       id: song.id,
       title: song.title,
       artist: song.artist,
+      title_ko: song.title_ko,
+      artist_ko: song.artist_ko,
       num_tj: song.num_tj,
       num_ky: song.num_ky,
       isToSing: authenticated
