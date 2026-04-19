@@ -42,7 +42,7 @@ export default function SearchResultCard({
   onClickSave,
   onClickArtist,
 }: IProps) {
-  const { id, title, artist, num_tj, num_ky, thumb } = song;
+  const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, thumb } = song;
 
   const { isAuthenticated } = useAuthStore();
 
@@ -62,17 +62,23 @@ export default function SearchResultCard({
       {/* 메인 콘텐츠 영역 */}
       <div className="flex flex-col gap-4">
         {/* 노래 정보 */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {/* 제목 및 가수 */}
           <div className="flex justify-between">
-            <div className="flex w-[calc(100%-40px)] flex-col truncate">
+            <div className="flex w-[calc(100%-40px)] flex-col gap-0.5 truncate">
               <MarqueeText className="text-base font-medium">{title}</MarqueeText>
+              {title_ko && title_ko !== title && (
+                <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
+              )}
               <MarqueeText
-                className="text-muted-foreground hover:text-accent cursor-pointer text-sm hover:underline hover:underline-offset-4"
+                className="text-muted-foreground hover:text-accent mt-0.5 cursor-pointer text-sm hover:underline hover:underline-offset-4"
                 onClick={onClickArtist}
               >
                 {artist}
               </MarqueeText>
+              {artist_ko && artist_ko !== artist && (
+                <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+              )}
             </div>
 
             <Dialog open={open} onOpenChange={setOpen}>

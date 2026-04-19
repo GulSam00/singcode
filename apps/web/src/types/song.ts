@@ -2,6 +2,9 @@ export interface Song {
   id: string;
   title: string;
   artist: string;
+  title_ko?: string;
+  artist_ko?: string;
+
   num_tj: string;
   num_ky: string;
 

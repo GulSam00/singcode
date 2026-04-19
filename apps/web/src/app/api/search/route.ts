@@ -22,13 +22,119 @@ interface DBSong extends Song {
   }[];
 }
 
+function applyExactFilter(baseQuery: any, type: string, searchText: string) {
+  if (type === 'all') {
+    return baseQuery.or(`title.ilike.${searchText},artist.ilike.${searchText}`);
+  }
+  return baseQuery.ilike(type, searchText);
+}
+
+function applyPartialFilter(baseQuery: any, type: string, searchText: string) {
+  if (type === 'all') {
+    return baseQuery
+      .or(`title.ilike.%${searchText}%,artist.ilike.%${searchText}%`)
+      .not('title', 'ilike', searchText)
+      .not('artist', 'ilike', searchText);
+  }
+  return baseQuery.ilike(type, `%${searchText}%`).not(type, 'ilike', searchText);
+}
+
+async function executeSearchQueries(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  selectClause: string,
+  query: string,
+  type: string,
+  order: string,
+  from: number,
+  to: number,
+): Promise<{ data: DBSong[]; hasNext: boolean } | { error: string }> {
+  const size = to - from + 1;
+
+  // 1. 정확 일치 / 부분 일치 각각의 총 개수를 병렬로 조회
+  const exactCountQuery = applyExactFilter(
+    supabase.from('songs').select(selectClause, { count: 'exact', head: true }),
+    type,
+    query,
+  );
+  const partialCountQuery = applyPartialFilter(
+    supabase.from('songs').select(selectClause, { count: 'exact', head: true }),
+    type,
+    query,
+  );
+
+  const [exactCountResult, partialCountResult] = await Promise.all([
+    exactCountQuery,
+    partialCountQuery,
+  ]);
+
+  if (exactCountResult.error) return { error: exactCountResult.error.message };
+  if (partialCountResult.error) return { error: partialCountResult.error.message };
+
+  const exactTotal = exactCountResult.count ?? 0;
+  const partialTotal = partialCountResult.count ?? 0;
+  const totalCount = exactTotal + partialTotal;
+
+  // 2. 현재 페이지에 필요한 데이터 가져오기
+  let exactData: DBSong[] = [];
+  let partialData: DBSong[] = [];
+
+  if (exactTotal === 0) {
+    // 정확 일치 없음 → 부분 일치만 조회
+    const partialQuery = applyPartialFilter(
+      supabase.from('songs').select(selectClause),
+      type,
+      query,
+    );
+    const { data, error } = await partialQuery.order(order).range(from, to);
+    if (error) return { error: error.message };
+    partialData = (data as DBSong[]) ?? [];
+  } else if (from >= exactTotal) {
+    // 현재 페이지가 부분 일치 영역에만 해당
+    const partialFrom = from - exactTotal;
+    const partialTo = partialFrom + size - 1;
+    const partialQuery = applyPartialFilter(
+      supabase.from('songs').select(selectClause),
+      type,
+      query,
+    );
+    const { data, error } = await partialQuery.order(order).range(partialFrom, partialTo);
+    if (error) return { error: error.message };
+    partialData = (data as DBSong[]) ?? [];
+  } else {
+    // 현재 페이지가 정확 일치 영역에 포함 (경계에 걸릴 수도 있음)
+    const exactTo = Math.min(to, exactTotal - 1);
+    const exactQuery = applyExactFilter(supabase.from('songs').select(selectClause), type, query);
+    const exactResult = await exactQuery.order(order).range(from, exactTo);
+    if (exactResult.error) return { error: exactResult.error.message };
+    exactData = (exactResult.data as DBSong[]) ?? [];
+
+    // 정확 일치로 페이지를 다 못 채운 경우 → 부분 일치로 나머지 채움
+    if (to >= exactTotal) {
+      const partialTo = to - exactTotal;
+      const partialQuery = applyPartialFilter(
+        supabase.from('songs').select(selectClause),
+        type,
+        query,
+      );
+      const partialResult = await partialQuery.order(order).range(0, partialTo);
+      if (partialResult.error) return { error: partialResult.error.message };
+      partialData = (partialResult.data as DBSong[]) ?? [];
+    }
+  }
+
+  return {
+    data: [...exactData, ...partialData],
+    hasNext: totalCount > to + 1,
+  };
+}
+
 export async function GET(request: Request): Promise<NextResponse<ApiResponse<SearchSong[]>>> {
   // API KEY 노출을 막기 위해 미들웨어 역할을 할 API ROUTE 활용
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
     const type = searchParams.get('type') || 'title';
-    const order = type === 'all' ? 'title' : type; // 'all' 타입은 title로 정렬
+    const order = type === 'all' ? 'title' : type;
     const authenticated = searchParams.get('authenticated') === 'true';
 
     const page = parseInt(searchParams.get('page') || '0', 10);
@@ -48,111 +154,51 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
 
     const supabase = await createClient();
 
-    if (!authenticated) {
-      const baseQuery = supabase.from('songs').select(
-        `*, 
-        thumb_logs (
-          *
-        )
-        `,
-        { count: 'exact' },
-      );
+    const selectClause = authenticated
+      ? `*, thumb_logs(*), tosings(user_id), like_activities(user_id), save_activities(user_id)`
+      : `*, thumb_logs(*)`;
 
-      if (type === 'all') {
-        baseQuery.or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
-      } else {
-        baseQuery.ilike(type, `%${query}%`);
-      }
+    const result = await executeSearchQueries(supabase, selectClause, query, type, order, from, to);
 
-      const { data, error, count } = await baseQuery.order(order).range(from, to);
-
-      if (error) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: error?.message || 'Unknown error',
-          },
-          { status: 500 },
-        );
-      }
-
-      const songs: SearchSong[] = data.map((song: DBSong) => ({
-        id: song.id,
-        title: song.title,
-        artist: song.artist,
-        num_tj: song.num_tj,
-        num_ky: song.num_ky,
-        isLike: false,
-        isToSing: false,
-        isSave: false,
-        thumb: song.thumb_logs?.reduce((sum, log) => sum + log.thumb_count, 0) ?? 0,
-      }));
-
-      return NextResponse.json({
-        success: true,
-        data: songs,
-        // 전체 개수가 현재 페이지 번호 * 페이지 크기(범위의 끝이 되는 index) 보다 크면 다음 페이지가 있음
-        hasNext: (count ?? 0) > to + 1,
-      });
-    }
-
-    const userId = await getAuthenticatedUser(supabase); // userId 가져오기
-
-    const baseQuery = supabase.from('songs').select(
-      `
-        *,
-        thumb_logs (
-          *
-        ),
-        tosings (
-          user_id
-        ),
-        like_activities (
-          user_id
-        ),
-        save_activities (
-          user_id
-        )
-      `,
-      { count: 'exact' },
-    );
-
-    if (type === 'all') {
-      baseQuery.or(`title.ilike.%${query}%,artist.ilike.%${query}%`);
-    } else {
-      baseQuery.ilike(type, `%${query}%`);
-    }
-
-    const { data, error, count } = await baseQuery.order(order).range(from, to);
-
-    if (error) {
+    if ('error' in result) {
       return NextResponse.json(
         {
           success: false,
-          error: error?.message || 'Unknown error',
+          error: result.error,
         },
         { status: 500 },
       );
     }
 
-    // data를 Song 타입으로 파싱해야 함
-    const songs: SearchSong[] = data.map((song: DBSong) => ({
+    let userId: string | undefined;
+    if (authenticated) {
+      userId = await getAuthenticatedUser(supabase);
+    }
+
+    const songs: SearchSong[] = result.data.map((song: DBSong) => ({
       id: song.id,
       title: song.title,
       artist: song.artist,
+      title_ko: song.title_ko,
+      artist_ko: song.artist_ko,
       num_tj: song.num_tj,
       num_ky: song.num_ky,
-
-      isToSing: song.tosings?.some(tosing => tosing.user_id === userId) ?? false,
-      isLike: song.like_activities?.some(like => like.user_id === userId) ?? false,
-      isSave: song.save_activities?.some(save => save.user_id === userId) ?? false,
+      isToSing: authenticated
+        ? (song.tosings?.some(tosing => tosing.user_id === userId) ?? false)
+        : false,
+      isLike: authenticated
+        ? (song.like_activities?.some(like => like.user_id === userId) ?? false)
+        : false,
+      isSave: authenticated
+        ? (song.save_activities?.some(save => save.user_id === userId) ?? false)
+        : false,
       thumb: song.thumb_logs?.reduce((sum, log) => sum + log.thumb_count, 0) ?? 0,
     }));
 
     return NextResponse.json({
       success: true,
       data: songs,
-      hasNext: (count ?? 0) > to + 1,
+      hasNext: result.hasNext,
     });
   } catch (error) {
     if (error instanceof Error && error.cause === 'auth') {

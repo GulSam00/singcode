@@ -99,6 +99,44 @@ export async function getSongsAllDB(max: number = 50000) {
   return data;
 }
 
+export async function getJpopSongsForTranslationDB() {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('songs')
+    .select('id, title, artist, title_ko, artist_ko, song_tags!inner(tag_id)')
+    .eq('song_tags.tag_id', 101)
+    .limit(50000);
+
+  if (error) throw error;
+
+  return data;
+}
+
+// J-POP 곡 중 이미 번역된 artist → artist_ko 맵
+// DB 는 아티스트당 단일 artist_ko 로 정규화되어 있으므로 먼저 만난 값을 사용
+export async function getArtistKoMapDB(): Promise<Map<string, string>> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('songs')
+    .select('artist, artist_ko, song_tags!inner(tag_id)')
+    .eq('song_tags.tag_id', 101)
+    .not('artist_ko', 'is', null)
+    .limit(50000);
+
+  if (error) throw error;
+
+  const map = new Map<string, string>();
+  for (const row of data) {
+    if (!row.artist || !row.artist_ko) continue;
+    if (!map.has(row.artist)) {
+      map.set(row.artist, row.artist_ko);
+    }
+  }
+  return map;
+}
+
 export async function getSongTagSongIdsDB(): Promise<Set<string>> {
   const supabase = getClient();
 

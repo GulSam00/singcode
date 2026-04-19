@@ -1,12 +1,12 @@
-name: Tagging Songs
+name: Translation J-POP Songs
 
 on:
   schedule:
-    - cron: "0 10 * * *" # 한국 시간 19:00 실행 (UTC+9 → UTC 10:00)
+    - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
   workflow_dispatch:
 
 permissions:
-  contents: write # push 권한을 위해 필요
+  contents: write
 
 jobs:
   run-npm-task:
@@ -38,6 +38,6 @@ jobs:
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
-      - name: run tagging script - taggingSongs.ts
+      - name: Run translation script - translationJpn.ts
         working-directory: packages/crawling
-        run: pnpm run tag-songs
+        run: pnpm run trans-jpn
