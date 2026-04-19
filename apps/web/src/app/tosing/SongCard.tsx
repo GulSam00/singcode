@@ -22,6 +22,7 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
   });
 
   const { title, artist, title_ko, artist_ko, num_tj, num_ky } = song;
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -30,9 +31,9 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
   return (
     <Card ref={setNodeRef} style={style} className={'relative'}>
       {/* 메인 콘텐츠 영역 */}
-      <div className="flex h-[150px] w-full gap-4 p-3">
+      <div className="flex h-[180px] w-full gap-4 p-3">
         {/* 노래 정보 */}
-        <div className="mb-8 flex flex-col active:cursor-grabbing">
+        <div className="mb-10 flex flex-col justify-between active:cursor-grabbing">
           {/* 제목 및 가수 */}
           <div className="mb-1 flex w-[290px] flex-col gap-0.5">
             <MarqueeText className="text-base font-medium">{title}</MarqueeText>

@@ -19,6 +19,8 @@ export async function GET(): Promise<NextResponse<ApiResponse<ToSingSong[]>>> {
           id,
           title,
           artist,
+          title_ko,
+          artist_ko,
           num_tj,
           num_ky
         )
