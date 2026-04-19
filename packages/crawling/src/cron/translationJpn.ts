@@ -1,6 +1,6 @@
 import { artistAlias } from '@repo/constants';
 
-import { getJpopSongsForTranslationDB } from '@/supabase/getDB';
+import { getArtistKoMapDB, getJpopSongsForTranslationDB } from '@/supabase/getDB';
 import { updateSongKoTranslationDB } from '@/supabase/updateDB';
 import { translateJpnToKo } from '@/utils/translateJpnToKo';
 
@@ -9,6 +9,7 @@ const resultsLog = {
   failed: 0,
   skipped: 0,
   usedAlias: 0,
+  usedDbArtist: 0,
 };
 
 // 히라가나, 카타카나, CJK 한자 범위로 일본어 포함 여부 판단
@@ -26,6 +27,10 @@ const artistAliasMap = new Map<string, string>(
 const songs = await getJpopSongsForTranslationDB();
 
 console.log('J-POP 곡 수:', songs.length);
+
+// DB 에 이미 번역된 artist → artist_ko 맵 (동일 아티스트 번역 일관성 유지 목적)
+// DB 는 아티스트당 단일 artist_ko 로 정규화되어 있으며, 번역 성공 시 런타임에도 동기화한다
+const dbArtistKoMap = await getArtistKoMapDB();
 
 let processedCount = 0;
 for (const song of songs) {
@@ -53,10 +58,14 @@ for (const song of songs) {
       continue;
     }
 
-    // artistAlias 에 등록된 아티스트면 artist_ko 를 고정 값(alias 배열 0번째)으로 덮어쓰기
+    // artist_ko 우선순위:
+    //   1) artistAlias (수동 큐레이션된 고정 값)
+    //   2) DB 에 이미 번역된 동일 아티스트의 artist_ko (번역 일관성 유지)
+    //   3) AI 번역 결과
     // title_ko 는 AI 번역 결과를 그대로 사용
     const aliasArtistKo = artistAliasMap.get(song.artist);
-    const finalArtistKo = aliasArtistKo ?? result.artist_ko;
+    const dbArtistKo = dbArtistKoMap.get(song.artist);
+    const finalArtistKo = aliasArtistKo ?? dbArtistKo ?? result.artist_ko;
 
     const success = await updateSongKoTranslationDB(song.id, result.title_ko, finalArtistKo);
     if (!success) {
@@ -64,12 +73,23 @@ for (const song of songs) {
       continue;
     }
 
+    let logPrefix: string;
     if (aliasArtistKo) {
       resultsLog.usedAlias++;
+      logPrefix = '[ALIAS]';
+    } else if (dbArtistKo) {
+      resultsLog.usedDbArtist++;
+      logPrefix = '[DB]';
     } else {
       resultsLog.success++;
+      logPrefix = '[OK]';
     }
-    const logPrefix = aliasArtistKo ? '[ALIAS]' : '[OK]';
+
+    // DB 업데이트 성공 시 런타임 맵도 동기화 (first-seen 원칙 — 기존 값 덮어쓰지 않음)
+    if (!dbArtistKoMap.has(song.artist)) {
+      dbArtistKoMap.set(song.artist, finalArtistKo);
+    }
+
     console.log(
       `${logPrefix} ${song.title} → ${result.title_ko} / ${song.artist} → ${finalArtistKo}`,
     );
@@ -90,5 +110,6 @@ console.log(`
   - 스킵 (이미 번역됨): ${resultsLog.skipped}곡
   - 성공 (AI 번역): ${resultsLog.success}곡
   - 성공 (artist_ko alias 적용): ${resultsLog.usedAlias}곡
+  - 성공 (artist_ko DB 재사용): ${resultsLog.usedDbArtist}곡
   - 실패: ${resultsLog.failed}곡
 `);
