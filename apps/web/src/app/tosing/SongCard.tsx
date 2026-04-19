@@ -21,7 +21,7 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
     id: song.id,
   });
 
-  const { title, artist, num_tj, num_ky } = song;
+  const { title, artist, title_ko, artist_ko, num_tj, num_ky } = song;
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -34,9 +34,15 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
         {/* 노래 정보 */}
         <div className="mb-8 flex flex-col active:cursor-grabbing">
           {/* 제목 및 가수 */}
-          <div className="mb-1 w-[290px]">
+          <div className="mb-1 flex w-[290px] flex-col gap-0.5">
             <MarqueeText className="text-base font-medium">{title}</MarqueeText>
+            {title_ko && title_ko !== title && (
+              <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
+            )}
             <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
+            {artist_ko && artist_ko !== artist && (
+              <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+            )}
           </div>
 
           {/* 노래방 번호 */}
