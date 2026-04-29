@@ -1,5 +1,6 @@
 {
-  "name": "mobile",
+  "name": "mobile-deprecated",
+  "description": "DEPRECATED — frozen at Expo SDK 52. Replaced by apps/twa. See apps/mobile/README.md.",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
