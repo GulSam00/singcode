@@ -1,0 +1,9 @@
+# Android keystore — 외부 백업 필수, git에 절대 커밋하지 않는다
+*.keystore
+*.jks
+
+# Bubblewrap 빌드 산출물
+android/
+output/
+*.aab
+*.apk
