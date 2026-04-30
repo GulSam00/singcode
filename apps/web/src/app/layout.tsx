@@ -10,6 +10,7 @@ import Footer from '@/Footer';
 import Header from '@/Header';
 import AuthProvider from '@/auth';
 import MessageDialog from '@/components/MessageDialog';
+import PWARegister from '@/components/PWARegister';
 import '@/globals.css';
 // import { PostHogProvider } from '@/posthog';
 import QueryProvider from '@/query';
@@ -120,6 +121,7 @@ export default function RootLayout({
 
       <MessageDialog />
       <MonitoringComponent />
+      <PWARegister />
     </ErrorWrapper>
   );
 
