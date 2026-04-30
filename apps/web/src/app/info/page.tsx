@@ -1,7 +1,6 @@
 'use client';
 
-import { CircleDollarSign, Folder, Shield, Star } from 'lucide-react';
-import Link from 'next/link';
+import { CircleDollarSign, Folder, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import CountUp from '@/components/reactBits/CountUp';
@@ -60,20 +59,6 @@ export default function LibraryPage() {
           </CardHeader>
         </Card>
       ))}
-
-      <Link href="/privacy">
-        <Card className="hover:bg-accent/50 transition-all hover:shadow-md">
-          <CardHeader className="flex flex-row items-center space-y-0 pb-2">
-            <div className="bg-primary/10 text-primary mr-4 rounded-lg p-2">
-              <Shield className="h-5 w-5" />
-            </div>
-            <div>
-              <CardTitle className="text-lg">개인정보처리방침</CardTitle>
-              <CardDescription>수집 정보 및 이용 정책을 확인합니다</CardDescription>
-            </div>
-          </CardHeader>
-        </Card>
-      </Link>
     </div>
   );
 }
