@@ -17,6 +17,7 @@ const config = {
     '/popular*',
     '/recent*',
     '/withdrawal*',
+    '/privacy*',
     '/api/*',
     '/admin/*',
   ],

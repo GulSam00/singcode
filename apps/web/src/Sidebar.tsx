@@ -53,10 +53,8 @@ export default function Sidebar() {
   };
 
   const handleOpenTerm = () => {
-    window.open(
-      'https://coding-sham.notion.site/Singcode-215286f3bd70802c8191d2a0344ecc1c',
-      '_blank',
-    );
+    router.push('/privacy');
+    setIsOpenSidebar(false);
   };
 
   const handleLogin = () => {
