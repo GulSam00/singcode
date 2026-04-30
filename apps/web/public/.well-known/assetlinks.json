@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "kr.singcode.app",
+      "sha256_cert_fingerprints": [
+        "4A:52:E2:11:4D:E0:6F:B6:E1:E1:B2:BB:72:14:8C:0B:17:97:06:DA:BD:F7:DB:A2:3B:10:59:46:CD:79:3B:E9"
+      ]
+    }
+  }
+]
