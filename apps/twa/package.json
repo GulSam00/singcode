@@ -1,5 +1,5 @@
 {
-  "name": "@repo/twa",
+  "name": "twa",
   "version": "1.0.0",
   "private": true,
   "description": "Singcode TWA (Trusted Web Activity) Android build",
