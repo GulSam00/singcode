@@ -27,8 +27,11 @@ Bubblewrap CLI가 `https://singcode.kr`의 PWA Manifest를 받아 Android 프로
 ```bash
 java -version          # openjdk 17.x.x
 echo $ANDROID_HOME     # /path/to/android-sdk
-pnpm --filter @repo/twa exec bubblewrap --version
+pnpm --filter twa exec bubblewrap --version
 ```
+
+> ⚠️ **`init`, `update`는 pnpm 내장 명령어와 충돌**한다. 반드시 `run` 키워드를 명시한다.
+> `pnpm --filter twa init` ❌ → `pnpm --filter twa run init` ✅
 
 ## Commands
 
@@ -39,13 +42,13 @@ pnpm --filter @repo/twa exec bubblewrap --version
 pnpm install
 
 # 초기 init (이미 twa-manifest.json이 존재하면 생략)
-pnpm --filter @repo/twa init
+pnpm --filter twa run init
 
 # Android 프로젝트 생성 + 서명된 .aab/.apk 빌드
-pnpm --filter @repo/twa build
+pnpm --filter twa run build
 
 # webmanifest 변경 사항을 twa-manifest.json에 반영
-pnpm --filter @repo/twa update
+pnpm --filter twa run update
 ```
 
 또는 `apps/twa/`에서 직접:
@@ -72,7 +75,7 @@ curl -s   https://singcode.kr/manifest.webmanifest | jq . # 유효한 JSON
 `twa-manifest.json`이 이미 커밋되어 있으면 **생략**한다. 새로 만드는 경우만:
 
 ```bash
-pnpm --filter @repo/twa init
+pnpm --filter twa run init
 ```
 
 대화형 프롬프트가 뜨면 다음을 따른다.
@@ -144,7 +147,7 @@ curl -sI https://singcode.kr/.well-known/assetlinks.json   # 200
 ### 6. `bubblewrap build`
 
 ```bash
-pnpm --filter @repo/twa build
+pnpm --filter twa run build
 ```
 
 산출물:
@@ -197,10 +200,10 @@ curl -s https://singcode.kr/.well-known/assetlinks.json | jq .
 PWA의 webmanifest를 수정했다면:
 
 ```bash
-pnpm --filter @repo/twa update
+pnpm --filter twa run update
 ```
 
-또는 `twa-manifest.json`을 직접 편집한 후 `pnpm --filter @repo/twa build`로 재빌드.
+또는 `twa-manifest.json`을 직접 편집한 후 `pnpm --filter twa run build`로 재빌드.
 
 ## Files in this workspace
 
