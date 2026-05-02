@@ -21,8 +21,8 @@ export default function PrivacyPage() {
         </p>
         <p className="text-muted-foreground">
           서비스는 『개인정보 보호법』, 『정보통신망 이용촉진 및 정보보호 등에 관한 법률』 등 관련
-          법령을 준수하며, 본 개인정보처리방침을 통해 사용자의 개인정보가 어떤 방식으로 수집·이용되고
-          있는지, 어떤 보호 조치를 취하고 있는지를 안내드립니다.
+          법령을 준수하며, 본 개인정보처리방침을 통해 사용자의 개인정보가 어떤 방식으로
+          수집·이용되고 있는지, 어떤 보호 조치를 취하고 있는지를 안내드립니다.
         </p>
       </section>
 
@@ -30,7 +30,8 @@ export default function PrivacyPage() {
         <h2 className="text-lg font-semibold">개인정보의 수집·이용에 대한 동의</h2>
         <p className="text-muted-foreground">
           Singcode는 개인정보 수집 및 이용에 대한 동의를 받기 위해, 회원가입 및 소셜 로그인 시 관련
-          내용을 안내하고 사용자가 &lsquo;동의&rsquo; 버튼을 클릭한 경우에만 개인정보를 수집·이용합니다.
+          내용을 안내하고 사용자가 &lsquo;동의&rsquo; 버튼을 클릭한 경우에만 개인정보를
+          수집·이용합니다.
         </p>
       </section>
 
@@ -66,7 +67,9 @@ export default function PrivacyPage() {
 
         <div className="space-y-2">
           <p className="font-medium">4. 수집하지 않는 항목</p>
-          <p className="text-muted-foreground">서비스는 아래와 같은 민감정보는 수집하지 않습니다.</p>
+          <p className="text-muted-foreground">
+            서비스는 아래와 같은 민감정보는 수집하지 않습니다.
+          </p>
           <ul className="text-muted-foreground ml-4 list-disc space-y-1">
             <li>인종, 종교, 건강, 정치적 성향 등 민감 정보</li>
             <li>실명, 주민등록번호, 주소, 전화번호 등 신원 확인 정보</li>
