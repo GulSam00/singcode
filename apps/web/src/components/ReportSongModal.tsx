@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import ReportFieldCard from '@/components/ReportFieldCard';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -10,7 +11,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useReportSongMutation } from '@/queries/reportSongQuery';
-import { REPORT_CATEGORIES, REPORT_CATEGORY_LABEL, ReportCategory } from '@/types/report';
+import {
+  REPORT_CATEGORIES,
+  REPORT_CATEGORY_LABEL,
+  REPORT_CATEGORY_TO_FIELD,
+  REPORT_NO_DATA_LABEL,
+  ReportCategory,
+} from '@/types/report';
 import { cn } from '@/utils/cn';
 
 interface ReportSongModalProps {
@@ -26,56 +33,14 @@ interface ReportSongModalProps {
 
 const SUGGESTED_VALUE_TEXT_MAX_LENGTH = 100;
 const SUGGESTED_VALUE_NUMBER_MAX_LENGTH = 5;
-const NO_DATA_LABEL = '데이터 없음';
-
-type CardField = 'artist' | 'title' | 'num_tj' | 'num_ky';
-
-const CATEGORY_TO_FIELD: Record<ReportCategory, CardField> = {
-  artist_translation: 'artist',
-  title_translation: 'title',
-  num_tj: 'num_tj',
-  num_ky: 'num_ky',
-};
 
 const isNumberCategory = (value: ReportCategory | null) => value === 'num_tj' || value === 'num_ky';
 
-function splitDisplay(
-  translated: string | undefined,
-  original: string,
-): { primary: string; secondary: string | null; display: string } {
+function getDisplay(translated: string | undefined, original: string): string {
   if (translated && translated !== original) {
-    return {
-      primary: translated,
-      secondary: original,
-      display: `${translated} (${original})`,
-    };
+    return `${translated} (${original})`;
   }
-  return { primary: original, secondary: null, display: original };
-}
-
-function NewValueIndicator({
-  isVisible,
-  value,
-  textSize,
-}: {
-  isVisible: boolean;
-  value: string | null;
-  textSize: 'text-base' | 'text-sm';
-}) {
-  return (
-    <>
-      <span className={cn('text-muted-foreground shrink-0', !isVisible && 'invisible')}>→</span>
-      <span
-        className={cn(
-          'text-primary min-w-0 truncate font-medium',
-          textSize,
-          !isVisible && 'invisible',
-        )}
-      >
-        {value ?? ' '}
-      </span>
-    </>
-  );
+  return original;
 }
 
 export default function ReportSongModal({
@@ -88,9 +53,6 @@ export default function ReportSongModal({
   num_ky,
   handleClose,
 }: ReportSongModalProps) {
-  const titleParts = splitDisplay(title_ko, title);
-  const artistParts = splitDisplay(artist_ko, artist);
-
   const [category, setCategory] = useState<ReportCategory | null>(null);
   const [suggestedValue, setSuggestedValue] = useState('');
   const [isNoData, setIsNoData] = useState(false);
@@ -146,17 +108,15 @@ export default function ReportSongModal({
     );
   };
 
-  const activeField = category ? CATEGORY_TO_FIELD[category] : null;
-  const newValue = isNoData ? NO_DATA_LABEL : suggestedValue.trim() || null;
-
-  const isFieldActive = (field: CardField) => activeField === field && newValue !== null;
+  const activeField = category ? REPORT_CATEGORY_TO_FIELD[category] : null;
+  const newValue = isNoData ? REPORT_NO_DATA_LABEL : suggestedValue.trim() || null;
 
   return (
     <div className="flex flex-col gap-4 sm:max-w-md">
       <DialogHeader>
         <DialogTitle>오류 신고</DialogTitle>
         <DialogDescription className="sr-only">
-          {titleParts.display} - {artistParts.display} 곡에 대한 오류 신고
+          {getDisplay(title_ko, title)} - {getDisplay(artist_ko, artist)} 곡에 대한 오류 신고
         </DialogDescription>
       </DialogHeader>
 
@@ -179,90 +139,16 @@ export default function ReportSongModal({
           ))}
         </RadioGroup>
 
-        <div className="flex flex-col gap-3 rounded-md border p-4">
-          <div className="flex flex-col gap-1">
-            <div
-              className={cn(
-                'rounded-sm px-2 py-1 transition-colors',
-                activeField === 'title' && 'bg-primary/10',
-              )}
-            >
-              <div className="flex min-w-0 flex-col gap-0.5">
-                <div className="flex min-w-0 items-center gap-2">
-                  <span className="min-w-0 truncate text-base font-medium">
-                    {titleParts.primary}
-                  </span>
-                  <NewValueIndicator
-                    isVisible={isFieldActive('title')}
-                    value={newValue}
-                    textSize="text-base"
-                  />
-                </div>
-                {titleParts.secondary && (
-                  <span className="text-muted-foreground truncate text-xs">
-                    {titleParts.secondary}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div
-              className={cn(
-                'rounded-sm px-2 py-1 transition-colors',
-                activeField === 'artist' && 'bg-primary/10',
-              )}
-            >
-              <div className="flex min-w-0 flex-col gap-0.5">
-                <div className="flex min-w-0 items-center gap-2">
-                  <span className="text-muted-foreground min-w-0 truncate text-sm">
-                    {artistParts.primary}
-                  </span>
-                  <NewValueIndicator
-                    isVisible={isFieldActive('artist')}
-                    value={newValue}
-                    textSize="text-sm"
-                  />
-                </div>
-                {artistParts.secondary && (
-                  <span className="text-muted-foreground/70 truncate text-xs">
-                    {artistParts.secondary}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex gap-2 border-t pt-2">
-            <div
-              className={cn(
-                'flex min-w-0 flex-1 items-center gap-2 rounded-sm px-2 py-1 transition-colors',
-                activeField === 'num_tj' && 'bg-primary/10',
-              )}
-            >
-              <span className="text-brand-tj shrink-0 text-xs font-bold">TJ</span>
-              <span className="min-w-0 truncate text-sm font-medium">{num_tj || '-'}</span>
-              <NewValueIndicator
-                isVisible={isFieldActive('num_tj')}
-                value={newValue}
-                textSize="text-sm"
-              />
-            </div>
-            <div
-              className={cn(
-                'flex min-w-0 flex-1 items-center gap-2 rounded-sm px-2 py-1 transition-colors',
-                activeField === 'num_ky' && 'bg-primary/10',
-              )}
-            >
-              <span className="text-brand-ky shrink-0 text-xs font-bold">금영</span>
-              <span className="min-w-0 truncate text-sm font-medium">{num_ky || '-'}</span>
-              <NewValueIndicator
-                isVisible={isFieldActive('num_ky')}
-                value={newValue}
-                textSize="text-sm"
-              />
-            </div>
-          </div>
-        </div>
+        <ReportFieldCard
+          title={title}
+          artist={artist}
+          title_ko={title_ko}
+          artist_ko={artist_ko}
+          num_tj={num_tj}
+          num_ky={num_ky}
+          activeField={activeField}
+          newValue={newValue}
+        />
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="report-suggested-value">올바른 정보</Label>
@@ -273,7 +159,7 @@ export default function ReportSongModal({
                 ? '5자리 숫자로 입력해주세요.'
                 : '어떤 내용으로 바뀌어야 하는지 적어주세요.'
             }
-            value={isNoData ? NO_DATA_LABEL : suggestedValue}
+            value={isNoData ? REPORT_NO_DATA_LABEL : suggestedValue}
             onChange={e => handleSuggestedValueChange(e.target.value)}
             maxLength={inputMaxLength}
             inputMode={isNumberMode ? 'numeric' : undefined}
