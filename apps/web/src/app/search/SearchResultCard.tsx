@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
+  Flag,
   ListPlus,
   ListRestart,
   MinusCircle,
@@ -12,6 +13,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import MarqueeText from '@/components/MarqueeText';
+import ReportSongModal from '@/components/ReportSongModal';
 import ThumbUpModal from '@/components/ThumbUpModal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -47,6 +49,7 @@ export default function SearchResultCard({
   const { isAuthenticated } = useAuthStore();
 
   const [open, setOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleClickThumbsUp = () => {
@@ -55,6 +58,14 @@ export default function SearchResultCard({
       return;
     }
     setOpen(true);
+  };
+
+  const handleClickReport = () => {
+    if (!isAuthenticated) {
+      toast.error('로그인하고 오류 신고에 참여해주세요!');
+      return;
+    }
+    setReportOpen(true);
   };
 
   return (
@@ -66,18 +77,20 @@ export default function SearchResultCard({
           {/* 제목 및 가수 */}
           <div className="flex justify-between">
             <div className="flex w-[calc(100%-40px)] flex-col gap-0.5 truncate">
-              <MarqueeText className="text-base font-medium">{title}</MarqueeText>
+              <MarqueeText className="text-base font-medium">
+                {title_ko && title_ko !== title ? title_ko : title}
+              </MarqueeText>
               {title_ko && title_ko !== title && (
-                <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
+                <MarqueeText className="text-muted-foreground text-xs">{title}</MarqueeText>
               )}
               <MarqueeText
                 className="text-muted-foreground hover:text-accent mt-0.5 cursor-pointer text-sm hover:underline hover:underline-offset-4"
                 onClick={onClickArtist}
               >
-                {artist}
+                {artist_ko && artist_ko !== artist ? artist_ko : artist}
               </MarqueeText>
               {artist_ko && artist_ko !== artist && (
-                <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+                <MarqueeText className="text-muted-foreground/70 text-xs">{artist}</MarqueeText>
               )}
             </div>
 
@@ -181,10 +194,36 @@ export default function SearchResultCard({
                   {isSave ? <ListRestart className="h-5 w-5" /> : <ListPlus className="h-5 w-5" />}
                   <span className="text-xs">{isSave ? '재생목록 수정' : '재생목록 추가'}</span>
                 </Button>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-13 flex-1 flex-col items-center justify-center"
+                  aria-label="오류 신고"
+                  onClick={handleClickReport}
+                >
+                  <Flag className="h-5 w-5" />
+                  <span className="text-xs">오류 신고</span>
+                </Button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        <Dialog open={reportOpen} onOpenChange={setReportOpen}>
+          <DialogContent>
+            <ReportSongModal
+              songId={id}
+              title={title}
+              artist={artist}
+              title_ko={title_ko}
+              artist_ko={artist_ko}
+              num_tj={num_tj}
+              num_ky={num_ky}
+              handleClose={() => setReportOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </Card>
   );
