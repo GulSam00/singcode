@@ -1,5 +1,6 @@
-import { artistAlias } from '@repo/constants';
 import { getChoseong } from 'es-hangul';
+
+import { artistAlias } from '@repo/constants';
 
 export type SearchCandidate = { label: string; value: string };
 
