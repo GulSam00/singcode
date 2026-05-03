@@ -49,3 +49,26 @@ export interface MyReport {
   num_tj: string;
   num_ky: string;
 }
+
+export interface AdminReport extends MyReport {
+  user_id: string;
+  nickname: string;
+}
+
+export type AdminReportStatusFilter = ReportStatus | 'all';
+
+export const ADMIN_REPORT_STATUS_FILTERS: AdminReportStatusFilter[] = [
+  'all',
+  'pending',
+  'applied',
+  'rejected',
+];
+
+export const ADMIN_REPORT_STATUS_FILTER_LABEL: Record<AdminReportStatusFilter, string> = {
+  all: '전체',
+  pending: '대기중',
+  applied: '반영됨',
+  rejected: '거절됨',
+};
+
+export type AdminReportAction = 'approve' | 'reject';
