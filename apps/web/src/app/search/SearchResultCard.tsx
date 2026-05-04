@@ -4,6 +4,7 @@ import {
   Flag,
   ListPlus,
   ListRestart,
+  Megaphone,
   MinusCircle,
   PlusCircle,
   Star,
@@ -14,6 +15,8 @@ import { toast } from 'sonner';
 
 import MarqueeText from '@/components/MarqueeText';
 import ReportSongModal from '@/components/ReportSongModal';
+import SongCommentSection from '@/components/SongCommentSection';
+import SongPromotionModal from '@/components/SongPromotionModal';
 import ThumbUpModal from '@/components/ThumbUpModal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -50,23 +53,26 @@ export default function SearchResultCard({
 
   const [open, setOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const [promotionOpen, setPromotionOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleClickThumbsUp = () => {
+  const withAuth = (message: string, action: () => void) => () => {
     if (!isAuthenticated) {
-      toast.error('로그인하고 곡 추천 기능을 사용해보세요!');
+      toast.error(message);
       return;
     }
-    setOpen(true);
+    action();
   };
 
-  const handleClickReport = () => {
-    if (!isAuthenticated) {
-      toast.error('로그인하고 오류 신고에 참여해주세요!');
-      return;
-    }
-    setReportOpen(true);
-  };
+  const handleClickThumbsUp = withAuth('로그인하고 곡 추천 기능을 사용해보세요!', () =>
+    setOpen(true),
+  );
+  const handleClickReport = withAuth('로그인하고 오류 신고에 참여해주세요!', () =>
+    setReportOpen(true),
+  );
+  const handleClickPromotion = withAuth('로그인하고 곡 홍보 기능을 사용해보세요!', () =>
+    setPromotionOpen(true),
+  );
 
   return (
     <Card className="w-full overflow-hidden p-4">
@@ -176,11 +182,11 @@ export default function SearchResultCard({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className={`h-13 flex-1 flex-col items-center justify-center`}
+                  className={`h-13 flex-1 flex-col items-center justify-center ${isLike ? 'text-yellow-500' : ''}`}
                   aria-label={isLike ? '즐겨찾기 취소' : '즐겨찾기'}
                   onClick={onToggleLike}
                 >
-                  <Star className={`${isLike ? 'fill-current text-yellow-500' : ''}`} />
+                  <Star className={isLike ? 'fill-current' : ''} />
                   <span className="text-xs">{isLike ? '즐겨찾기 취소' : '즐겨찾기'}</span>
                 </Button>
 
@@ -205,10 +211,36 @@ export default function SearchResultCard({
                   <Flag className="h-5 w-5" />
                   <span className="text-xs">오류 신고</span>
                 </Button>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-13 flex-1 flex-col items-center justify-center"
+                  aria-label="홍보하기"
+                  onClick={handleClickPromotion}
+                >
+                  <Megaphone className="h-5 w-5" />
+                  <span className="text-xs">홍보하기</span>
+                </Button>
               </div>
+
+              <SongCommentSection songId={id} isExpanded={isExpanded} />
             </motion.div>
           )}
         </AnimatePresence>
+
+        <Dialog open={promotionOpen} onOpenChange={setPromotionOpen}>
+          <DialogContent>
+            <SongPromotionModal
+              songId={id}
+              title={title}
+              artist={artist}
+              title_ko={title_ko ?? null}
+              artist_ko={artist_ko ?? null}
+              handleClose={() => setPromotionOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
 
         <Dialog open={reportOpen} onOpenChange={setReportOpen}>
           <DialogContent>

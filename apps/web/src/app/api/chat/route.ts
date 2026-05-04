@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
@@ -59,6 +55,10 @@ const systemMessage: ChatMessage = {
 export async function POST(req: Request): Promise<NextResponse> {
   try {
     const { messages }: { messages: ChatMessage[] } = await req.json();
+
+    const client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     const response = await client.responses.create({
       model: 'gpt-4o-mini',

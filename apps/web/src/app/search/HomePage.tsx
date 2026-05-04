@@ -4,6 +4,7 @@ import { Loader2, Search, SearchX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
+import PromotionBanner from '@/components/PromotionBanner';
 import { Button } from '@/components/ui/button';
 // import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -262,6 +263,7 @@ export default function SearchPage() {
 
         {searchSongs.length === 0 && !query && (
           <div className="flex h-full flex-col justify-center gap-2">
+            <PromotionBanner />
             <SearchHistory onHistoryClick={handleHistoryClick} />
             <PopularSearchHistory onHistoryClick={handleHistoryClick} />
           </div>
