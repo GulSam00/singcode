@@ -16,11 +16,9 @@ interface Navigation {
 
 const navigation: Navigation[] = [
   { name: '최신 곡', href: '/recent', key: 'RECENT' },
-
   { name: '부를 곡', href: '/tosing', key: 'TOSING' },
   { name: '검색', href: '/', key: 'SEARCH' },
-
-  { name: '인기곡', href: '/popular', key: 'POPULAR' },
+  { name: '지도', href: '/map', key: 'MAP' },
   { name: '정보', href: '/info', key: 'INFO' },
 ];
 

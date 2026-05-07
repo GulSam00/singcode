@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type FooterKey = 'SEARCH' | 'RECENT' | 'TOSING' | 'POPULAR' | 'INFO' | null;
+export type FooterKey = 'SEARCH' | 'RECENT' | 'TOSING' | 'POPULAR' | 'INFO' | 'MAP' | null;
 
 interface FooterStore {
   footerAnimateKey: FooterKey;
