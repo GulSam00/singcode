@@ -58,7 +58,7 @@ export function useDeleteToSingSongMutation() {
       queryClient.cancelQueries({ queryKey: ['toSingSong'] });
       const prev = queryClient.getQueryData(['toSingSong']);
       queryClient.setQueryData(['toSingSong'], (old: ToSingSong[]) => {
-        old.filter(song => song.songs.id !== songId);
+        return old.filter(song => song.songs.id !== songId);
       });
       return { prev };
     },
@@ -68,15 +68,7 @@ export function useDeleteToSingSongMutation() {
       queryClient.setQueryData(['toSingSong'], context?.prev);
     },
     onSettled: () => {
-      // 1초 이내에 함수가 여러 번 호출되면, 1초 뒤 트리거를 계속해서 갱신
-      // if (invalidateTimeout) {
-      //   clearTimeout(invalidateTimeout);
-      // }
-      // invalidateTimeout = setTimeout(() => {
-      //   queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
-      // }, 1000);
       queryClient.invalidateQueries({ queryKey: ['searchSong'] });
-      queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
     },
   });
 }
@@ -105,9 +97,6 @@ export function usePatchToSingSongMutation() {
       console.error('error', error);
       alert(error.message ?? 'PATCH 실패');
       queryClient.setQueryData(['toSingSong'], context?.prev);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
     },
   });
 }
