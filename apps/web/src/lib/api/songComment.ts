@@ -15,7 +15,7 @@ export async function postSongComment(body: { song_id: string; content: string }
   return response.data;
 }
 
-export async function deleteSongComment(commentId: string) {
-  const response = await instance.delete<ApiResponse<void>>(`/songs/comments/${commentId}`);
+export async function deleteSongComment(body: { commentId: string }) {
+  const response = await instance.delete<ApiResponse<void>>('/songs/comments', { data: body });
   return response.data;
 }

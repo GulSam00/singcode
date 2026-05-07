@@ -79,3 +79,42 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     return NextResponse.json({ success: false, error: 'Failed to post comment' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request): Promise<NextResponse<ApiResponse<void>>> {
+  try {
+    const supabase = await createClient();
+    const userId = await getAuthenticatedUser(supabase);
+
+    const { commentId } = await request.json();
+
+    if (!commentId || typeof commentId !== 'string') {
+      return NextResponse.json({ success: false, error: 'Missing commentId' }, { status: 400 });
+    }
+
+    const { data, error, count } = await supabase
+      .from('song_comments')
+      .delete({ count: 'exact' })
+      .match({ id: commentId, user_id: userId });
+
+    if (error) throw error;
+
+    console.log('data', data, 'count', count);
+    if (count === 0) {
+      return NextResponse.json({ success: false, error: 'Comment not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof Error && error.cause === 'auth') {
+      return NextResponse.json(
+        { success: false, error: 'User not authenticated' },
+        { status: 401 },
+      );
+    }
+    console.error('Error in DELETE comment:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete comment' },
+      { status: 500 },
+    );
+  }
+}

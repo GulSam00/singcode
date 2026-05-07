@@ -33,7 +33,7 @@ export const usePostSongCommentMutation = (songId: string) => {
 export const useDeleteSongCommentMutation = (songId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (commentId: string) => deleteSongComment(commentId),
+    mutationFn: (commentId: string) => deleteSongComment({ commentId }),
     onMutate: async (commentId: string) => {
       await queryClient.cancelQueries({ queryKey: ['songComments', songId] });
       const prev = queryClient.getQueryData<SongComment[]>(['songComments', songId]);
