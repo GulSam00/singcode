@@ -1,11 +1,13 @@
 'use client';
 
+import { differenceInCalendarDays, format } from 'date-fns';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 import { usePostSongPromotionMutation } from '@/queries/songPromotionQuery';
 import { useUserQuery } from '@/queries/userQuery';
+import { getTomorrowKSTDate } from '@/utils/kst';
 
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
@@ -21,21 +23,6 @@ interface SongPromotionModalProps {
   handleClose: () => void;
 }
 
-/** KST 기준 내일 Date 객체 반환 */
-function getTomorrowKST(): Date {
-  const tomorrow = new Date(Date.now() + 9 * 60 * 60 * 1000 + 24 * 60 * 60 * 1000);
-  const [y, m, d] = tomorrow.toISOString().split('T')[0].split('-').map(Number);
-  return new Date(y, m - 1, d);
-}
-
-/** Date → YYYY-MM-DD 문자열 (로컬 기준) */
-function toDateString(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
 export default function SongPromotionModal({
   songId,
   title,
@@ -46,19 +33,17 @@ export default function SongPromotionModal({
 }: SongPromotionModalProps) {
   const [range, setRange] = useState<DateRange | undefined>(undefined);
   const [content, setContent] = useState('');
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const { data: user } = useUserQuery();
   const { mutate: postPromotion, isPending } = usePostSongPromotionMutation();
 
   const point = user?.point ?? 0;
-  const tomorrowKST = getTomorrowKST();
+  const tomorrowKST = getTomorrowKSTDate();
 
-  const days =
-    range?.from && range?.to
-      ? Math.round((range.to.getTime() - range.from.getTime()) / (1000 * 60 * 60 * 24)) + 1
-      : range?.from
-        ? 1
-        : 0;
+  const days = range?.from
+    ? differenceInCalendarDays(range.to ?? range.from, range.from) + 1
+    : 0;
 
   const cost = days * 50;
   const canAfford = point >= cost;
@@ -67,17 +52,18 @@ export default function SongPromotionModal({
   const displayTitle = title_ko && title_ko !== title ? title_ko : title;
   const displayArtist = artist_ko && artist_ko !== artist ? artist_ko : artist;
 
-  const handleSubmit = () => {
+  const handleProceed = () => {
     if (!canSubmit || !range?.from) return;
-    const start_date = toDateString(range.from);
-    const end_date = toDateString(range.to ?? range.from);
+    setIsConfirming(true);
+  };
+
+  const handleConfirm = () => {
+    if (!canSubmit || !range?.from) return;
+    const start_date = format(range.from, 'yyyy-MM-dd');
+    const end_date = format(range.to ?? range.from, 'yyyy-MM-dd');
     postPromotion(
       {
         song_id: songId,
-        title,
-        artist,
-        title_ko,
-        artist_ko,
         content: content.trim(),
         start_date,
         end_date,
@@ -85,6 +71,69 @@ export default function SongPromotionModal({
       { onSuccess: handleClose },
     );
   };
+
+  if (isConfirming && range?.from) {
+    const startStr = format(range.from, 'yyyy-MM-dd');
+    const endStr = format(range.to ?? range.from, 'yyyy-MM-dd');
+
+    return (
+      <div className="flex flex-col gap-4 sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>홍보 신청 확인</DialogTitle>
+          <DialogDescription>아래 내용으로 홍보를 신청합니다. 신청 후에는 변경할 수 없습니다.</DialogDescription>
+        </DialogHeader>
+
+        <div className="flex flex-col gap-3 rounded-md border p-3 text-sm">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-muted-foreground text-xs">곡</span>
+            <span className="font-semibold">{displayTitle}</span>
+            <span className="text-muted-foreground">{displayArtist}</span>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-muted-foreground text-xs">홍보 내용</span>
+            <span>{content.trim()}</span>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-muted-foreground text-xs">홍보 기간</span>
+            <span>
+              {startStr} ~ {endStr} ({days}일)
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-muted/40 flex flex-col gap-1 rounded-md p-3 text-sm">
+          <div className="flex items-center justify-between">
+            <span>차감 포인트</span>
+            <span className="text-destructive font-bold">-{cost}P</span>
+          </div>
+          <div className="text-muted-foreground flex items-center justify-between text-xs">
+            <span>차감 후 잔여</span>
+            <span>{point - cost}P</span>
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <Button
+            className="flex-1"
+            size="lg"
+            variant="outline"
+            onClick={() => setIsConfirming(false)}
+            disabled={isPending}
+          >
+            돌아가기
+          </Button>
+          <Button
+            className="flex-1 font-bold"
+            size="lg"
+            onClick={handleConfirm}
+            disabled={isPending}
+          >
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : `확정 (${cost}P)`}
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 sm:max-w-md">
@@ -114,7 +163,7 @@ export default function SongPromotionModal({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium">홍보 기간 선택 (내일부터)</label>
+        <label className="text-sm font-medium">홍보 기간 선택</label>
         <div className="flex justify-center">
           <Calendar
             mode="range"
@@ -126,7 +175,8 @@ export default function SongPromotionModal({
         </div>
         {range?.from && (
           <p className="text-muted-foreground text-center text-xs">
-            {toDateString(range.from)} ~ {toDateString(range.to ?? range.from)} ({days}일)
+            {format(range.from, 'yyyy-MM-dd')} ~ {format(range.to ?? range.from, 'yyyy-MM-dd')} (
+            {days}일)
           </p>
         )}
       </div>
@@ -145,16 +195,10 @@ export default function SongPromotionModal({
       <Button
         className="w-full font-bold"
         size="lg"
-        onClick={handleSubmit}
+        onClick={handleProceed}
         disabled={!canSubmit || isPending}
       >
-        {isPending ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : days > 0 ? (
-          `홍보 신청 (${cost}P)`
-        ) : (
-          '기간을 선택하세요'
-        )}
+        {days > 0 ? `홍보 신청 (${cost}P)` : '기간을 선택하세요'}
       </Button>
     </div>
   );
