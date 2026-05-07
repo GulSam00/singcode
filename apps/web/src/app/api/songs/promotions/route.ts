@@ -1,34 +1,35 @@
+import { differenceInCalendarDays } from 'date-fns';
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
 import { ApiResponse } from '@/types/apiRoute';
 import { SongPromotion } from '@/types/promotion';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
-
-/** 현재 KST 날짜를 YYYY-MM-DD 문자열로 반환 */
-function getKSTDateString(): string {
-  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split('T')[0];
-}
+import { getTodayKST, getTomorrowKST } from '@/utils/kst';
 
 export async function GET(): Promise<NextResponse<ApiResponse<SongPromotion[]>>> {
   try {
     const supabase = await createClient();
-    const todayKST = getKSTDateString();
+    const todayKST = getTodayKST();
 
     const { data, error } = await supabase
       .from('song_promotions')
       .select(
-        'id, song_id, user_id, title, artist, title_ko, artist_ko, content, start_date, end_date, users(nickname)',
+        'id, song_id, user_id, content, start_date, end_date, users(nickname), songs(title, artist, title_ko, artist_ko)',
       )
+      .lte('start_date', todayKST)
       .gte('end_date', todayKST)
       .order('end_date', { ascending: false });
 
     if (error) throw error;
 
     const promotions: SongPromotion[] = (data ?? []).map(row => {
-      const endMs = new Date(row.end_date).getTime();
-      const todayMs = new Date(todayKST).getTime();
-      const remaining_days = Math.round((endMs - todayMs) / (1000 * 60 * 60 * 24));
+      const song = row.songs as unknown as {
+        title: string;
+        artist: string;
+        title_ko: string | null;
+        artist_ko: string | null;
+      } | null;
 
       return {
         id: row.id,
@@ -37,12 +38,11 @@ export async function GET(): Promise<NextResponse<ApiResponse<SongPromotion[]>>>
         content: row.content,
         start_date: row.start_date,
         end_date: row.end_date,
-        remaining_days,
         nickname: (row.users as unknown as { nickname: string } | null)?.nickname ?? '알 수 없음',
-        title: row.title,
-        artist: row.artist,
-        title_ko: row.title_ko,
-        artist_ko: row.artist_ko,
+        title: song?.title ?? '',
+        artist: song?.artist ?? '',
+        title_ko: song?.title_ko ?? null,
+        artist_ko: song?.artist_ko ?? null,
       };
     });
 
@@ -61,14 +61,13 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
-    const { song_id, title, artist, title_ko, artist_ko, content, start_date, end_date } =
-      await request.json();
+    const { song_id, content, start_date, end_date } = await request.json();
 
-    if (!song_id || !title || !artist || !content || !start_date || !end_date) {
+    if (!song_id || !content || !start_date || !end_date) {
       return NextResponse.json(
         {
           success: false,
-          error: 'song_id, title, artist, content, start_date, end_date are required',
+          error: 'song_id, content, start_date, end_date are required',
         },
         { status: 400 },
       );
@@ -81,9 +80,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
       );
     }
 
-    const tomorrowKST = new Date(Date.now() + 9 * 60 * 60 * 1000 + 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split('T')[0];
+    const tomorrowKST = getTomorrowKST();
 
     if (start_date < tomorrowKST) {
       return NextResponse.json(
@@ -99,10 +96,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
       );
     }
 
-    const days =
-      Math.round(
-        (new Date(end_date).getTime() - new Date(start_date).getTime()) / (1000 * 60 * 60 * 24),
-      ) + 1;
+    const days = differenceInCalendarDays(new Date(end_date), new Date(start_date)) + 1;
     const cost = days * 50;
 
     const { data: userData, error: userError } = await supabase
@@ -126,10 +120,6 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     const { error: insertError } = await supabase.from('song_promotions').insert({
       song_id,
       user_id: userId,
-      title,
-      artist,
-      title_ko: title_ko ?? null,
-      artist_ko: artist_ko ?? null,
       content,
       start_date,
       end_date,

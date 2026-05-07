@@ -10,5 +10,4 @@ export interface SongPromotion {
   content: string;
   start_date: string;
   end_date: string;
-  remaining_days: number;
 }

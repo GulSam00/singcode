@@ -10,10 +10,6 @@ export async function getSongPromotions() {
 
 export async function postSongPromotion(body: {
   song_id: string;
-  title: string;
-  artist: string;
-  title_ko: string | null;
-  artist_ko: string | null;
   content: string;
   start_date: string;
   end_date: string;
