@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { getUser, patchUserCheckIn, patchUserSpendPoint } from '@/lib/api/user';
+import { getUserPointLogs, getUser, patchUserCheckIn, patchUserSpendPoint } from '@/lib/api/user';
 
 export const useUserQuery = () => {
   return useQuery({
@@ -35,13 +35,27 @@ export const usePatchUserCheckInMutation = () => {
 export const usePatchSetPointMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: { point: number }) => patchUserSpendPoint(body),
+    mutationFn: (body: { point: number; amount: number; description: string }) =>
+      patchUserSpendPoint(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
+      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
     },
     onError: error => {
       console.error('error', error);
       alert(error.message ?? 'PATCH 실패');
     },
+  });
+};
+
+export const usePointLogsQuery = (isAuthenticated: boolean) => {
+  return useQuery({
+    queryKey: ['pointLogs'],
+    queryFn: async () => {
+      const response = await getUserPointLogs();
+      if (!response.success) return [];
+      return response.data ?? [];
+    },
+    enabled: isAuthenticated,
   });
 };

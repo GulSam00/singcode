@@ -7,7 +7,7 @@ import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 export async function PATCH(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
     const supabase = await createClient();
-    const { point } = await request.json();
+    const { point, amount, description } = await request.json();
 
     const userId = await getAuthenticatedUser(supabase);
 
@@ -17,6 +17,10 @@ export async function PATCH(request: Request): Promise<NextResponse<ApiResponse<
       .eq('id', userId);
 
     if (cosumeError) throw cosumeError;
+
+    if (amount && description) {
+      await supabase.from('point_logs').insert({ user_id: userId, amount, description });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
