@@ -30,7 +30,7 @@ export default function PromotionBanner() {
     <div className="border-border bg-muted/20 relative overflow-hidden rounded-lg border px-4 py-3">
       <div className="mb-2 flex items-center gap-1.5">
         <Megaphone className="text-primary h-3.5 w-3.5" />
-        <span className="text-primary text-xs font-semibold">홍보</span>
+        <span className="text-primary text-xs font-semibold">홍보 중인 곡</span>
         <span className="text-muted-foreground text-xs">
           {currentIndex + 1}/{promotions.length}
         </span>
@@ -52,11 +52,11 @@ export default function PromotionBanner() {
             </div>
             <div className="text-muted-foreground flex items-center gap-1 text-xs">
               <span className="font-medium">{current.nickname}</span>
-              <span>·</span>
+              <span>-</span>
               <span className="truncate">{current.content}</span>
             </div>
             <span className="text-muted-foreground/60 text-xs">
-              {current.remaining_days + 1}일 남음
+              {current.start_date} ~ {current.end_date}
             </span>
           </motion.div>
         </AnimatePresence>
