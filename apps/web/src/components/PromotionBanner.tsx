@@ -11,6 +11,12 @@ export default function PromotionBanner() {
   const { data: promotions = [] } = useSongPromotionsQuery();
 
   useEffect(() => {
+    if (currentIndex >= promotions.length) {
+      setCurrentIndex(0);
+    }
+  }, [promotions.length, currentIndex]);
+
+  useEffect(() => {
     if (promotions.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % promotions.length);

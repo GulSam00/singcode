@@ -80,6 +80,23 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
       );
     }
 
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    if (!datePattern.test(start_date) || !datePattern.test(end_date)) {
+      return NextResponse.json(
+        { success: false, error: '날짜 형식이 올바르지 않습니다. (YYYY-MM-DD)' },
+        { status: 400 },
+      );
+    }
+
+    const parsedStart = new Date(start_date);
+    const parsedEnd = new Date(end_date);
+    if (isNaN(parsedStart.getTime()) || isNaN(parsedEnd.getTime())) {
+      return NextResponse.json(
+        { success: false, error: '유효하지 않은 날짜입니다.' },
+        { status: 400 },
+      );
+    }
+
     const tomorrowKST = getTomorrowKST();
 
     if (start_date < tomorrowKST) {

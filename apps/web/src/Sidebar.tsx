@@ -1,11 +1,12 @@
 'use client';
 
+// import DisquietBadge from '@/components/DisquietBadge';
+import { useQueryClient } from '@tanstack/react-query';
 import { Check, LogOut, Menu, Pencil, User, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-// import DisquietBadge from '@/components/DisquietBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -23,6 +24,7 @@ import useAuthStore from '@/stores/useAuthStore';
 export default function Sidebar() {
   // 목업 인증 상태
   const { user, isAuthenticated, logout, changeNickname } = useAuthStore();
+  const queryClient = useQueryClient();
 
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -65,6 +67,7 @@ export default function Sidebar() {
   const handleLogout = async () => {
     const result = await logout();
     if (result) {
+      queryClient.clear();
       window.location.reload();
     }
   };
