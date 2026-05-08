@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleDollarSign, Flag, Folder, History, Star } from 'lucide-react';
+import { CircleDollarSign, Flag, Folder, History, Megaphone, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import CountUp from '@/components/reactBits/CountUp';
@@ -33,6 +33,12 @@ const menuItems = [
     title: '포인트 사용 내역',
     description: '포인트를 어디에 사용했는지 확인합니다',
     icon: <History className="h-5 w-5" />,
+  },
+  {
+    id: 'promotions',
+    title: '내 홍보 이력',
+    description: '신청한 곡 홍보를 확인하고 취소합니다',
+    icon: <Megaphone className="h-5 w-5" />,
   },
 ];
 
