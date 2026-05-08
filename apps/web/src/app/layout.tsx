@@ -10,6 +10,7 @@ import Footer from '@/Footer';
 import Header from '@/Header';
 import AuthProvider from '@/auth';
 import MessageDialog from '@/components/MessageDialog';
+import PromotionBanner from '@/components/PromotionBanner';
 import PWARegister from '@/components/PWARegister';
 import '@/globals.css';
 // import { PostHogProvider } from '@/posthog';
@@ -105,6 +106,12 @@ export default function RootLayout({
       <div className="relative flex h-full w-full max-w-md flex-col">
         <Header />
         <div className="h-full p-4">{children}</div>
+
+        <div className="pointer-events-none fixed bottom-8 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-4 pb-2">
+          <div className="pointer-events-auto">
+            <PromotionBanner />
+          </div>
+        </div>
 
         <Footer />
       </div>
