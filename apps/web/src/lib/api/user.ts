@@ -20,12 +20,8 @@ export async function getUserPointLogs() {
   return response.data;
 }
 
-export async function patchUserSpendPoint(body: {
-  point: number;
-  amount: number;
-  description: string;
-}) {
-  const response = await instance.patch<ApiResponse<void>>('/user/spend-point', body);
+export async function patchUserPoint(body: { amount: number; description: string }) {
+  const response = await instance.patch<ApiResponse<void>>('/user/point', body);
   return response.data;
 }
 

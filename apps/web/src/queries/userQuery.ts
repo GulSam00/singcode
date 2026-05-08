@@ -6,7 +6,7 @@ import {
   getUserPointLogs,
   getUserPromotions,
   patchUserCheckIn,
-  patchUserSpendPoint,
+  patchUserPoint,
 } from '@/lib/api/user';
 
 export const useUserQuery = () => {
@@ -42,8 +42,7 @@ export const usePatchUserCheckInMutation = () => {
 export const usePatchSetPointMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: { point: number; amount: number; description: string }) =>
-      patchUserSpendPoint(body),
+    mutationFn: (body: { amount: number; description: string }) => patchUserPoint(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
       queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
