@@ -1,4 +1,5 @@
 import { ApiResponse } from '@/types/apiRoute';
+import { SongPromotion } from '@/types/promotion';
 import { User } from '@/types/user';
 
 import { instance } from './client';
@@ -15,5 +16,15 @@ export async function patchUserCheckIn() {
 
 export async function patchUserSpendPoint(body: { point: number }) {
   const response = await instance.patch<ApiResponse<void>>('/user/spend-point', body);
+  return response.data;
+}
+
+export async function getUserPromotions() {
+  const response = await instance.get<ApiResponse<SongPromotion[]>>('/user/promotions');
+  return response.data;
+}
+
+export async function deleteUserPromotion(id: string) {
+  const response = await instance.delete<ApiResponse<void>>('/user/promotions', { data: { id } });
   return response.data;
 }
