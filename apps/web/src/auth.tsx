@@ -13,6 +13,7 @@ const ALLOW_PATHS = [
   '/recent',
   '/tosing',
   '/update-password',
+  '/map',
 ];
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
