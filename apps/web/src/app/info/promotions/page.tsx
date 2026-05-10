@@ -1,10 +1,20 @@
 'use client';
 
+import { differenceInCalendarDays } from 'date-fns';
 import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { useDeleteUserPromotionMutation, useUserPromotionsQuery } from '@/queries/userQuery';
@@ -14,11 +24,11 @@ import { getTodayKST } from '@/utils/kst';
 
 function PromotionItem({
   promotion,
-  onDelete,
+  onRequestDelete,
   isDeleting,
 }: {
   promotion: SongPromotion;
-  onDelete: (id: string) => void;
+  onRequestDelete: (promotion: SongPromotion) => void;
   isDeleting: boolean;
 }) {
   const todayKST = getTodayKST();
@@ -59,7 +69,7 @@ function PromotionItem({
             variant="ghost"
             size="icon"
             className="h-7 w-7"
-            onClick={() => onDelete(promotion.id)}
+            onClick={() => onRequestDelete(promotion)}
             disabled={isDeleting}
             aria-label="홍보 취소"
           >
@@ -82,8 +92,25 @@ export default function MyPromotionsPage() {
   const { isAuthenticated } = useAuthStore();
   const { data, isLoading } = useUserPromotionsQuery(isAuthenticated);
   const { mutate: deletePromotion, isPending } = useDeleteUserPromotionMutation();
+  const [confirmTarget, setConfirmTarget] = useState<SongPromotion | null>(null);
 
   const promotions = data ?? [];
+
+  const refundPoint = confirmTarget
+    ? (differenceInCalendarDays(
+        new Date(confirmTarget.end_date),
+        new Date(confirmTarget.start_date),
+      ) +
+        1) *
+      50
+    : 0;
+
+  const handleConfirmDelete = () => {
+    if (!confirmTarget) return;
+    deletePromotion(confirmTarget.id, {
+      onSuccess: () => setConfirmTarget(null),
+    });
+  };
 
   return (
     <div className="bg-background h-full">
@@ -113,12 +140,56 @@ export default function MyPromotionsPage() {
             <PromotionItem
               key={promotion.id}
               promotion={promotion}
-              onDelete={deletePromotion}
+              onRequestDelete={setConfirmTarget}
               isDeleting={isPending}
             />
           ))
         )}
       </ScrollArea>
+
+      <Dialog
+        open={confirmTarget !== null}
+        onOpenChange={open => {
+          if (!open && !isPending) setConfirmTarget(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>예정된 홍보를 취소할까요?</DialogTitle>
+            <DialogDescription>취소 후에는 되돌릴 수 없습니다.</DialogDescription>
+          </DialogHeader>
+
+          {confirmTarget && (
+            <div className="space-y-2 py-2 text-sm">
+              <p className="font-medium">
+                {confirmTarget.title_ko ?? confirmTarget.title}
+                <span className="text-muted-foreground font-normal">
+                  {' · '}
+                  {confirmTarget.artist_ko ?? confirmTarget.artist}
+                </span>
+              </p>
+              <p className="text-muted-foreground">
+                {confirmTarget.start_date} ~ {confirmTarget.end_date}
+              </p>
+              <p>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  {refundPoint.toLocaleString()}P
+                </span>
+                <span className="text-muted-foreground">가 환불됩니다.</span>
+              </p>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmTarget(null)} disabled={isPending}>
+              닫기
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmDelete} disabled={isPending}>
+              홍보 취소
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

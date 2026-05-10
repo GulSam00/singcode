@@ -134,20 +134,28 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
       );
     }
 
-    const { error: insertError } = await supabase.from('song_promotions').insert({
-      song_id,
-      user_id: userId,
-      content,
-      start_date,
-      end_date,
+    const { data: inserted, error: insertError } = await supabase
+      .from('song_promotions')
+      .insert({
+        song_id,
+        user_id: userId,
+        content,
+        start_date,
+        end_date,
+      })
+      .select('id, songs(title, artist)')
+      .single();
+
+    if (insertError || !inserted) throw insertError ?? new Error('Failed to insert promotion');
+
+    const song = inserted.songs as unknown as { title: string; artist: string } | null;
+    const description = `홍보 등록: ${song?.title ?? ''} - ${song?.artist ?? ''}`;
+
+    const { error: pointError } = await supabase.rpc('record_point_change', {
+      p_user_id: userId,
+      p_amount: -cost,
+      p_description: description,
     });
-
-    if (insertError) throw insertError;
-
-    const { error: pointError } = await supabase
-      .from('users')
-      .update({ point: userData.point - cost })
-      .eq('id', userId);
 
     if (pointError) throw pointError;
 
