@@ -9,6 +9,33 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { usePointLogsQuery } from '@/queries/userQuery';
 import useAuthStore from '@/stores/useAuthStore';
+import { PointLog } from '@/types/pointLog';
+
+function PointLogItem({ log }: { log: PointLog }) {
+  const isGain = log.amount >= 0;
+  const amountClassName = isGain
+    ? 'text-emerald-600 dark:text-emerald-400'
+    : 'text-red-600 dark:text-red-400';
+  const amountLabel =
+    log.amount > 0 ? `+${log.amount.toLocaleString()}` : log.amount.toLocaleString();
+
+  return (
+    <li className="flex items-start justify-between px-2 py-3">
+      <div className="flex flex-col gap-1">
+        <span className="text-sm font-medium">{log.description}</span>
+        <span className="text-muted-foreground text-xs">
+          {new Date(log.created_at).toLocaleString('ko-KR')}
+        </span>
+      </div>
+      <div className="flex flex-col items-end gap-0.5">
+        <span className={`text-sm font-bold ${amountClassName}`}>{amountLabel}P</span>
+        <span className="text-muted-foreground text-xs">
+          잔액 {log.balance_after.toLocaleString()}P
+        </span>
+      </div>
+    </li>
+  );
+}
 
 export default function PointLogsPage() {
   const router = useRouter();
@@ -40,23 +67,7 @@ export default function PointLogsPage() {
         ) : (
           <ul className="flex flex-col gap-2">
             {logs.map(log => (
-              <li key={log.id} className="flex items-center justify-between px-2 py-3">
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-medium">{log.description}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {new Date(log.created_at).toLocaleString('ko-KR')}
-                  </span>
-                </div>
-                <span
-                  className={`text-sm font-bold ${
-                    log.amount >= 0
-                      ? 'text-emerald-600 dark:text-emerald-400'
-                      : 'text-red-600 dark:text-red-400'
-                  }`}
-                >
-                  {log.amount > 0 ? `+${log.amount}` : log.amount}P
-                </span>
-              </li>
+              <PointLogItem key={log.id} log={log} />
             ))}
           </ul>
         )}

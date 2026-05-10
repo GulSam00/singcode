@@ -4,6 +4,7 @@
 //   user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
 //   description text NOT NULL,
 //   amount int NOT NULL,
+//   balance_after int NOT NULL,
 //   created_at timestamptz DEFAULT now()
 // );
 import { NextResponse } from 'next/server';

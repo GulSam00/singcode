@@ -3,5 +3,6 @@ export interface PointLog {
   user_id: string;
   description: string;
   amount: number;
+  balance_after: number;
   created_at: string;
 }
