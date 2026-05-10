@@ -31,6 +31,7 @@ export const usePatchUserCheckInMutation = () => {
     mutationFn: () => patchUserCheckIn(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
+      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
     },
     onError: error => {
       console.error('error', error);
@@ -85,6 +86,8 @@ export const useDeleteUserPromotionMutation = () => {
     mutationFn: (id: string) => deleteUserPromotion(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userPromotions'] });
+      queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
+      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
     },
     onError: error => {
       console.error('error', error);
