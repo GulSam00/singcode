@@ -47,7 +47,15 @@ export default function PointLogsPage() {
                     {new Date(log.created_at).toLocaleString('ko-KR')}
                   </span>
                 </div>
-                <span className="text-sm font-bold text-red-500">-{log.amount}P</span>
+                <span
+                  className={`text-sm font-bold ${
+                    log.amount >= 0
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-red-600 dark:text-red-400'
+                  }`}
+                >
+                  {log.amount > 0 ? `+${log.amount}` : log.amount}P
+                </span>
               </li>
             ))}
           </ul>
