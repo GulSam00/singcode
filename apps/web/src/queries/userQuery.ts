@@ -3,9 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   deleteUserPromotion,
   getUser,
+  getUserPointLogs,
   getUserPromotions,
   patchUserCheckIn,
-  patchUserSpendPoint,
+  patchUserPoint,
 } from '@/lib/api/user';
 
 export const useUserQuery = () => {
@@ -30,6 +31,7 @@ export const usePatchUserCheckInMutation = () => {
     mutationFn: () => patchUserCheckIn(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
+      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
     },
     onError: error => {
       console.error('error', error);
@@ -41,14 +43,27 @@ export const usePatchUserCheckInMutation = () => {
 export const usePatchSetPointMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: { point: number }) => patchUserSpendPoint(body),
+    mutationFn: (body: { amount: number; description: string }) => patchUserPoint(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
+      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
     },
     onError: error => {
       console.error('error', error);
       alert(error.message ?? 'PATCH 실패');
     },
+  });
+};
+
+export const usePointLogsQuery = (isAuthenticated: boolean) => {
+  return useQuery({
+    queryKey: ['pointLogs'],
+    queryFn: async () => {
+      const response = await getUserPointLogs();
+      if (!response.success) return [];
+      return response.data ?? [];
+    },
+    enabled: isAuthenticated,
   });
 };
 
@@ -71,6 +86,8 @@ export const useDeleteUserPromotionMutation = () => {
     mutationFn: (id: string) => deleteUserPromotion(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userPromotions'] });
+      queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
+      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
     },
     onError: error => {
       console.error('error', error);

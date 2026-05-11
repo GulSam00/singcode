@@ -21,7 +21,9 @@ export const usePostSongPromotionMutation = () => {
     mutationFn: (body: Parameters<typeof postSongPromotion>[0]) => postSongPromotion(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['songPromotions'] });
+      queryClient.invalidateQueries({ queryKey: ['userPromotions'] });
       queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
+      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
       toast.success('홍보가 등록되었습니다.');
     },
     onError: (error: Error) => {

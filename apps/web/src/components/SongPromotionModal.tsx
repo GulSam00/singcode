@@ -41,9 +41,7 @@ export default function SongPromotionModal({
   const point = user?.point ?? 0;
   const tomorrowKST = getTomorrowKSTDate();
 
-  const days = range?.from
-    ? differenceInCalendarDays(range.to ?? range.from, range.from) + 1
-    : 0;
+  const days = range?.from ? differenceInCalendarDays(range.to ?? range.from, range.from) + 1 : 0;
 
   const cost = days * 50;
   const canAfford = point >= cost;
@@ -80,7 +78,9 @@ export default function SongPromotionModal({
       <div className="flex flex-col gap-4 sm:max-w-md">
         <DialogHeader>
           <DialogTitle>홍보 신청 확인</DialogTitle>
-          <DialogDescription>아래 내용으로 홍보를 신청합니다. 신청 후에는 변경할 수 없습니다.</DialogDescription>
+          <DialogDescription>
+            아래 내용으로 홍보를 신청합니다. 신청 후에는 변경할 수 없습니다.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-3 rounded-md border p-3 text-sm">

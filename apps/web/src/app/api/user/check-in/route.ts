@@ -9,30 +9,24 @@ export async function PATCH(): Promise<NextResponse<ApiResponse<void>>> {
     const supabase = await createClient();
     const userId = await getAuthenticatedUser(supabase);
 
-    const { data: user, error: userError } = await supabase
+    const { error: checkInError } = await supabase
       .from('users')
-      .select('point')
-      .eq('id', userId)
-      .single();
-
-    if (userError) throw userError;
-
-    const { error: updateError } = await supabase
-      .from('users')
-      .update({
-        last_check_in: new Date(),
-        point: user.point + 30,
-      })
+      .update({ last_check_in: new Date() })
       .eq('id', userId);
 
-    if (updateError) throw updateError;
+    if (checkInError) throw checkInError;
+
+    const { error: pointError } = await supabase.rpc('record_point_change', {
+      p_user_id: userId,
+      p_amount: 30,
+      p_description: '출석 체크',
+    });
+
+    if (pointError) throw pointError;
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in like API:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to post like song' },
-      { status: 500 },
-    );
+    console.error('Error in check-in API:', error);
+    return NextResponse.json({ success: false, error: 'Failed to check in' }, { status: 500 });
   }
 }

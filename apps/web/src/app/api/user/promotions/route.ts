@@ -1,3 +1,4 @@
+import { differenceInCalendarDays } from 'date-fns';
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
@@ -73,7 +74,7 @@ export async function DELETE(request: Request): Promise<NextResponse<ApiResponse
 
     const { data: promotion, error: fetchError } = await supabase
       .from('song_promotions')
-      .select('id, user_id, start_date')
+      .select('id, user_id, start_date, end_date, songs(title, artist)')
       .eq('id', id)
       .single();
 
@@ -99,9 +100,24 @@ export async function DELETE(request: Request): Promise<NextResponse<ApiResponse
       );
     }
 
+    const days =
+      differenceInCalendarDays(new Date(promotion.end_date), new Date(promotion.start_date)) + 1;
+    const refund = days * 50;
+
     const { error: deleteError } = await supabase.from('song_promotions').delete().eq('id', id);
 
     if (deleteError) throw deleteError;
+
+    const song = promotion.songs as unknown as { title: string; artist: string } | null;
+    const description = `홍보 취소: ${song?.title ?? ''} - ${song?.artist ?? ''}`;
+
+    const { error: pointError } = await supabase.rpc('record_point_change', {
+      p_user_id: userId,
+      p_amount: refund,
+      p_description: description,
+    });
+
+    if (pointError) throw pointError;
 
     return NextResponse.json({ success: true });
   } catch (error) {

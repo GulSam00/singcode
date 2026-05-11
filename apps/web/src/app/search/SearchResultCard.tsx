@@ -33,7 +33,6 @@ interface IProps {
   onToggleToSing: () => void;
   onToggleLike: () => void;
   onClickSave: () => void;
-  onClickArtist: () => void;
 }
 
 export default function SearchResultCard({
@@ -45,9 +44,12 @@ export default function SearchResultCard({
   onToggleToSing,
   onToggleLike,
   onClickSave,
-  onClickArtist,
 }: IProps) {
   const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, thumb } = song;
+  const hasKoTitle = !!title_ko && title_ko !== title;
+  const hasKoArtist = !!artist_ko && artist_ko !== artist;
+  const displayTitle = hasKoTitle ? title_ko : title;
+  const displayArtist = hasKoArtist ? artist_ko : artist;
 
   const { isAuthenticated } = useAuthStore();
 
@@ -62,6 +64,15 @@ export default function SearchResultCard({
       return;
     }
     action();
+  };
+
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(`클립보드 복사`);
+    } catch {
+      toast.error('복사에 실패했습니다.');
+    }
   };
 
   const handleClickThumbsUp = withAuth('로그인하고 곡 추천 기능을 사용해보세요!', () =>
@@ -83,20 +94,33 @@ export default function SearchResultCard({
           {/* 제목 및 가수 */}
           <div className="flex justify-between">
             <div className="flex w-[calc(100%-40px)] flex-col gap-0.5 truncate">
-              <MarqueeText className="text-base font-medium">
-                {title_ko && title_ko !== title ? title_ko : title}
+              <MarqueeText
+                className="hover:text-accent cursor-pointer text-base font-medium hover:underline hover:underline-offset-4"
+                onClick={() => handleCopy(displayTitle)}
+              >
+                {displayTitle}
               </MarqueeText>
-              {title_ko && title_ko !== title && (
-                <MarqueeText className="text-muted-foreground text-xs">{title}</MarqueeText>
+              {hasKoTitle && (
+                <MarqueeText
+                  className="text-muted-foreground hover:text-accent cursor-pointer text-xs hover:underline hover:underline-offset-4"
+                  onClick={() => handleCopy(title)}
+                >
+                  {title}
+                </MarqueeText>
               )}
               <MarqueeText
                 className="text-muted-foreground hover:text-accent mt-0.5 cursor-pointer text-sm hover:underline hover:underline-offset-4"
-                onClick={onClickArtist}
+                onClick={() => handleCopy(displayArtist)}
               >
-                {artist_ko && artist_ko !== artist ? artist_ko : artist}
+                {displayArtist}
               </MarqueeText>
-              {artist_ko && artist_ko !== artist && (
-                <MarqueeText className="text-muted-foreground/70 text-xs">{artist}</MarqueeText>
+              {hasKoArtist && (
+                <MarqueeText
+                  className="text-muted-foreground/70 hover:text-accent cursor-pointer text-xs hover:underline hover:underline-offset-4"
+                  onClick={() => handleCopy(artist)}
+                >
+                  {artist}
+                </MarqueeText>
               )}
             </div>
 
