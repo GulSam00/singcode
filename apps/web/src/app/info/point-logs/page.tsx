@@ -50,7 +50,7 @@ export default function PointLogsPage() {
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-2xl font-bold">포인트 사용 내역</h1>
+        <h1 className="text-2xl font-bold">포인트 내역</h1>
       </div>
 
       <div className="flex h-[48px] items-center p-2">

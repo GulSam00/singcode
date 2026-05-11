@@ -24,14 +24,14 @@ const menuItems = [
   },
   {
     id: 'promotions',
-    title: '내 홍보 이력',
-    description: '신청한 곡 홍보를 확인하고 취소합니다',
+    title: '홍보 신청 관리',
+    description: '홍보 신청한 곡을 확인하거나 취소합니다',
     icon: <Megaphone className="h-5 w-5" />,
   },
   {
     id: 'point-logs',
-    title: '포인트 사용 내역',
-    description: '포인트를 어디에 사용했는지 확인합니다',
+    title: '포인트 내역',
+    description: '포인트 획득/사용 내역을 확인합니다',
     icon: <History className="h-5 w-5" />,
   },
   {
