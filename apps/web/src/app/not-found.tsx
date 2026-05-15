@@ -3,6 +3,7 @@
 import { Home } from 'lucide-react';
 import Link from 'next/link';
 
+import SdCharacter from '@/components/SdCharacter';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -24,8 +25,9 @@ export default function NotFound() {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col items-center justify-center py-8">
-          <div className="text-muted-foreground mb-4 text-8xl font-bold">404</div>
+        <CardContent className="flex flex-col items-center justify-center py-6">
+          <SdCharacter variant="sad" size={110} className="mb-2" />
+          <div className="text-muted-foreground mb-4 text-6xl font-bold">404</div>
           <p className="text-muted-foreground text-center">
             주소가 올바른지 확인하거나 <br />
             다른 페이지로 이동해보세요

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150" fill="none">
+  <!-- Shadow -->
+  <ellipse cx="60" cy="146" rx="32" ry="5" fill="black" opacity="0.1"/>
+
+  <!-- Hair (back) -->
+  <ellipse cx="60" cy="44" rx="34" ry="32" fill="#7C3AED"/>
+  <!-- Side hair -->
+  <path d="M27 54 Q18 68 20 84 Q22 92 30 94" stroke="#7C3AED" stroke-width="10" stroke-linecap="round" fill="none"/>
+  <path d="M93 54 Q102 68 100 84 Q98 92 90 94" stroke="#7C3AED" stroke-width="10" stroke-linecap="round" fill="none"/>
+
+  <!-- Face -->
+  <ellipse cx="60" cy="50" rx="28" ry="26" fill="#FFDFC4"/>
+
+  <!-- Bangs -->
+  <path d="M32 42 Q36 22 60 20 Q84 22 88 42" fill="#7C3AED"/>
+  <path d="M32 42 Q36 32 42 38" fill="#7C3AED"/>
+  <path d="M88 42 Q84 32 78 38" fill="#7C3AED"/>
+
+  <!-- Eyes (left) -->
+  <ellipse cx="47" cy="50" rx="6.5" ry="7.5" fill="#1a1a2e"/>
+  <ellipse cx="47" cy="50" rx="4.5" ry="5.5" fill="#6D28D9"/>
+  <ellipse cx="47" cy="51" rx="2.5" ry="3" fill="#1a1a2e"/>
+  <ellipse cx="44.5" cy="47" rx="2" ry="2" fill="white"/>
+  <ellipse cx="49.5" cy="55" rx="1" ry="1" fill="white" opacity="0.6"/>
+
+  <!-- Eyes (right) -->
+  <ellipse cx="73" cy="50" rx="6.5" ry="7.5" fill="#1a1a2e"/>
+  <ellipse cx="73" cy="50" rx="4.5" ry="5.5" fill="#6D28D9"/>
+  <ellipse cx="73" cy="51" rx="2.5" ry="3" fill="#1a1a2e"/>
+  <ellipse cx="70.5" cy="47" rx="2" ry="2" fill="white"/>
+  <ellipse cx="75.5" cy="55" rx="1" ry="1" fill="white" opacity="0.6"/>
+
+  <!-- Blush -->
+  <ellipse cx="39" cy="60" rx="7" ry="4" fill="#F9A8D4" opacity="0.65"/>
+  <ellipse cx="81" cy="60" rx="7" ry="4" fill="#F9A8D4" opacity="0.65"/>
+
+  <!-- Mouth (smile) -->
+  <path d="M52 66 Q60 74 68 66" stroke="#E8968A" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Neck -->
+  <rect x="54" y="74" width="12" height="8" rx="2" fill="#FFDFC4"/>
+
+  <!-- Body -->
+  <path d="M36 84 Q33 78 40 76 Q50 73 60 73 Q70 73 80 76 Q87 78 84 84 L86 118 Q70 124 60 124 Q50 124 34 118 Z" fill="#7C3AED"/>
+
+  <!-- Collar detail -->
+  <path d="M53 73 L60 83 L67 73" fill="#A78BFA"/>
+
+  <!-- Left arm (raised/waving) -->
+  <path d="M36 87 Q24 82 18 90 Q14 97 18 102" stroke="#7C3AED" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <!-- Left hand -->
+  <circle cx="18" cy="104" r="7" fill="#FFDFC4"/>
+
+  <!-- Right arm (holding mic) -->
+  <path d="M84 87 Q94 87 100 94 Q104 100 102 106" stroke="#7C3AED" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <!-- Right hand -->
+  <circle cx="101" cy="108" r="7" fill="#FFDFC4"/>
+
+  <!-- Microphone handle -->
+  <rect x="98" y="100" width="6" height="16" rx="3" fill="#4B5563"/>
+  <!-- Microphone head -->
+  <ellipse cx="101" cy="98" rx="7" ry="8" fill="#9CA3AF"/>
+  <ellipse cx="101" cy="97" rx="5" ry="6" fill="#D1D5DB"/>
+  <!-- Mic shine -->
+  <ellipse cx="99" cy="94" rx="2" ry="2" fill="white" opacity="0.5"/>
+  <!-- Mic grille lines -->
+  <line x1="95" y1="97" x2="107" y2="97" stroke="#9CA3AF" stroke-width="0.8"/>
+  <line x1="95" y1="99" x2="107" y2="99" stroke="#9CA3AF" stroke-width="0.8"/>
+
+  <!-- Skirt -->
+  <path d="M34 110 Q60 130 86 110 L90 124 Q60 148 30 124 Z" fill="#A78BFA"/>
+  <!-- Skirt decoration -->
+  <path d="M34 110 Q60 122 86 110" stroke="#C4B5FD" stroke-width="1.5" fill="none"/>
+
+  <!-- Legs -->
+  <rect x="46" y="118" width="11" height="24" rx="5.5" fill="#FFDFC4"/>
+  <rect x="63" y="118" width="11" height="24" rx="5.5" fill="#FFDFC4"/>
+
+  <!-- Shoes -->
+  <ellipse cx="51.5" cy="143" rx="10" ry="5" fill="#1a1a2e"/>
+  <ellipse cx="68.5" cy="143" rx="10" ry="5" fill="#1a1a2e"/>
+  <!-- Shoe shine -->
+  <ellipse cx="48" cy="141" rx="3" ry="2" fill="#374151" opacity="0.5"/>
+  <ellipse cx="65" cy="141" rx="3" ry="2" fill="#374151" opacity="0.5"/>
+
+  <!-- Music notes -->
+  <text x="10" y="38" font-size="12" fill="#A78BFA" opacity="0.8">♪</text>
+  <text x="98" y="28" font-size="10" fill="#C4B5FD" opacity="0.7">♫</text>
+  <text x="5" y="60" font-size="8" fill="#C4B5FD" opacity="0.5">♩</text>
+</svg>
