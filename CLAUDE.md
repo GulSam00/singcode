@@ -76,12 +76,15 @@ See [apps/web/CLAUDE.md](apps/web/CLAUDE.md) for full detail. Key points:
 | `/green`    | 구현 코드 작성                           | 필수      |
 | `/refactor` | 코드 품질 개선 (동작 변경 X)             | 생략 가능 |
 | `/verify`   | build, lint, format, test 전체 검증      | **필수**  |
-| `/commit`   | 커밋 메시지 생성 및 커밋                 | **필수**  |
+| `/commit`        | 커밋 메시지 생성 및 커밋                 | **필수**  |
+| `/pr`            | PR 생성 및 Qodo AI 리뷰 요청            | 권장      |
+| `/check-review`  | Qodo 리뷰 코멘트 읽기 및 이슈 브리핑    | 권장      |
 
 ### 단축 사이클
 
 - 긴급 핫픽스: `/start` → `/spsc` → `/green` → `/verify` → `/commit`
 - `/red` ~ `/refactor` 는 상황에 따라 생략 가능하나, `/verify` → `/commit` 은 항상 실행한다.
+- PR 생성 후: `/pr` → `/review-brief` 로 리뷰 이슈를 확인한다.
 
 ## Git Conventions
 
