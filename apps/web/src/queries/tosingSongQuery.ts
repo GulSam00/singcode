@@ -8,8 +8,6 @@ import {
 } from '@/lib/api/tosing';
 import { ToSingSong } from '@/types/song';
 
-// let invalidateTimeout: NodeJS.Timeout | null = null;
-
 // 부를 노래 목록 가져오기
 export function useToSingSongQuery(isAuthenticated: boolean, guestToSingSongs: ToSingSong[]) {
   return useQuery({
@@ -55,10 +53,10 @@ export function useDeleteToSingSongMutation() {
   return useMutation({
     mutationFn: (songId: string) => deleteToSingSong({ songId }),
     onMutate: async (songId: string) => {
-      queryClient.cancelQueries({ queryKey: ['toSingSong'] });
+      await queryClient.cancelQueries({ queryKey: ['toSingSong'] });
       const prev = queryClient.getQueryData(['toSingSong']);
-      queryClient.setQueryData(['toSingSong'], (old: ToSingSong[]) => {
-        return old.filter(song => song.songs.id !== songId);
+      queryClient.setQueryData(['toSingSong'], (old: ToSingSong[] | undefined) => {
+        return (old ?? []).filter(song => song.songs.id !== songId);
       });
       return { prev };
     },
@@ -86,11 +84,14 @@ export function usePatchToSingSongMutation() {
       newWeight: number;
       newItems: ToSingSong[];
     }) => patchToSingSong({ songId, newWeight }),
-    onMutate: async ({ newItems }) => {
-      queryClient.cancelQueries({ queryKey: ['toSingSong'] });
+    onMutate: async ({ songId, newWeight, newItems }) => {
+      await queryClient.cancelQueries({ queryKey: ['toSingSong'] });
       const prev = queryClient.getQueryData(['toSingSong']);
-      // newItems으로 전체 쿼리 교체
-      queryClient.setQueryData(['toSingSong'], newItems);
+      // 이동된 항목의 order_weight를 newWeight로 반영해 stale 방지
+      const optimisticItems = newItems.map(item =>
+        item.songs.id === songId ? { ...item, order_weight: newWeight } : item,
+      );
+      queryClient.setQueryData(['toSingSong'], optimisticItems);
       return { prev };
     },
     onError: (error, variables, context) => {
