@@ -98,7 +98,7 @@ export const useToggleToSingMutation = (query: string, searchType: string) => {
       }
     },
     onMutate: async ({ songId, method }: SongProps) => {
-      queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
+      await queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
       const isToSing = method === 'POST';
 
@@ -150,7 +150,7 @@ export const useToggleLikeMutation = (query: string, searchType: string) => {
       }
     },
     onMutate: async ({ songId, method }: SongProps) => {
-      queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
+      await queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
       const isLike = method === 'POST';
       queryClient.setQueryData(
@@ -197,7 +197,7 @@ export const useSaveMutation = () => {
       return postSaveSong({ songId, folderName });
     },
     onMutate: async ({ songId, query, searchType }: FolderProps) => {
-      queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
+      await queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
       const prev = queryClient.getQueryData(['searchSong', query, searchType]);
 
       queryClient.setQueryData(
