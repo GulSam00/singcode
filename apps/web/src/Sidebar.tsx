@@ -2,7 +2,7 @@
 
 // import DisquietBadge from '@/components/DisquietBadge';
 import { useQueryClient } from '@tanstack/react-query';
-import { Check, LogOut, Menu, Pencil, User, X } from 'lucide-react';
+import { Check, LogOut, Menu, Pencil, ScrollText, User, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -56,6 +56,11 @@ export default function Sidebar() {
 
   const handleOpenTerm = () => {
     router.push('/privacy');
+    setIsOpenSidebar(false);
+  };
+
+  const handleOpenPatchNotes = () => {
+    router.push('/patch-notes');
     setIsOpenSidebar(false);
   };
 
@@ -132,7 +137,12 @@ export default function Sidebar() {
 
           <Separator />
 
-          <div className="space-y-2"></div>
+          <div className="space-y-2">
+            <Button variant="ghost" className="w-full justify-start" onClick={handleOpenPatchNotes}>
+              <ScrollText className="mr-2 h-4 w-4" />
+              패치노트
+            </Button>
+          </div>
         </div>
 
         <SheetFooter>
