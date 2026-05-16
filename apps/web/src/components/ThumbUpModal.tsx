@@ -44,7 +44,10 @@ export default function ThumbUpModal({
 
   const handleClickThumb = () => {
     patchSongThumb({ songId, point: value[0] });
-    patchSetPoint({ point: point - value[0] });
+    patchSetPoint({
+      amount: -value[0],
+      description: `노래 추천: ${title} - ${artist}`,
+    });
 
     setFooterAnimateKey('POPULAR');
 

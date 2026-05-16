@@ -11,9 +11,11 @@ import {
 import { MyReport } from '@/types/report';
 
 export const useReportSongMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: PostSongReportBody) => postSongReport(body),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myReports'] });
       toast.success('신고가 접수되었습니다.');
     },
     onError: error => {
