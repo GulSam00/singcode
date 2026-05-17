@@ -173,7 +173,7 @@ export default function Sidebar() {
             <div className="flex w-full flex-col items-center gap-2">
               <span className="text-xs">© 2025 singcode - Released under the MIT License.</span>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleOpenGithub}>
-                <Image src="/github_mark.svg" alt="github" width={32} height={32} />
+                <Image src="/vendors/github_mark.svg" alt="github" width={32} height={32} />
               </Button>
               <div>버전 {version}</div>
               <Button
