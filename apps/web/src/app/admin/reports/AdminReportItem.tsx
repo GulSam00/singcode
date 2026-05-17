@@ -1,11 +1,12 @@
 'use client';
 
-import { Trash2 } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 
 import ReportFieldCard from '@/components/ReportFieldCard';
 import { Button } from '@/components/ui/button';
 import {
-  MyReport,
+  AdminReport,
+  AdminReportAction,
   REPORT_CATEGORY_LABEL,
   REPORT_CATEGORY_TO_FIELD,
   REPORT_NO_DATA_LABEL,
@@ -18,19 +19,20 @@ import {
   formatReportDate,
 } from '@/utils/reportDisplay';
 
-interface ReportItemProps {
-  report: MyReport;
-  onDelete: (report: MyReport) => void;
+interface AdminReportItemProps {
+  report: AdminReport;
+  onAction: (report: AdminReport, action: AdminReportAction) => void;
   isDisabled?: boolean;
 }
 
-export default function ReportItem({ report, onDelete, isDisabled }: ReportItemProps) {
+export default function AdminReportItem({ report, onAction, isDisabled }: AdminReportItemProps) {
   const activeField = REPORT_CATEGORY_TO_FIELD[report.category];
   const newValue = report.suggested_value ?? REPORT_NO_DATA_LABEL;
+  const isPending = report.status === 'pending';
 
   return (
     <div className="border-border border-b py-3 last:border-0">
-      <div className="mb-2 flex items-center gap-2 pr-4">
+      <div className="mb-2 flex flex-wrap items-center gap-2 pr-2">
         <span
           className={cn(
             'rounded-full px-2 py-0.5 text-xs font-medium',
@@ -47,19 +49,10 @@ export default function ReportItem({ report, onDelete, isDisabled }: ReportItemP
         >
           {REPORT_CATEGORY_LABEL[report.category]}
         </span>
+        <span className="text-muted-foreground text-xs">{report.nickname}</span>
         <span className="text-muted-foreground ml-auto text-xs">
           {formatReportDate(report.created_at)}
         </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7"
-          onClick={() => onDelete(report)}
-          disabled={isDisabled}
-          aria-label="신고 삭제"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
       </div>
 
       <ReportFieldCard
@@ -72,6 +65,24 @@ export default function ReportItem({ report, onDelete, isDisabled }: ReportItemP
         activeField={activeField}
         newValue={newValue}
       />
+
+      {isPending && (
+        <div className="mt-2 flex justify-end gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onAction(report, 'reject')}
+            disabled={isDisabled}
+          >
+            <X className="mr-1 h-4 w-4" />
+            거부
+          </Button>
+          <Button size="sm" onClick={() => onAction(report, 'approve')} disabled={isDisabled}>
+            <Check className="mr-1 h-4 w-4" />
+            승인
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
