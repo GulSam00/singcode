@@ -45,7 +45,7 @@ export default function SongCommentSection({ songId, isExpanded }: SongCommentSe
     <div className="flex flex-col gap-3 pt-2">
       <span className="text-muted-foreground text-xs font-semibold">댓글</span>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 px-1">
         <Textarea
           placeholder={
             isAuthenticated ? '댓글을 입력하세요 (최대 100자)' : '로그인 후 댓글 작성 가능'

@@ -222,30 +222,35 @@ export default function SearchResultCard({
                     aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
                     onClick={onClickSave}
                   >
-                    {isSave ? <ListRestart className="h-5 w-5" /> : <ListPlus className="h-5 w-5" />}
+                    {isSave ? (
+                      <ListRestart className="h-5 w-5" />
+                    ) : (
+                      <ListPlus className="h-5 w-5" />
+                    )}
                     <span className="text-xs">{isSave ? '재생목록 수정' : '재생목록 추가'}</span>
                   </Button>
                 </div>
 
-                <Button
-                  variant="ghost"
-                  className="h-10 w-full justify-start gap-2"
-                  aria-label="오류 신고"
-                  onClick={handleClickReport}
-                >
-                  <Flag className="h-4 w-4" />
-                  <span className="text-xs">오류 신고</span>
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  className="h-10 w-full justify-start gap-2"
-                  aria-label="홍보하기"
-                  onClick={handleClickPromotion}
-                >
-                  <Megaphone className="h-4 w-4" />
-                  <span className="text-xs">홍보하기</span>
-                </Button>
+                <div className="flex w-full space-x-2">
+                  <Button
+                    variant="ghost"
+                    className="h-10 flex-1 justify-start gap-2"
+                    aria-label="홍보하기"
+                    onClick={handleClickPromotion}
+                  >
+                    <Megaphone className="h-4 w-4" />
+                    <span className="text-xs">홍보하기</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="h-10 flex-1 justify-start gap-2"
+                    aria-label="오류 신고"
+                    onClick={handleClickReport}
+                  >
+                    <Flag className="h-4 w-4" />
+                    <span className="text-xs">오류 신고</span>
+                  </Button>
+                </div>
               </div>
 
               <SongCommentSection songId={id} isExpanded={isExpanded} />
