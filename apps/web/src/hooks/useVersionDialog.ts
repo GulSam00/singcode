@@ -17,7 +17,7 @@ export default function useVersionDialog() {
       const { version } = await response.json();
       setVersion(version);
 
-      const changelogRes = await fetch('/changelog.json');
+      const changelogRes = await fetch('/data/changelog.json');
       const changelogs = await changelogRes.json();
 
       const localVersion = localStorage.getItem('version');

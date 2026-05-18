@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import changelog from '../../../public/changelog.json';
+import changelog from '../../../public/data/changelog.json';
 
 type ChangelogEntry = { title: string; date?: string; message: string[] };
 

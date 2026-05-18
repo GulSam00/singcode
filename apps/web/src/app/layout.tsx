@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     siteName: 'Singcode',
     images: [
       {
-        url: '/thumbnail.png',
+        url: '/brand/thumbnail.png',
         width: 1200,
         height: 630,
         alt: 'Singcode 썸네일 이미지',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Singcode - 노래방에서 부를 곡, 기억하지 말고 저장하세요',
     description: '노래방 갈 때마다 잊어버리는 곡번호? Singcode가 대신 기억할게요!',
-    images: ['/thumbnail.png'],
+    images: ['/brand/thumbnail.png'],
   },
   robots: {
     index: true,

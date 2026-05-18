@@ -191,61 +191,66 @@ export default function SearchResultCard({
               transition={{ duration: 0.2, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className="flex w-full space-x-2 pt-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`h-13 flex-1 flex-col items-center justify-center ${isToSing ? 'text-primary bg-primary/10' : ''}`}
-                  aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
-                  onClick={onToggleToSing}
-                >
-                  {isToSing ? <MinusCircle /> : <PlusCircle />}
-                  <span className="text-xs">{isToSing ? '부를곡 취소' : '부를곡 추가'}</span>
-                </Button>
+              <div className="flex flex-col gap-2 pt-2">
+                <div className="flex w-full space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`h-13 flex-1 flex-col items-center justify-center ${isToSing ? 'text-primary bg-primary/10' : ''}`}
+                    aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
+                    onClick={onToggleToSing}
+                  >
+                    {isToSing ? <MinusCircle /> : <PlusCircle />}
+                    <span className="text-xs">{isToSing ? '부를곡 취소' : '부를곡 추가'}</span>
+                  </Button>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`h-13 flex-1 flex-col items-center justify-center ${isLike ? 'text-yellow-500' : ''}`}
-                  aria-label={isLike ? '즐겨찾기 취소' : '즐겨찾기'}
-                  onClick={onToggleLike}
-                >
-                  <Star className={isLike ? 'fill-current' : ''} />
-                  <span className="text-xs">{isLike ? '즐겨찾기 취소' : '즐겨찾기'}</span>
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`h-13 flex-1 flex-col items-center justify-center ${isLike ? 'text-yellow-500' : ''}`}
+                    aria-label={isLike ? '즐겨찾기 취소' : '즐겨찾기'}
+                    onClick={onToggleLike}
+                  >
+                    <Star className={isLike ? 'fill-current' : ''} />
+                    <span className="text-xs">{isLike ? '즐겨찾기 취소' : '즐겨찾기'}</span>
+                  </Button>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`h-13 flex-1 flex-col items-center justify-center ${isSave ? 'text-primary bg-primary/10' : ''}`}
-                  aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
-                  onClick={onClickSave}
-                >
-                  {isSave ? <ListRestart className="h-5 w-5" /> : <ListPlus className="h-5 w-5" />}
-                  <span className="text-xs">{isSave ? '재생목록 수정' : '재생목록 추가'}</span>
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`h-13 flex-1 flex-col items-center justify-center ${isSave ? 'text-primary bg-primary/10' : ''}`}
+                    aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
+                    onClick={onClickSave}
+                  >
+                    {isSave ? (
+                      <ListRestart className="h-5 w-5" />
+                    ) : (
+                      <ListPlus className="h-5 w-5" />
+                    )}
+                    <span className="text-xs">{isSave ? '재생목록 수정' : '재생목록 추가'}</span>
+                  </Button>
+                </div>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-13 flex-1 flex-col items-center justify-center"
-                  aria-label="오류 신고"
-                  onClick={handleClickReport}
-                >
-                  <Flag className="h-5 w-5" />
-                  <span className="text-xs">오류 신고</span>
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-13 flex-1 flex-col items-center justify-center"
-                  aria-label="홍보하기"
-                  onClick={handleClickPromotion}
-                >
-                  <Megaphone className="h-5 w-5" />
-                  <span className="text-xs">홍보하기</span>
-                </Button>
+                <div className="flex w-full space-x-2">
+                  <Button
+                    variant="ghost"
+                    className="h-10 flex-1 justify-start gap-2"
+                    aria-label="홍보하기"
+                    onClick={handleClickPromotion}
+                  >
+                    <Megaphone className="h-4 w-4" />
+                    <span className="text-xs">홍보하기</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="h-10 flex-1 justify-start gap-2"
+                    aria-label="오류 신고"
+                    onClick={handleClickReport}
+                  >
+                    <Flag className="h-4 w-4" />
+                    <span className="text-xs">오류 신고</span>
+                  </Button>
+                </div>
               </div>
 
               <SongCommentSection songId={id} isExpanded={isExpanded} />
