@@ -27,7 +27,7 @@ function PointLogItem({ log }: { log: PointLog }) {
           {new Date(log.created_at).toLocaleString('ko-KR')}
         </span>
       </div>
-      <div className="flex flex-col items-end gap-0.5">
+      <div className="flex min-w-16 flex-col items-end gap-0.5">
         <span className={`text-sm font-bold ${amountClassName}`}>{amountLabel}P</span>
         <span className="text-muted-foreground text-xs">
           잔액 {log.balance_after.toLocaleString()}P

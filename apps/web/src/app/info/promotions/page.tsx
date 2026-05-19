@@ -77,7 +77,7 @@ function PromotionItem({
               <p className="text-muted-foreground/70 truncate text-xs">{artist_ko}</p>
             )}
           </div>
-          <p className="border-primary/60 bg-muted/40 text-foreground mt-2 rounded-md border-l-2 px-2.5 py-1.5 text-sm leading-relaxed whitespace-pre-line">
+          <p className="bg-muted/50 text-foreground mt-2 rounded-md px-3 py-2 text-sm leading-relaxed whitespace-pre-line">
             {promotion.content}
           </p>
         </div>
