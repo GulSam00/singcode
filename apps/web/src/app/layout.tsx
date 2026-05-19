@@ -107,7 +107,7 @@ export default function RootLayout({
         <Header />
         <div className="h-full p-4">{children}</div>
 
-        <div className="pointer-events-none fixed bottom-8 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-4 pb-2">
+        <div className="pointer-events-none fixed bottom-8 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-1 pb-1">
           <div className="pointer-events-auto">
             <PromotionBanner />
           </div>
