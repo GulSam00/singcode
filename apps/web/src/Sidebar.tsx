@@ -1,11 +1,12 @@
 'use client';
 
-import { Check, LogOut, Menu, Pencil, User, X } from 'lucide-react';
+// import DisquietBadge from '@/components/DisquietBadge';
+import { useQueryClient } from '@tanstack/react-query';
+import { Check, LogOut, Menu, Pencil, ScrollText, User, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-// import DisquietBadge from '@/components/DisquietBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -23,6 +24,7 @@ import useAuthStore from '@/stores/useAuthStore';
 export default function Sidebar() {
   // 목업 인증 상태
   const { user, isAuthenticated, logout, changeNickname } = useAuthStore();
+  const queryClient = useQueryClient();
 
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -53,10 +55,13 @@ export default function Sidebar() {
   };
 
   const handleOpenTerm = () => {
-    window.open(
-      'https://coding-sham.notion.site/Singcode-215286f3bd70802c8191d2a0344ecc1c',
-      '_blank',
-    );
+    router.push('/privacy');
+    setIsOpenSidebar(false);
+  };
+
+  const handleOpenPatchNotes = () => {
+    router.push('/patch-notes');
+    setIsOpenSidebar(false);
   };
 
   const handleLogin = () => {
@@ -67,6 +72,7 @@ export default function Sidebar() {
   const handleLogout = async () => {
     const result = await logout();
     if (result) {
+      queryClient.clear();
       window.location.reload();
     }
   };
@@ -131,7 +137,12 @@ export default function Sidebar() {
 
           <Separator />
 
-          <div className="space-y-2"></div>
+          <div className="space-y-2">
+            <Button variant="ghost" className="w-full justify-start" onClick={handleOpenPatchNotes}>
+              <ScrollText className="mr-2 h-4 w-4" />
+              패치노트
+            </Button>
+          </div>
         </div>
 
         <SheetFooter>
@@ -162,7 +173,7 @@ export default function Sidebar() {
             <div className="flex w-full flex-col items-center gap-2">
               <span className="text-xs">© 2025 singcode - Released under the MIT License.</span>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleOpenGithub}>
-                <Image src="/github_mark.svg" alt="github" width={32} height={32} />
+                <Image src="/vendors/github_mark.svg" alt="github" width={32} height={32} />
               </Button>
               <div>버전 {version}</div>
               <Button

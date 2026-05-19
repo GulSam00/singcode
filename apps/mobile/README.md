@@ -1,50 +1,34 @@
-# Welcome to your Expo app 👋
+# apps/mobile (DEPRECATED — Frozen)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> **이 워크스페이스는 동결되었습니다.** 활성 개발은 `apps/twa`에서 진행됩니다.
 
-## Get started
+## 동결 사유
 
-1. Install dependencies
+- 본 앱은 `singcode.kr`을 `react-native-webview`로 래핑한 wrapper 앱입니다 (PR #203).
+- [Google Play Minimum Functionality 정책](https://support.google.com/googleplay/android-developer/answer/9888379)상 단순 웹사이트 래퍼는 스토어 거절 위험이 큽니다.
+- 대안으로 **TWA (Trusted Web Activity)** 방식을 채택했습니다. TWA는 Expo/RN 코드와 무관하므로 본 워크스페이스를 동결합니다.
+- 미래에 PWA로 해결할 수 없는 네이티브 기능(생체 인증, 백그라운드 위치, 인앱 결제 등)이 필요해질 경우를 대비해 코드는 보존합니다.
 
-   ```bash
-   npm install
-   ```
+## 동결 상태
 
-2. Start the app
+- **Expo SDK**: 52
+- **React / React Native**: 18.3.1 / 0.76.7
+- **마지막 활성 PR**: [#203 — WebView로 singcode.kr 표시 구현](https://github.com/GulSam00/singcode/pull/203)
+- **동결 이슈**: #204
+- pnpm 워크스페이스에서 제외됨 (`pnpm-workspace.yaml`의 `'!apps/mobile'`)
+- `pnpm install`, `pnpm build`, `pnpm lint`, `pnpm check-types` 대상에서 자동 제외
 
-   ```bash
-    npx expo start
-   ```
+## 재활성화 절차
 
-In the output, you'll find options to open the app in a
+이 앱을 다시 활용해야 한다면:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+1. `pnpm-workspace.yaml`에서 `'!apps/mobile'` 한 줄 제거
+2. 레포 루트에서 `pnpm install` 실행
+3. `apps/mobile/`에서 `pnpm start` (또는 `pnpm android` / `pnpm ios`)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+> Expo SDK 52는 시간이 지나면서 deprecate됩니다. 재활성화 시점에는 SDK 업그레이드와 `package.json` 의존성 재정비가 선행되어야 할 수 있습니다.
 
-## Get a fresh project
+## 후속 작업
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- 신규 워크스페이스: `apps/twa` (별도 이슈로 진행)
+- `apps/web` PWA 셋업: manifest, Service Worker, `.well-known/assetlinks.json`

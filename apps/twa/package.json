@@ -1,0 +1,14 @@
+{
+  "name": "twa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Singcode TWA (Trusted Web Activity) Android build",
+  "scripts": {
+    "init": "bubblewrap init --manifest=https://singcode.kr/manifest.webmanifest",
+    "build": "bubblewrap build",
+    "update": "bubblewrap update"
+  },
+  "devDependencies": {
+    "@bubblewrap/cli": "^1.24.1"
+  }
+}

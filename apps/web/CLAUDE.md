@@ -143,7 +143,7 @@ refactor : useSearchSong 훅 분리 - 곡 모달 저장 분리
 - `src/utils/cn.ts` — `clsx` + `tailwind-merge` utility for className merging
 - `src/utils/isSuccessResponse.ts` — type guard for API responses
 - `src/utils/getErrorMessage.ts` — standardized error message extraction
-- shadcn/ui components are in `src/components/ui/` and should not be modified directly
+- shadcn/ui components are in `src/components/ui/` — 기능 변경은 금지하지만, 프로젝트 전역에 적용되는 사항(import 경로 통일, 프로젝트 컨벤션 맞춤 등)은 확인 후 수정 가능
 - `src/components/reactBits/` — custom animation components (AnimatedContent, SplitText, GradientText, Shuffle)
 - Global toast notifications use `sonner` (`<Toaster>` in layout)
 - Global modal dialog uses `useModalStore` + `<MessageDialog>` in layout

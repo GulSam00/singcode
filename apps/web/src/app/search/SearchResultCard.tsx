@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
+  Flag,
   ListPlus,
   ListRestart,
+  Megaphone,
   MinusCircle,
   PlusCircle,
   Star,
@@ -12,6 +14,9 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import MarqueeText from '@/components/MarqueeText';
+import ReportSongModal from '@/components/ReportSongModal';
+import SongCommentSection from '@/components/SongCommentSection';
+import SongPromotionModal from '@/components/SongPromotionModal';
 import ThumbUpModal from '@/components/ThumbUpModal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -28,7 +33,6 @@ interface IProps {
   onToggleToSing: () => void;
   onToggleLike: () => void;
   onClickSave: () => void;
-  onClickArtist: () => void;
 }
 
 export default function SearchResultCard({
@@ -40,22 +44,46 @@ export default function SearchResultCard({
   onToggleToSing,
   onToggleLike,
   onClickSave,
-  onClickArtist,
 }: IProps) {
   const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, thumb } = song;
+  const hasKoTitle = !!title_ko && title_ko !== title;
+  const hasKoArtist = !!artist_ko && artist_ko !== artist;
+  const displayTitle = hasKoTitle ? title_ko : title;
+  const displayArtist = hasKoArtist ? artist_ko : artist;
 
   const { isAuthenticated } = useAuthStore();
 
   const [open, setOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [promotionOpen, setPromotionOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleClickThumbsUp = () => {
+  const withAuth = (message: string, action: () => void) => () => {
     if (!isAuthenticated) {
-      toast.error('로그인하고 곡 추천 기능을 사용해보세요!');
+      toast.error(message);
       return;
     }
-    setOpen(true);
+    action();
   };
+
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(`클립보드 복사`);
+    } catch {
+      toast.error('복사에 실패했습니다.');
+    }
+  };
+
+  const handleClickThumbsUp = withAuth('로그인하고 곡 추천 기능을 사용해보세요!', () =>
+    setOpen(true),
+  );
+  const handleClickReport = withAuth('로그인하고 오류 신고에 참여해주세요!', () =>
+    setReportOpen(true),
+  );
+  const handleClickPromotion = withAuth('로그인하고 곡 홍보 기능을 사용해보세요!', () =>
+    setPromotionOpen(true),
+  );
 
   return (
     <Card className="w-full overflow-hidden p-4">
@@ -66,18 +94,33 @@ export default function SearchResultCard({
           {/* 제목 및 가수 */}
           <div className="flex justify-between">
             <div className="flex w-[calc(100%-40px)] flex-col gap-0.5 truncate">
-              <MarqueeText className="text-base font-medium">{title}</MarqueeText>
-              {title_ko && title_ko !== title && (
-                <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
+              <MarqueeText
+                className="hover:text-accent cursor-pointer text-base font-medium hover:underline hover:underline-offset-4"
+                onClick={() => handleCopy(displayTitle)}
+              >
+                {displayTitle}
+              </MarqueeText>
+              {hasKoTitle && (
+                <MarqueeText
+                  className="text-muted-foreground hover:text-accent cursor-pointer text-xs hover:underline hover:underline-offset-4"
+                  onClick={() => handleCopy(title)}
+                >
+                  {title}
+                </MarqueeText>
               )}
               <MarqueeText
                 className="text-muted-foreground hover:text-accent mt-0.5 cursor-pointer text-sm hover:underline hover:underline-offset-4"
-                onClick={onClickArtist}
+                onClick={() => handleCopy(displayArtist)}
               >
-                {artist}
+                {displayArtist}
               </MarqueeText>
-              {artist_ko && artist_ko !== artist && (
-                <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+              {hasKoArtist && (
+                <MarqueeText
+                  className="text-muted-foreground/70 hover:text-accent cursor-pointer text-xs hover:underline hover:underline-offset-4"
+                  onClick={() => handleCopy(artist)}
+                >
+                  {artist}
+                </MarqueeText>
               )}
             </div>
 
@@ -148,43 +191,100 @@ export default function SearchResultCard({
               transition={{ duration: 0.2, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className="flex w-full space-x-2 pt-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`h-13 flex-1 flex-col items-center justify-center ${isToSing ? 'text-primary bg-primary/10' : ''}`}
-                  aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
-                  onClick={onToggleToSing}
-                >
-                  {isToSing ? <MinusCircle /> : <PlusCircle />}
-                  <span className="text-xs">{isToSing ? '부를곡 취소' : '부를곡 추가'}</span>
-                </Button>
+              <div className="flex flex-col gap-2 pt-2">
+                <div className="flex w-full space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`h-13 flex-1 flex-col items-center justify-center ${isToSing ? 'text-primary bg-primary/10' : ''}`}
+                    aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
+                    onClick={onToggleToSing}
+                  >
+                    {isToSing ? <MinusCircle /> : <PlusCircle />}
+                    <span className="text-xs">{isToSing ? '부를곡 취소' : '부를곡 추가'}</span>
+                  </Button>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`h-13 flex-1 flex-col items-center justify-center`}
-                  aria-label={isLike ? '즐겨찾기 취소' : '즐겨찾기'}
-                  onClick={onToggleLike}
-                >
-                  <Star className={`${isLike ? 'fill-current text-yellow-500' : ''}`} />
-                  <span className="text-xs">{isLike ? '즐겨찾기 취소' : '즐겨찾기'}</span>
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`h-13 flex-1 flex-col items-center justify-center ${isLike ? 'text-yellow-500' : ''}`}
+                    aria-label={isLike ? '즐겨찾기 취소' : '즐겨찾기'}
+                    onClick={onToggleLike}
+                  >
+                    <Star className={isLike ? 'fill-current' : ''} />
+                    <span className="text-xs">{isLike ? '즐겨찾기 취소' : '즐겨찾기'}</span>
+                  </Button>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`h-13 flex-1 flex-col items-center justify-center ${isSave ? 'text-primary bg-primary/10' : ''}`}
-                  aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
-                  onClick={onClickSave}
-                >
-                  {isSave ? <ListRestart className="h-5 w-5" /> : <ListPlus className="h-5 w-5" />}
-                  <span className="text-xs">{isSave ? '재생목록 수정' : '재생목록 추가'}</span>
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`h-13 flex-1 flex-col items-center justify-center ${isSave ? 'text-primary bg-primary/10' : ''}`}
+                    aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
+                    onClick={onClickSave}
+                  >
+                    {isSave ? (
+                      <ListRestart className="h-5 w-5" />
+                    ) : (
+                      <ListPlus className="h-5 w-5" />
+                    )}
+                    <span className="text-xs">{isSave ? '재생목록 수정' : '재생목록 추가'}</span>
+                  </Button>
+                </div>
+
+                <div className="flex w-full space-x-2">
+                  <Button
+                    variant="ghost"
+                    className="h-10 flex-1 justify-start gap-2"
+                    aria-label="홍보하기"
+                    onClick={handleClickPromotion}
+                  >
+                    <Megaphone className="h-4 w-4" />
+                    <span className="text-xs">홍보하기</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="h-10 flex-1 justify-start gap-2"
+                    aria-label="오류 신고"
+                    onClick={handleClickReport}
+                  >
+                    <Flag className="h-4 w-4" />
+                    <span className="text-xs">오류 신고</span>
+                  </Button>
+                </div>
               </div>
+
+              <SongCommentSection songId={id} isExpanded={isExpanded} />
             </motion.div>
           )}
         </AnimatePresence>
+
+        <Dialog open={promotionOpen} onOpenChange={setPromotionOpen}>
+          <DialogContent>
+            <SongPromotionModal
+              songId={id}
+              title={title}
+              artist={artist}
+              title_ko={title_ko ?? null}
+              artist_ko={artist_ko ?? null}
+              handleClose={() => setPromotionOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={reportOpen} onOpenChange={setReportOpen}>
+          <DialogContent>
+            <ReportSongModal
+              songId={id}
+              title={title}
+              artist={artist}
+              title_ko={title_ko}
+              artist_ko={artist_ko}
+              num_tj={num_tj}
+              num_ky={num_ky}
+              handleClose={() => setReportOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </Card>
   );

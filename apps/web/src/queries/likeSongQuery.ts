@@ -26,10 +26,10 @@ export function useDeleteLikeSongArrayMutation() {
     mutationFn: (songIds: string[]) => deleteLikeSongArray({ songIds }),
 
     onMutate: async (songIds: string[]) => {
-      queryClient.cancelQueries({ queryKey: ['likeSong'] });
+      await queryClient.cancelQueries({ queryKey: ['likeSong'] });
       const prev = queryClient.getQueryData(['likeSong']);
-      queryClient.setQueryData(['likeSong'], (old: PersonalSong[]) =>
-        old.filter(song => !songIds.includes(song.song_id)),
+      queryClient.setQueryData(['likeSong'], (old: PersonalSong[] | undefined) =>
+        (old ?? []).filter(song => !songIds.includes(song.song_id)),
       );
       return { prev };
     },

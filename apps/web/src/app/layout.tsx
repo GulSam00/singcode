@@ -10,6 +10,8 @@ import Footer from '@/Footer';
 import Header from '@/Header';
 import AuthProvider from '@/auth';
 import MessageDialog from '@/components/MessageDialog';
+import PWARegister from '@/components/PWARegister';
+import PromotionBanner from '@/components/PromotionBanner';
 import '@/globals.css';
 // import { PostHogProvider } from '@/posthog';
 import QueryProvider from '@/query';
@@ -27,7 +29,7 @@ export const metadata: Metadata = {
     siteName: 'Singcode',
     images: [
       {
-        url: '/thumbnail.png',
+        url: '/brand/thumbnail.png',
         width: 1200,
         height: 630,
         alt: 'Singcode 썸네일 이미지',
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Singcode - 노래방에서 부를 곡, 기억하지 말고 저장하세요',
     description: '노래방 갈 때마다 잊어버리는 곡번호? Singcode가 대신 기억할게요!',
-    images: ['/thumbnail.png'],
+    images: ['/brand/thumbnail.png'],
   },
   robots: {
     index: true,
@@ -105,6 +107,12 @@ export default function RootLayout({
         <Header />
         <div className="h-full p-4">{children}</div>
 
+        <div className="pointer-events-none fixed bottom-8 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-4 pb-2">
+          <div className="pointer-events-auto">
+            <PromotionBanner />
+          </div>
+        </div>
+
         <Footer />
       </div>
 
@@ -120,6 +128,7 @@ export default function RootLayout({
 
       <MessageDialog />
       <MonitoringComponent />
+      <PWARegister />
     </ErrorWrapper>
   );
 

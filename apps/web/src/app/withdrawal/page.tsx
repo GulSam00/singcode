@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -18,6 +19,7 @@ export default function WithdrawalPage() {
 
   const { logout } = useAuthStore();
   const { openMessage } = useModalStore();
+  const queryClient = useQueryClient();
 
   const deleteUser = async () => {
     const { data } = await axios.delete('/api/user');
@@ -32,6 +34,7 @@ export default function WithdrawalPage() {
 
     if (isSuccess) {
       logout();
+      queryClient.clear();
       router.push('/');
       openMessage({
         title: '회원 탈퇴 성공',

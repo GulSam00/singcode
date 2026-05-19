@@ -7,23 +7,21 @@ import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 export async function PATCH(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
     const supabase = await createClient();
-    const { point } = await request.json();
+    const { amount, description } = await request.json();
 
     const userId = await getAuthenticatedUser(supabase);
 
-    const { error: cosumeError } = await supabase
-      .from('users')
-      .update({ point: point })
-      .eq('id', userId);
+    const { error } = await supabase.rpc('record_point_change', {
+      p_user_id: userId,
+      p_amount: amount,
+      p_description: description,
+    });
 
-    if (cosumeError) throw cosumeError;
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in like API:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to post like song' },
-      { status: 500 },
-    );
+    console.error('Error in point API:', error);
+    return NextResponse.json({ success: false, error: 'Failed to update point' }, { status: 500 });
   }
 }

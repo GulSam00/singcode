@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleDollarSign, Folder, Star } from 'lucide-react';
+import { CircleDollarSign, Flag, Folder, History, Megaphone, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import CountUp from '@/components/reactBits/CountUp';
@@ -21,6 +21,24 @@ const menuItems = [
     title: '재생목록 관리',
     description: '재생목록을 관리합니다',
     icon: <Folder className="h-5 w-5" />,
+  },
+  {
+    id: 'promotions',
+    title: '홍보 신청 관리',
+    description: '홍보 신청한 곡을 확인하거나 취소합니다',
+    icon: <Megaphone className="h-5 w-5" />,
+  },
+  {
+    id: 'point-logs',
+    title: '포인트 내역',
+    description: '포인트 획득/사용 내역을 확인합니다',
+    icon: <History className="h-5 w-5" />,
+  },
+  {
+    id: 'reports',
+    title: '내 신고 내역',
+    description: '내가 신고한 곡 오류를 확인하고 삭제합니다',
+    icon: <Flag className="h-5 w-5" />,
   },
 ];
 
