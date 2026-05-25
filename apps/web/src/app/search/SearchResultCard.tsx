@@ -143,6 +143,8 @@ export default function SearchResultCard({
                   songId={id}
                   title={title}
                   artist={artist}
+                  title_ko={title_ko}
+                  artist_ko={artist_ko}
                   thumb={thumb || 0}
                   handleClose={() => setOpen(false)}
                 />

@@ -111,7 +111,13 @@ export default function FolderCard({
                         <Music className="text-muted-foreground h-4 w-4 shrink-0" />
                         <div>
                           <p className="text-sm font-medium">{song.title}</p>
+                          {song.title_ko && song.title_ko !== song.title && (
+                            <p className="text-muted-foreground text-xs">{song.title_ko}</p>
+                          )}
                           <p className="text-muted-foreground text-xs">{song.artist}</p>
+                          {song.artist_ko && song.artist_ko !== song.artist && (
+                            <p className="text-muted-foreground/70 text-xs">{song.artist_ko}</p>
+                          )}
                         </div>
                       </div>
                     </div>
