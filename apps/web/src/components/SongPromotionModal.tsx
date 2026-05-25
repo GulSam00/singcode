@@ -139,9 +139,7 @@ export default function SongPromotionModal({
     <div className="flex flex-col gap-4 sm:max-w-md">
       <DialogHeader>
         <DialogTitle>곡 홍보하기</DialogTitle>
-        <DialogDescription>
-          하루 50P를 소모해 검색 페이지 전광판에 곡을 홍보하세요.
-        </DialogDescription>
+        <DialogDescription>하루 단위로 전광판에 곡을 홍보할 수 있어요.</DialogDescription>
       </DialogHeader>
 
       <div className="text-muted-foreground flex flex-col gap-0.5 rounded-md border p-3 text-sm">
