@@ -38,6 +38,8 @@ export async function GET(): Promise<NextResponse<ApiResponse<SaveSong[]>>> {
       updated_at: item.updated_at,
       title: item.songs.title,
       artist: item.songs.artist,
+      title_ko: item.songs.title_ko,
+      artist_ko: item.songs.artist_ko,
       num_tj: item.songs.num_tj,
       num_ky: item.songs.num_ky,
     }));

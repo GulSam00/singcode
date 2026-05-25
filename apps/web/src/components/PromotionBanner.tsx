@@ -86,7 +86,7 @@ export default function PromotionBanner() {
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="h-24 overflow-hidden">
+            <div className="h-32 overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={current.id}
@@ -97,20 +97,20 @@ export default function PromotionBanner() {
                   className="flex flex-col gap-2"
                 >
                   <div className="flex flex-col gap-0.5">
-                    <div className="flex items-baseline gap-1.5 truncate">
+                    <div className="flex flex-col">
                       <span className="truncate text-sm font-semibold">{current.title}</span>
                       {hasKoTitle && (
-                        <span className="text-muted-foreground shrink-0 truncate text-xs">
+                        <span className="text-muted-foreground truncate text-xs">
                           {current.title_ko}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-baseline gap-1.5 truncate">
+                    <div className="flex flex-col">
                       <span className="text-muted-foreground truncate text-sm">
                         {current.artist}
                       </span>
                       {hasKoArtist && (
-                        <span className="text-muted-foreground/70 shrink-0 truncate text-xs">
+                        <span className="text-muted-foreground/70 truncate text-xs">
                           {current.artist_ko}
                         </span>
                       )}

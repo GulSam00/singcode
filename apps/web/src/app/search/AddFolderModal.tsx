@@ -46,7 +46,7 @@ export default function AddFolderModal({
   const [folderName, setFolderName] = useState<string>('');
   const [isExistingPlaylist, setIsExistingPlaylist] = useState(false);
 
-  const { id: songId, title, artist } = song;
+  const { id: songId, title, artist, title_ko, artist_ko } = song;
 
   const LOGIC_TEXT = modalType === 'POST' ? '저장' : '수정';
 
@@ -114,7 +114,13 @@ export default function AddFolderModal({
         {/* 곡 정보 */}
         <div className="bg-muted mb-4 rounded-md p-3">
           <MarqueeText className="text-base font-medium">{title}</MarqueeText>
+          {title_ko && title_ko !== title && (
+            <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
+          )}
           <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
+          {artist_ko && artist_ko !== artist && (
+            <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+          )}
         </div>
 
         <div className="w-full space-y-4 py-2">

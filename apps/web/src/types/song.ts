@@ -1,3 +1,5 @@
+export type SearchType = 'all' | 'title' | 'artist' | 'number';
+
 export interface Song {
   id: string;
   title: string;

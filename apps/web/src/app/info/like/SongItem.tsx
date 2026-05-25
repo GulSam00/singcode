@@ -22,7 +22,13 @@ export default function SongItem({
       />
       <div className="min-w-0 flex-1">
         <MarqueeText className="text-sm font-medium">{song.title}</MarqueeText>
+        {song.title_ko && song.title_ko !== song.title && (
+          <MarqueeText className="text-muted-foreground text-xs">{song.title_ko}</MarqueeText>
+        )}
         <MarqueeText className="text-muted-foreground text-xs">{song.artist}</MarqueeText>
+        {song.artist_ko && song.artist_ko !== song.artist && (
+          <MarqueeText className="text-muted-foreground/70 text-xs">{song.artist_ko}</MarqueeText>
+        )}
       </div>
     </div>
   );
