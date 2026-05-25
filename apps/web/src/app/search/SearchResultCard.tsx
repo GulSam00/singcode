@@ -261,7 +261,7 @@ export default function SearchResultCard({
         </AnimatePresence>
 
         <Dialog open={promotionOpen} onOpenChange={setPromotionOpen}>
-          <DialogContent>
+          <DialogContent className="h-[600px] max-h-[calc(100dvh-2rem)] overflow-y-auto">
             <SongPromotionModal
               songId={id}
               title={title}
