@@ -143,6 +143,8 @@ export default function SearchResultCard({
                   songId={id}
                   title={title}
                   artist={artist}
+                  title_ko={title_ko}
+                  artist_ko={artist_ko}
                   thumb={thumb || 0}
                   handleClose={() => setOpen(false)}
                 />
@@ -259,7 +261,7 @@ export default function SearchResultCard({
         </AnimatePresence>
 
         <Dialog open={promotionOpen} onOpenChange={setPromotionOpen}>
-          <DialogContent>
+          <DialogContent className="h-[600px] max-h-[calc(100dvh-2rem)] overflow-y-auto">
             <SongPromotionModal
               songId={id}
               title={title}

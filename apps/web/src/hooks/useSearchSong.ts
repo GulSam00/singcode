@@ -12,10 +12,8 @@ import useFooterAnimateStore from '@/stores/useFooterAnimateStore';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import useSearchHistoryStore from '@/stores/useSearchHistoryStore';
 import { Method } from '@/types/common';
-import { Song } from '@/types/song';
+import { SearchType, Song } from '@/types/song';
 import { getAutoCompleteSuggestions } from '@/utils/getArtistAlias';
-
-type SearchType = 'all' | 'title' | 'artist';
 
 export default function useSearchSong() {
   const { isAuthenticated } = useAuthStore();

@@ -14,6 +14,8 @@ interface RankingItemProps {
   rank: number;
   title: string;
   artist: string;
+  title_ko?: string;
+  artist_ko?: string;
   num_tj: string;
   num_ky: string;
   value: number;
@@ -25,6 +27,8 @@ export default function RankingItem({
   rank,
   title,
   artist,
+  title_ko,
+  artist_ko,
   num_tj,
   num_ky,
   value,
@@ -68,7 +72,13 @@ export default function RankingItem({
       <div className="flex w-full justify-between gap-2">
         <div className="w-[100px] shrink-0">
           <MarqueeText className="text-sm font-medium">{title}</MarqueeText>
+          {title_ko && title_ko !== title && (
+            <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
+          )}
           <MarqueeText className="text-muted-foreground text-xs">{artist}</MarqueeText>
+          {artist_ko && artist_ko !== artist && (
+            <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+          )}
         </div>
 
         <div>
@@ -82,7 +92,7 @@ export default function RankingItem({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex gap-2">
           <Dialog open={open} onOpenChange={setOpen}>
             <Button
               variant="ghost"
@@ -102,6 +112,8 @@ export default function RankingItem({
                 songId={id}
                 title={title}
                 artist={artist}
+                title_ko={title_ko}
+                artist_ko={artist_ko}
                 thumb={value}
                 handleClose={() => setOpen(false)}
               />

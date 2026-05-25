@@ -20,6 +20,8 @@ interface ThumbUpModalProps {
   songId: string;
   title: string;
   artist: string;
+  title_ko?: string;
+  artist_ko?: string;
   thumb: number;
   handleClose: () => void;
 }
@@ -28,6 +30,8 @@ export default function ThumbUpModal({
   songId,
   title,
   artist,
+  title_ko,
+  artist_ko,
   thumb,
   handleClose,
 }: ThumbUpModalProps) {
@@ -118,7 +122,13 @@ export default function ThumbUpModal({
           <FallingIcons count={value[0]} />
           <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center px-4 text-center opacity-50">
             <div className="text-lg font-bold">{title}</div>
+            {title_ko && title_ko !== title && (
+              <div className="text-muted-foreground text-sm">{title_ko}</div>
+            )}
             <div className="text-muted-foreground text-sm">{artist}</div>
+            {artist_ko && artist_ko !== artist && (
+              <div className="text-muted-foreground/70 text-xs">{artist_ko}</div>
+            )}
           </div>
         </div>
 
