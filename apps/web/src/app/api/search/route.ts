@@ -24,7 +24,18 @@ interface DBSong extends Song {
 
 function applyExactFilter(baseQuery: any, type: string, searchText: string) {
   if (type === 'all') {
-    return baseQuery.or(`title.ilike.${searchText},artist.ilike.${searchText}`);
+    return baseQuery.or(
+      `title.ilike.${searchText},title_ko.ilike.${searchText},artist.ilike.${searchText},artist_ko.ilike.${searchText}`,
+    );
+  }
+  if (type === 'title') {
+    return baseQuery.or(`title.ilike.${searchText},title_ko.ilike.${searchText}`);
+  }
+  if (type === 'artist') {
+    return baseQuery.or(`artist.ilike.${searchText},artist_ko.ilike.${searchText}`);
+  }
+  if (type === 'number') {
+    return baseQuery.or(`num_tj.eq.${searchText},num_ky.eq.${searchText}`);
   }
   return baseQuery.ilike(type, searchText);
 }
@@ -32,9 +43,25 @@ function applyExactFilter(baseQuery: any, type: string, searchText: string) {
 function applyPartialFilter(baseQuery: any, type: string, searchText: string) {
   if (type === 'all') {
     return baseQuery
-      .or(`title.ilike.%${searchText}%,artist.ilike.%${searchText}%`)
+      .or(
+        `title.ilike.%${searchText}%,title_ko.ilike.%${searchText}%,artist.ilike.%${searchText}%,artist_ko.ilike.%${searchText}%`,
+      )
       .not('title', 'ilike', searchText)
-      .not('artist', 'ilike', searchText);
+      .not('title_ko', 'ilike', searchText)
+      .not('artist', 'ilike', searchText)
+      .not('artist_ko', 'ilike', searchText);
+  }
+  if (type === 'title') {
+    return baseQuery
+      .or(`title.ilike.%${searchText}%,title_ko.ilike.%${searchText}%`)
+      .not('title', 'ilike', searchText)
+      .not('title_ko', 'ilike', searchText);
+  }
+  if (type === 'artist') {
+    return baseQuery
+      .or(`artist.ilike.%${searchText}%,artist_ko.ilike.%${searchText}%`)
+      .not('artist', 'ilike', searchText)
+      .not('artist_ko', 'ilike', searchText);
   }
   return baseQuery.ilike(type, `%${searchText}%`).not(type, 'ilike', searchText);
 }
@@ -49,6 +76,26 @@ async function executeSearchQueries(
   to: number,
 ): Promise<{ data: DBSong[]; hasNext: boolean } | { error: string }> {
   const size = to - from + 1;
+
+  // 번호 검색은 정확 매칭만 지원 (부분 일치 단계 스킵)
+  if (type === 'number') {
+    const exactCountResult = await applyExactFilter(
+      supabase.from('songs').select(selectClause, { count: 'exact', head: true }),
+      type,
+      query,
+    );
+    if (exactCountResult.error) return { error: exactCountResult.error.message };
+    const exactTotal = exactCountResult.count ?? 0;
+
+    const exactQuery = applyExactFilter(supabase.from('songs').select(selectClause), type, query);
+    const { data, error } = await exactQuery.order(order).range(from, to);
+    if (error) return { error: error.message };
+
+    return {
+      data: (data as DBSong[]) ?? [],
+      hasNext: exactTotal > to + 1,
+    };
+  }
 
   // 1. 정확 일치 / 부분 일치 각각의 총 개수를 병렬로 조회
   const exactCountQuery = applyExactFilter(
@@ -134,7 +181,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
     const type = searchParams.get('type') || 'title';
-    const order = type === 'all' ? 'title' : type;
+    const order = type === 'all' ? 'title' : type === 'number' ? 'num_tj' : type;
     const authenticated = searchParams.get('authenticated') === 'true';
 
     const page = parseInt(searchParams.get('page') || '0', 10);

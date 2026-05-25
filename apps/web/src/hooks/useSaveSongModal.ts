@@ -6,10 +6,9 @@ import { useSaveMutation } from '@/queries/searchSongQuery';
 import useAuthStore from '@/stores/useAuthStore';
 import useFooterAnimateStore from '@/stores/useFooterAnimateStore';
 import { Method } from '@/types/common';
-import { SearchSong } from '@/types/song';
+import { SearchSong, SearchType } from '@/types/song';
 
 type SaveModalType = '' | 'POST' | 'PATCH';
-type SearchType = 'all' | 'title' | 'artist';
 
 export default function useSaveSongModal(query: string, queryType: SearchType) {
   const { isAuthenticated } = useAuthStore();

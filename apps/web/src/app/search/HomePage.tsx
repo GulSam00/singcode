@@ -120,6 +120,8 @@ export default function SearchPage() {
         return '노래 제목 검색';
       case 'artist':
         return '가수 이름 검색';
+      case 'number':
+        return '노래방 번호 검색 (TJ/KY)';
       default:
         return '전체 키워드 검색';
     }
@@ -169,12 +171,13 @@ export default function SearchPage() {
         </div>
 
         <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>
-          <TabsList className="dark:bg-muted/50 grid w-full grid-cols-3 dark:border">
+          <TabsList className="dark:bg-muted/50 grid w-full grid-cols-4 dark:border">
             {(
               [
                 ['all', '전체'],
                 ['title', '제목'],
                 ['artist', '가수'],
+                ['number', '번호'],
               ] as const
             ).map(([value, label]) => (
               <TabsTrigger
