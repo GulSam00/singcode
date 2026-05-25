@@ -1,3 +1,4 @@
+import { subDays } from 'date-fns';
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
@@ -11,7 +12,13 @@ interface SearchLogCount {
 export async function GET(): Promise<NextResponse<ApiResponse<SearchLogCount[]>>> {
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase.from('search_logs').select('text');
+
+    // 최근 15일간의 검색 로그만 집계
+    const fifteenDaysAgo = subDays(new Date(), 15).toISOString();
+    const { data, error } = await supabase
+      .from('search_logs')
+      .select('text')
+      .gte('created_at', fifteenDaysAgo);
 
     if (error) throw error;
 
