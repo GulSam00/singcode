@@ -43,7 +43,7 @@ export default function SongPromotionModal({
 
   const days = range?.from ? differenceInCalendarDays(range.to ?? range.from, range.from) + 1 : 0;
 
-  const cost = days * 50;
+  const cost = days * 15;
   const canAfford = point >= cost;
   const canSubmit = days > 0 && content.trim().length > 0 && canAfford;
 
@@ -139,7 +139,7 @@ export default function SongPromotionModal({
     <div className="flex flex-col gap-4 sm:max-w-md">
       <DialogHeader>
         <DialogTitle>곡 홍보하기</DialogTitle>
-        <DialogDescription>하루 단위로 전광판에 곡을 홍보할 수 있어요.</DialogDescription>
+        <DialogDescription>하루 15P로 전광판에 곡을 홍보할 수 있어요.</DialogDescription>
       </DialogHeader>
 
       <div className="text-muted-foreground flex flex-col gap-0.5 rounded-md border p-3 text-sm">
