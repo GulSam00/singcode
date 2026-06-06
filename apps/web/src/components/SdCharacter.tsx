@@ -1,11 +1,11 @@
 import Image, { type StaticImageData } from 'next/image';
 
-import pina1 from '../../public/characters/pina1.png';
-import pina2 from '../../public/characters/pina2.png';
-import pina3 from '../../public/characters/pina3.png';
-import pina4 from '../../public/characters/pina4.png';
-import pina5 from '../../public/characters/pina5.png';
-import pina6 from '../../public/characters/pina6.png';
+import pina1 from '../../public/characters/pina1.webp';
+import pina2 from '../../public/characters/pina2.webp';
+import pina3 from '../../public/characters/pina3.webp';
+import pina4 from '../../public/characters/pina4.webp';
+import pina5 from '../../public/characters/pina5.webp';
+import pina6 from '../../public/characters/pina6.webp';
 
 export type SdCharacterVariant = 'default' | 'greeting' | 'focus' | 'joy' | 'curious' | 'sad';
 
