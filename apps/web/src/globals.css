@@ -180,3 +180,42 @@ button {
   white-space: nowrap;
   animation: marquee 10s linear infinite;
 }
+
+/* 캐릭터 애니메이션 */
+@keyframes character-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes character-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+.animate-character-bounce {
+  animation: character-bounce 1s ease-in-out infinite;
+}
+
+.animate-character-shake {
+  animation: character-shake 0.3s ease-in-out 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-character-bounce,
+  .animate-character-shake {
+    animation: none;
+  }
+}

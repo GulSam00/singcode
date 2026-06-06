@@ -1,10 +1,9 @@
 'use client';
 
-import { Loader2, Search, SearchX } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import SdCharacter from '@/components/SdCharacter';
 import { Button } from '@/components/ui/button';
 // import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -22,6 +21,7 @@ import PopularSearchHistory from './PopularSearchHistory';
 import SearchAutocomplete from './SearchAutocomplete';
 import SearchHistory from './SearchHistory';
 import SearchResultCard from './SearchResultCard';
+import SearchStatus from './SearchStatus';
 
 export default function SearchPage() {
   const {
@@ -239,35 +239,14 @@ export default function SearchPage() {
             )}
           </div>
         )}
-        {isPendingSearch && (
-          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin" />
-            <p className="m-2">검색 중입니다...</p>
-          </div>
-        )}
+        {isPendingSearch && <SearchStatus status="loading" />}
 
-        {!isPendingSearch && searchSongs.length === 0 && query && (
-          <div className="text-muted-foreground flex flex-col items-center justify-center py-6">
-            <SdCharacter variant="sad" size={100} className="mb-2" />
-            <SearchX className="h-6 w-6 opacity-40" />
-            <p className="m-2 text-sm">검색 결과가 없습니다.</p>
-          </div>
-        )}
-
-        {/* {searchSongs.length === 0 && !query && (
-          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <Search className="h-8 w-8 opacity-50" />
-            <p className="m-2">노래 제목이나 가수를 검색해보세요</p>
-          </div>
-        )} */}
+        {!isPendingSearch && searchSongs.length === 0 && query && <SearchStatus status="empty" />}
 
         {searchSongs.length === 0 && !query && (
           <div className="flex h-full flex-col justify-center gap-2">
             <SearchHistory onHistoryClick={handleHistoryClick} />
             <PopularSearchHistory onHistoryClick={handleHistoryClick} />
-            <div className="flex justify-center pt-4">
-              <SdCharacter variant="default" size={110} />
-            </div>
           </div>
         )}
       </div>
