@@ -101,7 +101,9 @@ export default function SearchPage() {
   };
 
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    const value = e.target.value;
+    if (searchType === 'number' && value.length > 5) return;
+    setSearch(value);
     setIsFocusAuto(true);
   };
 

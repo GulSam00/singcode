@@ -102,7 +102,7 @@ export async function DELETE(request: Request): Promise<NextResponse<ApiResponse
 
     const days =
       differenceInCalendarDays(new Date(promotion.end_date), new Date(promotion.start_date)) + 1;
-    const refund = days * 50;
+    const refund = days * 15;
 
     const { error: deleteError } = await supabase.from('song_promotions').delete().eq('id', id);
 
