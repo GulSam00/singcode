@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2, Search, SearchX } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -21,6 +21,7 @@ import PopularSearchHistory from './PopularSearchHistory';
 import SearchAutocomplete from './SearchAutocomplete';
 import SearchHistory from './SearchHistory';
 import SearchResultCard from './SearchResultCard';
+import SearchStatus from './SearchStatus';
 
 export default function SearchPage() {
   const {
@@ -101,7 +102,9 @@ export default function SearchPage() {
   };
 
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    const value = e.target.value;
+    if (searchType === 'number' && value.length > 5) return;
+    setSearch(value);
     setIsFocusAuto(true);
   };
 
@@ -241,26 +244,9 @@ export default function SearchPage() {
             )}
           </div>
         )}
-        {isPendingSearch && (
-          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin" />
-            <p className="m-2">검색 중입니다...</p>
-          </div>
-        )}
+        {isPendingSearch && <SearchStatus status="loading" />}
 
-        {!isPendingSearch && searchSongs.length === 0 && query && (
-          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <SearchX className="h-8 w-8 opacity-50" />
-            <p className="m-2">검색 결과가 없습니다.</p>
-          </div>
-        )}
-
-        {/* {searchSongs.length === 0 && !query && (
-          <div className="text-muted-foreground flex h-40 flex-col items-center justify-center">
-            <Search className="h-8 w-8 opacity-50" />
-            <p className="m-2">노래 제목이나 가수를 검색해보세요</p>
-          </div>
-        )} */}
+        {!isPendingSearch && searchSongs.length === 0 && query && <SearchStatus status="empty" />}
 
         {searchSongs.length === 0 && !query && (
           <div className="flex h-full flex-col justify-center gap-2">

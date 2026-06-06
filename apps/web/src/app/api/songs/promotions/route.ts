@@ -114,7 +114,7 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
     }
 
     const days = differenceInCalendarDays(new Date(end_date), new Date(start_date)) + 1;
-    const cost = days * 50;
+    const cost = days * 15;
 
     const { data: userData, error: userError } = await supabase
       .from('users')
