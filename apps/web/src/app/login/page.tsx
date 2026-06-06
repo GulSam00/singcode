@@ -76,7 +76,7 @@ export default function LoginPage() {
   return (
     <div className="bg-background flex h-dvh flex-col justify-center px-4">
       <div className="w-full space-y-6">
-        <div className="space-y-2 text-center">
+        <div className="flex flex-col items-center gap-1">
           <h1 className="text-2xl font-bold">로그인</h1>
           <p className="text-muted-foreground text-sm">로그인해서 더 많은 서비스를 이용하세요</p>
         </div>

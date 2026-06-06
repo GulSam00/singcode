@@ -1,8 +1,9 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, Construction } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 
+import CharacterMessage from '@/components/CharacterMessage';
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import {
@@ -91,10 +92,16 @@ export default function RecentSongPage() {
           ))}
         </div>
       ) : (
-        <div className="flex h-64 flex-col items-center justify-center gap-4">
-          <Construction className="text-muted-foreground h-16 w-16" />
-          <p className="text-muted-foreground text-xl">해당하는 월의 최신곡이 없어요.</p>
-        </div>
+        <CharacterMessage
+          variant="curious"
+          message={
+            <>
+              해당하는 달에 추가된 노래가 없어요.
+              <br />
+              어떤 곡이 추가될지 궁금하네요!
+            </>
+          }
+        />
       )}
       {isLoadingRecentAddSongs && <StaticLoading />}
     </div>

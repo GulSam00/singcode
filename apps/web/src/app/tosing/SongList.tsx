@@ -16,6 +16,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 
+import CharacterMessage from '@/components/CharacterMessage';
 import StaticLoading from '@/components/StaticLoading';
 import useToSingSong from '@/hooks/useToSingSong';
 import { ToSingSong } from '@/types/song';
@@ -60,9 +61,16 @@ export default function SongList() {
       >
         <div className="flex flex-col gap-4">
           {toSingSongs.length === 0 && (
-            <div className="flex h-full items-center justify-center">
-              <p className="text-muted-foreground text-sm">플레이리스트가 없습니다.</p>
-            </div>
+            <CharacterMessage
+              variant="joy"
+              message={
+                <>
+                  검색 페이지에서 부를곡을 추가해주세요!
+                  <br />
+                  신나게 노래방을 즐겨요!
+                </>
+              }
+            />
           )}
           {toSingSongs.map((item: ToSingSong, index: number) => (
             <SongCard
