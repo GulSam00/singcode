@@ -117,6 +117,7 @@ export default function RootLayout({
       </div>
 
       <Toaster
+        closeButton
         duration={2000}
         position="top-center"
         toastOptions={{
