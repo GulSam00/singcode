@@ -11,6 +11,11 @@ Supabase를 활용한 자체 DB를 통해 금영, TJ 노래방의 번호를 한 
 
 <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
 
+<img width="1080" height="1350" alt="feed1 1" src="https://github.com/user-attachments/assets/2587f3cf-ad3b-43fe-bea8-6dfa3d1f0157" />
+
+<img width="880" height="1800" alt="search_autocomplete_over_results" src="https://github.com/user-attachments/assets/aaabd920-cbf6-480b-9982-f3e86e00de1f" />
+
+
 </div>
 
 ---
@@ -163,6 +168,10 @@ sing-code/
 - 2026.2.8 : 버전 2.1.0 배포. 비회원 상태로 곡 부를곡 추가가 가능, Footer 애니메이션 추가.
 - 2026.2.20 : 버전 2.2.0 배포. 검색어 자동 완성 기능. es-hangul로 초성 검색 지원.
 - 2026.3.2 : 버전 2.3.0 배포. 곡 추천 페이지에서 UI 조정, 곡 추천 기능 추가. 글자 자동 스크롤 기능 추가.
+- 2026.4.6 : 버전 2.4.0 배포. 디자인 다크 버전(네온) 추가.
+- 2026.4.19 : 버전 2.5.0 배포. 일본어 곡 한국어 번역 기능 추가. 크롤링으로 곡 국가 태깅, 번역 업데이트 진행.
+- 2026.5.19 : 버전 2.6.0 배포. 패치노트, 댓글, 오류 신고, 곡 홍보, 포인트 사용내역 조회, 등 다수의 기능 추가.
+- 2026.6.8 : 버전 2.7.0 배포. 마스코트 추가. 일본어 곡 한글로 검색 가능.
 
 ## 📝 회고
 
