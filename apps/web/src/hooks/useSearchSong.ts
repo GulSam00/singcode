@@ -70,13 +70,9 @@ export default function useSearchSong() {
         // 자동완성 리스트가 하나(정확히 일치하면)고 label도 일치하면 해당 alias의 value로 자동 치환
         parsedSearch = autoCompleteList[0].value;
       }
-    } else {
-      // 한글이 있다면 공백 제거
-      const hasKorean = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(trimSearch);
-      if (hasKorean) {
-        parsedSearch = parsedSearch.replace(/ /g, '');
-      }
     }
+    // 중간 띄어쓰기는 제거하지 않고 그대로 전달한다.
+    // 검색어의 공백 처리(토큰 분리 → %로 치환)는 검색 API(/api/search)가 담당한다.
 
     if (parsedSearch) {
       setQuery(parsedSearch);
