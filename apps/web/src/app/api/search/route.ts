@@ -33,9 +33,15 @@ function getSearchColumns(type: string): string[] {
   return SEARCH_COLUMNS[type] ?? [type];
 }
 
-// 공백 기준 토큰 분리 (빈 토큰 제거)
+// 공백 기준 토큰 분리 (빈 토큰 제거).
+// PostgREST .or() 필터에서 값 구분자/그룹 문자로 쓰이는 예약 문자(, ( ) ")가 값에 포함되면
+// 조건이 분리되거나 문법이 깨지므로, 토큰화 전에 공백으로 치환해 안전하게 만든다.
 function tokenizeQuery(searchText: string): string[] {
-  return searchText.trim().split(/\s+/).filter(Boolean);
+  return searchText
+    .replace(/[,()"]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 }
 
 // 토큰을 %로 이어 붙인 전체 구 패턴 (띄어쓰기 차이를 무시한 완전 일치용)
@@ -116,6 +122,11 @@ async function executeSearchQueries(
       data: (data as DBSong[]) ?? [],
       hasNext: exactTotal > to + 1,
     };
+  }
+
+  // 공백/예약 문자만 입력돼 유효 토큰이 없으면 빈 패턴 필터가 생성되므로 빈 결과로 방어한다.
+  if (tokenizeQuery(query).length === 0) {
+    return { data: [], hasNext: false };
   }
 
   // 1. 정확 일치 / 부분 일치 각각의 총 개수를 병렬로 조회
@@ -200,7 +211,8 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
   // API KEY 노출을 막기 위해 미들웨어 역할을 할 API ROUTE 활용
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('q');
+    // 공백-only 입력은 토큰이 비어 빈 패턴 필터를 만들므로 trim 후 빈 값은 400으로 거른다.
+    const query = searchParams.get('q')?.trim() ?? '';
     const type = searchParams.get('type') || 'title';
     const order = type === 'all' ? 'title' : type === 'number' ? 'num_tj' : type;
     const authenticated = searchParams.get('authenticated') === 'true';
