@@ -99,6 +99,21 @@ export async function getSongsAllDB(max: number = 50000) {
   return data;
 }
 
+// num_tj 기준 매칭을 위해 전체 곡을 num_tj 포함하여 조회
+export async function getSongsAllWithTjDB(max: number = 100000) {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('songs')
+    .select('id, title, artist, num_tj, num_ky')
+    .order('created_at', { ascending: false })
+    .limit(max);
+
+  if (error) throw error;
+
+  return data;
+}
+
 export async function getJpopSongsForTranslationDB() {
   const supabase = getClient();
 

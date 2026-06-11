@@ -1,12 +1,10 @@
-name: Tagging Songs
+name: Crawl TJ by Number
 
 on:
-  schedule:
-    - cron: "0 10 * * 1" # 매주 월요일 한국 시간 19:00 실행 (UTC+9 → UTC 10:00)
-  workflow_dispatch:
+  workflow_dispatch: # 수동 실행 전용
 
 permissions:
-  contents: write # push 권한을 위해 필요
+  contents: write
 
 jobs:
   run-npm-task:
@@ -36,8 +34,7 @@ jobs:
         run: |
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
-      - name: run tagging script - taggingSongs.ts
+      - name: run script - testCrawlTJSongByNumber.ts
         working-directory: packages/crawling
-        run: pnpm run tag-songs
+        run: pnpm run test-tj-number
