@@ -120,12 +120,13 @@ taggingSongs.ts
 
 ### GitHub Actions 워크플로우
 
-| 워크플로우 파일         | 스케줄 (UTC) | 실행 스크립트     |
-| ----------------------- | ------------ | ----------------- |
-| `crawl_recent_tj.yml`   | 매일 14:00   | `pnpm recent-tj`  |
-| `tagging_song.yml`      | 매일 14:00   | `pnpm tag-songs`  |
-| `translation_jpn.yml`   | 매일 14:00   | `pnpm trans-jpn`  |
-| `update_ky_youtube.yml` | 수동         | `pnpm ky-youtube` |
-| `verify_ky_youtube.yml` | 수동         | `pnpm ky-verify`  |
+| 워크플로우 파일          | 스케줄 (UTC)        | 실행 스크립트         |
+| ------------------------ | ------------------- | --------------------- |
+| `crawl_recent_tj.yml`    | 매일 14:00          | `pnpm recent-tj`      |
+| `tagging_song.yml`       | 매주 월요일 10:00   | `pnpm tag-songs`      |
+| `translation_jpn.yml`    | 매주 금요일 14:00   | `pnpm trans-jpn`      |
+| `crawl_tj_by_number.yml` | 수동                | `pnpm test-tj-number` |
+| `update_ky_youtube.yml`  | 수동                | `pnpm ky-youtube`     |
+| `verify_ky_youtube.yml`  | 수동                | `pnpm ky-verify`      |
 
 모든 워크플로우는 `workflow_dispatch`로 수동 실행도 가능하다.
