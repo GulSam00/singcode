@@ -22,48 +22,75 @@ interface DBSong extends Song {
   }[];
 }
 
+// 검색 타입별 대상 컬럼
+const SEARCH_COLUMNS: Record<string, string[]> = {
+  all: ['title', 'title_ko', 'artist', 'artist_ko'],
+  title: ['title', 'title_ko'],
+  artist: ['artist', 'artist_ko'],
+};
+
+function getSearchColumns(type: string): string[] {
+  return SEARCH_COLUMNS[type] ?? [type];
+}
+
+// 공백 기준 토큰 분리 (빈 토큰 제거).
+// PostgREST .or() 필터에서 값 구분자/그룹 문자로 쓰이는 예약 문자(, ( ) ")가 값에 포함되면
+// 조건이 분리되거나 문법이 깨지므로, 토큰화 전에 공백으로 치환해 안전하게 만든다.
+function tokenizeQuery(searchText: string): string[] {
+  return searchText
+    .replace(/[,()"]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+// 토큰을 %로 이어 붙인 전체 구 패턴 (띄어쓰기 차이를 무시한 완전 일치용)
+// 예: ['사건의', '지평선'] -> '사건의%지평선' → '사건의지평선', '사건의 지평선' 모두 매칭
+function buildPhrasePattern(tokens: string[]): string {
+  return tokens.join('%');
+}
+
+// 여러 컬럼에 같은 ilike 패턴을 적용한 OR 그룹 조건 문자열 (PostgREST .or() 인자)
+// 예: (['title','title_ko'], '%로드%') -> 'title.ilike.%로드%,title_ko.ilike.%로드%'
+function buildColumnOrGroup(columns: string[], pattern: string): string {
+  return columns.map(column => `${column}.ilike.${pattern}`).join(',');
+}
+
+// 정확 일치: 전체 구가 한 컬럼과 일치 (랭킹 상위). 띄어쓰기 차이는 무시한다.
 function applyExactFilter(baseQuery: any, type: string, searchText: string) {
-  if (type === 'all') {
-    return baseQuery.or(
-      `title.ilike.${searchText},title_ko.ilike.${searchText},artist.ilike.${searchText},artist_ko.ilike.${searchText}`,
-    );
-  }
-  if (type === 'title') {
-    return baseQuery.or(`title.ilike.${searchText},title_ko.ilike.${searchText}`);
-  }
-  if (type === 'artist') {
-    return baseQuery.or(`artist.ilike.${searchText},artist_ko.ilike.${searchText}`);
-  }
   if (type === 'number') {
     return baseQuery.or(`num_tj.eq.${searchText},num_ky.eq.${searchText}`);
   }
-  return baseQuery.ilike(type, searchText);
+
+  const phrase = buildPhrasePattern(tokenizeQuery(searchText));
+  const columns = getSearchColumns(type);
+
+  return baseQuery.or(buildColumnOrGroup(columns, phrase));
 }
 
+// 부분 일치: 입력한 모든 토큰이 (순서 무관) 포함돼야 매칭(AND) + 정확 일치 결과는 제외.
 function applyPartialFilter(baseQuery: any, type: string, searchText: string) {
-  if (type === 'all') {
-    return baseQuery
-      .or(
-        `title.ilike.%${searchText}%,title_ko.ilike.%${searchText}%,artist.ilike.%${searchText}%,artist_ko.ilike.%${searchText}%`,
-      )
-      .not('title', 'ilike', searchText)
-      .not('title_ko', 'ilike', searchText)
-      .not('artist', 'ilike', searchText)
-      .not('artist_ko', 'ilike', searchText);
+  const tokens = tokenizeQuery(searchText);
+  const phrase = buildPhrasePattern(tokens);
+  const columns = getSearchColumns(type);
+
+  // 토큰 AND 조건: 각 토큰의 "컬럼 OR 그룹"을 .or() 체이닝으로 AND 결합한다.
+  // (PostgREST에서 .or() 체이닝은 서로 AND로 묶인다)
+  // 예: '바톤 로드' → (바톤 in any col) AND (로드 in any col)
+  //     → '오버로드'(로드만), '로드넘버원'(로드만)은 바톤이 없어 제외된다.
+  let query = baseQuery;
+  for (const token of tokens) {
+    query = query.or(buildColumnOrGroup(columns, `%${token}%`));
   }
-  if (type === 'title') {
-    return baseQuery
-      .or(`title.ilike.%${searchText}%,title_ko.ilike.%${searchText}%`)
-      .not('title', 'ilike', searchText)
-      .not('title_ko', 'ilike', searchText);
+
+  // 정확 일치 티어와의 중복 제거.
+  // nullable 컬럼(title_ko/artist_ko)에서 `col NOT ILIKE x`는 NULL로 평가되어 행이
+  // 통째로 누락되므로, `col IS NULL`을 OR로 함께 묶어 NULL-safe하게 제외한다.
+  for (const column of columns) {
+    query = query.or(`${column}.not.ilike.${phrase},${column}.is.null`);
   }
-  if (type === 'artist') {
-    return baseQuery
-      .or(`artist.ilike.%${searchText}%,artist_ko.ilike.%${searchText}%`)
-      .not('artist', 'ilike', searchText)
-      .not('artist_ko', 'ilike', searchText);
-  }
-  return baseQuery.ilike(type, `%${searchText}%`).not(type, 'ilike', searchText);
+
+  return query;
 }
 
 async function executeSearchQueries(
@@ -95,6 +122,11 @@ async function executeSearchQueries(
       data: (data as DBSong[]) ?? [],
       hasNext: exactTotal > to + 1,
     };
+  }
+
+  // 공백/예약 문자만 입력돼 유효 토큰이 없으면 빈 패턴 필터가 생성되므로 빈 결과로 방어한다.
+  if (tokenizeQuery(query).length === 0) {
+    return { data: [], hasNext: false };
   }
 
   // 1. 정확 일치 / 부분 일치 각각의 총 개수를 병렬로 조회
@@ -179,7 +211,8 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
   // API KEY 노출을 막기 위해 미들웨어 역할을 할 API ROUTE 활용
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('q');
+    // 공백-only 입력은 토큰이 비어 빈 패턴 필터를 만들므로 trim 후 빈 값은 400으로 거른다.
+    const query = searchParams.get('q')?.trim() ?? '';
     const type = searchParams.get('type') || 'title';
     const order = type === 'all' ? 'title' : type === 'number' ? 'num_tj' : type;
     const authenticated = searchParams.get('authenticated') === 'true';
