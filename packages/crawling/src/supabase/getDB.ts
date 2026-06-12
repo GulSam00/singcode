@@ -33,7 +33,7 @@ export async function getSongsJpnDB() {
   return hasJapaneseData;
 }
 
-export async function getSongsKyNullDB(max: number = 50000) {
+export async function getSongsKyNullDB(max: number = 100000) {
   const supabase = getClient();
 
   const { data, error } = await supabase
@@ -48,7 +48,7 @@ export async function getSongsKyNullDB(max: number = 50000) {
   return data;
 }
 
-export async function getSongsKyNotNullDB(max: number = 50000) {
+export async function getSongsKyNotNullDB(max: number = 100000) {
   const supabase = getClient();
 
   const { data, error } = await supabase
@@ -85,7 +85,7 @@ export async function getVerifyKySongsDB(): Promise<Set<string>> {
   return new Set(data.map(row => row.id));
 }
 
-export async function getSongsAllDB(max: number = 50000) {
+export async function getSongsAllDB(max: number = 100000) {
   const supabase = getClient();
 
   const { data, error } = await supabase
@@ -121,7 +121,7 @@ export async function getJpopSongsForTranslationDB() {
     .from('songs')
     .select('id, title, artist, title_ko, artist_ko, song_tags!inner(tag_id)')
     .eq('song_tags.tag_id', 101)
-    .limit(50000);
+    .limit(100000);
 
   if (error) throw error;
 
@@ -138,7 +138,7 @@ export async function getArtistKoMapDB(): Promise<Map<string, string>> {
     .select('artist, artist_ko, song_tags!inner(tag_id)')
     .eq('song_tags.tag_id', 101)
     .not('artist_ko', 'is', null)
-    .limit(50000);
+    .limit(100000);
 
   if (error) throw error;
 
@@ -155,7 +155,7 @@ export async function getArtistKoMapDB(): Promise<Map<string, string>> {
 export async function getSongTagSongIdsDB(): Promise<Set<string>> {
   const supabase = getClient();
 
-  const { data, error } = await supabase.from('song_tags').select('song_id').limit(50000);
+  const { data, error } = await supabase.from('song_tags').select('song_id').limit(100000);
 
   if (error) throw error;
 

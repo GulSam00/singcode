@@ -22,8 +22,8 @@ export const crawlTJSongByNumber = async (
 
   const gridContainer = $('.grid-container.list.ico').first();
 
-  const title = gridContainer.find('.grid-item.title3').text().trim();
-  const artist = gridContainer.find('.grid-item.title4').text().trim();
+  const title = gridContainer.find('.grid-item.title3 p').text().trim();
+  const artist = gridContainer.find('.grid-item.title4 p').text().trim();
 
   if (!title || !artist) {
     console.log('❌ TJ 검색 결과 없음');
