@@ -1,4 +1,4 @@
-name: Crawl TJ by Number
+name: Crawl All TJ Song By Number
 
 on:
   workflow_dispatch: # 수동 실행 전용
@@ -35,6 +35,6 @@ jobs:
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
 
-      - name: run script - testCrawlTJSongByNumber.ts
+      - name: run script - crawlAllTJSongByNumber.ts
         working-directory: packages/crawling
-        run: pnpm run test-tj-number
+        run: pnpm run tj-all-number

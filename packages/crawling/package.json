@@ -14,6 +14,7 @@
     "recent-tj": "tsx src/cron/crawlRecentTJ.ts",
     "tag-songs": "tsx src/cron/taggingSongs.ts",
     "trans-jpn": "tsx src/cron/translationJpn.ts",
+    "tj-all-number": "tsx src/cron/crawlAllTJSongByNumber.ts",
     "lint": "eslint .",
     "test": "vitest run",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
