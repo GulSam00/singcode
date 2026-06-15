@@ -22,8 +22,10 @@ export const crawlTJSongByNumber = async (
 
   const gridContainer = $('.grid-container.list.ico').first();
 
-  const title = gridContainer.find('.grid-item.title3 p').text().trim();
-  const artist = gridContainer.find('.grid-item.title4 p').text().trim();
+  // title3 내부에는 아이콘용 <p class="no-ico">가 div.flex-box > ul 안에 중첩돼 있으므로
+  // 자손 셀렉터(' p') 대신 직계 자식(' > p')만 선택해 실제 제목만 추출한다.
+  const title = gridContainer.find('.grid-item.title3 span').text().trim();
+  const artist = gridContainer.find('.grid-item.title4 span').text().trim();
 
   if (!title || !artist) {
     console.log('❌ TJ 검색 결과 없음');
