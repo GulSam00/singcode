@@ -9,9 +9,20 @@ import { Song } from '@/types';
 
 dotenv.config();
 
-// 순회 범위
-const START_NUMBER = 1;
-const END_NUMBER = 99999;
+// 순회 범위 (env로 주입, 미설정 시 전체 범위)
+const parseRange = (value: string | undefined, fallback: number): number => {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
+
+const START_NUMBER = parseRange(process.env.START_NUMBER, 1);
+const END_NUMBER = parseRange(process.env.END_NUMBER, 99999);
+
+if (START_NUMBER > END_NUMBER) {
+  throw new Error(`잘못된 범위: START_NUMBER(${START_NUMBER}) > END_NUMBER(${END_NUMBER})`);
+}
+
+console.log(`🔢 순회 범위: ${START_NUMBER} ~ ${END_NUMBER}`);
 
 // 1. 최초로 DB의 모든 곡 데이터를 받아서 num_tj 기준 Map으로 보관
 const allSongs = await getSongsAllWithTjDB();
