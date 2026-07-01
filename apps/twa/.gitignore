@@ -1,9 +1,27 @@
 # Android keystore — 외부 백업 필수, git에 절대 커밋하지 않는다
 *.keystore
 *.jks
+*.keystore.bak*
+android.keystore.bak*
 
 # Bubblewrap 빌드 산출물
 android/
 output/
+app/
 *.aab
 *.apk
+*.apk.idsig
+
+# Gradle 생성물
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+build.gradle
+settings.gradle
+gradle.properties
+manifest-checksum.txt
+store_icon.png
+
+# 수동 백업/복사본
+twa-manifest copy.json
