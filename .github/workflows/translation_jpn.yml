@@ -2,7 +2,7 @@ name: Translation J-POP Songs
 
 on:
   schedule:
-    - cron: "0 10 * * 5" # 매주 금요일 한국 시간 19:00 실행 (UTC+9 → UTC 10:00)
+    - cron: "0 10 * * *" # 매일 한국 시간 19:00 실행 (UTC+9 → UTC 10:00)
   workflow_dispatch:
 
 permissions:
