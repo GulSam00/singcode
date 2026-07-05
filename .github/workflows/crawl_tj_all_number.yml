@@ -1,0 +1,61 @@
+name: Crawl All TJ Song By Number
+
+on:
+  workflow_dispatch: # 수동 실행 전용
+
+permissions:
+  contents: write
+
+jobs:
+  run-npm-task:
+    runs-on: ubuntu-latest
+
+    # 6시간 잡 제한 안에서 전 대역을 커버하기 위해 1만 단위로 구간을 나눠 병렬 실행
+    strategy:
+      fail-fast: false
+      matrix:
+        range:
+          - { start: 1, end: 10000 }
+          - { start: 10001, end: 20000 }
+          - { start: 20001, end: 30000 }
+          - { start: 30001, end: 40000 }
+          - { start: 40001, end: 50000 }
+          - { start: 50001, end: 60000 }
+          - { start: 60001, end: 70000 }
+          - { start: 70001, end: 80000 }
+          - { start: 80001, end: 90000 }
+          - { start: 90001, end: 99999 }
+
+    name: "crawl ${{ matrix.range.start }}-${{ matrix.range.end }}"
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        working-directory: packages/crawling
+        run: pnpm install
+
+      - name: Create .env file
+        working-directory: packages/crawling
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
+      - name: run script - crawlAllTJSongByNumber.ts
+        working-directory: packages/crawling
+        env:
+          START_NUMBER: ${{ matrix.range.start }}
+          END_NUMBER: ${{ matrix.range.end }}
+        run: pnpm run tj-all-number
