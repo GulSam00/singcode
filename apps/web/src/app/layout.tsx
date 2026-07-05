@@ -19,12 +19,11 @@ import QueryProvider from '@/query';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const metadata: Metadata = {
-  title: 'Singcode - 당신의 노래방 메모장',
-  description:
-    '노래방만 가면 부르고 싶었던 노래가 기억 안 날 때? Singcode에서 검색하고 저장하면 걱정 끝!',
+  title: 'Singcode - 노래방 번호 검색',
+  description: 'Singcode에서 빠르고 편하게 노래방 번호 검색하세요. J-POP 검색도 지원합니다.',
   openGraph: {
-    title: 'Singcode - 노래방에서 부를 곡, 기억하지 말고 저장하세요',
-    description: '노래방 갈 때마다 잊어버리는 곡번호? Singcode가 대신 기억할게요!',
+    title: 'Singcode - 노래방 번호 검색',
+    description: 'Singcode에서 빠르고 편하게 노래방 번호 검색하세요. J-POP 검색도 지원합니다.',
     url: 'https://www.singcode.kr',
     siteName: 'Singcode',
     images: [

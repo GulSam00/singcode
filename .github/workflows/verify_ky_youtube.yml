@@ -2,7 +2,7 @@ name: Verify ky by Youtube
 
 on:
   schedule:
-    - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
+    - cron: "0 14 * * 1" # 매주 월요일 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
   workflow_dispatch:
 
 permissions:
