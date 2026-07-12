@@ -5,12 +5,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 ## Overview
 
 `apps/twa`는 **Singcode PWA를 Google Play Store에 배포하기 위한 Android 빌드 워크스페이스**다.
-Bubblewrap CLI가 `https://singcode.kr`의 PWA Manifest를 받아 Android 프로젝트(.aab/.apk)를 생성한다.
+Bubblewrap CLI가 `https://www.singcode.kr`의 PWA Manifest를 받아 Android 프로젝트(.aab/.apk)를 생성한다.
 
 - **Application ID**: `kr.singcode.app` — 한 번 결정되면 영구적이다. 변경 불가.
-- **PWA URL**: `https://singcode.kr`
-- **Manifest URL**: `https://singcode.kr/manifest.webmanifest`
-- **Digital Asset Links**: `https://singcode.kr/.well-known/assetlinks.json`
+- **PWA URL**: `https://www.singcode.kr`
+- **Manifest URL**: `https://www.singcode.kr/manifest.webmanifest`
+- **Digital Asset Links**: `https://www.singcode.kr/.well-known/assetlinks.json`
 
 ## Prerequisites (로컬 1회성 셋업)
 
@@ -64,8 +64,8 @@ pnpm build   # bubblewrap build
 빌드 전 PWA가 정상인지 확인.
 
 ```bash
-curl -sI https://singcode.kr/manifest.webmanifest         # 200
-curl -s   https://singcode.kr/manifest.webmanifest | jq . # 유효한 JSON
+curl -sI https://www.singcode.kr/manifest.webmanifest         # 200
+curl -s   https://www.singcode.kr/manifest.webmanifest | jq . # 유효한 JSON
 ```
 
 `manifest.webmanifest`의 `icons[].purpose`에 `any`와 `maskable`이 모두 등록되어 있어야 한다.
@@ -82,7 +82,7 @@ pnpm --filter twa run init
 
 | 항목              | 값                                                |
 | ----------------- | ------------------------------------------------- |
-| Domain            | `singcode.kr`                                     |
+| Domain            | `www.singcode.kr`                                 |
 | Application ID    | `kr.singcode.app` (영구)                          |
 | Application name  | `Singcode - 당신의 노래방 메모장`                 |
 | Launcher name     | `Singcode`                                        |
@@ -90,8 +90,8 @@ pnpm --filter twa run init
 | Orientation       | `portrait`                                        |
 | Theme color       | `#1a1a2e`                                         |
 | Splash background | `#1a1a2e`                                         |
-| Icon URL          | `https://singcode.kr/icons/icon-512.png`          |
-| Maskable icon URL | `https://singcode.kr/icons/icon-maskable-512.png` |
+| Icon URL          | `https://www.singcode.kr/icons/icon-512.png`          |
+| Maskable icon URL | `https://www.singcode.kr/icons/icon-maskable-512.png` |
 | Signing key alias | `singcode`                                        |
 
 ### 3. 키스토어 생성 (최초 1회, 사용자 직접 진행)
@@ -139,10 +139,10 @@ keytool -list -v \
 배포 후 검증:
 
 ```bash
-curl -sI https://singcode.kr/.well-known/assetlinks.json   # 200
+curl -sI https://www.singcode.kr/.well-known/assetlinks.json   # 200
 ```
 
-[Statement List Tester](https://developers.google.com/digital-asset-links/tools/generator)에서 `https://singcode.kr` + `kr.singcode.app` + SHA-256으로 통과 확인.
+[Statement List Tester](https://developers.google.com/digital-asset-links/tools/generator)에서 `https://www.singcode.kr` + `kr.singcode.app` + SHA-256으로 통과 확인.
 
 ### 6. `bubblewrap build`
 
@@ -168,7 +168,7 @@ adb install -r apps/twa/app-release-signed.apk
 체크리스트:
 
 - [ ] 앱 실행 시 **풀스크린** (주소창이 뜨지 않음)
-- [ ] `singcode.kr` 정상 로드 (오프라인 splash 후 메인 진입)
+- [ ] `www.singcode.kr` 정상 로드 (오프라인 splash 후 메인 진입)
 - [ ] 시스템 뒤로가기 동작 정상
 - [ ] 카카오 로그인 정상 (브라우저 탭 전환 후 복귀)
 - [ ] PWA 아이콘 (`icon-maskable-*`)이 흰 배경 마스킹 없이 표시
@@ -184,7 +184,7 @@ adb install -r apps/twa/app-release-signed.apk
 keytool -printcert -jarfile apps/twa/app-release-signed.apk
 
 # 2. 배포된 assetlinks.json 값 확인
-curl -s https://singcode.kr/.well-known/assetlinks.json | jq .
+curl -s https://www.singcode.kr/.well-known/assetlinks.json | jq .
 
 # 3. 두 값이 동일한지 비교 — 다르면 assetlinks.json 갱신 후 재배포
 ```
