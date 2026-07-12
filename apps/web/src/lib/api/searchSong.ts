@@ -8,9 +8,10 @@ export async function getInfiniteSearchSong(
   searchType: string,
   isAuthenticated: boolean,
   page?: number,
+  languageTag?: number,
 ) {
   const response = await instance.get<ApiResponse<SearchSong[]>>('/search', {
-    params: { q: search, type: searchType, authenticated: isAuthenticated, page },
+    params: { q: search, type: searchType, authenticated: isAuthenticated, page, languageTag },
   });
 
   return response.data;
@@ -21,9 +22,10 @@ export async function getSearchSong(
   searchType: string,
   isAuthenticated: boolean,
   page?: number,
+  languageTag?: number,
 ) {
   const response = await instance.get<ApiResponse<SearchSong[]>>('/search', {
-    params: { q: search, type: searchType, authenticated: isAuthenticated, page },
+    params: { q: search, type: searchType, authenticated: isAuthenticated, page, languageTag },
   });
 
   return response.data;

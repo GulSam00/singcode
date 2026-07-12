@@ -56,20 +56,36 @@ function buildColumnOrGroup(columns: string[], pattern: string): string {
   return columns.map(column => `${column}.ilike.${pattern}`).join(',');
 }
 
+// languageTag가 있으면 song_tags(언어 태그) 조인 필터를 추가한다.
+// select 절에 `song_tags!inner(tag_id)`가 함께 포함되어 있어야 한다.
+function applyLanguageTagFilter<T extends { eq: (column: string, value: string) => T }>(
+  query: T,
+  languageTag?: string,
+): T {
+  return languageTag ? query.eq('song_tags.tag_id', languageTag) : query;
+}
+
 // 정확 일치: 전체 구가 한 컬럼과 일치 (랭킹 상위). 띄어쓰기 차이는 무시한다.
-function applyExactFilter(baseQuery: any, type: string, searchText: string) {
+function applyExactFilter(baseQuery: any, type: string, searchText: string, languageTag?: string) {
   if (type === 'number') {
-    return baseQuery.or(`num_tj.eq.${searchText},num_ky.eq.${searchText}`);
+    const query = baseQuery.or(`num_tj.eq.${searchText},num_ky.eq.${searchText}`);
+    return applyLanguageTagFilter(query, languageTag);
   }
 
   const phrase = buildPhrasePattern(tokenizeQuery(searchText));
   const columns = getSearchColumns(type);
 
-  return baseQuery.or(buildColumnOrGroup(columns, phrase));
+  const query = baseQuery.or(buildColumnOrGroup(columns, phrase));
+  return applyLanguageTagFilter(query, languageTag);
 }
 
 // 부분 일치: 입력한 모든 토큰이 (순서 무관) 포함돼야 매칭(AND) + 정확 일치 결과는 제외.
-function applyPartialFilter(baseQuery: any, type: string, searchText: string) {
+function applyPartialFilter(
+  baseQuery: any,
+  type: string,
+  searchText: string,
+  languageTag?: string,
+) {
   const tokens = tokenizeQuery(searchText);
   const phrase = buildPhrasePattern(tokens);
   const columns = getSearchColumns(type);
@@ -90,7 +106,7 @@ function applyPartialFilter(baseQuery: any, type: string, searchText: string) {
     query = query.or(`${column}.not.ilike.${phrase},${column}.is.null`);
   }
 
-  return query;
+  return applyLanguageTagFilter(query, languageTag);
 }
 
 async function executeSearchQueries(
@@ -101,6 +117,7 @@ async function executeSearchQueries(
   order: string,
   from: number,
   to: number,
+  languageTag?: string,
 ): Promise<{ data: DBSong[]; hasNext: boolean } | { error: string }> {
   const size = to - from + 1;
 
@@ -110,11 +127,17 @@ async function executeSearchQueries(
       supabase.from('songs').select(selectClause, { count: 'exact', head: true }),
       type,
       query,
+      languageTag,
     );
     if (exactCountResult.error) return { error: exactCountResult.error.message };
     const exactTotal = exactCountResult.count ?? 0;
 
-    const exactQuery = applyExactFilter(supabase.from('songs').select(selectClause), type, query);
+    const exactQuery = applyExactFilter(
+      supabase.from('songs').select(selectClause),
+      type,
+      query,
+      languageTag,
+    );
     const { data, error } = await exactQuery.order(order).range(from, to);
     if (error) return { error: error.message };
 
@@ -134,11 +157,13 @@ async function executeSearchQueries(
     supabase.from('songs').select(selectClause, { count: 'exact', head: true }),
     type,
     query,
+    languageTag,
   );
   const partialCountQuery = applyPartialFilter(
     supabase.from('songs').select(selectClause, { count: 'exact', head: true }),
     type,
     query,
+    languageTag,
   );
 
   const [exactCountResult, partialCountResult] = await Promise.all([
@@ -163,6 +188,7 @@ async function executeSearchQueries(
       supabase.from('songs').select(selectClause),
       type,
       query,
+      languageTag,
     );
     const { data, error } = await partialQuery.order(order).range(from, to);
     if (error) return { error: error.message };
@@ -175,6 +201,7 @@ async function executeSearchQueries(
       supabase.from('songs').select(selectClause),
       type,
       query,
+      languageTag,
     );
     const { data, error } = await partialQuery.order(order).range(partialFrom, partialTo);
     if (error) return { error: error.message };
@@ -182,7 +209,12 @@ async function executeSearchQueries(
   } else {
     // 현재 페이지가 정확 일치 영역에 포함 (경계에 걸릴 수도 있음)
     const exactTo = Math.min(to, exactTotal - 1);
-    const exactQuery = applyExactFilter(supabase.from('songs').select(selectClause), type, query);
+    const exactQuery = applyExactFilter(
+      supabase.from('songs').select(selectClause),
+      type,
+      query,
+      languageTag,
+    );
     const exactResult = await exactQuery.order(order).range(from, exactTo);
     if (exactResult.error) return { error: exactResult.error.message };
     exactData = (exactResult.data as DBSong[]) ?? [];
@@ -194,6 +226,7 @@ async function executeSearchQueries(
         supabase.from('songs').select(selectClause),
         type,
         query,
+        languageTag,
       );
       const partialResult = await partialQuery.order(order).range(0, partialTo);
       if (partialResult.error) return { error: partialResult.error.message };
@@ -216,6 +249,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const type = searchParams.get('type') || 'title';
     const order = type === 'all' ? 'title' : type === 'number' ? 'num_tj' : type;
     const authenticated = searchParams.get('authenticated') === 'true';
+    const languageTag = searchParams.get('languageTag') || undefined;
 
     const page = parseInt(searchParams.get('page') || '0', 10);
     const size = 20;
@@ -234,11 +268,25 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
 
     const supabase = await createClient();
 
-    const selectClause = authenticated
+    const baseSelectClause = authenticated
       ? `*, thumb_logs(*), tosings(user_id), like_activities(user_id), save_activities(user_id)`
       : `*, thumb_logs(*)`;
+    // languageTag로 필터링할 때만 song_tags를 inner join으로 함께 select한다.
+    // (그 외에는 태그 없는 곡이 결과에서 누락되지 않도록 조인하지 않는다)
+    const selectClause = languageTag
+      ? `${baseSelectClause}, song_tags!inner(tag_id)`
+      : baseSelectClause;
 
-    const result = await executeSearchQueries(supabase, selectClause, query, type, order, from, to);
+    const result = await executeSearchQueries(
+      supabase,
+      selectClause,
+      query,
+      type,
+      order,
+      from,
+      to,
+      languageTag,
+    );
 
     if ('error' in result) {
       return NextResponse.json(
