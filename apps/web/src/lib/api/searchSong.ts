@@ -16,17 +16,3 @@ export async function getInfiniteSearchSong(
 
   return response.data;
 }
-
-export async function getSearchSong(
-  search: string,
-  searchType: string,
-  isAuthenticated: boolean,
-  page?: number,
-  languageTag?: number,
-) {
-  const response = await instance.get<ApiResponse<SearchSong[]>>('/search', {
-    params: { q: search, type: searchType, authenticated: isAuthenticated, page, languageTag },
-  });
-
-  return response.data;
-}

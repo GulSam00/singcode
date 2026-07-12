@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { LANGUAGE_TAGS } from '@/constants/languageTags';
 import createClient from '@/lib/supabase/server';
 import { ApiResponse } from '@/types/apiRoute';
 import { SearchSong, Song } from '@/types/song';
@@ -58,15 +59,15 @@ function buildColumnOrGroup(columns: string[], pattern: string): string {
 
 // languageTag가 있으면 song_tags(언어 태그) 조인 필터를 추가한다.
 // select 절에 `song_tags!inner(tag_id)`가 함께 포함되어 있어야 한다.
-function applyLanguageTagFilter<T extends { eq: (column: string, value: string) => T }>(
+function applyLanguageTagFilter<T extends { eq: (column: string, value: number) => T }>(
   query: T,
-  languageTag?: string,
+  languageTag?: number,
 ): T {
   return languageTag ? query.eq('song_tags.tag_id', languageTag) : query;
 }
 
 // 정확 일치: 전체 구가 한 컬럼과 일치 (랭킹 상위). 띄어쓰기 차이는 무시한다.
-function applyExactFilter(baseQuery: any, type: string, searchText: string, languageTag?: string) {
+function applyExactFilter(baseQuery: any, type: string, searchText: string, languageTag?: number) {
   if (type === 'number') {
     const query = baseQuery.or(`num_tj.eq.${searchText},num_ky.eq.${searchText}`);
     return applyLanguageTagFilter(query, languageTag);
@@ -84,7 +85,7 @@ function applyPartialFilter(
   baseQuery: any,
   type: string,
   searchText: string,
-  languageTag?: string,
+  languageTag?: number,
 ) {
   const tokens = tokenizeQuery(searchText);
   const phrase = buildPhrasePattern(tokens);
@@ -117,7 +118,7 @@ async function executeSearchQueries(
   order: string,
   from: number,
   to: number,
-  languageTag?: string,
+  languageTag?: number,
 ): Promise<{ data: DBSong[]; hasNext: boolean } | { error: string }> {
   const size = to - from + 1;
 
@@ -249,7 +250,23 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const type = searchParams.get('type') || 'title';
     const order = type === 'all' ? 'title' : type === 'number' ? 'num_tj' : type;
     const authenticated = searchParams.get('authenticated') === 'true';
-    const languageTag = searchParams.get('languageTag') || undefined;
+
+    const languageTagParam = searchParams.get('languageTag');
+    let languageTag: number | undefined;
+    if (languageTagParam) {
+      const parsedLanguageTag = Number.parseInt(languageTagParam, 10);
+      const isValidLanguageTag = LANGUAGE_TAGS.some(tag => tag.id === parsedLanguageTag);
+      if (!isValidLanguageTag) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: '유효하지 않은 languageTag 값입니다',
+          },
+          { status: 400 },
+        );
+      }
+      languageTag = parsedLanguageTag;
+    }
 
     const page = parseInt(searchParams.get('page') || '0', 10);
     const size = 20;

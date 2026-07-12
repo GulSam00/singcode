@@ -1,8 +1,8 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
 import { postSaveSong } from '@/lib/api/saveSong';
-import { getInfiniteSearchSong, getSearchSong } from '@/lib/api/searchSong';
+import { getInfiniteSearchSong } from '@/lib/api/searchSong';
 import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
@@ -68,27 +68,6 @@ export const useInfiniteSearchSongQuery = (
     },
     initialPageParam: 0,
     enabled: !!search,
-  });
-};
-
-export const useSearchSongQuery = (
-  search: string,
-  searchType: string,
-  isAuthenticated: boolean,
-) => {
-  return useQuery<SearchSong[]>({
-    queryKey: ['searchSong', search, searchType],
-    queryFn: async () => {
-      const response = await getSearchSong(search, searchType, isAuthenticated);
-      if (!response.success) {
-        return [];
-      }
-      return response.data || [];
-    },
-    enabled: !!search,
-    // DB의 값은 고정된 값이므로 캐시를 유지한다
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
   });
 };
 
