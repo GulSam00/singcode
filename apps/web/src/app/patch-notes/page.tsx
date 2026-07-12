@@ -25,7 +25,7 @@ export default function PatchNotesPage() {
       </div>
 
       <ScrollArea className="mt-4 flex-1">
-        <ol className="relative flex flex-col gap-6 pb-8">
+        <ol className="relative flex flex-col gap-6 pb-10">
           <span
             aria-hidden
             className="bg-border absolute top-3 bottom-3 left-[5rem] w-px sm:left-[6rem]"
