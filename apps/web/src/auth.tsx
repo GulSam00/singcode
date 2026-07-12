@@ -14,6 +14,8 @@ const ALLOW_PATHS = [
   '/tosing',
   '/update-password',
   '/patch-notes',
+  '/privacy',
+  '/error',
 ];
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
