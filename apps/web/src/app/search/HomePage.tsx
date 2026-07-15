@@ -17,6 +17,7 @@ import { SearchSong } from '@/types/song';
 import AddFolderModal from './AddFolderModal';
 // import ChatBot from './ChatBot';
 import JpnArtistList from './JpnArtistList';
+import LanguageTagFilter from './LanguageTagFilter';
 import PopularSearchHistory from './PopularSearchHistory';
 import SearchAutocomplete from './SearchAutocomplete';
 import SearchHistory from './SearchHistory';
@@ -31,6 +32,8 @@ export default function SearchPage() {
     autoCompleteList,
     query,
     queryType,
+    languageTag,
+    queryLanguageTag,
 
     searchResults,
     isPendingSearch,
@@ -40,6 +43,7 @@ export default function SearchPage() {
     isError,
 
     handleSearchTypeChange,
+    handleLanguageTagChange,
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
@@ -54,7 +58,7 @@ export default function SearchPage() {
     handleToggleSave,
     postSaveSong,
     patchSaveSong,
-  } = useSaveSongModal(query, queryType);
+  } = useSaveSongModal(query, queryType, queryLanguageTag);
 
   const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
   const [isFocusAuto, setIsFocusAuto] = useState(false);
@@ -219,6 +223,8 @@ export default function SearchPage() {
             {isPendingSearch ? <Loader2 className="h-4 w-4 animate-spin" /> : '검색'}
           </Button>
         </div>
+
+        <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
       </div>
       <div ref={setScrollRef} className="h-[calc(100vh-22rem)] overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (

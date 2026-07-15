@@ -1,8 +1,8 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { deleteLikeSong, postLikeSong } from '@/lib/api/likeSong';
 import { postSaveSong } from '@/lib/api/saveSong';
-import { getInfiniteSearchSong, getSearchSong } from '@/lib/api/searchSong';
+import { getInfiniteSearchSong } from '@/lib/api/searchSong';
 import { deleteToSingSong, postToSingSong } from '@/lib/api/tosing';
 import { Method } from '@/types/common';
 import { SearchSong } from '@/types/song';
@@ -30,17 +30,25 @@ interface FolderProps {
   folderName: string;
   query: string;
   searchType: string;
+  languageTag?: number;
 }
 
 export const useInfiniteSearchSongQuery = (
   search: string,
   searchType: string,
   isAuthenticated: boolean,
+  languageTag?: number,
 ) => {
   return useInfiniteQuery({
-    queryKey: ['searchSong', search, searchType],
+    queryKey: ['searchSong', search, searchType, languageTag],
     queryFn: async ({ pageParam }) => {
-      const response = await getInfiniteSearchSong(search, searchType, isAuthenticated, pageParam);
+      const response = await getInfiniteSearchSong(
+        search,
+        searchType,
+        isAuthenticated,
+        pageParam,
+        languageTag,
+      );
 
       if (!response.success) {
         throw new Error('Search API failed');
@@ -63,28 +71,11 @@ export const useInfiniteSearchSongQuery = (
   });
 };
 
-export const useSearchSongQuery = (
-  search: string,
+export const useToggleToSingMutation = (
+  query: string,
   searchType: string,
-  isAuthenticated: boolean,
+  languageTag?: number,
 ) => {
-  return useQuery<SearchSong[]>({
-    queryKey: ['searchSong', search, searchType],
-    queryFn: async () => {
-      const response = await getSearchSong(search, searchType, isAuthenticated);
-      if (!response.success) {
-        return [];
-      }
-      return response.data || [];
-    },
-    enabled: !!search,
-    // DB의 값은 고정된 값이므로 캐시를 유지한다
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
-  });
-};
-
-export const useToggleToSingMutation = (query: string, searchType: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     // 낙관적 업데이트 검증 코드
@@ -98,31 +89,32 @@ export const useToggleToSingMutation = (query: string, searchType: string) => {
       }
     },
     onMutate: async ({ songId, method }: SongProps) => {
-      await queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
-      const prev = queryClient.getQueryData(['searchSong', query, searchType]);
+      const queryKey = ['searchSong', query, searchType, languageTag];
+      await queryClient.cancelQueries({ queryKey });
+      const prev = queryClient.getQueryData(queryKey);
       const isToSing = method === 'POST';
 
-      queryClient.setQueryData(
-        ['searchSong', query, searchType],
-        (old: NextPageParamType | undefined) => {
-          if (!old) return old;
+      queryClient.setQueryData(queryKey, (old: NextPageParamType | undefined) => {
+        if (!old) return old;
 
-          return {
-            ...old,
-            pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
-              ...page,
-              data: page.data.map(song => (song.id === songId ? { ...song, isToSing } : song)),
-            })),
-          };
-        },
-      );
+        return {
+          ...old,
+          pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
+            ...page,
+            data: page.data.map(song => (song.id === songId ? { ...song, isToSing } : song)),
+          })),
+        };
+      });
 
-      return { prev, query, searchType };
+      return { prev, query, searchType, languageTag };
     },
     onError: (error, variables, context) => {
       console.error('error', error);
       alert(error.message ?? 'POST 실패');
-      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
+      queryClient.setQueryData(
+        ['searchSong', context?.query, context?.searchType, context?.languageTag],
+        context?.prev,
+      );
     },
     onSettled: () => {
       if (invalidateToSingTimeout) {
@@ -130,7 +122,7 @@ export const useToggleToSingMutation = (query: string, searchType: string) => {
       }
       invalidateToSingTimeout = setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['searchSong', query, searchType],
+          queryKey: ['searchSong', query, searchType, languageTag],
         });
         queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       }, 1000);
@@ -138,7 +130,7 @@ export const useToggleToSingMutation = (query: string, searchType: string) => {
   });
 };
 
-export const useToggleLikeMutation = (query: string, searchType: string) => {
+export const useToggleLikeMutation = (query: string, searchType: string, languageTag?: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -150,30 +142,31 @@ export const useToggleLikeMutation = (query: string, searchType: string) => {
       }
     },
     onMutate: async ({ songId, method }: SongProps) => {
-      await queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
-      const prev = queryClient.getQueryData(['searchSong', query, searchType]);
+      const queryKey = ['searchSong', query, searchType, languageTag];
+      await queryClient.cancelQueries({ queryKey });
+      const prev = queryClient.getQueryData(queryKey);
       const isLike = method === 'POST';
-      queryClient.setQueryData(
-        ['searchSong', query, searchType],
-        (old: NextPageParamType | undefined) => {
-          if (!old) return old;
+      queryClient.setQueryData(queryKey, (old: NextPageParamType | undefined) => {
+        if (!old) return old;
 
-          return {
-            ...old,
-            pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
-              ...page,
-              data: page.data.map(song => (song.id === songId ? { ...song, isLike } : song)),
-            })),
-          };
-        },
-      );
+        return {
+          ...old,
+          pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
+            ...page,
+            data: page.data.map(song => (song.id === songId ? { ...song, isLike } : song)),
+          })),
+        };
+      });
 
-      return { prev, query, searchType };
+      return { prev, query, searchType, languageTag };
     },
     onError: (error, variables, context) => {
       console.error('error', error);
       alert(error.message ?? 'POST 실패');
-      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
+      queryClient.setQueryData(
+        ['searchSong', context?.query, context?.searchType, context?.languageTag],
+        context?.prev,
+      );
     },
     onSettled: () => {
       if (invalidateLikeTimeout) {
@@ -181,7 +174,7 @@ export const useToggleLikeMutation = (query: string, searchType: string) => {
       }
       invalidateLikeTimeout = setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['searchSong', query, searchType],
+          queryKey: ['searchSong', query, searchType, languageTag],
         });
         queryClient.invalidateQueries({ queryKey: ['likeSong'] });
       }, 1000);
@@ -196,35 +189,36 @@ export const useSaveMutation = () => {
     mutationFn: ({ songId, folderName }: FolderProps) => {
       return postSaveSong({ songId, folderName });
     },
-    onMutate: async ({ songId, query, searchType }: FolderProps) => {
-      await queryClient.cancelQueries({ queryKey: ['searchSong', query, searchType] });
-      const prev = queryClient.getQueryData(['searchSong', query, searchType]);
+    onMutate: async ({ songId, query, searchType, languageTag }: FolderProps) => {
+      const queryKey = ['searchSong', query, searchType, languageTag];
+      await queryClient.cancelQueries({ queryKey });
+      const prev = queryClient.getQueryData(queryKey);
 
-      queryClient.setQueryData(
-        ['searchSong', query, searchType],
-        (old: NextPageParamType | undefined) => {
-          if (!old) return old;
+      queryClient.setQueryData(queryKey, (old: NextPageParamType | undefined) => {
+        if (!old) return old;
 
-          return {
-            ...old,
-            pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
-              ...page,
-              data: page.data.map(song => (song.id === songId ? { ...song, isSave: true } : song)),
-            })),
-          };
-        },
-      );
+        return {
+          ...old,
+          pages: old.pages.map((page: { data: SearchSong[]; hasNext: boolean }) => ({
+            ...page,
+            data: page.data.map(song => (song.id === songId ? { ...song, isSave: true } : song)),
+          })),
+        };
+      });
 
-      return { prev, query, searchType };
+      return { prev, query, searchType, languageTag };
     },
     onError: (error, variables, context) => {
       console.error('error', error);
       alert(error.message ?? 'POST 실패');
-      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
+      queryClient.setQueryData(
+        ['searchSong', context?.query, context?.searchType, context?.languageTag],
+        context?.prev,
+      );
     },
     onSettled: (data, error, context) => {
       queryClient.invalidateQueries({
-        queryKey: ['searchSong', context?.query, context?.searchType],
+        queryKey: ['searchSong', context?.query, context?.searchType, context?.languageTag],
       });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolderList'] });
