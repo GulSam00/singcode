@@ -4,7 +4,7 @@
   "private": true,
   "description": "Singcode TWA (Trusted Web Activity) Android build",
   "scripts": {
-    "init": "bubblewrap init --manifest=https://singcode.kr/manifest.webmanifest",
+    "init": "bubblewrap init --manifest=https://www.singcode.kr/manifest.webmanifest",
     "build": "bubblewrap build",
     "update": "bubblewrap update"
   },

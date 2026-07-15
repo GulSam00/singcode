@@ -38,8 +38,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Singcode - 노래방에서 부를 곡, 기억하지 말고 저장하세요',
-    description: '노래방 갈 때마다 잊어버리는 곡번호? Singcode가 대신 기억할게요!',
+    title: 'Singcode - 노래방 번호 검색',
+    description: 'Singcode에서 빠르고 편하게 노래방 번호 검색하세요. J-POP 검색도 지원합니다.',
     images: ['/brand/thumbnail.png'],
   },
   robots: {
@@ -106,7 +106,7 @@ export default function RootLayout({
         <Header />
         <div className="h-full p-4">{children}</div>
 
-        <div className="pointer-events-none fixed bottom-8 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-1 pb-1">
+        <div className="pointer-events-none fixed bottom-10 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-1 pb-1">
           <div className="pointer-events-auto">
             <PromotionBanner />
           </div>

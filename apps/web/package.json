@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "type": "module",
   "private": true,
   "scripts": {
@@ -43,6 +43,7 @@
     "axios": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "country-flag-icons": "^1.6.20",
     "date-fns": "^4.1.0",
     "es-hangul": "^2.3.8",
     "framer-motion": "^12.33.0",

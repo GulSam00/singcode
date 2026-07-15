@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="space-y-8 pb-8 text-sm leading-relaxed">
+    <div className="space-y-8 pb-10 text-sm leading-relaxed">
       <div>
         <h1 className="mb-2 text-2xl font-bold">Singcode 개인정보처리방침</h1>
         <p className="text-muted-foreground">본 방침은 2025년 6월 18일부터 적용됩니다.</p>
