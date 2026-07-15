@@ -129,6 +129,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      country-flag-icons:
+        specifier: ^1.6.20
+        version: 1.6.20
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1179,11 +1182,11 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@maxim_mazurok/gapi.client.androidpublisher-v3@0.3.20260316':
-    resolution: {integrity: sha512-nBwcwZ4306W3E1kuB6gMKX1X2v+9OSOgcaBsruLm5M4Qp2SG+R0+Yq71tu8oJyLrk+XR2kULbQY7vBPvBKNS3g==}
+  '@maxim_mazurok/gapi.client.androidpublisher-v3@0.4.20260706':
+    resolution: {integrity: sha512-s8lamOTlLYOOmP0XDzjbf49levLsnfUrLyLS4gSaomCUoJ0RwDwsoZIfae5XLThGPJb6QCFqXUrmqUK2o44+mA==}
 
-  '@maxim_mazurok/gapi.client.discovery-v1@0.5.20200806':
-    resolution: {integrity: sha512-oVq9hnnI5VhAtsx55iJbPz8NRfJtWFpI1kINKeuygzCvsx90b1GQDeN3MDUvhADXiQ7+Izs316cqBnJjoDxCow==}
+  '@maxim_mazurok/gapi.client.discovery-v1@0.6.20200806':
+    resolution: {integrity: sha512-QN6aGmIbLXcJW0SEf8tz9UWCpQTBMy2u4xSuZ04YofzMGknhWwMeUecySLntCZYAEstHzDoSgwxCf5Gb8GqIRQ==}
 
   '@next/bundle-analyzer@15.5.9':
     resolution: {integrity: sha512-lT1EBpFyGVN9u8M43f2jE78DsCu0A5KPA5OkF5PdIHrKDo4oTJ4lUQKciA9T2u9gccSXIPQcZb5TYkHF4f8iiw==}
@@ -3127,6 +3130,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  country-flag-icons@1.6.20:
+    resolution: {integrity: sha512-py8JiEKzjhYw6HPJ0L7SxLgCYim36UPRTZX43/kqGueUCZLSvnrqAiwW8HtQibur7mdkFQUkjOgdK+o/9FBtaw==}
 
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
@@ -6579,12 +6585,12 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@maxim_mazurok/gapi.client.androidpublisher-v3@0.3.20260316':
+  '@maxim_mazurok/gapi.client.androidpublisher-v3@0.4.20260706':
     dependencies:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
 
-  '@maxim_mazurok/gapi.client.discovery-v1@0.5.20200806':
+  '@maxim_mazurok/gapi.client.discovery-v1@0.6.20200806':
     dependencies:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
@@ -7831,11 +7837,11 @@ snapshots:
 
   '@types/gapi.client.androidpublisher@3.0.2':
     dependencies:
-      '@maxim_mazurok/gapi.client.androidpublisher-v3': 0.3.20260316
+      '@maxim_mazurok/gapi.client.androidpublisher-v3': 0.4.20260706
 
   '@types/gapi.client.discovery-v1@0.0.4':
     dependencies:
-      '@maxim_mazurok/gapi.client.discovery-v1': 0.5.20200806
+      '@maxim_mazurok/gapi.client.discovery-v1': 0.6.20200806
 
   '@types/gapi.client@1.0.8': {}
 
@@ -8540,6 +8546,8 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.9.3
+
+  country-flag-icons@1.6.20: {}
 
   create-require@1.1.1: {}
 

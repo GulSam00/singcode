@@ -1,3 +1,5 @@
+import { JP, KR, US } from 'country-flag-icons/react/3x2';
+
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LANGUAGE_TAGS } from '@/constants/languageTags';
 import { cn } from '@/utils/cn';
@@ -22,7 +24,18 @@ const ALL_ACCENT_CLASSES =
   'border-border text-muted-foreground data-[state=active]:border-foreground data-[state=active]:bg-foreground data-[state=active]:text-background dark:data-[state=active]:border-foreground dark:data-[state=active]:bg-foreground dark:data-[state=active]:text-background data-[state=active]:shadow-none';
 
 const CHIP_BASE_CLASSES =
-  'flex-none rounded-full border bg-transparent px-3 py-1.5 font-medium shadow-none transition-all';
+  'flex-none rounded-full border bg-transparent px-2.5 py-1.5  font-medium shadow-none transition-all';
+
+const ALL_EMOJI = '🎵';
+
+const FLAG_CLASSES = 'h-3 w-auto rounded-[2px]';
+
+const TAG_ICONS: Record<number, React.ReactNode> = {
+  100: <KR title="한국어" className={FLAG_CLASSES} />,
+  101: <JP title="일본어" className={FLAG_CLASSES} />,
+  102: <US title="영어" className={FLAG_CLASSES} />,
+  103: '🌐',
+};
 
 interface LanguageTagFilterProps {
   value: number | undefined;
@@ -40,9 +53,9 @@ export default function LanguageTagFilter({ value, onChange }: LanguageTagFilter
       onValueChange={handleValueChange}
       className="w-full"
     >
-      <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0">
+      <TabsList className="h-auto w-full flex-wrap justify-start gap-1 bg-transparent p-0">
         <TabsTrigger value={ALL_VALUE} className={cn(CHIP_BASE_CLASSES, ALL_ACCENT_CLASSES)}>
-          전체
+          {ALL_EMOJI} 전체
         </TabsTrigger>
         {LANGUAGE_TAGS.map(tag => (
           <TabsTrigger
@@ -50,7 +63,7 @@ export default function LanguageTagFilter({ value, onChange }: LanguageTagFilter
             value={String(tag.id)}
             className={cn(CHIP_BASE_CLASSES, TAG_ACCENT_CLASSES[tag.id])}
           >
-            {tag.name}
+            {TAG_ICONS[tag.id]} {tag.name}
           </TabsTrigger>
         ))}
       </TabsList>
