@@ -28,9 +28,9 @@ export const metadata: Metadata = {
     siteName: 'Singcode',
     images: [
       {
-        url: '/brand/thumbnail.png',
-        width: 1200,
-        height: 630,
+        url: '/icons/icon-512.png',
+        width: 512,
+        height: 512,
         alt: 'Singcode 썸네일 이미지',
       },
     ],
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Singcode - 노래방 번호 검색',
     description: 'Singcode에서 빠르고 편하게 노래방 번호 검색하세요. J-POP 검색도 지원합니다.',
-    images: ['/brand/thumbnail.png'],
+    images: ['/icons/icon-512.png'],
   },
   robots: {
     index: true,
