@@ -56,7 +56,7 @@ export default function WithdrawalPage() {
   };
 
   return (
-    <div className="bg-background flex h-dvh flex-col justify-center px-4">
+    <div className="bg-background flex h-full flex-col justify-center px-4">
       <div className="mx-auto w-full max-w-md space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold">회원 탈퇴</h1>

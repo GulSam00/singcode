@@ -102,9 +102,9 @@ export default function RootLayout({
 
   const AppContent = () => (
     <ErrorWrapper>
-      <div className="relative flex h-full w-full max-w-md flex-col">
+      <div className="relative flex h-dvh w-full max-w-md flex-col overflow-hidden">
         <Header />
-        <div className="h-full p-4">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-4">{children}</div>
 
         <div className="pointer-events-none fixed bottom-10 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-1 pb-1">
           <div className="pointer-events-auto">

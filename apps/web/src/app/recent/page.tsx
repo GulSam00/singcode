@@ -45,8 +45,8 @@ export default function RecentSongPage() {
   const months = Array.from({ length: 12 }, (_, i) => i);
 
   return (
-    <div className="bg-background h-full space-y-4">
-      <div className="flex items-center justify-between px-2">
+    <div className="bg-background flex h-full flex-col space-y-4">
+      <div className="flex shrink-0 items-center justify-between px-2">
         <Button variant="ghost" size="icon" onClick={handlePrevMonth}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -86,7 +86,7 @@ export default function RecentSongPage() {
       </div>
 
       {recentAddSongs && recentAddSongs.length > 0 ? (
-        <div className="flex h-[calc(100vh-16rem)] flex-col overflow-y-auto">
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {recentAddSongs.map(song => (
             <RecentSongCard key={song.id} song={song} />
           ))}

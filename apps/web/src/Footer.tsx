@@ -30,7 +30,7 @@ export default function Footer() {
   const navPath = pathname.split('/')[1];
 
   return (
-    <footer className="bg-background fixed bottom-0 flex h-10 w-full max-w-md justify-between border-t">
+    <footer className="bg-background flex h-10 w-full max-w-md shrink-0 justify-between border-t">
       {navigation.map(item => {
         const isActive = '/' + navPath === item.href;
         const isAnimating = footerAnimateKey === item.key;
