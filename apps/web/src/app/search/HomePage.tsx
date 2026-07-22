@@ -141,8 +141,8 @@ export default function SearchPage() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   return (
-    <div className="bg-background">
-      <div className="flex flex-col gap-4">
+    <div className="bg-background flex h-full flex-col">
+      <div className="flex shrink-0 flex-col gap-4">
         <div className="flex justify-between">
           <div className="flex flex-col">
             <h1 className="text-2xl font-bold">노래 검색</h1>
@@ -226,7 +226,7 @@ export default function SearchPage() {
 
         <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
       </div>
-      <div ref={setScrollRef} className="h-[calc(100vh-22rem)] overflow-x-hidden overflow-y-auto">
+      <div ref={setScrollRef} className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
           <div className="flex w-full max-w-md flex-col gap-4 p-4">
             {searchSongs.map((song, index) => (

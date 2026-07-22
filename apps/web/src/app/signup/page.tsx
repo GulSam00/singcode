@@ -78,7 +78,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="bg-background flex h-dvh flex-col justify-center px-4">
+    <div className="bg-background flex h-full flex-col justify-center px-4">
       <div className="w-full space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold">회원가입</h1>

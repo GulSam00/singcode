@@ -17,8 +17,8 @@ export default function PopularRankingList() {
   }
 
   return (
-    <Card className="relative">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+    <Card className="relative flex min-h-0 flex-1 flex-col">
+      <CardHeader className="flex shrink-0 flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl">추천 곡 순위</CardTitle>
 
         <RotateCw
@@ -27,7 +27,7 @@ export default function PopularRankingList() {
         />
       </CardHeader>
 
-      <ScrollArea className="h-[calc(100vh-22rem)]">
+      <ScrollArea className="min-h-0 flex-1">
         <CardContent className="pt-0">
           <div className="space-y-0">
             {data && data.length > 0 ? (
