@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useMoveSaveSongMutation } from '@/queries/saveSongQuery';
@@ -24,15 +24,18 @@ export default function useSaveSongModal(
   const { mutate: postSong, isPending: isPostSongPending } = useSaveMutation();
   const { mutate: moveSong, isPending: isMoveSongPending } = useMoveSaveSongMutation();
 
-  const handleToggleSave = async (song: SearchSong, method: Method) => {
-    if (!isAuthenticated) {
-      toast.error('로그인하고 곡을 저장해보세요!');
-      return;
-    }
+  const handleToggleSave = useCallback(
+    async (song: SearchSong, method: Method) => {
+      if (!isAuthenticated) {
+        toast.error('로그인하고 곡을 저장해보세요!');
+        return;
+      }
 
-    setSelectedSaveSong(song);
-    setSaveModalType(method === 'POST' ? 'POST' : 'PATCH');
-  };
+      setSelectedSaveSong(song);
+      setSaveModalType(method === 'POST' ? 'POST' : 'PATCH');
+    },
+    [isAuthenticated],
+  );
 
   const postSaveSong = async (songId: string, folderName: string) => {
     if (isPostSongPending) {

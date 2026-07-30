@@ -3,7 +3,7 @@
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,7 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isAlert = searchParams.get('alert');
+  const hasShownLoginAlertRef = useRef(false);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,23 +56,24 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      toast.success('로그인 확인', {
-        description: '이미 로그인 하셨어요!',
-      });
-      router.push('/');
-    }
+    if (!isAuthenticated) return;
 
-    if (isAlert) {
-      setTimeout(() => {
-        toast.error('로그인이 필요해요.', {
-          description: '로그인 후 이용해주세요.',
-          duration: 5000,
-        });
-        router.replace('/login', { scroll: false });
-      }, 0);
-    }
-  }, [router, isAuthenticated, isAlert]);
+    toast.success('로그인 확인', {
+      description: '이미 로그인 하셨어요!',
+    });
+    router.push('/');
+  }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    if (!isAlert || hasShownLoginAlertRef.current || isAuthenticated) return;
+    hasShownLoginAlertRef.current = true;
+
+    toast.error('로그인이 필요해요.', {
+      description: '로그인 후 이용해주세요.',
+      duration: 5000,
+    });
+    router.replace('/login', { scroll: false });
+  }, [isAlert, isAuthenticated, router]);
 
   return (
     <div className="bg-background flex h-full flex-col justify-center px-4">
