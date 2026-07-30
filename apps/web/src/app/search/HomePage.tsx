@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, Info, Loader2, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -13,11 +13,13 @@ import useSaveSongModal from '@/hooks/useSaveSongModal';
 import useSearchSong from '@/hooks/useSearchSong';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
 import { SearchSong } from '@/types/song';
+import { cn } from '@/utils/cn';
 
 import AddFolderModal from './AddFolderModal';
 // import ChatBot from './ChatBot';
 import JpnArtistList from './JpnArtistList';
 import LanguageTagFilter from './LanguageTagFilter';
+import NumberKeypad from './NumberKeypad';
 import PopularSearchHistory from './PopularSearchHistory';
 import SearchAutocomplete from './SearchAutocomplete';
 import SearchHistory from './SearchHistory';
@@ -62,6 +64,7 @@ export default function SearchPage() {
 
   const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
   const [isFocusAuto, setIsFocusAuto] = useState(false);
+  const [isNumberKeypadOpen, setIsNumberKeypadOpen] = useState(false);
   // const [isChatBotEnabled, setIsChatBotEnabled] = useState(() => {
   //   if (typeof window === 'undefined') return true;
   //   const stored = localStorage.getItem('chatbot-enabled');
@@ -92,6 +95,9 @@ export default function SearchPage() {
     ? searchResults.pages.flatMap(page => page.data)
     : [];
 
+  const isNumberKeypadVisible =
+    searchType === 'number' && (isNumberKeypadOpen || searchSongs.length === 0);
+
   // 엔터 키 처리
   const handleKeyUp = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -103,11 +109,22 @@ export default function SearchPage() {
   const handleSearchClick = () => {
     handleSearch();
     setIsFocusAuto(false);
+    setIsNumberKeypadOpen(false);
+  };
+
+  const handleToggleNumberKeypad = () => {
+    setIsNumberKeypadOpen(prev => !prev);
   };
 
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (searchType === 'number' && value.length > 5) return;
+
+    if (searchType === 'number') {
+      const digitsOnly = value.replace(/\D/g, '').slice(0, 5);
+      setSearch(digitsOnly);
+      return;
+    }
+
     setSearch(value);
     setIsFocusAuto(true);
   };
@@ -119,6 +136,26 @@ export default function SearchPage() {
   const handleAutocompleteClick = (term: string) => {
     setSearch(term);
     setIsFocusAuto(false);
+  };
+
+  const handleKeypadDigit = (digit: string) => {
+    setSearch(prev => (prev.length >= 5 ? prev : prev + digit));
+  };
+
+  const handleKeypadBackspace = () => {
+    setSearch(prev => prev.slice(0, -1));
+  };
+
+  const handleKeypadClear = () => {
+    setSearch('');
+  };
+
+  const handleTabChange = (value: string) => {
+    if (value === 'number' || searchType === 'number') {
+      setSearch('');
+      setIsNumberKeypadOpen(false);
+    }
+    handleSearchTypeChange(value);
   };
 
   const getPlaceholder = (type: string) => {
@@ -147,12 +184,12 @@ export default function SearchPage() {
           <div className="flex flex-col">
             <h1 className="text-2xl font-bold">노래 검색</h1>
 
-            {!isAuthenticated && (
+            {/* {!isAuthenticated && (
               <span className="text-muted-foreground text-sm">
                 Guest 상태에서는 <br />
                 [부를곡 추가]만 가능합니다.
               </span>
-            )}
+            )} */}
           </div>
           <div className="flex flex-col items-end gap-2">
             <JpnArtistList
@@ -177,7 +214,7 @@ export default function SearchPage() {
           </div>
         </div>
 
-        <Tabs defaultValue="all" value={searchType} onValueChange={handleSearchTypeChange}>
+        <Tabs defaultValue="all" value={searchType} onValueChange={handleTabChange}>
           <TabsList className="dark:bg-muted/50 grid w-full grid-cols-4 dark:border">
             {(
               [
@@ -198,11 +235,29 @@ export default function SearchPage() {
           </TabsList>
         </Tabs>
 
-        <div className="flex gap-2">
+        <div className="relative flex gap-2">
+          {searchType === 'number' && (
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleToggleNumberKeypad}
+              aria-label={isNumberKeypadVisible ? '키패드 닫기' : '키패드 열기'}
+            >
+              {isNumberKeypadVisible ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+
           <div className="relative flex-1">
             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
             <Input
               type="text"
+              inputMode={searchType === 'number' ? 'numeric' : 'text'}
+              pattern={searchType === 'number' ? '[0-9]*' : undefined}
               placeholder={getPlaceholder(searchType)}
               className="pl-8"
               value={search}
@@ -211,7 +266,7 @@ export default function SearchPage() {
               onFocus={() => setIsFocusAuto(true)}
               onBlur={() => setIsFocusAuto(false)}
             />
-            {isFocusAuto && (
+            {isFocusAuto && searchType !== 'number' && (
               <SearchAutocomplete
                 autoCompleteList={autoCompleteList}
                 onSelect={handleAutocompleteClick}
@@ -219,12 +274,37 @@ export default function SearchPage() {
             )}
           </div>
 
-          <Button className="w-[60px]" onClick={handleSearchClick} disabled={isPendingSearch}>
+          <Button className="w-15" onClick={handleSearchClick} disabled={isPendingSearch}>
             {isPendingSearch ? <Loader2 className="h-4 w-4 animate-spin" /> : '검색'}
           </Button>
+
+          {searchType === 'number' && (
+            <div
+              className={cn(
+                'bg-background absolute inset-x-0 top-full z-20 mt-2 h-[35vh] overflow-hidden rounded-md border p-2 shadow-lg transition-opacity duration-200',
+                isNumberKeypadVisible ? 'opacity-100' : 'pointer-events-none opacity-0',
+              )}
+            >
+              <NumberKeypad
+                onDigitClick={handleKeypadDigit}
+                onBackspace={handleKeypadBackspace}
+                onClear={handleKeypadClear}
+                onSearch={handleSearchClick}
+                isPending={isPendingSearch}
+              />
+            </div>
+          )}
         </div>
 
-        <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
+        {searchType !== 'number' && (
+          <>
+            <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
+            <div className="text-muted-foreground flex items-center gap-2">
+              <Info className="h-4 w-4" />
+              <span className="m-2">전체 문장보다는 단어 단위로 검색해보세요</span>
+            </div>
+          </>
+        )}
       </div>
       <div ref={setScrollRef} className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
@@ -254,7 +334,7 @@ export default function SearchPage() {
 
         {!isPendingSearch && searchSongs.length === 0 && query && <SearchStatus status="empty" />}
 
-        {searchSongs.length === 0 && !query && (
+        {searchSongs.length === 0 && !query && searchType !== 'number' && (
           <div className="flex h-full flex-col justify-center gap-2">
             <SearchHistory onHistoryClick={handleHistoryClick} />
             <PopularSearchHistory onHistoryClick={handleHistoryClick} />
