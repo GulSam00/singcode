@@ -189,8 +189,12 @@ export default function SearchPage() {
     handleSearchTypeChange(value as SearchType);
   };
 
-  const { tourTriggerSignal, handlePrepareExampleSearch, handleStartTour } =
-    useSearchTourController({ handleTabChange, handleSearch });
+  const {
+    tourTriggerSignal,
+    handlePrepareExampleSearch,
+    handleTourNormalizeState,
+    handleStartTour,
+  } = useSearchTourController({ handleTabChange, handleSearch });
 
   const getPlaceholder = (type: string) => {
     switch (type) {
@@ -326,7 +330,7 @@ export default function SearchPage() {
             )}
           </div>
 
-          <Button className="w-15" onClick={handleSearchClick} disabled={isPendingSearch}>
+          <Button className="w-[60px]" onClick={handleSearchClick} disabled={isPendingSearch}>
             {isPendingSearch ? <Loader2 className="h-4 w-4 animate-spin" /> : '검색'}
           </Button>
 
@@ -409,6 +413,7 @@ export default function SearchPage() {
 
       <SearchTour
         onPrepareExampleSearch={handlePrepareExampleSearch}
+        onTourNormalizeState={handleTourNormalizeState}
         triggerSignal={tourTriggerSignal}
       />
     </div>

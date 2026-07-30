@@ -51,10 +51,15 @@ const LOCALE = {
 
 interface SearchTourProps {
   onPrepareExampleSearch: () => void;
+  onTourNormalizeState: () => void;
   triggerSignal: number;
 }
 
-export default function SearchTour({ onPrepareExampleSearch, triggerSignal }: SearchTourProps) {
+export default function SearchTour({
+  onPrepareExampleSearch,
+  onTourNormalizeState,
+  triggerSignal,
+}: SearchTourProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
@@ -182,6 +187,7 @@ export default function SearchTour({ onPrepareExampleSearch, triggerSignal }: Se
       totalWaited += STEP_MS;
 
       if (clearStreak >= REQUIRED_CLEAR_STREAK || totalWaited >= MAX_WAIT_MS) {
+        onTourNormalizeState();
         controls.start();
         return;
       }
@@ -199,6 +205,7 @@ export default function SearchTour({ onPrepareExampleSearch, triggerSignal }: Se
 
   useEffect(() => {
     if (triggerSignal === 0) return;
+    onTourNormalizeState();
     controls.start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerSignal]);

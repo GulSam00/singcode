@@ -65,7 +65,7 @@ export default function LoginPage() {
   }, [isAuthenticated, router]);
 
   useEffect(() => {
-    if (!isAlert || hasShownLoginAlertRef.current) return;
+    if (!isAlert || hasShownLoginAlertRef.current || isAuthenticated) return;
     hasShownLoginAlertRef.current = true;
 
     toast.error('로그인이 필요해요.', {
@@ -73,7 +73,7 @@ export default function LoginPage() {
       duration: 5000,
     });
     router.replace('/login', { scroll: false });
-  }, [isAlert, router]);
+  }, [isAlert, isAuthenticated, router]);
 
   return (
     <div className="bg-background flex h-full flex-col justify-center px-4">

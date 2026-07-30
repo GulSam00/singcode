@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { cn } from '@/utils/cn';
 
 interface SongActionButtonsProps {
   isToSing: boolean;
@@ -39,7 +40,10 @@ export default function SongActionButtons({
         <Button
           variant="ghost"
           size="icon"
-          className={`h-13 flex-1 flex-col items-center justify-center ${isToSing ? 'text-primary bg-primary/10' : ''}`}
+          className={cn(
+            'h-13 flex-1 flex-col items-center justify-center',
+            isToSing && 'text-primary bg-primary/10',
+          )}
           aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
           onClick={onToggleToSing}
           data-tour="card-tosing-button"
@@ -51,19 +55,25 @@ export default function SongActionButtons({
         <Button
           variant="ghost"
           size="icon"
-          className={`h-13 flex-1 flex-col items-center justify-center ${isLike ? 'text-yellow-500' : ''}`}
+          className={cn(
+            'h-13 flex-1 flex-col items-center justify-center',
+            isLike && 'text-yellow-500',
+          )}
           aria-label={isLike ? '즐겨찾기 취소' : '즐겨찾기'}
           onClick={onToggleLike}
           data-tour="card-like-button"
         >
-          <Star className={isLike ? 'fill-current' : ''} />
+          <Star className={cn(isLike && 'fill-current')} />
           <span className="text-xs">{isLike ? '즐겨찾기 취소' : '즐겨찾기'}</span>
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
-          className={`h-13 flex-1 flex-col items-center justify-center ${isSave ? 'text-primary bg-primary/10' : ''}`}
+          className={cn(
+            'h-13 flex-1 flex-col items-center justify-center',
+            isSave && 'text-primary bg-primary/10',
+          )}
           aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
           onClick={onClickSave}
           data-tour="card-save-button"
