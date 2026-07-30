@@ -74,7 +74,7 @@ export default function LoginPage() {
   }, [router, isAuthenticated, isAlert]);
 
   return (
-    <div className="bg-background flex h-dvh flex-col justify-center px-4">
+    <div className="bg-background flex h-full flex-col justify-center px-4">
       <div className="w-full space-y-6">
         <div className="flex flex-col items-center gap-1">
           <h1 className="text-2xl font-bold">로그인</h1>
