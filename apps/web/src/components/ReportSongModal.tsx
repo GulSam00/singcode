@@ -114,9 +114,9 @@ export default function ReportSongModal({
   return (
     <div className="flex flex-col gap-4 sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>오류 신고</DialogTitle>
+        <DialogTitle>수정 요청</DialogTitle>
         <DialogDescription className="sr-only">
-          {getDisplay(title_ko, title)} - {getDisplay(artist_ko, artist)} 곡에 대한 오류 신고
+          {getDisplay(title_ko, title)} - {getDisplay(artist_ko, artist)} 곡에 대한 수정 요청
         </DialogDescription>
       </DialogHeader>
 

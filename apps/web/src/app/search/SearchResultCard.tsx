@@ -78,7 +78,7 @@ export default function SearchResultCard({
   const handleClickThumbsUp = withAuth('로그인하고 곡 추천 기능을 사용해보세요!', () =>
     setOpen(true),
   );
-  const handleClickReport = withAuth('로그인하고 오류 신고에 참여해주세요!', () =>
+  const handleClickReport = withAuth('로그인하고 수정 요청에 참여해주세요!', () =>
     setReportOpen(true),
   );
   const handleClickPromotion = withAuth('로그인하고 곡 홍보 기능을 사용해보세요!', () =>
@@ -246,11 +246,11 @@ export default function SearchResultCard({
                   <Button
                     variant="ghost"
                     className="h-10 flex-1 justify-start gap-2"
-                    aria-label="오류 신고"
+                    aria-label="수정 요청"
                     onClick={handleClickReport}
                   >
                     <Flag className="h-4 w-4" />
-                    <span className="text-xs">오류 신고</span>
+                    <span className="text-xs">수정 요청</span>
                   </Button>
                 </div>
               </div>
