@@ -1,7 +1,7 @@
 'use client';
 
-import { ChevronDown, ChevronUp, Info, Loader2, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ChevronDown, ChevronUp, HelpCircle, Info, Loader2, Search } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { Button } from '@/components/ui/button';
@@ -11,8 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useSaveSongModal from '@/hooks/useSaveSongModal';
 import useSearchSong from '@/hooks/useSearchSong';
+import useSearchTourController from '@/hooks/useSearchTourController';
 import useGuestToSingStore from '@/stores/useGuestToSingStore';
-import { SearchSong } from '@/types/song';
+import { SearchSong, SearchType } from '@/types/song';
 import { cn } from '@/utils/cn';
 
 import AddFolderModal from './AddFolderModal';
@@ -25,6 +26,7 @@ import SearchAutocomplete from './SearchAutocomplete';
 import SearchHistory from './SearchHistory';
 import SearchResultCard from './SearchResultCard';
 import SearchStatus from './SearchStatus';
+import SearchTour from './SearchTour';
 
 export default function SearchPage() {
   const {
@@ -84,16 +86,45 @@ export default function SearchPage() {
   //   localStorage.setItem('chatbot-enabled', String(checked));
   // };
 
-  const isToSing = (song: SearchSong, songId: string) => {
-    if (!isAuthenticated) {
-      return guestToSingSongs?.some(item => item.songs.id === songId);
-    }
-    return song.isToSing;
-  };
+  const guestToSingIds = useMemo(
+    () => new Set(guestToSingSongs?.map(item => item.songs.id)),
+    [guestToSingSongs],
+  );
+
+  const isToSing = useCallback(
+    (song: SearchSong, songId: string) => {
+      if (!isAuthenticated) {
+        return guestToSingIds.has(songId);
+      }
+      return song.isToSing;
+    },
+    [isAuthenticated, guestToSingIds],
+  );
 
   const searchSongs: SearchSong[] = searchResults
     ? searchResults.pages.flatMap(page => page.data)
     : [];
+
+  const handleCardToggleToSing = useCallback(
+    (song: SearchSong) => {
+      handleToggleToSing(song, isToSing(song, song.id) ? 'DELETE' : 'POST');
+    },
+    [handleToggleToSing, isToSing],
+  );
+
+  const handleCardToggleLike = useCallback(
+    (song: SearchSong) => {
+      handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST');
+    },
+    [handleToggleLike],
+  );
+
+  const handleCardClickSave = useCallback(
+    (song: SearchSong) => {
+      handleToggleSave(song, song.isSave ? 'PATCH' : 'POST');
+    },
+    [handleToggleSave],
+  );
 
   const isNumberKeypadVisible =
     searchType === 'number' && (isNumberKeypadOpen || searchSongs.length === 0);
@@ -155,8 +186,11 @@ export default function SearchPage() {
       setSearch('');
       setIsNumberKeypadOpen(false);
     }
-    handleSearchTypeChange(value);
+    handleSearchTypeChange(value as SearchType);
   };
+
+  const { tourTriggerSignal, handlePrepareExampleSearch, handleStartTour } =
+    useSearchTourController({ handleTabChange, handleSearch });
 
   const getPlaceholder = (type: string) => {
     switch (type) {
@@ -182,7 +216,19 @@ export default function SearchPage() {
       <div className="flex shrink-0 flex-col gap-4">
         <div className="flex justify-between">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold">노래 검색</h1>
+            <div className="flex items-center gap-1">
+              <h1 className="text-2xl font-bold">노래 검색</h1>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={handleStartTour}
+                aria-label="사용법 다시 보기"
+              >
+                <HelpCircle className="text-muted-foreground h-4 w-4" />
+              </Button>
+            </div>
 
             {/* {!isAuthenticated && (
               <span className="text-muted-foreground text-sm">
@@ -214,7 +260,12 @@ export default function SearchPage() {
           </div>
         </div>
 
-        <Tabs defaultValue="all" value={searchType} onValueChange={handleTabChange}>
+        <Tabs
+          defaultValue="all"
+          value={searchType}
+          onValueChange={handleTabChange}
+          data-tour="search-type-tabs"
+        >
           <TabsList className="dark:bg-muted/50 grid w-full grid-cols-4 dark:border">
             {(
               [
@@ -227,7 +278,7 @@ export default function SearchPage() {
               <TabsTrigger
                 key={value}
                 value={value}
-                className="dark:data-[state=active]:bg-accent/15 dark:data-[state=active]:text-accent dark:data-[state=active]:shadow-(--glow-accent)"
+                className="data-[state=inactive]:hover:bg-accent/10 data-[state=inactive]:hover:text-accent dark:data-[state=inactive]:hover:bg-accent/10 dark:data-[state=inactive]:hover:text-accent dark:data-[state=active]:bg-accent/15 dark:data-[state=active]:text-accent dark:data-[state=active]:shadow-(--glow-accent)"
               >
                 {label}
               </TabsTrigger>
@@ -241,13 +292,14 @@ export default function SearchPage() {
               type="button"
               variant="outline"
               size="icon"
+              className="hidden md:inline-flex"
               onClick={handleToggleNumberKeypad}
               aria-label={isNumberKeypadVisible ? '키패드 닫기' : '키패드 열기'}
             >
               {isNumberKeypadVisible ? (
-                <ChevronUp className="h-4 w-4" />
+                <ChevronUp className="h-4 w-4 text-white" />
               ) : (
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-4 w-4 text-white" />
               )}
             </Button>
           )}
@@ -281,7 +333,7 @@ export default function SearchPage() {
           {searchType === 'number' && (
             <div
               className={cn(
-                'bg-background absolute inset-x-0 top-full z-20 mt-2 h-[35vh] overflow-hidden rounded-md border p-2 shadow-lg transition-opacity duration-200',
+                'bg-background absolute inset-x-0 top-full z-20 mt-2 hidden h-[35vh] overflow-hidden rounded-md border p-2 shadow-lg transition-opacity duration-200 md:block',
                 isNumberKeypadVisible ? 'opacity-100' : 'pointer-events-none opacity-0',
               )}
             >
@@ -298,7 +350,9 @@ export default function SearchPage() {
 
         {searchType !== 'number' && (
           <>
-            <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
+            <div data-tour="language-filter">
+              <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
+            </div>
             <div className="text-muted-foreground flex items-center gap-2">
               <Info className="h-4 w-4" />
               <span className="m-2">전체 문장보다는 단어 단위로 검색해보세요</span>
@@ -308,7 +362,7 @@ export default function SearchPage() {
       </div>
       <div ref={setScrollRef} className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {searchSongs.length > 0 && (
-          <div className="flex w-full max-w-md flex-col gap-4 p-4">
+          <div className="flex w-full max-w-md flex-col gap-4 p-4" data-tour="search-result-list">
             {searchSongs.map((song, index) => (
               <SearchResultCard
                 key={song.artist + song.title + index}
@@ -316,11 +370,9 @@ export default function SearchPage() {
                 isToSing={isToSing(song, song.id)}
                 isLike={song.isLike}
                 isSave={song.isSave}
-                onToggleToSing={() =>
-                  handleToggleToSing(song, isToSing(song, song.id) ? 'DELETE' : 'POST')
-                }
-                onToggleLike={() => handleToggleLike(song.id, song.isLike ? 'DELETE' : 'POST')}
-                onClickSave={() => handleToggleSave(song, song.isSave ? 'PATCH' : 'POST')}
+                onToggleToSing={handleCardToggleToSing}
+                onToggleLike={handleCardToggleLike}
+                onClickSave={handleCardClickSave}
               />
             ))}
             {hasNextPage && !isFetchingNextPage && (
@@ -354,6 +406,11 @@ export default function SearchPage() {
 
       {/* 챗봇 위젯 */}
       {/* {isChatBotEnabled && <ChatBot setInputSearch={setSearch} />} */}
+
+      <SearchTour
+        onPrepareExampleSearch={handlePrepareExampleSearch}
+        triggerSignal={tourTriggerSignal}
+      />
     </div>
   );
 }
