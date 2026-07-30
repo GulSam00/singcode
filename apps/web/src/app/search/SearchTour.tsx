@@ -145,6 +145,9 @@ export default function SearchTour({
       showProgress: true,
       buttons: TOOLTIP_BUTTONS,
       skipBeacon: true,
+      // 라이브러리 기본값(고정 380px)은 375px 이하 모바일 화면에서 좌우로 넘친다.
+      // 뷰포트보다 넓어지지 않되, 넓은 화면에서는 기존 380px 상한을 유지한다.
+      width: 'min(380px, calc(100vw - 32px))',
     }),
     [isDark],
   );
