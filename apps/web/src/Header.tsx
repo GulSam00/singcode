@@ -98,7 +98,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-background sticky top-0 z-50 flex h-16 w-full max-w-md items-center justify-between border-b p-4">
+    <header className="bg-background sticky top-0 z-50 flex h-16 w-full max-w-md shrink-0 items-center justify-between border-b p-4">
       <div
         className="font-barcode hover:text-accent cursor-pointer text-5xl transition-colors"
         onClick={() => router.push('/')}
@@ -109,7 +109,7 @@ export default function Header() {
         <ExpandableButton
           buttonKey="theme"
           expanded={expanded}
-          label={theme === 'dark' ? '라이트 모드' : '다크 모드'}
+          label={theme === 'dark' ? '라이트' : '다크'}
           icon={
             <span className="relative h-4 w-4">
               <Sun className="absolute h-4 w-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
@@ -124,7 +124,7 @@ export default function Header() {
         <ExpandableButton
           buttonKey="checkin"
           expanded={expanded}
-          label="출석체크"
+          label="출석"
           icon={<CalendarCheck className="h-4 w-4" />}
           disabled={isLoading}
           onClick={() => handleExpandableClick('checkin', () => setOpen(true))}

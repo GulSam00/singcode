@@ -1,16 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  ChevronDown,
-  Flag,
-  ListPlus,
-  ListRestart,
-  Megaphone,
-  MinusCircle,
-  PlusCircle,
-  Star,
-  ThumbsUp,
-} from 'lucide-react';
-import { useState } from 'react';
+import { ChevronDown, ThumbsUp } from 'lucide-react';
+import { memo, useState } from 'react';
 import { toast } from 'sonner';
 
 import MarqueeText from '@/components/MarqueeText';
@@ -24,18 +14,20 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import useAuthStore from '@/stores/useAuthStore';
 import { SearchSong } from '@/types/song';
 
-interface IProps {
+import SongActionButtons from './SongActionButtons';
+
+interface SearchResultCardProps {
   song: SearchSong;
   isToSing: boolean;
   isLike: boolean;
   isSave: boolean;
 
-  onToggleToSing: () => void;
-  onToggleLike: () => void;
-  onClickSave: () => void;
+  onToggleToSing: (song: SearchSong) => void;
+  onToggleLike: (song: SearchSong) => void;
+  onClickSave: (song: SearchSong) => void;
 }
 
-export default function SearchResultCard({
+function SearchResultCard({
   song,
   isToSing,
   isLike,
@@ -44,7 +36,7 @@ export default function SearchResultCard({
   onToggleToSing,
   onToggleLike,
   onClickSave,
-}: IProps) {
+}: SearchResultCardProps) {
   const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, thumb } = song;
   const hasKoTitle = !!title_ko && title_ko !== title;
   const hasKoArtist = !!artist_ko && artist_ko !== artist;
@@ -53,9 +45,9 @@ export default function SearchResultCard({
 
   const { isAuthenticated } = useAuthStore();
 
-  const [open, setOpen] = useState(false);
-  const [reportOpen, setReportOpen] = useState(false);
-  const [promotionOpen, setPromotionOpen] = useState(false);
+  const [isThumbsUpOpen, setIsThumbsUpOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isPromotionOpen, setIsPromotionOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const withAuth = (message: string, action: () => void) => () => {
@@ -76,13 +68,13 @@ export default function SearchResultCard({
   };
 
   const handleClickThumbsUp = withAuth('로그인하고 곡 추천 기능을 사용해보세요!', () =>
-    setOpen(true),
+    setIsThumbsUpOpen(true),
   );
-  const handleClickReport = withAuth('로그인하고 오류 신고에 참여해주세요!', () =>
-    setReportOpen(true),
+  const handleClickReport = withAuth('로그인하고 수정 요청에 참여해주세요!', () =>
+    setIsReportOpen(true),
   );
   const handleClickPromotion = withAuth('로그인하고 곡 홍보 기능을 사용해보세요!', () =>
-    setPromotionOpen(true),
+    setIsPromotionOpen(true),
   );
 
   return (
@@ -124,13 +116,14 @@ export default function SearchResultCard({
               )}
             </div>
 
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog open={isThumbsUpOpen} onOpenChange={setIsThumbsUpOpen}>
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-10 w-10"
                 aria-label={'추천하기'}
                 onClick={handleClickThumbsUp}
+                data-tour="card-thumbs-up"
               >
                 <div className="flex flex-col items-center">
                   <ThumbsUp />
@@ -146,7 +139,7 @@ export default function SearchResultCard({
                   title_ko={title_ko}
                   artist_ko={artist_ko}
                   thumb={thumb || 0}
-                  handleClose={() => setOpen(false)}
+                  handleClose={() => setIsThumbsUpOpen(false)}
                 />
               </DialogContent>
             </Dialog>
@@ -156,6 +149,7 @@ export default function SearchResultCard({
           <div
             className="hover:bg-muted/40 active:bg-muted/60 flex cursor-pointer items-center justify-between rounded-md border-b p-1 transition-colors"
             onClick={() => setIsExpanded(!isExpanded)}
+            data-tour="card-expand-toggle"
           >
             <div className="flex space-x-4">
               <div className="flex w-[70px] items-center">
@@ -193,74 +187,23 @@ export default function SearchResultCard({
               transition={{ duration: 0.2, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <div className="flex flex-col gap-2 pt-2">
-                <div className="flex w-full space-x-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={`h-13 flex-1 flex-col items-center justify-center ${isToSing ? 'text-primary bg-primary/10' : ''}`}
-                    aria-label={isToSing ? '내 노래 목록에서 제거' : '내 노래 목록에 추가'}
-                    onClick={onToggleToSing}
-                  >
-                    {isToSing ? <MinusCircle /> : <PlusCircle />}
-                    <span className="text-xs">{isToSing ? '부를곡 취소' : '부를곡 추가'}</span>
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={`h-13 flex-1 flex-col items-center justify-center ${isLike ? 'text-yellow-500' : ''}`}
-                    aria-label={isLike ? '즐겨찾기 취소' : '즐겨찾기'}
-                    onClick={onToggleLike}
-                  >
-                    <Star className={isLike ? 'fill-current' : ''} />
-                    <span className="text-xs">{isLike ? '즐겨찾기 취소' : '즐겨찾기'}</span>
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={`h-13 flex-1 flex-col items-center justify-center ${isSave ? 'text-primary bg-primary/10' : ''}`}
-                    aria-label={isSave ? '재생목록 수정' : '재생목록에 추가'}
-                    onClick={onClickSave}
-                  >
-                    {isSave ? (
-                      <ListRestart className="h-5 w-5" />
-                    ) : (
-                      <ListPlus className="h-5 w-5" />
-                    )}
-                    <span className="text-xs">{isSave ? '재생목록 수정' : '재생목록 추가'}</span>
-                  </Button>
-                </div>
-
-                <div className="flex w-full space-x-2">
-                  <Button
-                    variant="ghost"
-                    className="h-10 flex-1 justify-start gap-2"
-                    aria-label="홍보하기"
-                    onClick={handleClickPromotion}
-                  >
-                    <Megaphone className="h-4 w-4" />
-                    <span className="text-xs">홍보하기</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="h-10 flex-1 justify-start gap-2"
-                    aria-label="오류 신고"
-                    onClick={handleClickReport}
-                  >
-                    <Flag className="h-4 w-4" />
-                    <span className="text-xs">오류 신고</span>
-                  </Button>
-                </div>
-              </div>
+              <SongActionButtons
+                isToSing={isToSing}
+                isLike={isLike}
+                isSave={isSave}
+                onToggleToSing={() => onToggleToSing(song)}
+                onToggleLike={() => onToggleLike(song)}
+                onClickSave={() => onClickSave(song)}
+                onClickPromotion={handleClickPromotion}
+                onClickReport={handleClickReport}
+              />
 
               <SongCommentSection songId={id} isExpanded={isExpanded} />
             </motion.div>
           )}
         </AnimatePresence>
 
-        <Dialog open={promotionOpen} onOpenChange={setPromotionOpen}>
+        <Dialog open={isPromotionOpen} onOpenChange={setIsPromotionOpen}>
           <DialogContent className="h-[600px] max-h-[calc(100dvh-2rem)] overflow-y-auto">
             <SongPromotionModal
               songId={id}
@@ -268,12 +211,12 @@ export default function SearchResultCard({
               artist={artist}
               title_ko={title_ko ?? null}
               artist_ko={artist_ko ?? null}
-              handleClose={() => setPromotionOpen(false)}
+              handleClose={() => setIsPromotionOpen(false)}
             />
           </DialogContent>
         </Dialog>
 
-        <Dialog open={reportOpen} onOpenChange={setReportOpen}>
+        <Dialog open={isReportOpen} onOpenChange={setIsReportOpen}>
           <DialogContent>
             <ReportSongModal
               songId={id}
@@ -283,7 +226,7 @@ export default function SearchResultCard({
               artist_ko={artist_ko}
               num_tj={num_tj}
               num_ky={num_ky}
-              handleClose={() => setReportOpen(false)}
+              handleClose={() => setIsReportOpen(false)}
             />
           </DialogContent>
         </Dialog>
@@ -291,3 +234,5 @@ export default function SearchResultCard({
     </Card>
   );
 }
+
+export default memo(SearchResultCard);

@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from 'react';
+import { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { usePostSearchLogMutation } from '@/queries/searchLogQuery';
@@ -59,9 +59,9 @@ export default function useSearchSong() {
     [deferredSearch],
   );
 
-  const handleSearch = () => {
+  const handleSearch = (termOverride?: string, typeOverride?: SearchType) => {
     // trim 제거
-    const trimSearch = search.trim();
+    const trimSearch = (termOverride ?? search).trim();
 
     if (!trimSearch) {
       setQuery('');
@@ -82,59 +82,72 @@ export default function useSearchSong() {
     if (parsedSearch) {
       setQuery(parsedSearch);
       setSearch(parsedSearch);
-      setQueryType(searchType);
+      setQueryType(typeOverride ?? searchType);
       setQueryLanguageTag(languageTag);
       addToHistory(parsedSearch);
       postSearchLog(parsedSearch);
     }
   };
 
-  const handleSearchTypeChange = (value: string) => {
-    setSearchType(value as SearchType);
+  const handleSearchTypeChange = (value: SearchType) => {
+    setSearchType(value);
   };
 
   const handleLanguageTagChange = (value: number | undefined) => {
     setLanguageTag(value);
   };
 
-  const handleToggleToSing = async (song: Song, method: Method) => {
-    if (!isAuthenticated) {
-      if (method === 'POST') {
-        addGuestToSingSong(song);
-        setFooterAnimateKey('TOSING');
-      } else {
-        removeGuestToSingSong(song.id);
+  const handleToggleToSing = useCallback(
+    async (song: Song, method: Method) => {
+      if (!isAuthenticated) {
+        if (method === 'POST') {
+          addGuestToSingSong(song);
+          setFooterAnimateKey('TOSING');
+        } else {
+          removeGuestToSingSong(song.id);
+        }
+        return;
       }
-      return;
-    }
 
-    if (isToggleToSingPending) {
-      toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
-      return;
-    }
+      if (isToggleToSingPending) {
+        toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
 
-    if (method === 'POST') {
-      setFooterAnimateKey('TOSING');
-    }
-    toggleToSing({ songId: song.id, method });
-  };
+      if (method === 'POST') {
+        setFooterAnimateKey('TOSING');
+      }
+      toggleToSing({ songId: song.id, method });
+    },
+    [
+      isAuthenticated,
+      isToggleToSingPending,
+      addGuestToSingSong,
+      removeGuestToSingSong,
+      setFooterAnimateKey,
+      toggleToSing,
+    ],
+  );
 
-  const handleToggleLike = async (songId: string, method: Method) => {
-    if (!isAuthenticated) {
-      toast.error('로그인하고 곡을 저장해보세요!');
-      return;
-    }
+  const handleToggleLike = useCallback(
+    async (songId: string, method: Method) => {
+      if (!isAuthenticated) {
+        toast.error('로그인하고 곡을 저장해보세요!');
+        return;
+      }
 
-    if (isToggleLikePending) {
-      toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
-      return;
-    }
+      if (isToggleLikePending) {
+        toast.error('요청 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
 
-    if (method === 'POST') {
-      setFooterAnimateKey('INFO');
-    }
-    toggleLike({ songId, method });
-  };
+      if (method === 'POST') {
+        setFooterAnimateKey('INFO');
+      }
+      toggleLike({ songId, method });
+    },
+    [isAuthenticated, isToggleLikePending, setFooterAnimateKey, toggleLike],
+  );
 
   return {
     search,
