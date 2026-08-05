@@ -1,0 +1,38 @@
+name: Crawl TJ Chart
+
+on:
+  schedule:
+    - cron: "0 1 1 * *" # 매달 1일 KST 오전 10:00 실행 (UTC+9 → UTC 01:00)
+  workflow_dispatch:
+
+jobs:
+  run-npm-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        working-directory: packages/crawling
+        run: pnpm install
+
+      - name: Create .env file
+        working-directory: packages/crawling
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
+      - name: run crawl script - crawlTjChart.ts
+        working-directory: packages/crawling
+        run: pnpm run tj-chart

@@ -1,4 +1,4 @@
-import { LogData, Song } from '@/types';
+import { LogData, Song, TjChartRankingInsert } from '@/types';
 
 import { getClient } from './getClient';
 
@@ -59,6 +59,20 @@ export async function postSongTagsDB(songId: string, tagIds: number[]) {
   const { error } = await supabase.from('song_tags').insert(rows);
   if (error) {
     console.error('postSongTagsDB error:', error);
+    return false;
+  }
+  return true;
+}
+
+export async function postTjChartRankingsDB(rows: TjChartRankingInsert[]) {
+  const supabase = getClient();
+
+  const { error } = await supabase
+    .from('chart_rankings')
+    .upsert(rows, { onConflict: 'chart_month,type,rank' });
+
+  if (error) {
+    console.error('postTjChartRankingsDB error:', error);
     return false;
   }
   return true;
