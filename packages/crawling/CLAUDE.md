@@ -9,15 +9,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm ky-open       # Open API(금영)로 KY 번호 수집
-pnpm ky-youtube    # YouTube 크롤링으로 KY 번호 수집 + AI 검증
-pnpm ky-verify     # 기존 KY 번호의 실제 존재 여부 재검증 (체크포인트 지원)
-pnpm ky-update     # ky-youtube + ky-verify 병렬 실행
-pnpm recent-tj     # TJ 최신곡 크롤링
-pnpm tag-songs     # AI 기반 곡 자동 태깅
-pnpm trans-jpn     # J-POP 곡 제목/아티스트 한국어 번역
-pnpm test          # vitest 실행
-pnpm lint          # ESLint
+pnpm ky-open           # Open API(금영)로 KY 번호 수집
+pnpm ky-youtube        # YouTube 크롤링으로 KY 번호 수집 + AI 검증
+pnpm ky-verify         # 기존 KY 번호의 실제 존재 여부 재검증 (체크포인트 지원)
+pnpm ky-update         # ky-youtube + ky-verify 병렬 실행
+pnpm recent-tj         # TJ 최신곡 크롤링
+pnpm tj-all-number     # TJ 번호 구간(START_NUMBER~END_NUMBER) 전수 크롤링
+pnpm tj-chart          # TJ 공식 차트(TOP100) 전월분 수집
+pnpm tj-chart-backfill # TJ 공식 차트 과거 월 일괄 백필 (기간은 스크립트 상수로 지정)
+pnpm tag-songs         # AI 기반 곡 자동 태깅
+pnpm trans-jpn         # J-POP 곡 제목/아티스트 한국어 번역
+pnpm test              # vitest 실행
+pnpm lint              # ESLint
+pnpm format            # Prettier 포맷
 ```
 
 스크립트는 반드시 **`packages/crawling/`** 디렉토리에서 실행해야 한다. 로그 파일 및 assets 경로가 상대 경로 기준이기 때문.
@@ -100,6 +104,7 @@ findKYByOpen.ts
 | `tags`             | 태그 마스터 (id, name, category) |
 | `song_tags`        | 곡-태그 매핑 (song_id, tag_id)   |
 | `verify_ky_songs`  | KY 번호 검증 완료 목록           |
+| `chart_rankings`   | TJ 공식 차트 월별/장르별 순위    |
 
 ### AI 유틸
 
@@ -118,15 +123,33 @@ taggingSongs.ts
   └─ postSongTagsDB(songId, [tagId])  # song_tags 테이블에 insert
 ```
 
+### TJ 공식 차트 파이프라인
+
+TJ미디어 공식 API(`legacy/api/topAndHot100`)에서 월별/장르별 TOP100을 수집해 `chart_rankings`에 적재한다. `songs` 테이블의 `num_tj`로 곡을 매칭하며, 매칭되지 않은 곡은 저장하지 않고 로그 파일에만 남긴다.
+
+```
+crawlTjChart.ts (매달 1일, 전월 1개월분)
+crawlTjChartBackfill.ts (과거 월 일괄, 기간은 파일 상단 상수로 지정)
+  └─ getSongsAllWithTjDB()        # num_tj 보유 곡 전체 조회
+  └─ buildSongIdByNumTjMap()      # num_tj → song_id Map 구성
+  └─ fetchTjChart(strType, ...)   # StrType 전체(12종) 순회 조회
+  └─ matchChartRows()             # num_tj 매칭 → insert row / 미매칭 라인 분리
+  └─ postTjChartRankingsDB()      # chart_rankings upsert (chart_month,type,rank 기준)
+  └─ 미매칭은 src/assets/tjChart(Backfill)Unmatched.txt 에 append
+```
+
+`utils/tjChart.ts`가 조회·매칭·로깅 로직을 공유하고, 두 스크립트는 대상 기간 결정과 저장 시점만 다르다. `StrType` enum은 웹앱(`apps/web/src/types/tjChart.ts`)과 의도적으로 중복 정의되어 있으므로 장르를 추가·변경할 때 양쪽을 함께 수정해야 한다.
+
 ### GitHub Actions 워크플로우
 
-| 워크플로우 파일          | 스케줄 (UTC)      | 실행 스크립트         |
-| ------------------------ | ----------------- | --------------------- |
-| `crawl_recent_tj.yml`    | 매일 14:00        | `pnpm recent-tj`      |
-| `tagging_song.yml`       | 매주 월요일 10:00 | `pnpm tag-songs`      |
-| `translation_jpn.yml`    | 매주 금요일 14:00 | `pnpm trans-jpn`      |
-| `crawl_tj_by_number.yml` | 수동              | `pnpm test-tj-number` |
-| `update_ky_youtube.yml`  | 수동              | `pnpm ky-youtube`     |
-| `verify_ky_youtube.yml`  | 수동              | `pnpm ky-verify`      |
+| 워크플로우 파일           | 스케줄 (UTC)      | 실행 스크립트        |
+| ------------------------- | ----------------- | -------------------- |
+| `crawl_recent_tj.yml`     | 매일 14:00        | `pnpm recent-tj`     |
+| `crawl_tj_chart.yml`      | 매달 1일 01:00    | `pnpm tj-chart`      |
+| `tagging_song.yml`        | 매일 07:00        | `pnpm tag-songs`     |
+| `translation_jpn.yml`     | 매일 10:00        | `pnpm trans-jpn`     |
+| `update_ky_youtube.yml`   | 매일 14:00        | `pnpm ky-youtube`    |
+| `verify_ky_youtube.yml`   | 매주 월요일 14:00 | `pnpm ky-verify`     |
+| `crawl_tj_all_number.yml` | 수동 전용         | `pnpm tj-all-number` |
 
-모든 워크플로우는 `workflow_dispatch`로 수동 실행도 가능하다.
+`crawl_tj_all_number.yml`을 제외한 모든 워크플로우는 스케줄 + `workflow_dispatch`(수동) 양쪽으로 실행 가능하다. `crawl_tj_all_number.yml`은 번호 구간을 `matrix`로 병렬 분할해 수동으로만 실행한다.
