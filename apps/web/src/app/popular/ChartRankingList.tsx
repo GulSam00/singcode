@@ -1,22 +1,22 @@
 'use client';
 
-import { Construction } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { addMonths, format, parseISO, startOfMonth } from 'date-fns';
+import { ChevronLeft, ChevronRight, Construction } from 'lucide-react';
+import { useState } from 'react';
 
 import MarqueeText from '@/components/MarqueeText';
 import StaticLoading from '@/components/StaticLoading';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useTjChartQuery } from '@/queries/tjChartQuery';
-import { STR_TYPE_LABEL, StrType } from '@/types/tjChart';
+import { StrType } from '@/types/tjChart';
 import { cn } from '@/utils/cn';
+import { getPrevMonthFirstDayKST } from '@/utils/kst';
+
+import ChartGenreFilter from './ChartGenreFilter';
+
+const MONTH_FORMAT = 'yyyy-MM-dd';
 
 const getRankStyle = (rank: number) => {
   switch (rank) {
@@ -36,17 +36,15 @@ const formatMonth = (month: string) => {
   return `${year}년 ${Number(m)}월`;
 };
 
-export default function TjChartRankingList() {
+const shiftMonth = (month: string, delta: number) =>
+  format(startOfMonth(addMonths(parseISO(month), delta)), MONTH_FORMAT);
+
+export default function ChartRankingList() {
   const [genre, setGenre] = useState<StrType>(StrType.All);
-  const [month, setMonth] = useState<string | undefined>(undefined);
+  // 차트는 월 단위로 마감되므로 이번 달 데이터는 아직 없다. 전월을 기본으로 보여준다.
+  const [month, setMonth] = useState(getPrevMonthFirstDayKST);
 
-  const { data, isPending, isError } = useTjChartQuery(month, genre);
-
-  useEffect(() => {
-    if (data?.month && !month) {
-      setMonth(data.month);
-    }
-  }, [data?.month, month]);
+  const { data, isPending, isError, isPlaceholderData } = useTjChartQuery(month, genre);
 
   if (isPending) {
     return <StaticLoading />;
@@ -55,43 +53,50 @@ export default function TjChartRankingList() {
   const availableMonths = data?.availableMonths ?? [];
   const items = data?.items ?? [];
 
+  // availableMonths는 최신순이므로 마지막 원소가 가장 오래된 월이다.
+  const oldestMonth = availableMonths.at(-1);
+  const canGoPrev = !!oldestMonth && month > oldestMonth;
+  const canGoNext = month < getPrevMonthFirstDayKST();
+
   return (
     <Card className="relative flex min-h-0 flex-1 flex-col">
       <CardHeader className="flex shrink-0 flex-col gap-3 pb-2">
-        <CardTitle className="text-xl">TJ 인기차트</CardTitle>
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="text-xl">TJ 인기차트</CardTitle>
 
-        <div className="flex gap-2">
-          <Select value={month} onValueChange={setMonth} disabled={availableMonths.length === 0}>
-            <SelectTrigger className="w-[120px]" size="sm">
-              <SelectValue placeholder="월 선택" />
-            </SelectTrigger>
-            <SelectContent>
-              {availableMonths.map(m => (
-                <SelectItem key={m} value={m}>
-                  {formatMonth(m)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              aria-label="이전 달"
+              disabled={!canGoPrev}
+              onClick={() => setMonth(shiftMonth(month, -1))}
+            >
+              <ChevronLeft />
+            </Button>
 
-          <Select value={genre} onValueChange={value => setGenre(value as StrType)}>
-            <SelectTrigger className="w-[110px]" size="sm">
-              <SelectValue placeholder="장르 선택" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.values(StrType).map(type => (
-                <SelectItem key={type} value={type}>
-                  {STR_TYPE_LABEL[type]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <span className="w-24 text-center text-sm font-medium">{formatMonth(month)}</span>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              aria-label="다음 달"
+              disabled={!canGoNext}
+              onClick={() => setMonth(shiftMonth(month, 1))}
+            >
+              <ChevronRight />
+            </Button>
+          </div>
         </div>
+
+        <ChartGenreFilter value={genre} onChange={setGenre} />
       </CardHeader>
 
       <ScrollArea className="min-h-0 flex-1">
         <CardContent className="pt-0">
-          <div className="space-y-0">
+          <div className={cn('space-y-0 transition-opacity', isPlaceholderData && 'opacity-50')}>
             {isError || items.length === 0 ? (
               <div className="flex h-64 flex-col items-center justify-center gap-4">
                 <Construction className="text-muted-foreground h-16 w-16" />
