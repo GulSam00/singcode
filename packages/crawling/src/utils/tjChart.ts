@@ -10,6 +10,8 @@ import {
   TjChartRankingInsert,
 } from '@/types';
 
+const REQUEST_TIMEOUT = 10000; // 10초
+
 export async function fetchTjChart(
   strType: StrType,
   searchStartDate: string,
@@ -24,6 +26,7 @@ export async function fetchTjChart(
         searchEndDate,
         strType: STR_TYPE_API_PARAM[strType],
       },
+      timeout: REQUEST_TIMEOUT,
     },
   );
 

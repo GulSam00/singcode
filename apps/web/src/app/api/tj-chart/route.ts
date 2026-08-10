@@ -10,6 +10,12 @@ interface ChartRow {
   songs: Song | null;
 }
 
+const MONTH_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+// availableMonths를 만들 때 chart_rankings 전체를 조회하면 PostgREST row 상한에 걸려 과거 월이 잘린다.
+// 월당 최대 10 row만 반환되도록 종합 차트 상위권으로 좁혀서 조회한다.
+const MONTH_LOOKUP_RANK_LIMIT = 10;
+
 export async function GET(
   request: NextRequest,
 ): Promise<NextResponse<ApiResponse<TjChartResponse>>> {
@@ -26,6 +32,8 @@ export async function GET(
     const { data: monthRows, error: monthError } = await supabase
       .from('chart_rankings')
       .select('chart_month')
+      .eq('type', StrType.All)
+      .lte('rank', MONTH_LOOKUP_RANK_LIMIT)
       .order('chart_month', { ascending: false });
 
     if (monthError) throw monthError;
@@ -39,9 +47,11 @@ export async function GET(
       });
     }
 
+    // 형식만 검증하고 요청한 월을 그대로 조회한다.
+    // (데이터가 없는 월이면 items가 빈 배열로 내려가고, 클라이언트가 빈 상태를 표시한다)
     const monthParam = searchParams.get('month');
     const targetMonth =
-      monthParam && availableMonths.includes(monthParam) ? monthParam : availableMonths[0];
+      monthParam && MONTH_PATTERN.test(monthParam) ? monthParam : availableMonths[0];
 
     // 2) 해당 월 + 장르의 차트 순위 조회 (songs 테이블과 조인)
     const { data, error } = await supabase
