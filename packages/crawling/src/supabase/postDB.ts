@@ -42,19 +42,24 @@ export async function postSongsBatchDB(songs: Song[], chunkSize: number = 200) {
   const supabase = getClient();
   const results: LogData<Song> = { success: [], failed: [] };
 
+  // 호출부가 삽입된 곡의 id로 후속 처리(차트 매칭 등)를 할 수 있도록 select()로 반환값을 받는다.
   for (let i = 0; i < songs.length; i += chunkSize) {
     const chunk = songs.slice(i, i + chunkSize);
-    const { error } = await supabase.from('songs').insert(chunk);
+    const { data, error } = await supabase.from('songs').insert(chunk).select();
 
     if (!error) {
-      results.success.push(...chunk);
+      results.success.push(...((data ?? chunk) as Song[]));
       continue;
     }
 
     for (const song of chunk) {
-      const { error: rowError } = await supabase.from('songs').insert(song);
+      const { data: inserted, error: rowError } = await supabase
+        .from('songs')
+        .insert(song)
+        .select();
+
       if (rowError) results.failed.push({ item: song, error: rowError });
-      else results.success.push(song);
+      else results.success.push((inserted?.[0] ?? song) as Song);
     }
   }
 

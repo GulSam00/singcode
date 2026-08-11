@@ -4,10 +4,11 @@ import fs from 'fs';
 import path from 'path';
 
 import { getSongsAllWithTjDB } from '@/supabase/getDB';
-import { postTjChartRankingsDB } from '@/supabase/postDB';
+import { postSongsBatchDB, postTjChartRankingsDB } from '@/supabase/postDB';
 import { STR_TYPE_LABEL, StrType, TjChartRankingInsert } from '@/types';
 import {
   buildSongIdByNumTjMap,
+  fetchMissingChartSongs,
   fetchTjChart,
   logChartTable,
   matchChartRows,
@@ -18,7 +19,7 @@ dotenv.config();
 const UNMATCHED_LOG_FILE = path.join('src', 'assets', 'tjChartBackfillUnmatched.txt');
 
 // 백필 대상 기간 (직접 지정: YYYY-MM 형식, 양 끝 월 포함)
-const BACKFILL_START_MONTH = '2026-02';
+const BACKFILL_START_MONTH = '2025-01';
 const BACKFILL_END_MONTH = '2026-07';
 
 const targetMonths = eachMonthOfInterval({
@@ -49,14 +50,31 @@ for (const targetMonth of targetMonths) {
 
     logChartTable(chartMonth, strType, items, songIdByNumTj, 10);
 
-    const { rows: monthRows, unmatched: unmatchedLines } = matchChartRows(
-      items,
-      chartMonth,
-      strType,
-      songIdByNumTj,
-    );
+    const matched = matchChartRows(items, chartMonth, strType, songIdByNumTj);
+    const monthRows = matched.rows;
+
+    // songs에 없는 곡은 TJ에서 받아 추가한 뒤 다시 매칭한다.
+    if (matched.missingItems.length > 0) {
+      const { songs: newSongs, warnings } = await fetchMissingChartSongs(matched.missingItems);
+
+      if (newSongs.length > 0) {
+        const { success, failed } = await postSongsBatchDB(newSongs);
+        for (const song of success) {
+          if (song.id && song.num_tj) songIdByNumTj.set(song.num_tj, song.id);
+        }
+        console.log(
+          `➕ [${chartMonth} / ${STR_TYPE_LABEL[strType]}] 곡 ${success.length}건 추가` +
+            `${failed.length ? `, 실패 ${failed.length}건` : ''}`,
+        );
+      }
+
+      const retry = matchChartRows(matched.missingItems, chartMonth, strType, songIdByNumTj);
+      monthRows.push(...retry.rows);
+      unmatched.push(...retry.unmatched);
+      for (const warning of warnings) unmatched.push(`${chartMonth}\tWARN\t${warning}`);
+    }
+
     rows.push(...monthRows);
-    unmatched.push(...unmatchedLines);
 
     if (monthRows.length > 0) {
       const success = await postTjChartRankingsDB(monthRows);
