@@ -36,3 +36,18 @@ jobs:
       - name: run crawl script - crawlRecentTJ.ts
         working-directory: packages/crawling
         run: pnpm run recent-tj
+
+      # recent-tj가 넣는 신곡은 badges가 null이다. 그대로 두면 뱃지가 표시되지 않고,
+      # badges is null을 판정 기준으로 쓰는 정리 스크립트가 신곡을 죽은 곡으로 오인한다.
+      - name: run crawl script - crawlTjBadges.ts
+        working-directory: packages/crawling
+        run: pnpm run tj-badges
+
+      - name: Upload badge log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tj-badges-log-${{ github.run_id }}
+          path: packages/crawling/src/assets/tjBadgeErrors.txt
+          if-no-files-found: ignore
+          retention-days: 30

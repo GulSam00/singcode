@@ -168,7 +168,11 @@ crawlTjBadges.ts (pnpm tj-badges)
 
 `utils/tjBadge.ts`의 `sortBadges()`를 반드시 거쳐야 검색 페이지 경로와 차트 API 경로(`badgesFromChartItem`)가 같은 배열을 만든다.
 
-`badges`가 계속 `null`로 남는 곡은 TJ에서 번호가 사라진 곡이다. `removeDeadTjSongs.ts`가 이를 정리하되, **차트에 오른 곡**(번호 검색에는 없어도 차트에는 오른다)과 **`num_ky` 보유 곡**(금영으로는 부를 수 있다)은 제외한다. `songs`를 참조하는 `song_tags` · `invalid_ky_songs` · `verify_ky_songs`를 먼저 지워야 FK 제약에 걸리지 않는다. `invalid_ky_songs`와 `verify_ky_songs`는 별도 `song_id` 컬럼 없이 PK인 `id`가 곧 `songs.id`다.
+`crawlRecentTJ`가 넣는 신곡도 `badges`가 `null`이므로, **`badges is null`만 보고 "TJ에서 사라진 곡"으로 판단하면 안 된다.** `crawl_recent_tj.yml`이 `recent-tj` 직후 `tj-badges`를 돌려 신곡 뱃지를 채운다.
+
+`removeDeadTjSongs.ts`는 후보를 `badges is null`로 추리되 **삭제 직전에 TJ로 다시 조회**한다. 살아 있으면 지우지 않고 뱃지를 채워주고, 조회 자체가 실패하면 건드리지 않는다. 재확인 전에 **차트에 오른 곡**(번호 검색에는 없어도 차트에는 오른다)과 **`num_ky` 보유 곡**(금영으로는 부를 수 있다)은 아예 제외한다.
+
+`songs`를 참조하는 `song_tags` · `invalid_ky_songs` · `verify_ky_songs`를 먼저 지워야 FK 제약에 걸리지 않는다. `invalid_ky_songs`와 `verify_ky_songs`는 별도 `song_id` 컬럼 없이 PK인 `id`가 곧 `songs.id`다.
 
 ### GitHub Actions 워크플로우
 

@@ -4,7 +4,7 @@ import path from 'path';
 
 import { getSongsBadgeNullDB } from '@/supabase/getDB';
 import { updateSongBadgesDB } from '@/supabase/updateDB';
-import { buildBadgeSearchUrl, parseBadgeRow } from '@/utils/tjBadge';
+import { fetchBadgeRow } from '@/utils/tjBadge';
 
 dotenv.config();
 
@@ -18,8 +18,6 @@ const DRY_RUN = process.env.BADGE_DRY_RUN === 'true';
 
 // 한 번에 조회/갱신할 곡 수
 const CHUNK_SIZE = 500;
-const REQUEST_TIMEOUT = 10000;
-const MAX_RETRY = 3;
 
 type ErrorType = 'UNKNOWN_BADGE' | 'NOT_FOUND' | 'NUM_MISMATCH' | 'FETCH_FAILED' | 'TITLE_MISMATCH';
 
@@ -37,23 +35,6 @@ function logError(type: ErrorType, numTj: string, detail: string, label: string)
   errorLines.push(`${new Date().toISOString()}\t${type}\tnum_tj=${numTj}\t${detail}\t${label}`);
 }
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-async function fetchWithRetry(url: string) {
-  for (let attempt = 1; attempt <= MAX_RETRY; attempt++) {
-    try {
-      const response = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT) });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.text();
-    } catch (error) {
-      if (attempt === MAX_RETRY) throw error;
-      // 일시적 실패를 지수 백오프로 흡수한다 (0.5s → 1s → 2s)
-      await sleep(500 * 2 ** (attempt - 1));
-    }
-  }
-  throw new Error('unreachable');
-}
-
 interface TargetSong {
   id: string;
   title: string;
@@ -66,15 +47,12 @@ async function collectBadges(song: TargetSong) {
   const numTj = song.num_tj!;
   const label = `${song.title} - ${song.artist}`;
 
-  let html: string;
-  try {
-    html = await fetchWithRetry(buildBadgeSearchUrl(numTj));
-  } catch (error) {
-    logError('FETCH_FAILED', numTj, `error=${(error as Error).message}`, label);
+  const result = await fetchBadgeRow(numTj);
+
+  if (result.status === 'fetch_failed') {
+    logError('FETCH_FAILED', numTj, `error=${result.message}`, label);
     return null;
   }
-
-  const result = parseBadgeRow(html, numTj);
 
   if (result.status === 'not_found') {
     logError('NOT_FOUND', numTj, '', label);

@@ -29,6 +29,36 @@ export type ParseBadgeResult =
   | { status: 'not_found' }
   | { status: 'num_mismatch'; foundNumTj: string };
 
+// 조회 자체가 실패한 경우. "TJ에 없다"와 반드시 구분해야 한다.
+// 이걸 뭉뚱그리면 일시적 네트워크 오류를 곡이 사라진 것으로 오인한다.
+export type FetchBadgeResult = ParseBadgeResult | { status: 'fetch_failed'; message: string };
+
+const REQUEST_TIMEOUT = 10000;
+const MAX_RETRY = 3;
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+/** 번호 하나를 TJ에서 조회해 뱃지를 파싱한다. 일시적 실패는 지수 백오프로 3회까지 재시도한다. */
+export async function fetchBadgeRow(numTj: string): Promise<FetchBadgeResult> {
+  for (let attempt = 1; attempt <= MAX_RETRY; attempt++) {
+    try {
+      const response = await fetch(buildBadgeSearchUrl(numTj), {
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      return parseBadgeRow(await response.text(), numTj);
+    } catch (error) {
+      if (attempt === MAX_RETRY) {
+        return { status: 'fetch_failed', message: (error as Error).message };
+      }
+      await sleep(500 * 2 ** (attempt - 1)); // 0.5s → 1s → 2s
+    }
+  }
+
+  return { status: 'fetch_failed', message: 'unreachable' };
+}
+
 /** strType=16은 곡 번호 검색이다. 요청한 번호와 정확히 일치하는 행 하나만 돌아온다. */
 export function buildBadgeSearchUrl(numTj: string) {
   return (
