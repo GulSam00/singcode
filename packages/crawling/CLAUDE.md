@@ -15,6 +15,7 @@ pnpm ky-verify         # 기존 KY 번호의 실제 존재 여부 재검증 (체
 pnpm ky-update         # ky-youtube + ky-verify 병렬 실행
 pnpm recent-tj         # TJ 최신곡 크롤링
 pnpm tj-all-number     # TJ 번호 구간(START_NUMBER~END_NUMBER) 전수 크롤링
+pnpm tj-badges         # TJ 반주 버전 뱃지(MV/MR/LV/60) 수집 (badges가 null인 곡만)
 pnpm tj-chart          # TJ 공식 차트(TOP100) 전월분 수집
 pnpm tj-chart-backfill # TJ 공식 차트 과거 월 일괄 백필 (기간은 스크립트 상수로 지정)
 pnpm tag-songs         # AI 기반 곡 자동 태깅
@@ -139,6 +140,32 @@ crawlTjChartBackfill.ts (과거 월 일괄, 기간은 파일 상단 상수로 �
 ```
 
 `utils/tjChart.ts`가 조회·매칭·로깅 로직을 공유하고, 두 스크립트는 대상 기간 결정과 저장 시점만 다르다. `StrType` enum은 웹앱(`apps/web/src/types/tjChart.ts`)과 의도적으로 중복 정의되어 있으므로 장르를 추가·변경할 때 양쪽을 함께 수정해야 한다.
+
+### TJ 반주 버전 뱃지 파이프라인
+
+TJ는 한 곡에 반주 번호를 여러 개 등록한다(일반 / MR / 라이브 / 60이상 전용). 곡 검색 페이지의 아이콘을 파싱해 `songs.badges`(`text[]`)에 저장한다.
+
+| 저장값 | DOM 클래스        | 차트 API             |
+| ------ | ----------------- | -------------------- |
+| `MV`   | `p.ico.mv`        | `mv_yn === 'Y'`      |
+| `MR`   | `p.ico.mr`        | `icongubun === 'MR'` |
+| `LV`   | `p.ico.live`      | `icongubun === 'LV'` |
+| `60`   | `p.ico.exclusive` | `icongubun === '60'` |
+
+`badges`가 `null`이면 미수집, `[]`면 수집했으나 뱃지 없음이다. **이 구분이 재개 지점 역할을 하므로 컬럼에 `not null default '{}'`를 걸면 안 된다.**
+
+```
+crawlTjBadges.ts (pnpm tj-badges)
+  └─ getSongsBadgeNullDB()        # badges is null 인 곡을 청크(500)로 조회
+  └─ buildBadgeSearchUrl()        # strType=16 번호 검색
+  └─ parseBadgeRow()              # ok / not_found / num_mismatch 구분 반환
+  └─ updateSongBadgesDB()         # 뱃지 조합별로 묶어 in(id) 갱신 (id 100개씩)
+  └─ 이상 항목은 src/assets/tjBadgeErrors.txt 에 유형별로 append
+```
+
+환경변수로 조절한다: `BADGE_MAX_SONGS`(0=제한 없음), `BADGE_CONCURRENCY`(기본 5), `BADGE_DRY_RUN`.
+
+`utils/tjBadge.ts`의 `sortBadges()`를 반드시 거쳐야 검색 페이지 경로와 차트 API 경로(`badgesFromChartItem`)가 같은 배열을 만든다.
 
 ### GitHub Actions 워크플로우
 
