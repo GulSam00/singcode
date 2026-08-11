@@ -15,7 +15,11 @@ export default function SongBadges({ badges, className }: SongBadgesProps) {
   if (visible.length === 0) return null;
 
   return (
-    <div className={cn('flex gap-1', className)}>
+    <div className={cn('flex items-center gap-1', className)}>
+      {/* 뱃지는 전부 TJ 등록 정보에서 나온다. 카드에 금영 번호가 함께 있어
+          브랜드를 밝히지 않으면 금영에도 해당하는 것으로 읽힐 수 있다.
+          번호 영역과 같은 brand-tj 색을 써서 같은 출처임을 드러낸다. */}
+      <span className="text-brand-tj text-[10px] leading-tight font-bold">TJ</span>
       {visible.map(badge => (
         <span
           key={badge}

@@ -7,12 +7,12 @@ export type SearchType = 'all' | 'title' | 'artist' | 'number';
 // '60'은 구형 반주기에서 재생되지 않는다는 뜻이라 실사용에 중요하다.
 export const VERSION_BADGES = ['MR', 'LV', '60'] as const;
 
-// '60'은 TJ 반주기 기종(60 이상)을 가리킨다. 카드에 TJ·금영 번호가 나란히 있어
-// 그냥 '60↑'이라고만 쓰면 금영 기기 얘기로 읽힐 수 있으므로 라벨에 TJ를 박아둔다.
+// 라벨 자체에는 브랜드를 넣지 않는다. 카드에 TJ·금영 번호가 나란히 있어 오해 소지가 있으므로,
+// SongBadges가 뱃지 묶음 앞에 TJ 표식을 한 번 붙여 묶음 전체가 TJ 정보임을 나타낸다.
 export const BADGE_LABEL: Record<string, string> = {
   MR: 'MR',
   LV: 'LIVE',
-  '60': 'TJ 60↑',
+  '60': '60↑',
 };
 
 export const BADGE_DESCRIPTION: Record<string, string> = {
