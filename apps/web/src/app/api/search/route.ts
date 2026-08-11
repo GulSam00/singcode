@@ -328,6 +328,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       artist_ko: song.artist_ko,
       num_tj: song.num_tj,
       num_ky: song.num_ky,
+      badges: song.badges,
       isToSing: authenticated
         ? (song.tosings?.some(tosing => tosing.user_id === userId) ?? false)
         : false,

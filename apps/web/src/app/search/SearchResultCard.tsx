@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 import MarqueeText from '@/components/MarqueeText';
 import ReportSongModal from '@/components/ReportSongModal';
+import SongBadges from '@/components/SongBadges';
 import SongCommentSection from '@/components/SongCommentSection';
 import SongPromotionModal from '@/components/SongPromotionModal';
 import ThumbUpModal from '@/components/ThumbUpModal';
@@ -37,7 +38,7 @@ function SearchResultCard({
   onToggleLike,
   onClickSave,
 }: SearchResultCardProps) {
-  const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, thumb } = song;
+  const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, thumb, badges } = song;
   const hasKoTitle = !!title_ko && title_ko !== title;
   const hasKoArtist = !!artist_ko && artist_ko !== artist;
   const displayTitle = hasKoTitle ? title_ko : title;
@@ -86,6 +87,8 @@ function SearchResultCard({
           {/* 제목 및 가수 */}
           <div className="flex justify-between">
             <div className="flex w-[calc(100%-40px)] flex-col gap-0.5 truncate">
+              {/* 같은 곡이 일반/MR/라이브로 나란히 나오므로 무엇이 다른지 알려준다 */}
+              <SongBadges badges={badges} className="mb-0.5" />
               <MarqueeText
                 className="hover:text-accent cursor-pointer text-base font-medium hover:underline hover:underline-offset-4"
                 onClick={() => handleCopy(displayTitle)}

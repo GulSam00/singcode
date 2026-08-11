@@ -5,12 +5,13 @@ import { ChevronLeft, ChevronRight, Construction } from 'lucide-react';
 import { useState } from 'react';
 
 import MarqueeText from '@/components/MarqueeText';
+import SongBadges from '@/components/SongBadges';
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTjChartQuery } from '@/queries/tjChartQuery';
-import { BADGE_DESCRIPTION, BADGE_LABEL, StrType, toVisibleBadges } from '@/types/tjChart';
+import { StrType } from '@/types/tjChart';
 import { cn } from '@/utils/cn';
 import { getPrevMonthFirstDayKST } from '@/utils/kst';
 
@@ -113,19 +114,7 @@ export default function ChartRankingList() {
                   <div className="flex w-full justify-between gap-2">
                     <div className="w-[140px] shrink-0">
                       {/* TJ가 같은 곡을 버전별로 따로 올리므로, 무엇이 다른지 여기서 알려준다 */}
-                      {toVisibleBadges(item.badges).length > 0 && (
-                        <div className="mb-0.5 flex gap-1">
-                          {toVisibleBadges(item.badges).map(badge => (
-                            <span
-                              key={badge}
-                              title={BADGE_DESCRIPTION[badge]}
-                              className="border-muted-foreground/40 text-muted-foreground rounded border px-1 text-[10px] leading-tight font-medium"
-                            >
-                              {BADGE_LABEL[badge]}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                      <SongBadges badges={item.badges} className="mb-0.5" />
                       <MarqueeText className="text-sm font-medium">{item.title}</MarqueeText>
                       {item.title_ko && item.title_ko !== item.title && (
                         <MarqueeText className="text-muted-foreground text-xs">
