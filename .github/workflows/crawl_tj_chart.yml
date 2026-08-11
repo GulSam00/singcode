@@ -36,3 +36,14 @@ jobs:
       - name: run crawl script - crawlTjChart.ts
         working-directory: packages/crawling
         run: pnpm run tj-chart
+
+      # 미매칭·경고 로그는 러너 파일시스템에만 쌓여 잡이 끝나면 사라진다.
+      # 실패해도(if: always()) 그때까지의 기록을 받을 수 있게 아티팩트로 올린다.
+      - name: Upload unmatched log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tj-chart-unmatched-${{ github.run_id }}
+          path: packages/crawling/src/assets/tjChartUnmatched.txt
+          if-no-files-found: ignore
+          retention-days: 30
