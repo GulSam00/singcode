@@ -7,7 +7,7 @@ import { useState } from 'react';
 import MarqueeText from '@/components/MarqueeText';
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTjChartQuery } from '@/queries/tjChartQuery';
 import { StrType } from '@/types/tjChart';
@@ -61,34 +61,31 @@ export default function ChartRankingList() {
   return (
     <Card className="relative flex min-h-0 flex-1 flex-col">
       <CardHeader className="flex shrink-0 flex-col gap-3 pb-2">
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-xl">TJ 인기차트</CardTitle>
+        {/* 차트 제목은 페이지 h1로 빠졌고, 헤더에는 조회 월만 중앙에 둔다. */}
+        <div className="flex items-center justify-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            aria-label="이전 달"
+            disabled={!canGoPrev}
+            onClick={() => setMonth(shiftMonth(month, -1))}
+          >
+            <ChevronLeft />
+          </Button>
 
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              aria-label="이전 달"
-              disabled={!canGoPrev}
-              onClick={() => setMonth(shiftMonth(month, -1))}
-            >
-              <ChevronLeft />
-            </Button>
+          <span className="w-24 text-center text-sm font-medium">{formatMonth(month)}</span>
 
-            <span className="w-24 text-center text-sm font-medium">{formatMonth(month)}</span>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              aria-label="다음 달"
-              disabled={!canGoNext}
-              onClick={() => setMonth(shiftMonth(month, 1))}
-            >
-              <ChevronRight />
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            aria-label="다음 달"
+            disabled={!canGoNext}
+            onClick={() => setMonth(shiftMonth(month, 1))}
+          >
+            <ChevronRight />
+          </Button>
         </div>
 
         <ChartGenreFilter value={genre} onChange={setGenre} />

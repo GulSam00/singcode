@@ -32,6 +32,23 @@ export const STR_TYPE_LABEL: Record<StrType, string> = {
   [StrType.RnbUrban]: 'R&B/어반',
 };
 
+// 장르 뱃지 앞에 붙는 아이콘. Windows에서 두부(tofu)로 깨지지 않도록
+// 국기(regional indicator)와 Unicode 14 이후 이모지는 쓰지 않는다.
+export const STR_TYPE_EMOJI: Record<StrType, string> = {
+  [StrType.All]: '🏆',
+  [StrType.Kpop]: '🎤',
+  [StrType.Pop]: '🌍',
+  [StrType.Jpop]: '🌸',
+  [StrType.Ballad]: '💗',
+  [StrType.Dance]: '💃',
+  [StrType.Trot]: '🎺',
+  [StrType.Folk]: '🎸',
+  [StrType.Ost]: '🎬',
+  [StrType.RockMetal]: '🤘',
+  [StrType.RapHiphop]: '🧢',
+  [StrType.RnbUrban]: '🎷',
+};
+
 export interface TjChartRankingSong extends Song {
   rank: number;
 }
