@@ -13,6 +13,8 @@ export interface Song {
   num_tj: string | null;
   num_ky: string | null;
   release?: string | null;
+  // TJ 반주 버전 뱃지. null이면 아직 수집 전, 빈 배열이면 수집했으나 뱃지 없음.
+  badges?: string[] | null;
 }
 
 export interface TransSong extends Song {

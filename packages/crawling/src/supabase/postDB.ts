@@ -36,6 +36,31 @@ export async function postSongsDB(songs: Song[] | Song) {
   return results;
 }
 
+// 대역 순회처럼 신규 곡이 수천 건 나올 때는 행마다 insert 하면 왕복 비용이 크다.
+// 청크 단위로 묶어 넣고, 청크가 실패하면 그 청크만 행 단위로 재시도해 원인 행을 골라낸다.
+export async function postSongsBatchDB(songs: Song[], chunkSize: number = 200) {
+  const supabase = getClient();
+  const results: LogData<Song> = { success: [], failed: [] };
+
+  for (let i = 0; i < songs.length; i += chunkSize) {
+    const chunk = songs.slice(i, i + chunkSize);
+    const { error } = await supabase.from('songs').insert(chunk);
+
+    if (!error) {
+      results.success.push(...chunk);
+      continue;
+    }
+
+    for (const song of chunk) {
+      const { error: rowError } = await supabase.from('songs').insert(song);
+      if (rowError) results.failed.push({ item: song, error: rowError });
+      else results.success.push(song);
+    }
+  }
+
+  return results;
+}
+
 export async function postVerifyKySongsDB(song: Song) {
   const supabase = getClient();
 

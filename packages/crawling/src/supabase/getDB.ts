@@ -105,7 +105,7 @@ export async function getSongsAllWithTjDB(max: number = 100000) {
 
   const { data, error } = await supabase
     .from('songs')
-    .select('id, title, artist, num_tj, num_ky')
+    .select('id, title, artist, num_tj, num_ky, badges')
     .order('created_at', { ascending: false })
     .limit(max);
 
@@ -160,4 +160,23 @@ export async function getSongTagSongIdsDB(): Promise<Set<string>> {
   if (error) throw error;
 
   return new Set(data.map(row => row.song_id));
+}
+
+// 뱃지를 아직 수집하지 않은 곡을 청크 단위로 조회한다.
+// badges가 null이면 미수집, 빈 배열이면 "수집했으나 뱃지가 없는 곡"이라 둘을 구분해야 한다.
+// 이 조건 자체가 재개 지점 역할을 하므로 별도 체크포인트 파일이 필요 없다.
+export async function getSongsBadgeNullDB(limit: number = 1000) {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('songs')
+    .select('id, title, artist, num_tj')
+    .is('badges', null)
+    .not('num_tj', 'is', null)
+    .order('num_tj', { ascending: true })
+    .limit(limit);
+
+  if (error) throw error;
+
+  return data;
 }

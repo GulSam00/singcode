@@ -59,3 +59,16 @@ jobs:
           START_NUMBER: ${{ matrix.range.start }}
           END_NUMBER: ${{ matrix.range.end }}
         run: pnpm run tj-all-number
+
+      # 변경 내역은 러너 파일시스템에만 쌓이므로 잡이 끝나면 사라진다.
+      # 실패해도(if: always()) 그때까지의 기록을 받을 수 있게 아티팩트로 올린다.
+      - name: Upload change log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tj-all-number-log-${{ matrix.range.start }}-${{ matrix.range.end }}
+          path: |
+            packages/crawling/src/assets/tjAllNumberLog.txt
+            packages/crawling/src/assets/tjAllNumberProgress.json
+          if-no-files-found: ignore
+          retention-days: 30
