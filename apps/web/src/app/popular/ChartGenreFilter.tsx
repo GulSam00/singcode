@@ -10,9 +10,15 @@ import { STR_TYPE_EMOJI, STR_TYPE_LABEL, StrType } from '@/types/tjChart';
 const CHIP_CLASSES =
   'flex-none rounded-full border border-border bg-transparent px-3 py-1 text-xs font-medium text-muted-foreground shadow-none transition-all data-[state=active]:border-foreground data-[state=active]:bg-foreground data-[state=active]:text-background dark:data-[state=active]:border-foreground dark:data-[state=active]:bg-foreground dark:data-[state=active]:text-background';
 
-// 모바일에서 가로 스크롤바가 칩 높이를 흔들지 않도록 숨긴다.
+// 더 훑을 게 남았다는 걸 알 수 있도록 가로 스크롤바를 노출한다.
+// 기본 스크롤바는 두꺼우므로 thin으로 얇게 하고, pb로 칩과 스크롤바 사이를 띄운다.
+// thumb 색은 border 토큰이 다크 테마에서 배경과 거의 같아 muted-foreground를 쓴다.
+// (Chrome 121+는 scrollbar-width가 ::-webkit-scrollbar보다 우선하므로 표준 속성을 함께 지정)
 const LIST_CLASSES =
-  'h-auto w-full flex-nowrap justify-start gap-1 overflow-x-auto bg-transparent p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden';
+  'h-auto w-full flex-nowrap justify-start gap-1 overflow-x-auto bg-transparent p-0 pb-1 ' +
+  '[scrollbar-width:thin] [scrollbar-color:var(--color-muted-foreground)_transparent] ' +
+  '[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent ' +
+  '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground';
 
 interface ChartGenreFilterProps {
   value: StrType;

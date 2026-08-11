@@ -32,8 +32,9 @@ export const STR_TYPE_LABEL: Record<StrType, string> = {
   [StrType.RnbUrban]: 'R&B/어반',
 };
 
-// 장르 뱃지 앞에 붙는 아이콘. Windows에서 두부(tofu)로 깨지지 않도록
-// 국기(regional indicator)와 Unicode 14 이후 이모지는 쓰지 않는다.
+// 장르 뱃지 앞에 붙는 아이콘.
+// Windows의 Segoe UI Emoji에 글리프가 없으면 두부(tofu)로 깨지므로,
+// 국기(regional indicator)와 최신 이모지는 쓰지 않는다. 아코디언(U+1FA97)도 여기서 깨진다.
 export const STR_TYPE_EMOJI: Record<StrType, string> = {
   [StrType.All]: '🏆',
   [StrType.Kpop]: '🎤',
@@ -41,11 +42,11 @@ export const STR_TYPE_EMOJI: Record<StrType, string> = {
   [StrType.Jpop]: '🌸',
   [StrType.Ballad]: '💗',
   [StrType.Dance]: '💃',
-  [StrType.Trot]: '🎺',
+  [StrType.Trot]: '📻',
   [StrType.Folk]: '🎸',
   [StrType.Ost]: '🎬',
   [StrType.RockMetal]: '🤘',
-  [StrType.RapHiphop]: '🧢',
+  [StrType.RapHiphop]: '🔥',
   [StrType.RnbUrban]: '🎷',
 };
 

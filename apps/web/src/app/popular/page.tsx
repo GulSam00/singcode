@@ -8,7 +8,7 @@ export default function PopularPage() {
   return (
     <div className="flex h-full flex-col gap-4">
       {/* TJ 공식 차트 기반 인기 순위 */}
-      <h1 className="shrink-0 text-2xl font-bold">TJ 인기차트</h1>
+      <h1 className="shrink-0 text-2xl font-bold">인기차트</h1>
 
       <ChartRankingList />
     </div>
