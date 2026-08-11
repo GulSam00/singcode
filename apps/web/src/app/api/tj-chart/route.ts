@@ -56,7 +56,7 @@ export async function GET(
     // 2) 해당 월 + 장르의 차트 순위 조회 (songs 테이블과 조인)
     const { data, error } = await supabase
       .from('chart_rankings')
-      .select('rank, songs(id, title, artist, title_ko, artist_ko, num_tj, num_ky)')
+      .select('rank, songs(id, title, artist, title_ko, artist_ko, num_tj, num_ky, badges)')
       .eq('chart_month', targetMonth)
       .eq('type', genre)
       .order('rank', { ascending: true })

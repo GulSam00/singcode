@@ -49,6 +49,31 @@ export const STR_TYPE_EMOJI: Record<StrType, string> = {
   [StrType.RnbUrban]: '🎷',
 };
 
+// TJ는 한 곡에 반주를 여러 버전으로 등록한다. 차트에도 버전별로 따로 오르므로
+// 같은 곡이 여러 순위에 보이는데, 무엇이 다른지 알려면 이 뱃지가 필요하다.
+//
+// 'MV'(뮤직비디오 유무)는 어느 버전을 부를지 고르는 데 도움이 안 되므로 노출하지 않는다.
+// '60'은 구형 반주기에서 재생되지 않는다는 뜻이라 실사용에 중요하다.
+export const VERSION_BADGES = ['MR', 'LV', '60'] as const;
+
+export const BADGE_LABEL: Record<string, string> = {
+  MR: 'MR',
+  LV: 'LIVE',
+  '60': '60↑',
+};
+
+export const BADGE_DESCRIPTION: Record<string, string> = {
+  MR: '가이드 보컬이 없는 MR 버전',
+  LV: '라이브 버전',
+  '60': '60 이상 반주기 전용곡',
+};
+
+/** 화면에 표시할 버전 뱃지만 걸러낸다. */
+export function toVisibleBadges(badges: string[] | null | undefined) {
+  if (!badges) return [];
+  return VERSION_BADGES.filter(badge => badges.includes(badge));
+}
+
 export interface TjChartRankingSong extends Song {
   rank: number;
 }
