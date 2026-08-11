@@ -1164,3 +1164,483 @@
 2026-01-01	R&B/어반(rnb_urban)	rank=78	num_tj=62055	Timeless - SG워너비
 2026-01-01	R&B/어반(rnb_urban)	rank=91	num_tj=62113	그런일은 - 박화요비
 2026-01-01	R&B/어반(rnb_urban)	rank=99	num_tj=59008	눈, 코, 입 - 태양
+2026-02-01	종합(all)	rank=32	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-02-01	종합(all)	rank=52	num_tj=91507	포장마차 - 황인욱
+2026-02-01	종합(all)	rank=82	num_tj=62438	Tears - 소찬휘
+2026-02-01	종합(all)	rank=84	num_tj=98499	이별하러 가는 길 - 임한별
+2026-02-01	종합(all)	rank=96	num_tj=34687	안아줘 - 정준일
+2026-02-01	가요(kpop)	rank=31	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-02-01	가요(kpop)	rank=46	num_tj=91507	포장마차 - 황인욱
+2026-02-01	가요(kpop)	rank=75	num_tj=62438	Tears - 소찬휘
+2026-02-01	가요(kpop)	rank=77	num_tj=98499	이별하러 가는 길 - 임한별
+2026-02-01	가요(kpop)	rank=88	num_tj=34687	안아줘 - 정준일
+2026-02-01	POP(pop)	rank=9	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-02-01	POP(pop)	rank=10	num_tj=23190	2002 - Anne-Marie
+2026-02-01	POP(pop)	rank=16	num_tj=7761	Lemon tree - Fool's Garden
+2026-02-01	발라드(ballad)	rank=16	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-02-01	발라드(ballad)	rank=29	num_tj=91507	포장마차 - 황인욱
+2026-02-01	발라드(ballad)	rank=45	num_tj=98499	이별하러 가는 길 - 임한별
+2026-02-01	발라드(ballad)	rank=94	num_tj=53967	니 소식 - 송하예
+2026-02-01	발라드(ballad)	rank=99	num_tj=29456	If You - 빅뱅
+2026-02-01	댄스(dance)	rank=7	num_tj=62438	Tears - 소찬휘
+2026-02-01	댄스(dance)	rank=12	num_tj=59015	뱅뱅뱅 (Bang Bang Bang) - 빅뱅
+2026-02-01	댄스(dance)	rank=14	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-02-01	댄스(dance)	rank=22	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-02-01	댄스(dance)	rank=23	num_tj=34174	예술이야 - 싸이
+2026-02-01	댄스(dance)	rank=24	num_tj=59014	맨정신 - 빅뱅
+2026-02-01	댄스(dance)	rank=29	num_tj=59029	Fantastic Baby - 빅뱅
+2026-02-01	댄스(dance)	rank=51	num_tj=59077	불장난 - 블랙핑크
+2026-02-01	댄스(dance)	rank=52	num_tj=59027	챔피언 - 싸이
+2026-02-01	댄스(dance)	rank=69	num_tj=62258	애상 - 쿨
+2026-02-01	댄스(dance)	rank=78	num_tj=62370	8282 - 다비치
+2026-02-01	댄스(dance)	rank=85	num_tj=62479	잘못된 만남 - 김건모
+2026-02-01	댄스(dance)	rank=90	num_tj=62507	슬퍼지려 하기전에 - 쿨
+2026-02-01	댄스(dance)	rank=94	num_tj=59001	강남스타일 - 싸이
+2026-02-01	댄스(dance)	rank=96	num_tj=59078	마지막처럼 - 블랙핑크
+2026-02-01	트로트(trot)	rank=70	num_tj=62733	초혼 - 장윤정
+2026-02-01	포크(folk)	rank=16	num_tj=93799	첫사랑 - 백아
+2026-02-01	포크(folk)	rank=29	num_tj=62326	스토커 - 10CM
+2026-02-01	포크(folk)	rank=44	num_tj=62553	봄봄봄 - 로이킴
+2026-02-01	포크(folk)	rank=47	num_tj=53754	나만, 봄 - 볼빨간사춘기
+2026-02-01	포크(folk)	rank=49	num_tj=62262	애상 - 10CM
+2026-02-01	포크(folk)	rank=59	num_tj=93773	그라데이션 - 10CM
+2026-02-01	포크(folk)	rank=67	num_tj=64383	숲 - 최유리
+2026-02-01	포크(folk)	rank=86	num_tj=53755	별 보러 갈래? - 볼빨간사춘기
+2026-02-01	포크(folk)	rank=87	num_tj=62116	이등병의 편지 - 김광석
+2026-02-01	포크(folk)	rank=90	num_tj=62349	봄이좋냐?? - 10CM
+2026-02-01	OST(ost)	rank=27	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-02-01	OST(ost)	rank=35	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-02-01	OST(ost)	rank=43	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-02-01	OST(ost)	rank=44	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-02-01	OST(ost)	rank=61	num_tj=91866	안녕(호텔델루나OST) - 폴킴
+2026-02-01	OST(ost)	rank=67	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-02-01	OST(ost)	rank=73	num_tj=62002	응급실(쾌걸춘향OST) - izi
+2026-02-01	OST(ost)	rank=74	num_tj=98684	내 생에 아름다운(뷰티인사이드OST) - K.Will
+2026-02-01	락/메탈(rock_metal)	rank=30	num_tj=34687	안아줘 - 정준일
+2026-02-01	락/메탈(rock_metal)	rank=34	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-02-01	락/메탈(rock_metal)	rank=38	num_tj=53705	노래방에서 - 장범준
+2026-02-01	락/메탈(rock_metal)	rank=47	num_tj=53651	주저하는 연인들을 위해 - 잔나비
+2026-02-01	락/메탈(rock_metal)	rank=63	num_tj=64573	사랑하게 될 거야 - 한로로
+2026-02-01	락/메탈(rock_metal)	rank=70	num_tj=99783	사계(하루살이) - MC THE MAX
+2026-02-01	락/메탈(rock_metal)	rank=84	num_tj=62004	가시 - 버즈
+2026-02-01	락/메탈(rock_metal)	rank=93	num_tj=62002	응급실(쾌걸춘향OST) - izi
+2026-02-01	락/메탈(rock_metal)	rank=95	num_tj=62550	형(兄) - 노라조
+2026-02-01	락/메탈(rock_metal)	rank=99	num_tj=64372	HAPPY - 데이식스
+2026-02-01	랩/힙합(rap_hiphop)	rank=7	num_tj=59017	삐딱하게(Crooked) - G-DRAGON
+2026-02-01	랩/힙합(rap_hiphop)	rank=34	num_tj=98751	수퍼비와 - 수퍼비(Feat.비와이)(Prod. By 비와이)
+2026-02-01	랩/힙합(rap_hiphop)	rank=73	num_tj=62234	죽일 놈(Guilty) - 다이나믹듀오
+2026-02-01	랩/힙합(rap_hiphop)	rank=82	num_tj=59072	사랑을 했다 (LOVE SCENARIO) - iKON(아이콘)
+2026-02-01	랩/힙합(rap_hiphop)	rank=84	num_tj=29215	Bae Bae - 빅뱅
+2026-02-01	랩/힙합(rap_hiphop)	rank=89	num_tj=98596	시간이 들겠지 - 로꼬(Feat.콜드)
+2026-02-01	랩/힙합(rap_hiphop)	rank=100	num_tj=62250	외톨이 - 아웃사이더
+2026-02-01	R&B/어반(rnb_urban)	rank=26	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-02-01	R&B/어반(rnb_urban)	rank=31	num_tj=64462	시작의 아이 - 마크툽(MAKTUB)
+2026-02-01	R&B/어반(rnb_urban)	rank=55	num_tj=98524	가을 타나 봐 - 바이브
+2026-02-01	R&B/어반(rnb_urban)	rank=57	num_tj=62030	...사랑했잖아... - 린
+2026-02-01	R&B/어반(rnb_urban)	rank=63	num_tj=62229	보여줄게 - 에일리
+2026-02-01	R&B/어반(rnb_urban)	rank=69	num_tj=62113	그런일은 - 박화요비
+2026-02-01	R&B/어반(rnb_urban)	rank=71	num_tj=62055	Timeless - SG워너비
+2026-02-01	R&B/어반(rnb_urban)	rank=76	num_tj=62230	눈, 코, 입 - 태양
+2026-02-01	R&B/어반(rnb_urban)	rank=81	num_tj=62025	벌써 일년 - 브라운아이즈
+2026-02-01	R&B/어반(rnb_urban)	rank=91	num_tj=59025	You And I - 박봄
+2026-02-01	R&B/어반(rnb_urban)	rank=92	num_tj=62036	연 - 빅마마
+2026-02-01	R&B/어반(rnb_urban)	rank=99	num_tj=62222	야생화 - 박효신
+2026-03-01	종합(all)	rank=30	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-03-01	종합(all)	rank=51	num_tj=91507	포장마차 - 황인욱
+2026-03-01	종합(all)	rank=73	num_tj=34687	안아줘 - 정준일
+2026-03-01	종합(all)	rank=78	num_tj=62438	Tears - 소찬휘
+2026-03-01	가요(kpop)	rank=29	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-03-01	가요(kpop)	rank=47	num_tj=91507	포장마차 - 황인욱
+2026-03-01	가요(kpop)	rank=67	num_tj=34687	안아줘 - 정준일
+2026-03-01	가요(kpop)	rank=72	num_tj=62438	Tears - 소찬휘
+2026-03-01	가요(kpop)	rank=99	num_tj=98499	이별하러 가는 길 - 임한별
+2026-03-01	POP(pop)	rank=8	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-03-01	POP(pop)	rank=10	num_tj=23190	2002 - Anne-Marie
+2026-03-01	POP(pop)	rank=16	num_tj=7761	Lemon tree - Fool's Garden
+2026-03-01	발라드(ballad)	rank=15	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-03-01	발라드(ballad)	rank=31	num_tj=91507	포장마차 - 황인욱
+2026-03-01	발라드(ballad)	rank=56	num_tj=98499	이별하러 가는 길 - 임한별
+2026-03-01	발라드(ballad)	rank=80	num_tj=53967	니 소식 - 송하예
+2026-03-01	발라드(ballad)	rank=92	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-03-01	발라드(ballad)	rank=99	num_tj=29456	If You - 빅뱅
+2026-03-01	댄스(dance)	rank=5	num_tj=62438	Tears - 소찬휘
+2026-03-01	댄스(dance)	rank=14	num_tj=59015	뱅뱅뱅 (Bang Bang Bang) - 빅뱅
+2026-03-01	댄스(dance)	rank=17	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-03-01	댄스(dance)	rank=23	num_tj=34174	예술이야 - 싸이
+2026-03-01	댄스(dance)	rank=24	num_tj=59014	맨정신 - 빅뱅
+2026-03-01	댄스(dance)	rank=29	num_tj=59029	Fantastic Baby - 빅뱅
+2026-03-01	댄스(dance)	rank=32	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-03-01	댄스(dance)	rank=43	num_tj=59027	챔피언 - 싸이
+2026-03-01	댄스(dance)	rank=52	num_tj=59077	불장난 - 블랙핑크
+2026-03-01	댄스(dance)	rank=61	num_tj=62258	애상 - 쿨
+2026-03-01	댄스(dance)	rank=69	num_tj=62370	8282 - 다비치
+2026-03-01	댄스(dance)	rank=78	num_tj=62507	슬퍼지려 하기전에 - 쿨
+2026-03-01	댄스(dance)	rank=83	num_tj=62479	잘못된 만남 - 김건모
+2026-03-01	댄스(dance)	rank=95	num_tj=59078	마지막처럼 - 블랙핑크
+2026-03-01	댄스(dance)	rank=97	num_tj=59001	강남스타일 - 싸이
+2026-03-01	트로트(trot)	rank=69	num_tj=62733	초혼 - 장윤정
+2026-03-01	포크(folk)	rank=17	num_tj=93799	첫사랑 - 백아
+2026-03-01	포크(folk)	rank=21	num_tj=64620	달리 표현할 수 없어요 - 로이킴
+2026-03-01	포크(folk)	rank=23	num_tj=53754	나만, 봄 - 볼빨간사춘기
+2026-03-01	포크(folk)	rank=28	num_tj=62553	봄봄봄 - 로이킴
+2026-03-01	포크(folk)	rank=31	num_tj=62326	스토커 - 10CM
+2026-03-01	포크(folk)	rank=48	num_tj=62349	봄이좋냐?? - 10CM
+2026-03-01	포크(folk)	rank=49	num_tj=62262	애상 - 10CM
+2026-03-01	포크(folk)	rank=52	num_tj=93773	그라데이션 - 10CM
+2026-03-01	포크(folk)	rank=76	num_tj=64383	숲 - 최유리
+2026-03-01	포크(folk)	rank=79	num_tj=53755	별 보러 갈래? - 볼빨간사춘기
+2026-03-01	포크(folk)	rank=93	num_tj=62116	이등병의 편지 - 김광석
+2026-03-01	OST(ost)	rank=32	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-03-01	OST(ost)	rank=34	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-03-01	OST(ost)	rank=37	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-03-01	OST(ost)	rank=51	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-03-01	OST(ost)	rank=57	num_tj=91866	안녕(호텔델루나OST) - 폴킴
+2026-03-01	OST(ost)	rank=59	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-03-01	OST(ost)	rank=69	num_tj=62002	응급실(쾌걸춘향OST) - izi
+2026-03-01	OST(ost)	rank=92	num_tj=98684	내 생에 아름다운(뷰티인사이드OST) - K.Will
+2026-03-01	OST(ost)	rank=97	num_tj=96209	있잖아(연애플레이리스트2 OST) - 폴킴
+2026-03-01	락/메탈(rock_metal)	rank=22	num_tj=34687	안아줘 - 정준일
+2026-03-01	락/메탈(rock_metal)	rank=32	num_tj=53705	노래방에서 - 장범준
+2026-03-01	락/메탈(rock_metal)	rank=40	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-03-01	락/메탈(rock_metal)	rank=41	num_tj=53651	주저하는 연인들을 위해 - 잔나비
+2026-03-01	락/메탈(rock_metal)	rank=60	num_tj=64573	사랑하게 될 거야 - 한로로
+2026-03-01	락/메탈(rock_metal)	rank=77	num_tj=99783	사계(하루살이) - MC THE MAX
+2026-03-01	락/메탈(rock_metal)	rank=87	num_tj=62004	가시 - 버즈
+2026-03-01	락/메탈(rock_metal)	rank=99	num_tj=62002	응급실(쾌걸춘향OST) - izi
+2026-03-01	랩/힙합(rap_hiphop)	rank=9	num_tj=59017	삐딱하게(Crooked) - G-DRAGON
+2026-03-01	랩/힙합(rap_hiphop)	rank=38	num_tj=98751	수퍼비와 - 수퍼비(Feat.비와이)(Prod. By 비와이)
+2026-03-01	랩/힙합(rap_hiphop)	rank=67	num_tj=98596	시간이 들겠지 - 로꼬(Feat.콜드)
+2026-03-01	랩/힙합(rap_hiphop)	rank=75	num_tj=62234	죽일 놈(Guilty) - 다이나믹듀오
+2026-03-01	랩/힙합(rap_hiphop)	rank=95	num_tj=29215	Bae Bae - 빅뱅
+2026-03-01	R&B/어반(rnb_urban)	rank=29	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-03-01	R&B/어반(rnb_urban)	rank=42	num_tj=98524	가을 타나 봐 - 바이브
+2026-03-01	R&B/어반(rnb_urban)	rank=48	num_tj=64462	시작의 아이 - 마크툽(MAKTUB)
+2026-03-01	R&B/어반(rnb_urban)	rank=62	num_tj=62030	...사랑했잖아... - 린
+2026-03-01	R&B/어반(rnb_urban)	rank=73	num_tj=62113	그런일은 - 박화요비
+2026-03-01	R&B/어반(rnb_urban)	rank=79	num_tj=62229	보여줄게 - 에일리
+2026-03-01	R&B/어반(rnb_urban)	rank=82	num_tj=62055	Timeless - SG워너비
+2026-03-01	R&B/어반(rnb_urban)	rank=83	num_tj=62230	눈, 코, 입 - 태양
+2026-03-01	R&B/어반(rnb_urban)	rank=92	num_tj=62025	벌써 일년 - 브라운아이즈
+2026-03-01	R&B/어반(rnb_urban)	rank=96	num_tj=62036	연 - 빅마마
+2026-04-01	종합(all)	rank=32	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-04-01	종합(all)	rank=58	num_tj=91507	포장마차 - 황인욱
+2026-04-01	종합(all)	rank=73	num_tj=34687	안아줘 - 정준일
+2026-04-01	종합(all)	rank=83	num_tj=62438	Tears - 소찬휘
+2026-04-01	종합(all)	rank=97	num_tj=53705	노래방에서 - 장범준
+2026-04-01	가요(kpop)	rank=31	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-04-01	가요(kpop)	rank=54	num_tj=91507	포장마차 - 황인욱
+2026-04-01	가요(kpop)	rank=69	num_tj=34687	안아줘 - 정준일
+2026-04-01	가요(kpop)	rank=78	num_tj=62438	Tears - 소찬휘
+2026-04-01	가요(kpop)	rank=90	num_tj=53705	노래방에서 - 장범준
+2026-04-01	POP(pop)	rank=9	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-04-01	POP(pop)	rank=10	num_tj=23190	2002 - Anne-Marie
+2026-04-01	POP(pop)	rank=18	num_tj=7761	Lemon tree - Fool's Garden
+2026-04-01	발라드(ballad)	rank=16	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-04-01	발라드(ballad)	rank=31	num_tj=91507	포장마차 - 황인욱
+2026-04-01	발라드(ballad)	rank=58	num_tj=98499	이별하러 가는 길 - 임한별
+2026-04-01	발라드(ballad)	rank=93	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-04-01	발라드(ballad)	rank=98	num_tj=53967	니 소식 - 송하예
+2026-04-01	댄스(dance)	rank=5	num_tj=62438	Tears - 소찬휘
+2026-04-01	댄스(dance)	rank=13	num_tj=59015	뱅뱅뱅 (Bang Bang Bang) - 빅뱅
+2026-04-01	댄스(dance)	rank=14	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-04-01	댄스(dance)	rank=24	num_tj=34174	예술이야 - 싸이
+2026-04-01	댄스(dance)	rank=25	num_tj=59014	맨정신 - 빅뱅
+2026-04-01	댄스(dance)	rank=33	num_tj=59029	Fantastic Baby - 빅뱅
+2026-04-01	댄스(dance)	rank=39	num_tj=62507	슬퍼지려 하기전에 - 쿨
+2026-04-01	댄스(dance)	rank=40	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-04-01	댄스(dance)	rank=45	num_tj=59027	챔피언 - 싸이
+2026-04-01	댄스(dance)	rank=48	num_tj=62258	애상 - 쿨
+2026-04-01	댄스(dance)	rank=56	num_tj=59077	불장난 - 블랙핑크
+2026-04-01	댄스(dance)	rank=64	num_tj=62370	8282 - 다비치
+2026-04-01	댄스(dance)	rank=77	num_tj=59001	강남스타일 - 싸이
+2026-04-01	댄스(dance)	rank=80	num_tj=62479	잘못된 만남 - 김건모
+2026-04-01	트로트(trot)	rank=68	num_tj=62733	초혼 - 장윤정
+2026-04-01	포크(folk)	rank=16	num_tj=53754	나만, 봄 - 볼빨간사춘기
+2026-04-01	포크(folk)	rank=20	num_tj=93799	첫사랑 - 백아
+2026-04-01	포크(folk)	rank=21	num_tj=64620	달리 표현할 수 없어요 - 로이킴
+2026-04-01	포크(folk)	rank=29	num_tj=62553	봄봄봄 - 로이킴
+2026-04-01	포크(folk)	rank=34	num_tj=62326	스토커 - 10CM
+2026-04-01	포크(folk)	rank=37	num_tj=62349	봄이좋냐?? - 10CM
+2026-04-01	포크(folk)	rank=48	num_tj=62262	애상 - 10CM
+2026-04-01	포크(folk)	rank=51	num_tj=93773	그라데이션 - 10CM
+2026-04-01	포크(folk)	rank=69	num_tj=53755	별 보러 갈래? - 볼빨간사춘기
+2026-04-01	포크(folk)	rank=86	num_tj=64383	숲 - 최유리
+2026-04-01	포크(folk)	rank=91	num_tj=62116	이등병의 편지 - 김광석
+2026-04-01	OST(ost)	rank=28	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-04-01	OST(ost)	rank=34	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-04-01	OST(ost)	rank=37	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-04-01	OST(ost)	rank=54	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-04-01	OST(ost)	rank=60	num_tj=91866	안녕(호텔델루나OST) - 폴킴
+2026-04-01	OST(ost)	rank=63	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-04-01	OST(ost)	rank=65	num_tj=62002	응급실(쾌걸춘향OST) - izi
+2026-04-01	OST(ost)	rank=86	num_tj=96209	있잖아(연애플레이리스트2 OST) - 폴킴
+2026-04-01	OST(ost)	rank=97	num_tj=62026	사랑아(내남자의여자OST) - The One
+2026-04-01	락/메탈(rock_metal)	rank=24	num_tj=34687	안아줘 - 정준일
+2026-04-01	락/메탈(rock_metal)	rank=31	num_tj=53705	노래방에서 - 장범준
+2026-04-01	락/메탈(rock_metal)	rank=44	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-04-01	락/메탈(rock_metal)	rank=45	num_tj=53651	주저하는 연인들을 위해 - 잔나비
+2026-04-01	락/메탈(rock_metal)	rank=63	num_tj=64573	사랑하게 될 거야 - 한로로
+2026-04-01	락/메탈(rock_metal)	rank=79	num_tj=99783	사계(하루살이) - MC THE MAX
+2026-04-01	락/메탈(rock_metal)	rank=94	num_tj=62004	가시 - 버즈
+2026-04-01	락/메탈(rock_metal)	rank=98	num_tj=64635	Drowning - WOODZ(조승연)
+2026-04-01	락/메탈(rock_metal)	rank=100	num_tj=62550	형(兄) - 노라조
+2026-04-01	랩/힙합(rap_hiphop)	rank=11	num_tj=59017	삐딱하게(Crooked) - G-DRAGON
+2026-04-01	랩/힙합(rap_hiphop)	rank=42	num_tj=98751	수퍼비와 - 수퍼비(Feat.비와이)(Prod. By 비와이)
+2026-04-01	랩/힙합(rap_hiphop)	rank=79	num_tj=62234	죽일 놈(Guilty) - 다이나믹듀오
+2026-04-01	랩/힙합(rap_hiphop)	rank=85	num_tj=98596	시간이 들겠지 - 로꼬(Feat.콜드)
+2026-04-01	랩/힙합(rap_hiphop)	rank=93	num_tj=29215	Bae Bae - 빅뱅
+2026-04-01	R&B/어반(rnb_urban)	rank=29	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-04-01	R&B/어반(rnb_urban)	rank=48	num_tj=98524	가을 타나 봐 - 바이브
+2026-04-01	R&B/어반(rnb_urban)	rank=60	num_tj=64462	시작의 아이 - 마크툽(MAKTUB)
+2026-04-01	R&B/어반(rnb_urban)	rank=61	num_tj=62222	야생화 - 박효신
+2026-04-01	R&B/어반(rnb_urban)	rank=66	num_tj=62030	...사랑했잖아... - 린
+2026-04-01	R&B/어반(rnb_urban)	rank=82	num_tj=62113	그런일은 - 박화요비
+2026-04-01	R&B/어반(rnb_urban)	rank=83	num_tj=62229	보여줄게 - 에일리
+2026-04-01	R&B/어반(rnb_urban)	rank=84	num_tj=62055	Timeless - SG워너비
+2026-04-01	R&B/어반(rnb_urban)	rank=86	num_tj=62230	눈, 코, 입 - 태양
+2026-04-01	R&B/어반(rnb_urban)	rank=95	num_tj=62025	벌써 일년 - 브라운아이즈
+2026-04-01	R&B/어반(rnb_urban)	rank=100	num_tj=62224	바람기억 - 나얼
+2026-05-01	종합(all)	rank=30	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-05-01	종합(all)	rank=47	num_tj=91507	포장마차 - 황인욱
+2026-05-01	종합(all)	rank=62	num_tj=62438	Tears - 소찬휘
+2026-05-01	종합(all)	rank=77	num_tj=34687	안아줘 - 정준일
+2026-05-01	종합(all)	rank=86	num_tj=91945	벗(He'story) - 닐로
+2026-05-01	가요(kpop)	rank=29	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-05-01	가요(kpop)	rank=45	num_tj=91507	포장마차 - 황인욱
+2026-05-01	가요(kpop)	rank=58	num_tj=62438	Tears - 소찬휘
+2026-05-01	가요(kpop)	rank=73	num_tj=34687	안아줘 - 정준일
+2026-05-01	가요(kpop)	rank=82	num_tj=91945	벗(He'story) - 닐로
+2026-05-01	가요(kpop)	rank=98	num_tj=53705	노래방에서 - 장범준
+2026-05-01	POP(pop)	rank=10	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-05-01	POP(pop)	rank=11	num_tj=7761	Lemon tree - Fool's Garden
+2026-05-01	POP(pop)	rank=12	num_tj=23190	2002 - Anne-Marie
+2026-05-01	발라드(ballad)	rank=14	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-05-01	발라드(ballad)	rank=23	num_tj=91507	포장마차 - 황인욱
+2026-05-01	발라드(ballad)	rank=42	num_tj=91945	벗(He'story) - 닐로
+2026-05-01	발라드(ballad)	rank=76	num_tj=98499	이별하러 가는 길 - 임한별
+2026-05-01	발라드(ballad)	rank=97	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-05-01	댄스(dance)	rank=6	num_tj=62438	Tears - 소찬휘
+2026-05-01	댄스(dance)	rank=12	num_tj=59015	뱅뱅뱅 (Bang Bang Bang) - 빅뱅
+2026-05-01	댄스(dance)	rank=18	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-05-01	댄스(dance)	rank=22	num_tj=34174	예술이야 - 싸이
+2026-05-01	댄스(dance)	rank=26	num_tj=59014	맨정신 - 빅뱅
+2026-05-01	댄스(dance)	rank=32	num_tj=59029	Fantastic Baby - 빅뱅
+2026-05-01	댄스(dance)	rank=38	num_tj=59001	강남스타일 - 싸이
+2026-05-01	댄스(dance)	rank=39	num_tj=59027	챔피언 - 싸이
+2026-05-01	댄스(dance)	rank=46	num_tj=62258	애상 - 쿨
+2026-05-01	댄스(dance)	rank=51	num_tj=59077	불장난 - 블랙핑크
+2026-05-01	댄스(dance)	rank=53	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-05-01	댄스(dance)	rank=61	num_tj=62507	슬퍼지려 하기전에 - 쿨
+2026-05-01	댄스(dance)	rank=64	num_tj=62370	8282 - 다비치
+2026-05-01	댄스(dance)	rank=89	num_tj=64669	RUDE! - Hearts2Hearts(하츠투하츠)
+2026-05-01	댄스(dance)	rank=92	num_tj=62479	잘못된 만남 - 김건모
+2026-05-01	댄스(dance)	rank=94	num_tj=59078	마지막처럼 - 블랙핑크
+2026-05-01	트로트(trot)	rank=69	num_tj=62733	초혼 - 장윤정
+2026-05-01	포크(folk)	rank=16	num_tj=93799	첫사랑 - 백아
+2026-05-01	포크(folk)	rank=23	num_tj=64620	달리 표현할 수 없어요 - 로이킴
+2026-05-01	포크(folk)	rank=27	num_tj=53754	나만, 봄 - 볼빨간사춘기
+2026-05-01	포크(folk)	rank=30	num_tj=62326	스토커 - 10CM
+2026-05-01	포크(folk)	rank=35	num_tj=62553	봄봄봄 - 로이킴
+2026-05-01	포크(folk)	rank=41	num_tj=93773	그라데이션 - 10CM
+2026-05-01	포크(folk)	rank=47	num_tj=62262	애상 - 10CM
+2026-05-01	포크(folk)	rank=57	num_tj=62349	봄이좋냐?? - 10CM
+2026-05-01	포크(folk)	rank=70	num_tj=53755	별 보러 갈래? - 볼빨간사춘기
+2026-05-01	포크(folk)	rank=79	num_tj=64383	숲 - 최유리
+2026-05-01	포크(folk)	rank=96	num_tj=62116	이등병의 편지 - 김광석
+2026-05-01	OST(ost)	rank=24	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-05-01	OST(ost)	rank=31	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-05-01	OST(ost)	rank=41	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-05-01	OST(ost)	rank=53	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-05-01	OST(ost)	rank=57	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-05-01	OST(ost)	rank=61	num_tj=62002	응급실(쾌걸춘향OST) - izi
+2026-05-01	OST(ost)	rank=65	num_tj=91866	안녕(호텔델루나OST) - 폴킴
+2026-05-01	OST(ost)	rank=94	num_tj=96209	있잖아(연애플레이리스트2 OST) - 폴킴
+2026-05-01	OST(ost)	rank=95	num_tj=93771	Butter-Fly(디지몬어드벤처OST) - 전영호
+2026-05-01	OST(ost)	rank=96	num_tj=62237	All For You(응답하라1997 OST) - 서인국,정은지
+2026-05-01	락/메탈(rock_metal)	rank=27	num_tj=34687	안아줘 - 정준일
+2026-05-01	락/메탈(rock_metal)	rank=35	num_tj=53705	노래방에서 - 장범준
+2026-05-01	락/메탈(rock_metal)	rank=37	num_tj=53651	주저하는 연인들을 위해 - 잔나비
+2026-05-01	락/메탈(rock_metal)	rank=42	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-05-01	락/메탈(rock_metal)	rank=63	num_tj=64573	사랑하게 될 거야 - 한로로
+2026-05-01	락/메탈(rock_metal)	rank=66	num_tj=99827	옥탑방 - 엔플라잉
+2026-05-01	락/메탈(rock_metal)	rank=77	num_tj=64635	Drowning - WOODZ(조승연)
+2026-05-01	락/메탈(rock_metal)	rank=80	num_tj=99783	사계(하루살이) - MC THE MAX
+2026-05-01	락/메탈(rock_metal)	rank=92	num_tj=7761	Lemon tree - Fool's Garden
+2026-05-01	락/메탈(rock_metal)	rank=95	num_tj=62004	가시 - 버즈
+2026-05-01	랩/힙합(rap_hiphop)	rank=9	num_tj=59017	삐딱하게(Crooked) - G-DRAGON
+2026-05-01	랩/힙합(rap_hiphop)	rank=53	num_tj=98751	수퍼비와 - 수퍼비(Feat.비와이)(Prod. By 비와이)
+2026-05-01	랩/힙합(rap_hiphop)	rank=76	num_tj=62234	죽일 놈(Guilty) - 다이나믹듀오
+2026-05-01	랩/힙합(rap_hiphop)	rank=82	num_tj=29215	Bae Bae - 빅뱅
+2026-05-01	랩/힙합(rap_hiphop)	rank=90	num_tj=59072	사랑을 했다 (LOVE SCENARIO) - iKON(아이콘)
+2026-05-01	랩/힙합(rap_hiphop)	rank=94	num_tj=62250	외톨이 - 아웃사이더
+2026-05-01	랩/힙합(rap_hiphop)	rank=97	num_tj=98596	시간이 들겠지 - 로꼬(Feat.콜드)
+2026-05-01	R&B/어반(rnb_urban)	rank=27	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-05-01	R&B/어반(rnb_urban)	rank=40	num_tj=98524	가을 타나 봐 - 바이브
+2026-05-01	R&B/어반(rnb_urban)	rank=62	num_tj=62030	...사랑했잖아... - 린
+2026-05-01	R&B/어반(rnb_urban)	rank=63	num_tj=64462	시작의 아이 - 마크툽(MAKTUB)
+2026-05-01	R&B/어반(rnb_urban)	rank=70	num_tj=62229	보여줄게 - 에일리
+2026-05-01	R&B/어반(rnb_urban)	rank=73	num_tj=62230	눈, 코, 입 - 태양
+2026-05-01	R&B/어반(rnb_urban)	rank=81	num_tj=62055	Timeless - SG워너비
+2026-05-01	R&B/어반(rnb_urban)	rank=82	num_tj=62222	야생화 - 박효신
+2026-05-01	R&B/어반(rnb_urban)	rank=90	num_tj=62113	그런일은 - 박화요비
+2026-05-01	R&B/어반(rnb_urban)	rank=95	num_tj=62025	벌써 일년 - 브라운아이즈
+2026-06-01	종합(all)	rank=27	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-06-01	종합(all)	rank=44	num_tj=91507	포장마차 - 황인욱
+2026-06-01	종합(all)	rank=67	num_tj=62438	Tears - 소찬휘
+2026-06-01	종합(all)	rank=70	num_tj=34687	안아줘 - 정준일
+2026-06-01	가요(kpop)	rank=26	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-06-01	가요(kpop)	rank=42	num_tj=91507	포장마차 - 황인욱
+2026-06-01	가요(kpop)	rank=63	num_tj=62438	Tears - 소찬휘
+2026-06-01	가요(kpop)	rank=66	num_tj=34687	안아줘 - 정준일
+2026-06-01	가요(kpop)	rank=99	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-06-01	POP(pop)	rank=4	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-06-01	POP(pop)	rank=12	num_tj=23190	2002 - Anne-Marie
+2026-06-01	POP(pop)	rank=17	num_tj=7761	Lemon tree - Fool's Garden
+2026-06-01	발라드(ballad)	rank=13	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-06-01	발라드(ballad)	rank=21	num_tj=91507	포장마차 - 황인욱
+2026-06-01	발라드(ballad)	rank=64	num_tj=98499	이별하러 가는 길 - 임한별
+2026-06-01	발라드(ballad)	rank=71	num_tj=91945	벗(He'story) - 닐로
+2026-06-01	댄스(dance)	rank=5	num_tj=62438	Tears - 소찬휘
+2026-06-01	댄스(dance)	rank=15	num_tj=34174	예술이야 - 싸이
+2026-06-01	댄스(dance)	rank=19	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-06-01	댄스(dance)	rank=22	num_tj=59015	뱅뱅뱅 (Bang Bang Bang) - 빅뱅
+2026-06-01	댄스(dance)	rank=34	num_tj=59014	맨정신 - 빅뱅
+2026-06-01	댄스(dance)	rank=42	num_tj=59029	Fantastic Baby - 빅뱅
+2026-06-01	댄스(dance)	rank=50	num_tj=59027	챔피언 - 싸이
+2026-06-01	댄스(dance)	rank=54	num_tj=62258	애상 - 쿨
+2026-06-01	댄스(dance)	rank=56	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-06-01	댄스(dance)	rank=58	num_tj=62507	슬퍼지려 하기전에 - 쿨
+2026-06-01	댄스(dance)	rank=62	num_tj=64652	붉은 노을 - 빅뱅
+2026-06-01	댄스(dance)	rank=63	num_tj=59001	강남스타일 - 싸이
+2026-06-01	댄스(dance)	rank=64	num_tj=62370	8282 - 다비치
+2026-06-01	댄스(dance)	rank=71	num_tj=59077	불장난 - 블랙핑크
+2026-06-01	댄스(dance)	rank=86	num_tj=62479	잘못된 만남 - 김건모
+2026-06-01	트로트(trot)	rank=66	num_tj=62733	초혼 - 장윤정
+2026-06-01	포크(folk)	rank=18	num_tj=93799	첫사랑 - 백아
+2026-06-01	포크(folk)	rank=22	num_tj=64620	달리 표현할 수 없어요 - 로이킴
+2026-06-01	포크(folk)	rank=27	num_tj=62326	스토커 - 10CM
+2026-06-01	포크(folk)	rank=41	num_tj=53754	나만, 봄 - 볼빨간사춘기
+2026-06-01	포크(folk)	rank=47	num_tj=93773	그라데이션 - 10CM
+2026-06-01	포크(folk)	rank=54	num_tj=62262	애상 - 10CM
+2026-06-01	포크(folk)	rank=66	num_tj=62553	봄봄봄 - 로이킴
+2026-06-01	포크(folk)	rank=73	num_tj=62349	봄이좋냐?? - 10CM
+2026-06-01	포크(folk)	rank=75	num_tj=64383	숲 - 최유리
+2026-06-01	포크(folk)	rank=86	num_tj=53755	별 보러 갈래? - 볼빨간사춘기
+2026-06-01	포크(folk)	rank=94	num_tj=62116	이등병의 편지 - 김광석
+2026-06-01	OST(ost)	rank=21	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-06-01	OST(ost)	rank=32	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-06-01	OST(ost)	rank=46	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-06-01	OST(ost)	rank=50	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-06-01	OST(ost)	rank=58	num_tj=91866	안녕(호텔델루나OST) - 폴킴
+2026-06-01	OST(ost)	rank=64	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-06-01	OST(ost)	rank=71	num_tj=62002	응급실(쾌걸춘향OST) - izi
+2026-06-01	OST(ost)	rank=95	num_tj=62026	사랑아(내남자의여자OST) - The One
+2026-06-01	락/메탈(rock_metal)	rank=25	num_tj=34687	안아줘 - 정준일
+2026-06-01	락/메탈(rock_metal)	rank=33	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-06-01	락/메탈(rock_metal)	rank=34	num_tj=53651	주저하는 연인들을 위해 - 잔나비
+2026-06-01	락/메탈(rock_metal)	rank=43	num_tj=53705	노래방에서 - 장범준
+2026-06-01	락/메탈(rock_metal)	rank=66	num_tj=64573	사랑하게 될 거야 - 한로로
+2026-06-01	락/메탈(rock_metal)	rank=72	num_tj=99783	사계(하루살이) - MC THE MAX
+2026-06-01	락/메탈(rock_metal)	rank=92	num_tj=62004	가시 - 버즈
+2026-06-01	락/메탈(rock_metal)	rank=94	num_tj=99827	옥탑방 - 엔플라잉
+2026-06-01	락/메탈(rock_metal)	rank=96	num_tj=64635	Drowning - WOODZ(조승연)
+2026-06-01	랩/힙합(rap_hiphop)	rank=14	num_tj=59017	삐딱하게(Crooked) - G-DRAGON
+2026-06-01	랩/힙합(rap_hiphop)	rank=49	num_tj=98751	수퍼비와 - 수퍼비(Feat.비와이)(Prod. By 비와이)
+2026-06-01	랩/힙합(rap_hiphop)	rank=73	num_tj=62234	죽일 놈(Guilty) - 다이나믹듀오
+2026-06-01	랩/힙합(rap_hiphop)	rank=82	num_tj=98596	시간이 들겠지 - 로꼬(Feat.콜드)
+2026-06-01	랩/힙합(rap_hiphop)	rank=93	num_tj=62427	Ballerino - 리쌍(Feat.알리)
+2026-06-01	랩/힙합(rap_hiphop)	rank=98	num_tj=62250	외톨이 - 아웃사이더
+2026-06-01	랩/힙합(rap_hiphop)	rank=99	num_tj=29215	Bae Bae - 빅뱅
+2026-06-01	랩/힙합(rap_hiphop)	rank=100	num_tj=62261	고백(Go Back) - 다이나믹듀오
+2026-06-01	R&B/어반(rnb_urban)	rank=20	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-06-01	R&B/어반(rnb_urban)	rank=51	num_tj=98524	가을 타나 봐 - 바이브
+2026-06-01	R&B/어반(rnb_urban)	rank=59	num_tj=62030	...사랑했잖아... - 린
+2026-06-01	R&B/어반(rnb_urban)	rank=66	num_tj=64462	시작의 아이 - 마크툽(MAKTUB)
+2026-06-01	R&B/어반(rnb_urban)	rank=73	num_tj=62229	보여줄게 - 에일리
+2026-06-01	R&B/어반(rnb_urban)	rank=84	num_tj=62055	Timeless - SG워너비
+2026-06-01	R&B/어반(rnb_urban)	rank=90	num_tj=62230	눈, 코, 입 - 태양
+2026-06-01	R&B/어반(rnb_urban)	rank=92	num_tj=62113	그런일은 - 박화요비
+2026-06-01	R&B/어반(rnb_urban)	rank=93	num_tj=62222	야생화 - 박효신
+2026-07-01	종합(all)	rank=33	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-07-01	종합(all)	rank=47	num_tj=91507	포장마차 - 황인욱
+2026-07-01	종합(all)	rank=52	num_tj=62438	Tears - 소찬휘
+2026-07-01	가요(kpop)	rank=31	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-07-01	가요(kpop)	rank=44	num_tj=91507	포장마차 - 황인욱
+2026-07-01	가요(kpop)	rank=49	num_tj=62438	Tears - 소찬휘
+2026-07-01	가요(kpop)	rank=98	num_tj=34687	안아줘 - 정준일
+2026-07-01	POP(pop)	rank=4	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-07-01	POP(pop)	rank=10	num_tj=23190	2002 - Anne-Marie
+2026-07-01	POP(pop)	rank=13	num_tj=7761	Lemon tree - Fool's Garden
+2026-07-01	JPOP(jpop)	rank=30	num_tj=52546	mosi mosi? - 楽音
+2026-07-01	발라드(ballad)	rank=15	num_tj=96763	꿈속에 너 - 에이치코드(Feat.전상근)
+2026-07-01	발라드(ballad)	rank=25	num_tj=91507	포장마차 - 황인욱
+2026-07-01	발라드(ballad)	rank=75	num_tj=98499	이별하러 가는 길 - 임한별
+2026-07-01	댄스(dance)	rank=8	num_tj=62438	Tears - 소찬휘
+2026-07-01	댄스(dance)	rank=18	num_tj=34174	예술이야 - 싸이
+2026-07-01	댄스(dance)	rank=19	num_tj=59015	뱅뱅뱅 (Bang Bang Bang) - 빅뱅
+2026-07-01	댄스(dance)	rank=23	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-07-01	댄스(dance)	rank=35	num_tj=59014	맨정신 - 빅뱅
+2026-07-01	댄스(dance)	rank=39	num_tj=62258	애상 - 쿨
+2026-07-01	댄스(dance)	rank=43	num_tj=59029	Fantastic Baby - 빅뱅
+2026-07-01	댄스(dance)	rank=47	num_tj=64652	붉은 노을 - 빅뱅
+2026-07-01	댄스(dance)	rank=50	num_tj=59027	챔피언 - 싸이
+2026-07-01	댄스(dance)	rank=54	num_tj=59077	불장난 - 블랙핑크
+2026-07-01	댄스(dance)	rank=60	num_tj=59001	강남스타일 - 싸이
+2026-07-01	댄스(dance)	rank=69	num_tj=62507	슬퍼지려 하기전에 - 쿨
+2026-07-01	댄스(dance)	rank=70	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-07-01	댄스(dance)	rank=72	num_tj=62370	8282 - 다비치
+2026-07-01	댄스(dance)	rank=93	num_tj=59078	마지막처럼 - 블랙핑크
+2026-07-01	댄스(dance)	rank=96	num_tj=62479	잘못된 만남 - 김건모
+2026-07-01	트로트(trot)	rank=67	num_tj=62733	초혼 - 장윤정
+2026-07-01	포크(folk)	rank=16	num_tj=93799	첫사랑 - 백아
+2026-07-01	포크(folk)	rank=25	num_tj=62326	스토커 - 10CM
+2026-07-01	포크(folk)	rank=26	num_tj=64620	달리 표현할 수 없어요 - 로이킴
+2026-07-01	포크(folk)	rank=43	num_tj=93773	그라데이션 - 10CM
+2026-07-01	포크(folk)	rank=44	num_tj=53754	나만, 봄 - 볼빨간사춘기
+2026-07-01	포크(folk)	rank=52	num_tj=62262	애상 - 10CM
+2026-07-01	포크(folk)	rank=69	num_tj=62553	봄봄봄 - 로이킴
+2026-07-01	포크(folk)	rank=70	num_tj=64383	숲 - 최유리
+2026-07-01	포크(folk)	rank=72	num_tj=62349	봄이좋냐?? - 10CM
+2026-07-01	포크(folk)	rank=90	num_tj=53755	별 보러 갈래? - 볼빨간사춘기
+2026-07-01	포크(folk)	rank=96	num_tj=62116	이등병의 편지 - 김광석
+2026-07-01	OST(ost)	rank=25	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-07-01	OST(ost)	rank=33	num_tj=18446	우리의 꿈(원피스 OP) - 코요태
+2026-07-01	OST(ost)	rank=44	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-07-01	OST(ost)	rank=46	num_tj=48943	상사화(역적:백성을훔친도적OST) - 안예은
+2026-07-01	OST(ost)	rank=68	num_tj=91866	안녕(호텔델루나OST) - 폴킴
+2026-07-01	OST(ost)	rank=71	num_tj=62002	응급실(쾌걸춘향OST) - izi
+2026-07-01	OST(ost)	rank=76	num_tj=64579	Golden(KPop Demon Hunters OST) - HUNTR/X
+2026-07-01	OST(ost)	rank=98	num_tj=62237	All For You(응답하라1997 OST) - 서인국,정은지
+2026-07-01	락/메탈(rock_metal)	rank=29	num_tj=34687	안아줘 - 정준일
+2026-07-01	락/메탈(rock_metal)	rank=35	num_tj=15124	질풍가도(쾌걸!근육맨2세여는노래) - 유정석
+2026-07-01	락/메탈(rock_metal)	rank=40	num_tj=53651	주저하는 연인들을 위해 - 잔나비
+2026-07-01	락/메탈(rock_metal)	rank=51	num_tj=53705	노래방에서 - 장범준
+2026-07-01	락/메탈(rock_metal)	rank=63	num_tj=64573	사랑하게 될 거야 - 한로로
+2026-07-01	락/메탈(rock_metal)	rank=72	num_tj=99783	사계(하루살이) - MC THE MAX
+2026-07-01	락/메탈(rock_metal)	rank=77	num_tj=64674	0+0 - 한로로
+2026-07-01	락/메탈(rock_metal)	rank=81	num_tj=62004	가시 - 버즈
+2026-07-01	락/메탈(rock_metal)	rank=91	num_tj=64689	소문의 낙원 - AKMU(악뮤)
+2026-07-01	락/메탈(rock_metal)	rank=92	num_tj=7761	Lemon tree - Fool's Garden
+2026-07-01	락/메탈(rock_metal)	rank=97	num_tj=64635	Drowning - WOODZ(조승연)
+2026-07-01	랩/힙합(rap_hiphop)	rank=13	num_tj=59017	삐딱하게(Crooked) - G-DRAGON
+2026-07-01	랩/힙합(rap_hiphop)	rank=53	num_tj=59072	사랑을 했다 (LOVE SCENARIO) - iKON(아이콘)
+2026-07-01	랩/힙합(rap_hiphop)	rank=55	num_tj=98751	수퍼비와 - 수퍼비(Feat.비와이)(Prod. By 비와이)
+2026-07-01	랩/힙합(rap_hiphop)	rank=60	num_tj=62234	죽일 놈(Guilty) - 다이나믹듀오
+2026-07-01	랩/힙합(rap_hiphop)	rank=85	num_tj=62250	외톨이 - 아웃사이더
+2026-07-01	랩/힙합(rap_hiphop)	rank=86	num_tj=98596	시간이 들겠지 - 로꼬(Feat.콜드)
+2026-07-01	랩/힙합(rap_hiphop)	rank=87	num_tj=29215	Bae Bae - 빅뱅
+2026-07-01	랩/힙합(rap_hiphop)	rank=91	num_tj=62427	Ballerino - 리쌍(Feat.알리)
+2026-07-01	랩/힙합(rap_hiphop)	rank=92	num_tj=62261	고백(Go Back) - 다이나믹듀오
+2026-07-01	랩/힙합(rap_hiphop)	rank=96	num_tj=64666	삐딱하게(Crooked) - G-DRAGON
+2026-07-01	랩/힙합(rap_hiphop)	rank=99	num_tj=62268	자니 - 프라이머리(Feat.다이나믹듀오)
+2026-07-01	R&B/어반(rnb_urban)	rank=16	num_tj=23363	Speechless(Aladdin OST) - Naomi Scott
+2026-07-01	R&B/어반(rnb_urban)	rank=47	num_tj=98524	가을 타나 봐 - 바이브
+2026-07-01	R&B/어반(rnb_urban)	rank=52	num_tj=62030	...사랑했잖아... - 린
+2026-07-01	R&B/어반(rnb_urban)	rank=63	num_tj=62229	보여줄게 - 에일리
+2026-07-01	R&B/어반(rnb_urban)	rank=66	num_tj=64462	시작의 아이 - 마크툽(MAKTUB)
+2026-07-01	R&B/어반(rnb_urban)	rank=71	num_tj=62055	Timeless - SG워너비
+2026-07-01	R&B/어반(rnb_urban)	rank=73	num_tj=62230	눈, 코, 입 - 태양
+2026-07-01	R&B/어반(rnb_urban)	rank=84	num_tj=62113	그런일은 - 박화요비
+2026-07-01	R&B/어반(rnb_urban)	rank=92	num_tj=62025	벌써 일년 - 브라운아이즈
+2026-07-01	R&B/어반(rnb_urban)	rank=95	num_tj=62350	한숨 - 이하이
+2026-07-01	R&B/어반(rnb_urban)	rank=97	num_tj=62222	야생화 - 박효신

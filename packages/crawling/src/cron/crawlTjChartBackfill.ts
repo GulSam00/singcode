@@ -18,8 +18,8 @@ dotenv.config();
 const UNMATCHED_LOG_FILE = path.join('src', 'assets', 'tjChartBackfillUnmatched.txt');
 
 // 백필 대상 기간 (직접 지정: YYYY-MM 형식, 양 끝 월 포함)
-const BACKFILL_START_MONTH = '2025-01';
-const BACKFILL_END_MONTH = '2026-01';
+const BACKFILL_START_MONTH = '2026-02';
+const BACKFILL_END_MONTH = '2026-07';
 
 const targetMonths = eachMonthOfInterval({
   start: parse(BACKFILL_START_MONTH, 'yyyy-MM', new Date()),
