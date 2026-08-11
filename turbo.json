@@ -22,7 +22,8 @@
     "END_NUMBER",
     "TJ_CONCURRENCY",
     "TJ_DRY_RUN",
-    "TJ_RESET_PROGRESS"
+    "TJ_RESET_PROGRESS",
+    "DEAD_SONGS_APPLY"
   ],
   "tasks": {
     "build": {

@@ -16,6 +16,7 @@
     "trans-jpn": "tsx src/cron/translationJpn.ts",
     "tj-all-number": "tsx src/cron/crawlAllTJSongByNumber.ts",
     "tj-badges": "tsx src/cron/crawlTjBadges.ts",
+    "remove-dead-songs": "tsx src/cron/removeDeadTjSongs.ts",
     "tj-chart": "tsx src/cron/crawlTjChart.ts",
     "tj-chart-backfill": "tsx src/cron/crawlTjChartBackfill.ts",
     "lint": "eslint .",

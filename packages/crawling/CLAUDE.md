@@ -16,6 +16,7 @@ pnpm ky-update         # ky-youtube + ky-verify 병렬 실행
 pnpm recent-tj         # TJ 최신곡 크롤링
 pnpm tj-all-number     # TJ 번호 구간(START_NUMBER~END_NUMBER) 전수 크롤링
 pnpm tj-badges         # TJ 반주 버전 뱃지(MV/MR/LV/60) 수집 (badges가 null인 곡만)
+pnpm remove-dead-songs # TJ에서 사라진 번호의 곡 정리 (기본 미리보기, DEAD_SONGS_APPLY=true로 실행)
 pnpm tj-chart          # TJ 공식 차트(TOP100) 전월분 수집
 pnpm tj-chart-backfill # TJ 공식 차트 과거 월 일괄 백필 (기간은 스크립트 상수로 지정)
 pnpm tag-songs         # AI 기반 곡 자동 태깅
@@ -166,6 +167,8 @@ crawlTjBadges.ts (pnpm tj-badges)
 환경변수로 조절한다: `BADGE_MAX_SONGS`(0=제한 없음), `BADGE_CONCURRENCY`(기본 5), `BADGE_DRY_RUN`.
 
 `utils/tjBadge.ts`의 `sortBadges()`를 반드시 거쳐야 검색 페이지 경로와 차트 API 경로(`badgesFromChartItem`)가 같은 배열을 만든다.
+
+`badges`가 계속 `null`로 남는 곡은 TJ에서 번호가 사라진 곡이다. `removeDeadTjSongs.ts`가 이를 정리하되, **차트에 오른 곡**(번호 검색에는 없어도 차트에는 오른다)과 **`num_ky` 보유 곡**(금영으로는 부를 수 있다)은 제외한다. `songs`를 참조하는 `song_tags` · `invalid_ky_songs` · `verify_ky_songs`를 먼저 지워야 FK 제약에 걸리지 않는다. `invalid_ky_songs`와 `verify_ky_songs`는 별도 `song_id` 컬럼 없이 PK인 `id`가 곧 `songs.id`다.
 
 ### GitHub Actions 워크플로우
 
