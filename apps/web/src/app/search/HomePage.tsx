@@ -268,19 +268,6 @@ export default function SearchPage() {
               onSelectArtist={setSearch}
               callback={() => handleSearchTypeChange('artist')}
             />
-            {/* <div className="flex items-center gap-2">
-              <Checkbox
-                id="chatbot-toggle"
-                checked={isChatBotEnabled}
-                onCheckedChange={handleToggleChatBot}
-              />
-              <Label
-                htmlFor="chatbot-toggle"
-                className="text-muted-foreground cursor-pointer text-xs"
-              >
-                AI 챗봇
-              </Label>
-            </div> */}
           </div>
         </div>
 
