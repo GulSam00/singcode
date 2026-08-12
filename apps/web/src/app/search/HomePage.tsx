@@ -188,6 +188,11 @@ export default function SearchPage() {
       setSearch('');
       setIsNumberKeypadOpen(false);
     }
+    // 번호 검색에서는 언어 필터를 숨기는데, 값이 남아 있으면 화면에 보이지 않는 채로
+    // 결과가 걸러져 "번호가 맞는데 안 나온다"가 된다. 상태까지 비운다.
+    if (value === 'number') {
+      handleLanguageTagChange(undefined);
+    }
     handleSearchTypeChange(value as SearchType);
   };
 
@@ -325,6 +330,7 @@ export default function SearchPage() {
 
           <div className="relative flex-1">
             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+
             <Input
               type="text"
               inputMode={searchType === 'number' ? 'numeric' : 'text'}
@@ -366,6 +372,14 @@ export default function SearchPage() {
             </div>
           )}
         </div>
+
+        {/* 번호 검색에는 언어 필터가 의미가 없다.
+            값이 남아 있으면 번호가 맞는데도 결과가 걸러져 원인을 알기 어렵다. */}
+        {searchType !== 'number' && (
+          <div data-tour="language-filter">
+            <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
+          </div>
+        )}
       </div>
       <div ref={setScrollRef} className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {isTourDemo && (
@@ -412,9 +426,6 @@ export default function SearchPage() {
 
         {!isTourDemo && searchSongs.length === 0 && !query && searchType !== 'number' && (
           <div className="flex h-full flex-col gap-2">
-            <div data-tour="language-filter">
-              <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
-            </div>
             <div className="text-muted-foreground flex items-center gap-2">
               <Info className="h-4 w-4" />
               <span className="m-2">전체 문장보다는 단어 단위로 검색해보세요</span>
