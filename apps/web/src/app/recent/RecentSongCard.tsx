@@ -1,41 +1,12 @@
-import MarqueeText from '@/components/MarqueeText';
+import SongSummary from '@/components/SongSummary';
 import { Separator } from '@/components/ui/separator';
 import { Song } from '@/types/song';
 
 export default function RecentSongCard({ song }: { song: Song }) {
-  const { title, artist, title_ko, artist_ko, num_tj, num_ky } = song;
-
   return (
-    <div className="w-full gap-4">
-      {/* 노래 정보 */}
-      <div className="flex flex-col">
-        {/* 제목 및 가수 */}
-        <div className="flex justify-between">
-          <div className="flex max-w-[250px] min-w-[100px] flex-col gap-0.5">
-            <MarqueeText className="text-base font-medium">{title}</MarqueeText>
-            {title_ko && title_ko !== title && (
-              <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
-            )}
-            <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
-            {artist_ko && artist_ko !== artist && (
-              <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
-            )}
-          </div>
-
-          <div className="flex flex-col space-x-4">
-            <div className="flex items-center">
-              <span className="text-brand-tj mr-1 w-8 text-xs">TJ</span>
-              <span className="text-sm font-medium">{num_tj}</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-brand-ky mr-1 w-8 text-xs">금영</span>
-              <span className="text-sm font-medium">{num_ky}</span>
-            </div>
-          </div>
-        </div>
-
-        <Separator className="my-4" />
-      </div>
+    <div className="w-full">
+      <SongSummary song={song} />
+      <Separator className="my-4" />
     </div>
   );
 }

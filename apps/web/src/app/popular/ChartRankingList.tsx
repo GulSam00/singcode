@@ -4,8 +4,7 @@ import { addMonths, format, parseISO, startOfMonth } from 'date-fns';
 import { ChevronLeft, ChevronRight, Construction } from 'lucide-react';
 import { useState } from 'react';
 
-import MarqueeText from '@/components/MarqueeText';
-import SongBadges from '@/components/SongBadges';
+import SongSummary from '@/components/SongSummary';
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -111,37 +110,7 @@ export default function ChartRankingList() {
                   >
                     {item.rank}
                   </div>
-                  <div className="flex w-full justify-between gap-2">
-                    <div className="w-[140px] shrink-0">
-                      {/* TJ가 같은 곡을 버전별로 따로 올리므로, 무엇이 다른지 여기서 알려준다 */}
-                      <SongBadges badges={item.badges} className="mb-0.5" />
-                      <MarqueeText className="text-sm font-medium">{item.title}</MarqueeText>
-                      {item.title_ko && item.title_ko !== item.title && (
-                        <MarqueeText className="text-muted-foreground text-xs">
-                          {item.title_ko}
-                        </MarqueeText>
-                      )}
-                      <MarqueeText className="text-muted-foreground text-xs">
-                        {item.artist}
-                      </MarqueeText>
-                      {item.artist_ko && item.artist_ko !== item.artist && (
-                        <MarqueeText className="text-muted-foreground/70 text-xs">
-                          {item.artist_ko}
-                        </MarqueeText>
-                      )}
-                    </div>
-
-                    <div>
-                      <div className="flex items-center">
-                        <span className="text-brand-tj mr-1 w-8 text-xs">TJ</span>
-                        <span className="text-sm font-medium">{item.num_tj}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="text-brand-ky mr-1 w-8 text-xs">금영</span>
-                        <span className="text-sm font-medium">{item.num_ky}</span>
-                      </div>
-                    </div>
-                  </div>
+                  <SongSummary song={item} />
                 </div>
               ))
             )}

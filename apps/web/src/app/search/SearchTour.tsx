@@ -11,6 +11,8 @@ import {
   useJoyride,
 } from 'react-joyride';
 
+import { TOUR_DEMO_SEARCH_TERM } from '@/constants/tourDemoSong';
+
 const TOOLTIP_BUTTONS: ButtonType[] = ['back', 'close', 'skip', 'primary'];
 
 const STORAGE_KEY = 'singcode-search-tour-seen';
@@ -79,17 +81,12 @@ export default function SearchTour({
       {
         target: '[data-tour="search-result-list"]',
         title: '검색 결과 살펴보기',
-        content: "예시로 '아이유'를 검색해봤어요! 곡 카드에 있는 기능들을 하나씩 살펴볼게요.",
+        content: `예시 곡 '${TOUR_DEMO_SEARCH_TERM}' 카드로 기능들을 하나씩 살펴볼게요. 실제 곡은 아니에요.`,
         beforeTimeout: 15000,
         before: async () => {
           onPrepareExampleSearch();
           await waitForElement('[data-tour="search-result-list"]', 12000);
         },
-      },
-      {
-        target: '[data-tour="card-thumbs-up"]',
-        title: '추천하기',
-        content: '(회원 기능) 포인트를 사용해 곡의 추천 수를 올려줄 수 있어요.',
       },
       {
         target: '[data-tour="card-expand-toggle"]',
