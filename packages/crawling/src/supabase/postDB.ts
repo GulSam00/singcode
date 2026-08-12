@@ -1,4 +1,4 @@
-import { LogData, Song } from '@/types';
+import { LogData, Song, TjChartRankingInsert } from '@/types';
 
 import { getClient } from './getClient';
 
@@ -36,6 +36,36 @@ export async function postSongsDB(songs: Song[] | Song) {
   return results;
 }
 
+// 대역 순회처럼 신규 곡이 수천 건 나올 때는 행마다 insert 하면 왕복 비용이 크다.
+// 청크 단위로 묶어 넣고, 청크가 실패하면 그 청크만 행 단위로 재시도해 원인 행을 골라낸다.
+export async function postSongsBatchDB(songs: Song[], chunkSize: number = 200) {
+  const supabase = getClient();
+  const results: LogData<Song> = { success: [], failed: [] };
+
+  // 호출부가 삽입된 곡의 id로 후속 처리(차트 매칭 등)를 할 수 있도록 select()로 반환값을 받는다.
+  for (let i = 0; i < songs.length; i += chunkSize) {
+    const chunk = songs.slice(i, i + chunkSize);
+    const { data, error } = await supabase.from('songs').insert(chunk).select();
+
+    if (!error) {
+      results.success.push(...((data ?? chunk) as Song[]));
+      continue;
+    }
+
+    for (const song of chunk) {
+      const { data: inserted, error: rowError } = await supabase
+        .from('songs')
+        .insert(song)
+        .select();
+
+      if (rowError) results.failed.push({ item: song, error: rowError });
+      else results.success.push((inserted?.[0] ?? song) as Song);
+    }
+  }
+
+  return results;
+}
+
 export async function postVerifyKySongsDB(song: Song) {
   const supabase = getClient();
 
@@ -59,6 +89,20 @@ export async function postSongTagsDB(songId: string, tagIds: number[]) {
   const { error } = await supabase.from('song_tags').insert(rows);
   if (error) {
     console.error('postSongTagsDB error:', error);
+    return false;
+  }
+  return true;
+}
+
+export async function postTjChartRankingsDB(rows: TjChartRankingInsert[]) {
+  const supabase = getClient();
+
+  const { error } = await supabase
+    .from('chart_rankings')
+    .upsert(rows, { onConflict: 'chart_month,type,rank' });
+
+  if (error) {
+    console.error('postTjChartRankingsDB error:', error);
     return false;
   }
   return true;

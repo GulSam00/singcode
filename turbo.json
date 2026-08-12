@@ -14,7 +14,16 @@
     "NODE_ENV",
     "NEXT_PUBLIC_POSTHOG_KEY",
     "NEXT_PUBLIC_POSTHOG_HOST",
-    "OPENAI_API_KEY"
+    "OPENAI_API_KEY",
+    "BADGE_MAX_SONGS",
+    "BADGE_CONCURRENCY",
+    "BADGE_DRY_RUN",
+    "START_NUMBER",
+    "END_NUMBER",
+    "TJ_CONCURRENCY",
+    "TJ_DRY_RUN",
+    "TJ_RESET_PROGRESS",
+    "DEAD_SONGS_APPLY"
   ],
   "tasks": {
     "build": {

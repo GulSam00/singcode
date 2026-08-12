@@ -4,7 +4,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ChevronsDown, ChevronsUp, GripVertical, Trash } from 'lucide-react';
 
-import MarqueeText from '@/components/MarqueeText';
+import SongSummary from '@/components/SongSummary';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Song } from '@/types/song';
@@ -21,8 +21,6 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
     id: song.id,
   });
 
-  const { title, artist, title_ko, artist_ko, num_tj, num_ky } = song;
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -30,34 +28,9 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
 
   return (
     <Card ref={setNodeRef} style={style} className={'relative'}>
-      {/* 메인 콘텐츠 영역 */}
-      <div className="flex h-[180px] w-full gap-4 p-3">
-        {/* 노래 정보 */}
-        <div className="mb-10 flex flex-col justify-between active:cursor-grabbing">
-          {/* 제목 및 가수 */}
-          <div className="mb-1 flex w-[290px] flex-col gap-0.5">
-            <MarqueeText className="text-base font-medium">{title}</MarqueeText>
-            {title_ko && title_ko !== title && (
-              <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
-            )}
-            <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
-            {artist_ko && artist_ko !== artist && (
-              <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
-            )}
-          </div>
-
-          {/* 노래방 번호 */}
-          <div className="mt-1 flex active:cursor-grabbing">
-            <div className="flex w-[70px] items-center">
-              <span className="text-brand-tj mr-1 text-xs">TJ</span>
-              <span className="text-sm font-medium">{num_tj}</span>
-            </div>
-            <div className="flex w-[70px] items-center">
-              <span className="text-brand-ky mr-1 text-xs">금영</span>
-              <span className="text-sm font-medium">{num_ky}</span>
-            </div>
-          </div>
-        </div>
+      {/* 드래그 핸들(우측 48px)과 겹치지 않도록 본문 폭을 줄인다 */}
+      <div className="w-[calc(100%-48px)] p-3 pb-16">
+        <SongSummary song={song} />
 
         {/* 버튼 영역 - 우측 하단에 고정 */}
         <div className="absolute right-10 bottom-3 flex w-[calc(100%-48px)] space-x-1">
