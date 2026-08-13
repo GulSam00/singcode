@@ -1,8 +1,8 @@
-name: Crawl Recent TJ Songs
+name: Crawl TJ Chart
 
 on:
   schedule:
-    - cron: "0 14 * * *" # 한국 시간 23:00 실행 (UTC+9 → UTC 14:00)
+    - cron: "0 1 1 * *" # 매달 1일 KST 오전 10:00 실행 (UTC+9 → UTC 01:00)
   workflow_dispatch:
 
 jobs:
@@ -33,21 +33,17 @@ jobs:
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
 
-      - name: run crawl script - crawlRecentTJ.ts
+      - name: run crawl script - crawlTjChart.ts
         working-directory: packages/crawling
-        run: pnpm run recent-tj
+        run: pnpm run tj-chart
 
-      # recent-tj가 넣는 신곡은 badges가 null이다. 그대로 두면 뱃지가 표시되지 않고,
-      # badges is null을 판정 기준으로 쓰는 정리 스크립트가 신곡을 죽은 곡으로 오인한다.
-      - name: run crawl script - crawlTjBadges.ts
-        working-directory: packages/crawling
-        run: pnpm run tj-badges
-
-      - name: Upload badge log
+      # 미매칭·경고 로그는 러너 파일시스템에만 쌓여 잡이 끝나면 사라진다.
+      # 실패해도(if: always()) 그때까지의 기록을 받을 수 있게 아티팩트로 올린다.
+      - name: Upload unmatched log
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tj-badges-log-${{ github.run_id }}
-          path: packages/crawling/src/assets/tjBadgeErrors.txt
+          name: tj-chart-unmatched-${{ github.run_id }}
+          path: packages/crawling/src/assets/tjChartUnmatched.txt
           if-no-files-found: ignore
           retention-days: 30

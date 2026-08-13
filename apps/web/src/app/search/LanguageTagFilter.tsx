@@ -26,6 +26,16 @@ const ALL_ACCENT_CLASSES =
 const CHIP_BASE_CLASSES =
   'flex-none rounded-full border bg-transparent px-2.5 py-1.5  font-medium shadow-none transition-all';
 
+// 좁은 화면에서 칩이 줄바꿈되면 검색창 아래 높이가 들쭉날쭉해진다.
+// 한 줄로 고정하고 넘치면 가로 스크롤한다. 스크롤바는 더 볼 게 남았다는 신호라 노출하되,
+// 기본 스크롤바는 두꺼우므로 thin으로 얇게 하고 pb로 칩과 띄운다.
+// (인기차트 장르 필터와 같은 방식)
+const LIST_CLASSES =
+  'h-auto w-full flex-nowrap justify-start gap-1 overflow-x-auto bg-transparent p-0 pb-1 ' +
+  '[scrollbar-width:thin] [scrollbar-color:var(--color-muted-foreground)_transparent] ' +
+  '[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent ' +
+  '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground';
+
 const ALL_EMOJI = '🎵';
 
 const FLAG_CLASSES = 'h-3 w-auto rounded-[2px]';
@@ -53,7 +63,7 @@ export default function LanguageTagFilter({ value, onChange }: LanguageTagFilter
       onValueChange={handleValueChange}
       className="w-full"
     >
-      <TabsList className="h-auto w-full flex-wrap justify-start gap-1 bg-transparent p-0">
+      <TabsList className={LIST_CLASSES}>
         <TabsTrigger value={ALL_VALUE} className={cn(CHIP_BASE_CLASSES, ALL_ACCENT_CLASSES)}>
           {ALL_EMOJI} 전체
         </TabsTrigger>

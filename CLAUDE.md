@@ -35,6 +35,7 @@ No test suite is configured.
 ```
 apps/
   web/      — Next.js 15 web app (primary app, see apps/web/CLAUDE.md)
+  twa/      — Bubblewrap TWA build workspace for Play Store (see apps/twa/CLAUDE.md)
   mobile/   — [DEPRECATED — frozen, see apps/mobile/README.md] Expo wrapper app, replaced by TWA approach. Excluded from pnpm workspace.
 packages/
   open-api/ — Wrapper around the external karaoke open API (@repo/open-api)

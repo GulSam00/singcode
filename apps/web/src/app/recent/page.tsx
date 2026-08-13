@@ -46,7 +46,9 @@ export default function RecentSongPage() {
 
   return (
     <div className="bg-background flex h-full flex-col space-y-4">
-      <div className="flex shrink-0 items-center justify-between px-2">
+      <h1 className="shrink-0 text-2xl font-bold">최신곡</h1>
+
+      <div className="flex shrink-0 items-center justify-between">
         <Button variant="ghost" size="icon" onClick={handlePrevMonth}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -77,7 +79,6 @@ export default function RecentSongPage() {
               ))}
             </SelectContent>
           </Select>
-          <span>최신곡</span>
         </div>
 
         <Button variant="ghost" size="icon" onClick={handleNextMonth}>

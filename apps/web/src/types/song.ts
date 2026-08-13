@@ -1,5 +1,35 @@
 export type SearchType = 'all' | 'title' | 'artist' | 'number';
 
+// TJ는 한 곡에 반주를 여러 버전으로 등록한다. 차트에도 버전별로 따로 오르고
+// 검색 결과에도 나란히 나오므로, 무엇이 다른지 알려면 이 뱃지가 필요하다.
+//
+// 'MV'(뮤직비디오 유무)는 어느 버전을 부를지 고르는 데 도움이 안 되므로 노출하지 않는다.
+// '60'은 구형 반주기에서 재생되지 않는다는 뜻이라 실사용에 중요하다.
+export const VERSION_BADGES = ['MR', 'LV', '60'] as const;
+
+export const BADGE_LABEL: Record<string, string> = {
+  MR: 'MR',
+  LV: 'LIVE',
+  '60': '60↑',
+};
+
+// '60↑'은 TJ 반주기 기종을 가리키는 값이라, 카드에 금영 번호가 함께 있으면
+// 금영 기기 얘기로 읽힐 수 있다. 이런 뱃지에만 브랜드를 함께 표시한다.
+// MR·LIVE는 녹음물의 성격이라 브랜드와 무관하게 뜻이 통하므로 붙이지 않는다.
+export const BRAND_SCOPED_BADGES = ['60'];
+
+export const BADGE_DESCRIPTION: Record<string, string> = {
+  MR: '가이드 보컬이 없는 MR 버전',
+  LV: '라이브 버전',
+  '60': 'TJ 60 이상 반주기에서만 재생되는 곡',
+};
+
+/** 화면에 표시할 버전 뱃지만 걸러낸다. */
+export function toVisibleBadges(badges: string[] | null | undefined) {
+  if (!badges) return [];
+  return VERSION_BADGES.filter(badge => badges.includes(badge));
+}
+
 export interface Song {
   id: string;
   title: string;
@@ -9,6 +39,10 @@ export interface Song {
 
   num_tj: string;
   num_ky: string;
+
+  // TJ 반주 버전 뱃지. null이면 아직 수집 전, 빈 배열이면 수집했으나 뱃지 없음.
+  // 값: 'MV' | 'MR' | 'LV' | '60' (packages/crawling 과 의도적으로 중복 정의)
+  badges?: string[] | null;
 
   thumb?: number;
   release?: string;

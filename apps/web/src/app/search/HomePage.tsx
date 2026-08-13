@@ -3,12 +3,14 @@
 import { ChevronDown, ChevronUp, HelpCircle, Info, Loader2, Search } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 // import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 // import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TOUR_DEMO_SEARCH_TERM, TOUR_DEMO_SONG } from '@/constants/tourDemoSong';
 import useSaveSongModal from '@/hooks/useSaveSongModal';
 import useSearchSong from '@/hooks/useSearchSong';
 import useSearchTourController from '@/hooks/useSearchTourController';
@@ -186,15 +188,33 @@ export default function SearchPage() {
       setSearch('');
       setIsNumberKeypadOpen(false);
     }
+    // 번호 검색에서는 언어 필터를 숨기는데, 값이 남아 있으면 화면에 보이지 않는 채로
+    // 결과가 걸러져 "번호가 맞는데 안 나온다"가 된다. 상태까지 비운다.
+    if (value === 'number') {
+      handleLanguageTagChange(undefined);
+    }
     handleSearchTypeChange(value as SearchType);
   };
+
+  // 가이드 투어는 실제 검색 대신 가상 카드를 띄운다.
+  const [isTourDemo, setIsTourDemo] = useState(false);
+
+  const showTourExampleCard = useCallback(() => {
+    setSearch(TOUR_DEMO_SEARCH_TERM);
+    setIsTourDemo(true);
+  }, [setSearch]);
+
+  // 사용자가 실제로 검색하면 예시 카드는 사라져야 한다.
+  useEffect(() => {
+    if (query) setIsTourDemo(false);
+  }, [query]);
 
   const {
     tourTriggerSignal,
     handlePrepareExampleSearch,
     handleTourNormalizeState,
     handleStartTour,
-  } = useSearchTourController({ handleTabChange, handleSearch });
+  } = useSearchTourController({ handleTabChange, showExampleCard: showTourExampleCard });
 
   const getPlaceholder = (type: string) => {
     switch (type) {
@@ -216,7 +236,7 @@ export default function SearchPage() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, isError]);
 
   return (
-    <div className="bg-background flex h-full flex-col">
+    <div className="bg-background flex h-full flex-col gap-4">
       <div className="flex shrink-0 flex-col gap-4">
         <div className="flex justify-between">
           <div className="flex flex-col">
@@ -248,19 +268,6 @@ export default function SearchPage() {
               onSelectArtist={setSearch}
               callback={() => handleSearchTypeChange('artist')}
             />
-            {/* <div className="flex items-center gap-2">
-              <Checkbox
-                id="chatbot-toggle"
-                checked={isChatBotEnabled}
-                onCheckedChange={handleToggleChatBot}
-              />
-              <Label
-                htmlFor="chatbot-toggle"
-                className="text-muted-foreground cursor-pointer text-xs"
-              >
-                AI 챗봇
-              </Label>
-            </div> */}
           </div>
         </div>
 
@@ -310,6 +317,7 @@ export default function SearchPage() {
 
           <div className="relative flex-1">
             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+
             <Input
               type="text"
               inputMode={searchType === 'number' ? 'numeric' : 'text'}
@@ -352,20 +360,31 @@ export default function SearchPage() {
           )}
         </div>
 
+        {/* 번호 검색에는 언어 필터가 의미가 없다.
+            값이 남아 있으면 번호가 맞는데도 결과가 걸러져 원인을 알기 어렵다. */}
         {searchType !== 'number' && (
-          <>
-            <div data-tour="language-filter">
-              <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
-            </div>
-            <div className="text-muted-foreground flex items-center gap-2">
-              <Info className="h-4 w-4" />
-              <span className="m-2">전체 문장보다는 단어 단위로 검색해보세요</span>
-            </div>
-          </>
+          <div data-tour="language-filter">
+            <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
+          </div>
         )}
       </div>
       <div ref={setScrollRef} className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
-        {searchSongs.length > 0 && (
+        {isTourDemo && (
+          <div className="flex w-full max-w-md flex-col gap-4 p-4" data-tour="search-result-list">
+            <SearchResultCard
+              song={TOUR_DEMO_SONG}
+              isDemo
+              isToSing={false}
+              isLike={false}
+              isSave={false}
+              onToggleToSing={() => toast.info('가이드 예시 카드예요')}
+              onToggleLike={() => toast.info('가이드 예시 카드예요')}
+              onClickSave={() => toast.info('가이드 예시 카드예요')}
+            />
+          </div>
+        )}
+
+        {!isTourDemo && searchSongs.length > 0 && (
           <div className="flex w-full max-w-md flex-col gap-4 p-4" data-tour="search-result-list">
             {searchSongs.map((song, index) => (
               <SearchResultCard
@@ -388,12 +407,21 @@ export default function SearchPage() {
         )}
         {isPendingSearch && <SearchStatus status="loading" />}
 
-        {!isPendingSearch && searchSongs.length === 0 && query && <SearchStatus status="empty" />}
+        {!isTourDemo && !isPendingSearch && searchSongs.length === 0 && query && (
+          <SearchStatus status="empty" />
+        )}
 
-        {searchSongs.length === 0 && !query && searchType !== 'number' && (
-          <div className="flex h-full flex-col justify-center gap-2">
-            <SearchHistory onHistoryClick={handleHistoryClick} />
-            <PopularSearchHistory onHistoryClick={handleHistoryClick} />
+        {!isTourDemo && searchSongs.length === 0 && !query && searchType !== 'number' && (
+          <div className="flex h-full flex-col gap-2">
+            <div className="text-muted-foreground flex items-center gap-2">
+              <Info className="h-4 w-4" />
+              <span className="m-2">전체 문장보다는 단어 단위로 검색해보세요</span>
+            </div>
+
+            <div className="flex h-full flex-col justify-center gap-2">
+              <SearchHistory onHistoryClick={handleHistoryClick} />
+              <PopularSearchHistory onHistoryClick={handleHistoryClick} />
+            </div>
           </div>
         )}
       </div>

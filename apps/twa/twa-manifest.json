@@ -21,8 +21,8 @@
     "path": "./android.keystore",
     "alias": "singcode"
   },
-  "appVersionName": "8",
-  "appVersionCode": 8,
+  "appVersionName": "12",
+  "appVersionCode": 12,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://www.singcode.kr/manifest.webmanifest",
@@ -44,5 +44,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "8"
+  "appVersion": "12"
 }

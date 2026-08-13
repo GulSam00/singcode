@@ -1,13 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, ThumbsUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { memo, useState } from 'react';
 import { toast } from 'sonner';
 
 import MarqueeText from '@/components/MarqueeText';
 import ReportSongModal from '@/components/ReportSongModal';
+import SongBadges from '@/components/SongBadges';
 import SongCommentSection from '@/components/SongCommentSection';
 import SongPromotionModal from '@/components/SongPromotionModal';
-import ThumbUpModal from '@/components/ThumbUpModal';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -21,6 +21,8 @@ interface SearchResultCardProps {
   isToSing: boolean;
   isLike: boolean;
   isSave: boolean;
+  /** 가이드 투어용 가상 카드. 실제 곡이 아니므로 서버를 호출하는 영역을 끈다. */
+  isDemo?: boolean;
 
   onToggleToSing: (song: SearchSong) => void;
   onToggleLike: (song: SearchSong) => void;
@@ -32,12 +34,13 @@ function SearchResultCard({
   isToSing,
   isLike,
   isSave,
+  isDemo = false,
 
   onToggleToSing,
   onToggleLike,
   onClickSave,
 }: SearchResultCardProps) {
-  const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, thumb } = song;
+  const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, badges } = song;
   const hasKoTitle = !!title_ko && title_ko !== title;
   const hasKoArtist = !!artist_ko && artist_ko !== artist;
   const displayTitle = hasKoTitle ? title_ko : title;
@@ -45,7 +48,6 @@ function SearchResultCard({
 
   const { isAuthenticated } = useAuthStore();
 
-  const [isThumbsUpOpen, setIsThumbsUpOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isPromotionOpen, setIsPromotionOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -67,9 +69,6 @@ function SearchResultCard({
     }
   };
 
-  const handleClickThumbsUp = withAuth('로그인하고 곡 추천 기능을 사용해보세요!', () =>
-    setIsThumbsUpOpen(true),
-  );
   const handleClickReport = withAuth('로그인하고 수정 요청에 참여해주세요!', () =>
     setIsReportOpen(true),
   );
@@ -85,7 +84,9 @@ function SearchResultCard({
         <div className="flex flex-col gap-3">
           {/* 제목 및 가수 */}
           <div className="flex justify-between">
-            <div className="flex w-[calc(100%-40px)] flex-col gap-0.5 truncate">
+            <div className="flex w-full flex-col gap-0.5 truncate">
+              {/* 같은 곡이 일반/MR/라이브로 나란히 나오므로 무엇이 다른지 알려준다 */}
+              <SongBadges badges={badges} className="mb-0.5" />
               <MarqueeText
                 className="hover:text-accent cursor-pointer text-base font-medium hover:underline hover:underline-offset-4"
                 onClick={() => handleCopy(displayTitle)}
@@ -115,34 +116,6 @@ function SearchResultCard({
                 </MarqueeText>
               )}
             </div>
-
-            <Dialog open={isThumbsUpOpen} onOpenChange={setIsThumbsUpOpen}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-10 w-10"
-                aria-label={'추천하기'}
-                onClick={handleClickThumbsUp}
-                data-tour="card-thumbs-up"
-              >
-                <div className="flex flex-col items-center">
-                  <ThumbsUp />
-                  <span>{thumb}</span>
-                </div>
-              </Button>
-
-              <DialogContent>
-                <ThumbUpModal
-                  songId={id}
-                  title={title}
-                  artist={artist}
-                  title_ko={title_ko}
-                  artist_ko={artist_ko}
-                  thumb={thumb || 0}
-                  handleClose={() => setIsThumbsUpOpen(false)}
-                />
-              </DialogContent>
-            </Dialog>
           </div>
 
           {/* 노래방 번호 */}
@@ -198,7 +171,8 @@ function SearchResultCard({
                 onClickReport={handleClickReport}
               />
 
-              <SongCommentSection songId={id} isExpanded={isExpanded} />
+              {/* 가상 곡은 실제 id가 없어 댓글을 조회하면 안 된다 */}
+              {!isDemo && <SongCommentSection songId={id} isExpanded={isExpanded} />}
             </motion.div>
           )}
         </AnimatePresence>
