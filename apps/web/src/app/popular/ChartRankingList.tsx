@@ -152,7 +152,10 @@ export default function ChartRankingList() {
             </div>
           ) : (
             items.map(item => (
-              <div key={item.id} className={cn('flex gap-4 border-b py-3 last:border-0')}>
+              <div
+                key={item.id}
+                className="flex items-start gap-4 border-b px-4 py-3 last:border-0"
+              >
                 <div
                   className={cn(
                     'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
@@ -161,7 +164,8 @@ export default function ChartRankingList() {
                 >
                   {item.rank}
                 </div>
-                <SongSummary song={item} />
+                {/* 순위 뱃지와 같은 행이라 min-w-0이 없으면 긴 곡 제목·가수가 번호 영역을 밀어낸다 */}
+                <SongSummary song={item} className="min-w-0 flex-1" />
               </div>
             ))
           )}

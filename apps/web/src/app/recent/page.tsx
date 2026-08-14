@@ -6,6 +6,7 @@ import { useState } from 'react';
 import CharacterMessage from '@/components/CharacterMessage';
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -87,11 +88,11 @@ export default function RecentSongPage() {
       </div>
 
       {recentAddSongs && recentAddSongs.length > 0 ? (
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <ScrollArea className="min-h-0 flex-1">
           {recentAddSongs.map(song => (
             <RecentSongCard key={song.id} song={song} />
           ))}
-        </div>
+        </ScrollArea>
       ) : (
         <CharacterMessage
           variant="curious"
