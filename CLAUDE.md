@@ -109,6 +109,19 @@ fix : SongCard css 수정 (#57)
 chore : 버전 2.3.0 (#61)
 ```
 
+## 진행 중인 작업
+
+### #307 이달의 아티스트 (포인트 투표)
+
+코드는 완성됐으나 아래 수동 작업이 남아있어 실제로는 아직 동작하지 않는다.
+
+1. `apps/web/artist-vote-schema.sql`을 Supabase SQL Editor에서 실행 — `artists`(마스터), `artist_votes`, `monthly_artist_rankings` 테이블 + RLS 정책 생성. `artists`를 먼저 만들고 나머지 두 테이블이 `artist`를 그 `name`으로 FK 참조하는 순서라 반드시 이 파일 그대로 한 번에 실행해야 한다.
+2. `packages/crawling`에서 `pnpm backfill-artists`를 환경변수 없이(전체 스캔) 최초 1회 실행해 `artists`를 채운다 — 비어있으면 `artist_votes.artist`의 FK 제약 때문에 투표 자체가 전부 실패한다.
+3. 환경변수/시크릿 등록
+   - Vercel(`apps/web` 프로덕션): `SUPABASE_SERVICE_ROLE_KEY`(turbo.json엔 이미 선언돼 있으나 실제 값 미설정), `ARTIST_VOTE_FINALIZE_SECRET`(새로 발급)
+   - GitHub Actions repo secret: `ARTIST_VOTE_FINALIZE_SECRET` (`finalize_artist_of_month.yml`에서 사용, Vercel과 같은 값이어야 함)
+4. 위 설정 후 투표 → 월간 확정(`finalize_artist_of_month.yml`) → 곡 카드 배지 노출까지 전체 흐름을 수동 QA (테스트 스위트 없음)
+
 ## Self-Maintenance
 
 이 파일(CLAUDE.md)은 프로젝트의 규칙과 구조가 변경될 때 함께 업데이트한다.
