@@ -23,7 +23,9 @@
     "TJ_CONCURRENCY",
     "TJ_DRY_RUN",
     "TJ_RESET_PROGRESS",
-    "DEAD_SONGS_APPLY"
+    "DEAD_SONGS_APPLY",
+    "ARTIST_VOTE_FINALIZE_SECRET",
+    "ARTIST_BACKFILL_SINCE_DAYS"
   ],
   "tasks": {
     "build": {

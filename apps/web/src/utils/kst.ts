@@ -14,6 +14,15 @@ export function getPrevMonthFirstDayKST(): string {
   return format(startOfMonth(subMonths(new Date(year, month - 1, 1), 1)), 'yyyy-MM-dd');
 }
 
+/**
+ * 이번 달 1일을 'YYYY-MM-DD' 문자열로 반환 (KST 기준, 서버 타임존 무관)
+ * 아티스트 투표는 이 달에만 수정 가능하므로 잠금 기준으로 사용한다.
+ */
+export function getCurrentMonthFirstDayKST(): string {
+  const [year, month] = getTodayKST().split('-').map(Number);
+  return format(startOfMonth(new Date(year, month - 1, 1)), 'yyyy-MM-dd');
+}
+
 /** 내일 KST 날짜를 'YYYY-MM-DD' 문자열로 반환 */
 export function getTomorrowKST(): string {
   return addDays(addHours(new Date(), 9), 1).toISOString().split('T')[0];
