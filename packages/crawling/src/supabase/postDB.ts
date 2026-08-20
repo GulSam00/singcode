@@ -1,4 +1,4 @@
-import { LogData, Song, TjChartRankingInsert } from '@/types';
+import { ArtistUpsert, LogData, Song, TjChartRankingInsert } from '@/types';
 
 import { getClient } from './getClient';
 
@@ -106,6 +106,25 @@ export async function postTjChartRankingsDB(rows: TjChartRankingInsert[]) {
     return false;
   }
   return true;
+}
+
+export async function upsertArtistsDB(rows: ArtistUpsert[], chunkSize: number = 500) {
+  const supabase = getClient();
+
+  let upserted = 0;
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    const chunk = rows.slice(i, i + chunkSize);
+
+    const { error } = await supabase.from('artists').upsert(chunk, { onConflict: 'name' });
+
+    if (error) {
+      console.error('upsertArtistsDB error:', error);
+      continue;
+    }
+    upserted += chunk.length;
+  }
+
+  return { upserted, failed: rows.length - upserted };
 }
 
 export async function postInvalidKYSongsDB(song: Song) {

@@ -19,6 +19,7 @@
     "remove-dead-songs": "tsx src/cron/removeDeadTjSongs.ts",
     "tj-chart": "tsx src/cron/crawlTjChart.ts",
     "tj-chart-backfill": "tsx src/cron/crawlTjChartBackfill.ts",
+    "backfill-artists": "tsx src/cron/backfillArtists.ts",
     "lint": "eslint .",
     "test": "vitest run",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

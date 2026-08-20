@@ -1,0 +1,54 @@
+name: Backfill Artists
+
+on:
+  schedule:
+    - cron: "0 1 1 * *" # 매달 1일 KST 오전 10:00 실행 (UTC+9 → UTC 01:00) — 최근 35일치만 증분 반영
+  workflow_dispatch:
+    inputs:
+      since_days:
+        description: "최근 N일 이내 등록된 곡만 대상으로 함 (비워두면 전체 곡 대상 백필)"
+        required: false
+
+jobs:
+  run-npm-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        working-directory: packages/crawling
+        run: pnpm install
+
+      - name: Create .env file
+        working-directory: packages/crawling
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
+      # 스케줄 실행은 지난 한 달치만 증분 반영, 수동 실행은 입력값을 그대로 쓴다(비워두면 전체 백필).
+      - name: Determine backfill window
+        id: window
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "since_days=35" >> "$GITHUB_OUTPUT"
+          else
+            echo "since_days=${{ inputs.since_days }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: run backfill script - backfillArtists.ts
+        working-directory: packages/crawling
+        env:
+          ARTIST_BACKFILL_SINCE_DAYS: ${{ steps.window.outputs.since_days }}
+        run: pnpm run backfill-artists

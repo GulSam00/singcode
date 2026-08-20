@@ -1,4 +1,4 @@
-import { TransSong } from '@/types';
+import { ArtistBackfillSongRow, TransSong } from '@/types';
 import { containsJapanese } from '@/utils/parseString';
 
 import { getClient } from './getClient';
@@ -150,6 +150,26 @@ export async function getArtistKoMapDB(): Promise<Map<string, string>> {
     }
   }
   return map;
+}
+
+// 아티스트 백필용 조회. sinceIso가 있으면 그 시각 이후 등록된 곡만(월간 증분 갱신),
+// 없으면 전체 곡을 대상으로 한다(최초 백필). song_tags는 언어 태그로 country_code를 추정하는 데 쓴다.
+export async function getSongsForArtistBackfillDB(
+  sinceIso?: string,
+): Promise<ArtistBackfillSongRow[]> {
+  const supabase = getClient();
+
+  let query = supabase.from('songs').select('artist, artist_ko, song_tags(tag_id)').limit(200000);
+
+  if (sinceIso) {
+    query = query.gte('created_at', sinceIso);
+  }
+
+  const { data, error } = await query;
+
+  if (error) throw error;
+
+  return data as ArtistBackfillSongRow[];
 }
 
 export async function getSongTagSongIdsDB(): Promise<Set<string>> {
