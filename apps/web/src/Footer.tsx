@@ -20,7 +20,7 @@ const navigation: Navigation[] = [
   { name: '부를 곡', href: '/tosing', key: 'TOSING' },
   { name: '검색', href: '/', key: 'SEARCH' },
 
-  { name: '인기곡', href: '/popular', key: 'POPULAR' },
+  { name: '인기 차트', href: '/popular', key: 'POPULAR' },
   { name: '정보', href: '/info', key: 'INFO' },
 ];
 

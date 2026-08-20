@@ -1,36 +1,21 @@
 'use client';
 
 import { addMonths, format, parseISO, startOfMonth } from 'date-fns';
-import { ChevronLeft, ChevronRight, Construction } from 'lucide-react';
+import { Construction } from 'lucide-react';
 import { useState } from 'react';
 
 import SongSummary from '@/components/SongSummary';
 import StaticLoading from '@/components/StaticLoading';
-import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useTjChartQuery } from '@/queries/tjChartQuery';
 import { StrType } from '@/types/tjChart';
 import { cn } from '@/utils/cn';
 import { getPrevMonthFirstDayKST } from '@/utils/kst';
 
 import ChartGenreFilter from './ChartGenreFilter';
+import MonthSelector from './MonthSelector';
 
 const MONTH_FORMAT = 'yyyy-MM-dd';
-
-// 조회 월은 항상 'yyyy-MM-01' 문자열이라 파싱 없이 잘라 쓴다.
-const getYear = (month: string) => month.slice(0, 4);
-const getMonthNumber = (month: string) => month.slice(5, 7);
-
-// 년/월을 그냥 텍스트처럼 보이게 두고, 눌러야 드롭다운이 열린다는 건 셀렉트 기본 화살표로 알린다.
-const SELECT_TRIGGER_CLASSES =
-  'h-auto w-auto gap-1 border-none p-0 text-xl font-bold shadow-none focus-visible:ring-0';
 
 const getRankStyle = (rank: number) => {
   switch (rank) {
@@ -73,73 +58,18 @@ export default function ChartRankingList() {
     ? availableMonths
     : [...availableMonths, month].sort().reverse();
 
-  const years = [...new Set(selectableMonths.map(getYear))];
-  // 연도 안에서는 1월 → 12월 순으로 훑는 게 자연스러워 오름차순으로 둔다.
-  const monthsInYear = selectableMonths.filter(item => getYear(item) === getYear(month)).sort();
-
-  // 연도를 바꿀 때 같은 달이 있으면 유지하고, 없으면 그 해에서 가장 최근 달로 이동한다.
-  const handleYearChange = (nextYear: string) => {
-    const candidates = selectableMonths.filter(item => getYear(item) === nextYear);
-    if (candidates.length === 0) return;
-
-    const sameMonth = candidates.find(item => getMonthNumber(item) === getMonthNumber(month));
-    setMonth(sameMonth ?? candidates[0]);
-  };
-
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       {/* 차트 제목은 페이지 h1로 빠졌고, 여기서는 조회 월 선택만 한 줄을 통째로 쓴다. */}
-      <div className="flex w-full shrink-0 items-center justify-between">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-10"
-          aria-label="이전 달"
-          disabled={!canGoPrev}
-          onClick={() => setMonth(shiftMonth(month, -1))}
-        >
-          <ChevronLeft className="size-6" />
-        </Button>
-
-        <div className="flex items-center gap-1 whitespace-nowrap">
-          <Select value={getYear(month)} onValueChange={handleYearChange}>
-            <SelectTrigger className={SELECT_TRIGGER_CLASSES} aria-label="연도 선택">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {years.map(year => (
-                <SelectItem key={year} value={year}>
-                  {year}년
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={month} onValueChange={setMonth}>
-            <SelectTrigger className={SELECT_TRIGGER_CLASSES} aria-label="월 선택">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {monthsInYear.map(item => (
-                <SelectItem key={item} value={item}>
-                  {Number(getMonthNumber(item))}월
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-10"
-          aria-label="다음 달"
-          disabled={!canGoNext}
-          onClick={() => setMonth(shiftMonth(month, 1))}
-        >
-          <ChevronRight className="size-6" />
-        </Button>
-      </div>
+      <MonthSelector
+        month={month}
+        selectableMonths={selectableMonths}
+        canGoPrev={canGoPrev}
+        canGoNext={canGoNext}
+        onPrev={() => setMonth(shiftMonth(month, -1))}
+        onNext={() => setMonth(shiftMonth(month, 1))}
+        onChange={setMonth}
+      />
 
       <ChartGenreFilter value={genre} onChange={setGenre} />
 

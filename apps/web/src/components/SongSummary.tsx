@@ -1,5 +1,8 @@
+'use client';
+
 import MarqueeText from '@/components/MarqueeText';
 import SongBadges from '@/components/SongBadges';
+import { useCurrentArtistOfMonthQuery } from '@/queries/artistVoteQuery';
 import { Song } from '@/types/song';
 import { cn } from '@/utils/cn';
 
@@ -26,6 +29,9 @@ export default function SongSummary({ song, className }: SongSummaryProps) {
   const hasKoTitle = !!title_ko && title_ko !== title;
   const hasKoArtist = !!artist_ko && artist_ko !== artist;
 
+  const { data: artistOfMonth } = useCurrentArtistOfMonthQuery();
+  const isArtistOfMonth = artistOfMonth?.artist === artist;
+
   return (
     <div className={cn('flex w-full items-start justify-between gap-3', className)}>
       {/* min-w-0가 없으면 MarqueeText가 부모를 밀어내 번호 영역이 잘린다 */}
@@ -40,6 +46,12 @@ export default function SongSummary({ song, className }: SongSummaryProps) {
         <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
         {hasKoArtist && (
           <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+        )}
+        {isArtistOfMonth && (
+          <span className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400">
+            🏆 이달의 아티스트
+            {artistOfMonth.starCount > 0 && ` ★${artistOfMonth.starCount}`}
+          </span>
         )}
       </div>
 
