@@ -2,12 +2,8 @@ create table public.artists (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
   name_ko text,
-  language_tag_id smallint references public.tags(id),
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  constraint artists_language_tag_id_range check (
-    language_tag_id is null or language_tag_id between 100 and 103
-  )
+  updated_at timestamptz not null default now()
 );
 
 alter table public.artists enable row level security;

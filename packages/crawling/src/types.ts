@@ -104,22 +104,12 @@ export interface TjChartRankingInsert {
   song_id: string;
 }
 
-// 언어 태그 ID (apps/web/src/constants/languageTags.ts와 의도적으로 중복 정의)
-export enum LanguageTagId {
-  Korean = 100,
-  Japanese = 101,
-  Pop = 102,
-  Global = 103,
-}
-
 export interface ArtistBackfillSongRow {
   artist: string;
   artist_ko: string | null;
-  song_tags: { tag_id: number }[];
 }
 
 export interface ArtistUpsert {
   name: string;
   name_ko: string | null;
-  language_tag_id: LanguageTagId | null;
 }

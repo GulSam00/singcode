@@ -1,8 +1,9 @@
 name: Translation J-POP Songs
 
 on:
-  schedule:
-    - cron: "0 10 * * *" # 매일 한국 시간 19:00 실행 (UTC+9 → UTC 10:00)
+  # 태그 기능 비활성화로 스케줄 실행 중단. 필요하면 workflow_dispatch로 수동 실행.
+  # schedule:
+  #   - cron: "0 10 * * *" # 매일 한국 시간 19:00 실행 (UTC+9 → UTC 10:00)
   workflow_dispatch:
 
 permissions:

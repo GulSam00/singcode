@@ -23,12 +23,12 @@ export async function GET(
     const [byName, byNameKo] = await Promise.all([
       supabase
         .from('artists')
-        .select('name, name_ko, language_tag_id')
+        .select('name, name_ko')
         .ilike('name', pattern)
         .limit(RESULT_LIMIT),
       supabase
         .from('artists')
-        .select('name, name_ko, language_tag_id')
+        .select('name, name_ko')
         .ilike('name_ko', pattern)
         .limit(RESULT_LIMIT),
     ]);

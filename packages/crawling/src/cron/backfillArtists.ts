@@ -6,7 +6,7 @@ import { artistAlias } from '@repo/constants';
 
 import { getSongsForArtistBackfillDB } from '@/supabase/getDB';
 import { upsertArtistsDB } from '@/supabase/postDB';
-import { ArtistUpsert, LanguageTagId } from '@/types';
+import { ArtistUpsert } from '@/types';
 import { extractPrimaryArtist, isInvalidArtist } from '@/utils/extractPrimaryArtist';
 
 const LOG_FILE = path.join('src', 'assets', 'artistBackfillLog.txt');
@@ -15,15 +15,6 @@ function log(message: string) {
   console.log(message);
   fs.appendFileSync(LOG_FILE, message + '\n', 'utf-8');
 }
-
-// 태깅 파이프라인은 지금 이 4개만 언어 태그로 쓴다. artists.language_tag_id가
-// tags(id)를 FK로 참조하면서 100~103 range check도 걸려 있어, 그 외 tag_id는 걸러야 한다.
-const VALID_LANGUAGE_TAG_IDS: readonly number[] = [
-  LanguageTagId.Korean,
-  LanguageTagId.Japanese,
-  LanguageTagId.Pop,
-  LanguageTagId.Global,
-];
 
 // artistAlias: { [원어 공식 표기]: [한국어 표기 별칭들] }.
 // 공식 표기는 songs.artist 원문과 그대로 일치하고, 별칭은 한국어 검색용 힌트라
@@ -45,25 +36,7 @@ function resolveCanonicalName(rawArtist: string): string {
   return aliasToOfficial.get(primary) ?? primary;
 }
 
-// song_tags 중 언어 태그(100~103)만 골라 가장 많이 등장한 것을 그 아티스트의
-// language_tag_id로 쓴다. tags(id) FK이므로 다른 카테고리 태그가 섞여 있어도 무시한다.
-function pickLanguageTagId(tagCounts: Map<number, number>): LanguageTagId | null {
-  let bestTag: LanguageTagId | null = null;
-  let bestCount = 0;
-
-  for (const [tagId, count] of tagCounts) {
-    if (!VALID_LANGUAGE_TAG_IDS.includes(tagId)) continue;
-    if (count > bestCount) {
-      bestTag = tagId;
-      bestCount = count;
-    }
-  }
-
-  return bestTag;
-}
-
 interface ArtistGroup {
-  tagCounts: Map<number, number>;
   artistKoCounts: Map<string, number>;
 }
 
@@ -94,11 +67,7 @@ for (const row of rows) {
   }
 
   const canonicalName = resolveCanonicalName(row.artist);
-  const group = groups.get(canonicalName) ?? { tagCounts: new Map(), artistKoCounts: new Map() };
-
-  for (const { tag_id } of row.song_tags ?? []) {
-    group.tagCounts.set(tag_id, (group.tagCounts.get(tag_id) ?? 0) + 1);
-  }
+  const group = groups.get(canonicalName) ?? { artistKoCounts: new Map() };
 
   if (row.artist_ko) {
     group.artistKoCounts.set(row.artist_ko, (group.artistKoCounts.get(row.artist_ko) ?? 0) + 1);
@@ -120,7 +89,6 @@ const upsertRows: ArtistUpsert[] = [...groups.entries()].map(([name, group]) => 
   return {
     name,
     name_ko: aliasKo ?? mostCommonArtistKo ?? null,
-    language_tag_id: pickLanguageTagId(group.tagCounts),
   };
 });
 
