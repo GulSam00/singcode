@@ -52,3 +52,13 @@ jobs:
         env:
           ARTIST_BACKFILL_SINCE_DAYS: ${{ steps.window.outputs.since_days }}
         run: pnpm run backfill-artists
+
+      # 로그 파일은 러너 파일시스템에만 남고 잡이 끝나면 사라지므로, 실패해도(if: always()) 확인할 수 있게 올려둔다.
+      - name: Upload backfill log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: artist-backfill-log-${{ github.run_id }}
+          path: packages/crawling/src/assets/artistBackfillLog.txt
+          if-no-files-found: ignore
+          retention-days: 30

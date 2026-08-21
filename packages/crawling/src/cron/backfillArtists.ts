@@ -1,10 +1,29 @@
 import { subDays } from 'date-fns';
+import fs from 'fs';
+import path from 'path';
 
 import { artistAlias } from '@repo/constants';
 
 import { getSongsForArtistBackfillDB } from '@/supabase/getDB';
 import { upsertArtistsDB } from '@/supabase/postDB';
-import { ArtistCountryCode, ArtistUpsert, LanguageTagId } from '@/types';
+import { ArtistUpsert, LanguageTagId } from '@/types';
+import { extractPrimaryArtist, isInvalidArtist } from '@/utils/extractPrimaryArtist';
+
+const LOG_FILE = path.join('src', 'assets', 'artistBackfillLog.txt');
+
+function log(message: string) {
+  console.log(message);
+  fs.appendFileSync(LOG_FILE, message + '\n', 'utf-8');
+}
+
+// 태깅 파이프라인은 지금 이 4개만 언어 태그로 쓴다. artists.language_tag_id가
+// tags(id)를 FK로 참조하면서 100~103 range check도 걸려 있어, 그 외 tag_id는 걸러야 한다.
+const VALID_LANGUAGE_TAG_IDS: readonly number[] = [
+  LanguageTagId.Korean,
+  LanguageTagId.Japanese,
+  LanguageTagId.Pop,
+  LanguageTagId.Global,
+];
 
 // artistAlias: { [원어 공식 표기]: [한국어 표기 별칭들] }.
 // 공식 표기는 songs.artist 원문과 그대로 일치하고, 별칭은 한국어 검색용 힌트라
@@ -20,32 +39,27 @@ for (const [officialName, aliases] of Object.entries(artistAlias)) {
 }
 
 function resolveCanonicalName(rawArtist: string): string {
-  return aliasToOfficial.get(rawArtist) ?? rawArtist;
+  // 1) isInvalidArtist를 통과한(쉼표/&/feat/with/x-콜라보 없는) 원문에서 괄호만 제거
+  // 2) 그 결과가 artistAlias에 등록된 원어 표기와 일치하면 공식 표기로 접어준다(방어적 정규화)
+  const primary = extractPrimaryArtist(rawArtist);
+  return aliasToOfficial.get(primary) ?? primary;
 }
 
-// song_tags 언어 태그 중 가장 많이 등장한 태그로 국가를 추정한다.
-// 102(팝송/서구권)는 US로, 103(글로벌)이거나 태그가 전혀 없으면 null로 둔다.
-function pickCountryCode(tagCounts: Map<number, number>): ArtistCountryCode | null {
-  let bestTag: number | null = null;
+// song_tags 중 언어 태그(100~103)만 골라 가장 많이 등장한 것을 그 아티스트의
+// language_tag_id로 쓴다. tags(id) FK이므로 다른 카테고리 태그가 섞여 있어도 무시한다.
+function pickLanguageTagId(tagCounts: Map<number, number>): LanguageTagId | null {
+  let bestTag: LanguageTagId | null = null;
   let bestCount = 0;
 
   for (const [tagId, count] of tagCounts) {
+    if (!VALID_LANGUAGE_TAG_IDS.includes(tagId)) continue;
     if (count > bestCount) {
       bestTag = tagId;
       bestCount = count;
     }
   }
 
-  switch (bestTag) {
-    case LanguageTagId.Korean:
-      return 'KR';
-    case LanguageTagId.Japanese:
-      return 'JP';
-    case LanguageTagId.Pop:
-      return 'US';
-    default:
-      return null;
-  }
+  return bestTag;
 }
 
 interface ArtistGroup {
@@ -57,19 +71,27 @@ interface ArtistGroup {
 const sinceDaysEnv = process.env.ARTIST_BACKFILL_SINCE_DAYS;
 const sinceIso = sinceDaysEnv ? subDays(new Date(), Number(sinceDaysEnv)).toISOString() : undefined;
 
-console.log(
+log(`\n===== 아티스트 백필 실행: ${new Date().toISOString()} =====`);
+log(
   sinceIso
-    ? `최근 ${sinceDaysEnv}일 이내 등록된 곡만 대상으로 백필합니다.`
+    ? `최근 ${sinceDaysEnv}일 이내 등록/수정된 곡만 대상으로 백필합니다.`
     : '전체 곡을 대상으로 백필합니다.',
 );
 
 const rows = await getSongsForArtistBackfillDB(sinceIso);
-console.log('대상 곡 수:', rows.length);
+log(`대상 곡 수: ${rows.length}`);
 
 const groups = new Map<string, ArtistGroup>();
+let invalidCount = 0;
 
 for (const row of rows) {
   if (!row.artist) continue;
+
+  // 쉼표/&·＆/×·・/feat/with, 또는 " X " 콜라보 구분자가 있으면 다른 조건과 무관하게 백필 대상에서 제외한다.
+  if (isInvalidArtist(row.artist)) {
+    invalidCount++;
+    continue;
+  }
 
   const canonicalName = resolveCanonicalName(row.artist);
   const group = groups.get(canonicalName) ?? { tagCounts: new Map(), artistKoCounts: new Map() };
@@ -85,7 +107,8 @@ for (const row of rows) {
   groups.set(canonicalName, group);
 }
 
-console.log('고유 아티스트 수:', groups.size);
+log(`무효 처리(쉼표/&·＆/×·・/feat/with/x-콜라보 포함)로 제외한 곡 수: ${invalidCount}`);
+log(`고유 아티스트 수: ${groups.size}`);
 
 const upsertRows: ArtistUpsert[] = [...groups.entries()].map(([name, group]) => {
   // name_ko 우선순위: 1) artistAlias 큐레이션 값  2) DB artist_ko 중 가장 흔한 값
@@ -97,14 +120,10 @@ const upsertRows: ArtistUpsert[] = [...groups.entries()].map(([name, group]) => 
   return {
     name,
     name_ko: aliasKo ?? mostCommonArtistKo ?? null,
-    country_code: pickCountryCode(group.tagCounts),
+    language_tag_id: pickLanguageTagId(group.tagCounts),
   };
 });
 
 const { upserted, failed } = await upsertArtistsDB(upsertRows);
 
-console.log(`
-  아티스트 upsert 결과:
-  - 성공: ${upserted}건
-  - 실패: ${failed}건
-`);
+log(`아티스트 upsert 결과 — 성공: ${upserted}건, 실패: ${failed}건`);

@@ -152,8 +152,9 @@ export async function getArtistKoMapDB(): Promise<Map<string, string>> {
   return map;
 }
 
-// 아티스트 백필용 조회. sinceIso가 있으면 그 시각 이후 등록된 곡만(월간 증분 갱신),
-// 없으면 전체 곡을 대상으로 한다(최초 백필). song_tags는 언어 태그로 country_code를 추정하는 데 쓴다.
+// 아티스트 백필용 조회. sinceIso가 있으면 그 시각 이후 등록되었거나 수정된 곡만
+// (월간 증분 갱신 — updated_at도 봐야 기존 곡의 artist 오타 수정 같은 걸 놓치지 않는다),
+// 없으면 전체 곡을 대상으로 한다(최초 백필). song_tags는 언어 태그로 language_tag_id를 추정하는 데 쓴다.
 export async function getSongsForArtistBackfillDB(
   sinceIso?: string,
 ): Promise<ArtistBackfillSongRow[]> {
@@ -162,7 +163,8 @@ export async function getSongsForArtistBackfillDB(
   let query = supabase.from('songs').select('artist, artist_ko, song_tags(tag_id)').limit(200000);
 
   if (sinceIso) {
-    query = query.gte('created_at', sinceIso);
+    // sinceIso는 서버가 계산한 값이라 사용자 입력이 섞이지 않는다 — or() 필터 문자열 조립이 안전하다.
+    query = query.or(`created_at.gte.${sinceIso},updated_at.gte.${sinceIso}`);
   }
 
   const { data, error } = await query;

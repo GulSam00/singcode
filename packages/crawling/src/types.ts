@@ -112,8 +112,6 @@ export enum LanguageTagId {
   Global = 103,
 }
 
-export type ArtistCountryCode = 'KR' | 'JP' | 'US';
-
 export interface ArtistBackfillSongRow {
   artist: string;
   artist_ko: string | null;
@@ -123,5 +121,5 @@ export interface ArtistBackfillSongRow {
 export interface ArtistUpsert {
   name: string;
   name_ko: string | null;
-  country_code: ArtistCountryCode | null;
+  language_tag_id: LanguageTagId | null;
 }
