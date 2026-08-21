@@ -121,6 +121,11 @@ chore : 버전 2.3.0 (#61)
    - Vercel(`apps/web` 프로덕션): `SUPABASE_SERVICE_ROLE_KEY`(turbo.json엔 이미 선언돼 있으나 실제 값 미설정), `ARTIST_VOTE_FINALIZE_SECRET`(새로 발급)
    - GitHub Actions repo secret: `ARTIST_VOTE_FINALIZE_SECRET` (`finalize_artist_of_month.yml`에서 사용, Vercel과 같은 값이어야 함)
 4. 위 설정 후 투표 → 월간 확정(`finalize_artist_of_month.yml`) → 곡 카드 배지 노출까지 전체 흐름을 수동 QA (테스트 스위트 없음)
+5. 아티스트 투표/검색 기능 동작 검증 — dev 서버 기동 및 `/popular` 응답까지는 확인했으나, 공개 API(`/api/artists/search`, `/api/artist-vote/rankings`, `/api/artist-vote/current-winner`) curl 스모크 테스트와 `/popular` 페이지 UI(투표 모달·검색) 브라우저 확인이 아직 안 끝났다. 로그인이 필요한 실제 투표(포인트 차감→랭킹 반영) 흐름은 카카오 로그인 기반이라 자동 검증이 어려워 수동 QA가 필요하다.
+
+### 태그 기능 제거 (완료 — 참고용)
+
+검색 언어 태그 필터가 오작동해 관련 코드를 전부 걷어냈다: 프론트(`LanguageTagFilter.tsx` 등)와 `api/search`의 `song_tags` 조인, `artists.language_tag_id` 참조(추후 대시보드에서 컬럼 수동 삭제 예정)를 제거했고, `packages/crawling`의 `taggingSongs.ts`/`translationJpn.ts`는 삭제 대신 전체 주석처리했다. `tagging_song.yml`/`translation_jpn.yml`은 `schedule` 트리거만 비활성화(주석)했고 `workflow_dispatch`로 수동 실행은 여전히 가능하다. `tags`/`song_tags` 테이블 자체는 DB에 남아있지만 앱은 더 이상 참조하지 않는다.
 
 ## Self-Maintenance
 
