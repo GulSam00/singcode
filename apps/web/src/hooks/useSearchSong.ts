@@ -22,19 +22,14 @@ export default function useSearchSong() {
   const [searchType, setSearchType] = useState<SearchType>('all');
   const [query, setQuery] = useState('');
   const [queryType, setQueryType] = useState<SearchType>('all');
-  // languageTag: Tabs에서 선택 중인(draft) 값. queryLanguageTag: 검색 실행 시 커밋되어 실제 쿼리에 쓰이는 값.
-  const [languageTag, setLanguageTag] = useState<number | undefined>(undefined);
-  const [queryLanguageTag, setQueryLanguageTag] = useState<number | undefined>(undefined);
 
   const { mutate: toggleToSing, isPending: isToggleToSingPending } = useToggleToSingMutation(
     query,
     queryType,
-    queryLanguageTag,
   );
   const { mutate: toggleLike, isPending: isToggleLikePending } = useToggleLikeMutation(
     query,
     queryType,
-    queryLanguageTag,
   );
 
   const {
@@ -44,7 +39,7 @@ export default function useSearchSong() {
     isFetchingNextPage,
     isLoading: isPendingSearch,
     isError,
-  } = useInfiniteSearchSongQuery(query, queryType, isAuthenticated, queryLanguageTag);
+  } = useInfiniteSearchSongQuery(query, queryType, isAuthenticated);
 
   const { mutate: postSearchLog } = usePostSearchLogMutation();
 
@@ -83,7 +78,6 @@ export default function useSearchSong() {
       setQuery(parsedSearch);
       setSearch(parsedSearch);
       setQueryType(typeOverride ?? searchType);
-      setQueryLanguageTag(languageTag);
       addToHistory(parsedSearch);
       postSearchLog(parsedSearch);
     }
@@ -91,10 +85,6 @@ export default function useSearchSong() {
 
   const handleSearchTypeChange = (value: SearchType) => {
     setSearchType(value);
-  };
-
-  const handleLanguageTagChange = (value: number | undefined) => {
-    setLanguageTag(value);
   };
 
   const handleToggleToSing = useCallback(
@@ -156,8 +146,6 @@ export default function useSearchSong() {
     autoCompleteList,
     query,
     queryType,
-    languageTag,
-    queryLanguageTag,
 
     searchResults,
     fetchNextPage,
@@ -167,7 +155,6 @@ export default function useSearchSong() {
     isError,
 
     handleSearchTypeChange,
-    handleLanguageTagChange,
     handleSearch,
     handleToggleToSing,
     handleToggleLike,

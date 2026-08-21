@@ -74,11 +74,6 @@ export default function SearchTour({
         skipBeacon: true,
       },
       {
-        target: '[data-tour="language-filter"]',
-        title: '국가로 필터링',
-        content: '한국·일본·팝송처럼 국가(언어)로 검색 범위를 좁혀볼 수 있어요.',
-      },
-      {
         target: '[data-tour="search-result-list"]',
         title: '검색 결과 살펴보기',
         content: `예시 곡 '${TOUR_DEMO_SEARCH_TERM}' 카드로 기능들을 하나씩 살펴볼게요. 실제 곡은 아니에요.`,

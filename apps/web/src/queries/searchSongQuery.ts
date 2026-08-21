@@ -30,25 +30,17 @@ interface FolderProps {
   folderName: string;
   query: string;
   searchType: string;
-  languageTag?: number;
 }
 
 export const useInfiniteSearchSongQuery = (
   search: string,
   searchType: string,
   isAuthenticated: boolean,
-  languageTag?: number,
 ) => {
   return useInfiniteQuery({
-    queryKey: ['searchSong', search, searchType, languageTag],
+    queryKey: ['searchSong', search, searchType],
     queryFn: async ({ pageParam }) => {
-      const response = await getInfiniteSearchSong(
-        search,
-        searchType,
-        isAuthenticated,
-        pageParam,
-        languageTag,
-      );
+      const response = await getInfiniteSearchSong(search, searchType, isAuthenticated, pageParam);
 
       if (!response.success) {
         throw new Error('Search API failed');
@@ -71,11 +63,7 @@ export const useInfiniteSearchSongQuery = (
   });
 };
 
-export const useToggleToSingMutation = (
-  query: string,
-  searchType: string,
-  languageTag?: number,
-) => {
+export const useToggleToSingMutation = (query: string, searchType: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     // 낙관적 업데이트 검증 코드
@@ -89,7 +77,7 @@ export const useToggleToSingMutation = (
       }
     },
     onMutate: async ({ songId, method }: SongProps) => {
-      const queryKey = ['searchSong', query, searchType, languageTag];
+      const queryKey = ['searchSong', query, searchType];
       await queryClient.cancelQueries({ queryKey });
       const prev = queryClient.getQueryData(queryKey);
       const isToSing = method === 'POST';
@@ -106,15 +94,12 @@ export const useToggleToSingMutation = (
         };
       });
 
-      return { prev, query, searchType, languageTag };
+      return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
       console.error('error', error);
       alert(error.message ?? 'POST 실패');
-      queryClient.setQueryData(
-        ['searchSong', context?.query, context?.searchType, context?.languageTag],
-        context?.prev,
-      );
+      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: () => {
       if (invalidateToSingTimeout) {
@@ -122,7 +107,7 @@ export const useToggleToSingMutation = (
       }
       invalidateToSingTimeout = setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['searchSong', query, searchType, languageTag],
+          queryKey: ['searchSong', query, searchType],
         });
         queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
       }, 1000);
@@ -130,7 +115,7 @@ export const useToggleToSingMutation = (
   });
 };
 
-export const useToggleLikeMutation = (query: string, searchType: string, languageTag?: number) => {
+export const useToggleLikeMutation = (query: string, searchType: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -142,7 +127,7 @@ export const useToggleLikeMutation = (query: string, searchType: string, languag
       }
     },
     onMutate: async ({ songId, method }: SongProps) => {
-      const queryKey = ['searchSong', query, searchType, languageTag];
+      const queryKey = ['searchSong', query, searchType];
       await queryClient.cancelQueries({ queryKey });
       const prev = queryClient.getQueryData(queryKey);
       const isLike = method === 'POST';
@@ -158,15 +143,12 @@ export const useToggleLikeMutation = (query: string, searchType: string, languag
         };
       });
 
-      return { prev, query, searchType, languageTag };
+      return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
       console.error('error', error);
       alert(error.message ?? 'POST 실패');
-      queryClient.setQueryData(
-        ['searchSong', context?.query, context?.searchType, context?.languageTag],
-        context?.prev,
-      );
+      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: () => {
       if (invalidateLikeTimeout) {
@@ -174,7 +156,7 @@ export const useToggleLikeMutation = (query: string, searchType: string, languag
       }
       invalidateLikeTimeout = setTimeout(() => {
         queryClient.invalidateQueries({
-          queryKey: ['searchSong', query, searchType, languageTag],
+          queryKey: ['searchSong', query, searchType],
         });
         queryClient.invalidateQueries({ queryKey: ['likeSong'] });
       }, 1000);
@@ -189,8 +171,8 @@ export const useSaveMutation = () => {
     mutationFn: ({ songId, folderName }: FolderProps) => {
       return postSaveSong({ songId, folderName });
     },
-    onMutate: async ({ songId, query, searchType, languageTag }: FolderProps) => {
-      const queryKey = ['searchSong', query, searchType, languageTag];
+    onMutate: async ({ songId, query, searchType }: FolderProps) => {
+      const queryKey = ['searchSong', query, searchType];
       await queryClient.cancelQueries({ queryKey });
       const prev = queryClient.getQueryData(queryKey);
 
@@ -206,19 +188,16 @@ export const useSaveMutation = () => {
         };
       });
 
-      return { prev, query, searchType, languageTag };
+      return { prev, query, searchType };
     },
     onError: (error, variables, context) => {
       console.error('error', error);
       alert(error.message ?? 'POST 실패');
-      queryClient.setQueryData(
-        ['searchSong', context?.query, context?.searchType, context?.languageTag],
-        context?.prev,
-      );
+      queryClient.setQueryData(['searchSong', context?.query, context?.searchType], context?.prev);
     },
     onSettled: (data, error, context) => {
       queryClient.invalidateQueries({
-        queryKey: ['searchSong', context?.query, context?.searchType, context?.languageTag],
+        queryKey: ['searchSong', context?.query, context?.searchType],
       });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolder'] });
       queryClient.invalidateQueries({ queryKey: ['saveSongFolderList'] });
