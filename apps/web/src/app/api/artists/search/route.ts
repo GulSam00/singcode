@@ -21,11 +21,7 @@ export async function GET(
     // 원어 표기(name)와 한국어 표기(name_ko) 양쪽을 각각 조회해 합친다.
     // ilike 값은 supabase-js가 바인딩 파라미터로 보내므로 or() 필터 문자열 조립보다 안전하다.
     const [byName, byNameKo] = await Promise.all([
-      supabase
-        .from('artists')
-        .select('name, name_ko')
-        .ilike('name', pattern)
-        .limit(RESULT_LIMIT),
+      supabase.from('artists').select('name, name_ko').ilike('name', pattern).limit(RESULT_LIMIT),
       supabase
         .from('artists')
         .select('name, name_ko')

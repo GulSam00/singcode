@@ -114,11 +114,7 @@ async function executeSearchQueries(
     if (exactCountResult.error) return { error: exactCountResult.error.message };
     const exactTotal = exactCountResult.count ?? 0;
 
-    const exactQuery = applyExactFilter(
-      supabase.from('songs').select(selectClause),
-      type,
-      query,
-    );
+    const exactQuery = applyExactFilter(supabase.from('songs').select(selectClause), type, query);
     const { data, error } = await exactQuery.order(order).range(from, to);
     if (error) return { error: error.message };
 
@@ -186,11 +182,7 @@ async function executeSearchQueries(
   } else {
     // 현재 페이지가 정확 일치 영역에 포함 (경계에 걸릴 수도 있음)
     const exactTo = Math.min(to, exactTotal - 1);
-    const exactQuery = applyExactFilter(
-      supabase.from('songs').select(selectClause),
-      type,
-      query,
-    );
+    const exactQuery = applyExactFilter(supabase.from('songs').select(selectClause), type, query);
     const exactResult = await exactQuery.order(order).range(from, exactTo);
     if (exactResult.error) return { error: exactResult.error.message };
     exactData = (exactResult.data as DBSong[]) ?? [];
