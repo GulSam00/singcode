@@ -145,3 +145,23 @@ export async function postInvalidKYSongsDB(song: Song) {
     return error;
   }
 }
+
+/**
+ * 아티스트 사진 URL을 채운다.
+ * 이미 채워진 행은 건드리지 않는다 — 손으로 골라 넣은 사진을 자동 백필이 덮어쓰면 안 된다.
+ */
+export async function updateArtistImageDB(name: string, imageUrl: string) {
+  const supabase = getClient();
+
+  const { error } = await supabase
+    .from('artists')
+    .update({ image_url: imageUrl })
+    .eq('name', name)
+    .is('image_url', null);
+
+  if (error) {
+    console.error('updateArtistImageDB error:', name, error);
+    return false;
+  }
+  return true;
+}

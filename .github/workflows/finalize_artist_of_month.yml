@@ -17,3 +17,39 @@ jobs:
           curl --fail --silent --show-error \
             -X POST "https://www.singcode.kr/api/artist-vote/finalize" \
             -H "Authorization: Bearer ${{ secrets.ARTIST_VOTE_FINALIZE_SECRET }}"
+
+      # 확정된 시상대(1~3위)의 사진만 채운다. 사진이 쓰이는 자리가 거기뿐이라
+      # 13,000명을 미리 채워둘 이유가 없다.
+      # 이 잡은 매일 돌지만 사진이 이미 있는 아티스트는 대상에서 빠지므로,
+      # 그 달 첫 성공 이후로는 대상이 0명이라 외부 API를 부르지 않는다.
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        working-directory: packages/crawling
+        run: pnpm install
+
+      - name: Create .env file
+        working-directory: packages/crawling
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+
+      # 사진은 있으면 좋은 것이지 확정의 조건이 아니다.
+      # 외부 API(MusicBrainz·Deezer)가 죽어 있어도 순위 확정 자체는 성공으로 남겨야 한다.
+      - name: Backfill podium artist images
+        working-directory: packages/crawling
+        continue-on-error: true
+        env:
+          ARTIST_IMAGE_PODIUM: "3"
+        run: pnpm run backfill-artist-images

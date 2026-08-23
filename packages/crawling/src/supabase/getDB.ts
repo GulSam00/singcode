@@ -1,4 +1,4 @@
-import { ArtistBackfillSongRow, TransSong } from '@/types';
+import { ArtistBackfillSongRow, ArtistImageTarget, TransSong } from '@/types';
 import { containsJapanese } from '@/utils/parseString';
 
 import { getClient } from './getClient';
@@ -208,4 +208,71 @@ export async function getSongsBadgeNullDB(limit: number = 1000, afterNumTj?: str
   if (error) throw error;
 
   return data;
+}
+
+/**
+ * 사진이 아직 비어 있는 아티스트를 이름순으로 가져온다.
+ * 이름순인 이유는 여러 번 나눠 돌려도 매번 같은 자리에서 이어지게 하기 위함이다.
+ */
+export async function getArtistsWithoutImageDB(limit: number): Promise<ArtistImageTarget[]> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('artists')
+    .select('name, name_ko')
+    .is('image_url', null)
+    .order('name', { ascending: true })
+    .limit(limit);
+
+  if (error) throw error;
+
+  return data as ArtistImageTarget[];
+}
+
+/**
+ * 이름을 콕 집어 가져온다. 사진 백필을 특정 아티스트로 시험해 볼 때 쓴다.
+ * 이름순 조회는 한 글자 이름("건", "결"…)부터 걸려서 표본으로 삼기에 나쁘다.
+ */
+export async function getArtistsByNamesDB(names: string[]): Promise<ArtistImageTarget[]> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('artists')
+    .select('name, name_ko')
+    .in('name', names)
+    .is('image_url', null);
+
+  if (error) throw error;
+
+  return data as ArtistImageTarget[];
+}
+
+/**
+ * 가장 최근에 확정된 달의 상위 N명 이름을 가져온다.
+ * 사진이 실제로 쓰이는 자리가 시상대(1~3위)뿐이라, 월간 확정 직후 그 이름만 채우면 된다.
+ */
+export async function getLatestPodiumArtistNamesDB(topN: number): Promise<string[]> {
+  const supabase = getClient();
+
+  const { data: latest, error: latestError } = await supabase
+    .from('monthly_artist_rankings')
+    .select('vote_month')
+    .order('vote_month', { ascending: false })
+    .limit(1);
+
+  if (latestError) throw latestError;
+
+  const month = latest?.[0]?.vote_month as string | undefined;
+  if (!month) return [];
+
+  const { data, error } = await supabase
+    .from('monthly_artist_rankings')
+    .select('artist')
+    .eq('vote_month', month)
+    .lte('rank', topN)
+    .order('rank', { ascending: true });
+
+  if (error) throw error;
+
+  return (data ?? []).map(row => row.artist as string);
 }
