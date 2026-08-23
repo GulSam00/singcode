@@ -42,6 +42,9 @@ packages/
   query/    — Shared TanStack Query hooks for open-api (@repo/query)
   api/      — Internal API utilities (@repo/api), built with tsup
   ui/       — Shared UI components (@repo/ui)
+  constants/ — Shared domain constants & rules (@repo/constants). 아티스트 별칭(`artistAlias`)과
+              이름 정규화 규칙(`artistName.ts`)이 있다. 백필(`packages/crawling`)과 웹(이달의
+              아티스트 배지 매칭)이 같은 규칙을 써야 해 여기 둔다 — 한쪽만 고치면 규칙이 어긋난다.
   eslint-config/   — Shared ESLint config (@repo/eslint-config)
   format-config/   — Shared Prettier config (@repo/format-config)
   typescript-config/ — Shared tsconfig bases
@@ -69,17 +72,17 @@ See [apps/web/CLAUDE.md](apps/web/CLAUDE.md) for full detail. Key points:
 /start → /spsc → /red → /green → /refactor → /verify → /commit
 ```
 
-| 커맨드      | 설명                                    | 필수 여부 |
-| ----------- | --------------------------------------- | --------- |
-| `/start`    | GitHub Issue 생성 + 작업 브랜치 체크아웃 | 권장      |
-| `/spsc`     | 이슈 기반 작업 범위 정의                 | 권장      |
-| `/red`      | 실패 테스트 먼저 작성 (TDD)              | 생략 가능 |
-| `/green`    | 구현 코드 작성                           | 필수      |
-| `/refactor` | 코드 품질 개선 (동작 변경 X)             | 생략 가능 |
-| `/verify`   | build, lint, format, test 전체 검증      | **필수**  |
-| `/commit`        | 커밋 메시지 생성 및 커밋                 | **필수**  |
-| `/pr`            | PR 생성 및 Qodo AI 리뷰 요청            | 권장      |
-| `/check-review`  | Qodo 리뷰 코멘트 읽기 및 이슈 브리핑    | 권장      |
+| 커맨드          | 설명                                     | 필수 여부 |
+| --------------- | ---------------------------------------- | --------- |
+| `/start`        | GitHub Issue 생성 + 작업 브랜치 체크아웃 | 권장      |
+| `/spsc`         | 이슈 기반 작업 범위 정의                 | 권장      |
+| `/red`          | 실패 테스트 먼저 작성 (TDD)              | 생략 가능 |
+| `/green`        | 구현 코드 작성                           | 필수      |
+| `/refactor`     | 코드 품질 개선 (동작 변경 X)             | 생략 가능 |
+| `/verify`       | build, lint, format, test 전체 검증      | **필수**  |
+| `/commit`       | 커밋 메시지 생성 및 커밋                 | **필수**  |
+| `/pr`           | PR 생성 및 Qodo AI 리뷰 요청             | 권장      |
+| `/check-review` | Qodo 리뷰 코멘트 읽기 및 이슈 브리핑     | 권장      |
 
 ### 단축 사이클
 
@@ -94,6 +97,7 @@ Branch format: `<type>/<issue-number>-<camelCaseName>` — flow: `feat/*` → `d
 Types: `feat`, `fix`, `hotfix`, `chore`, `refactor`, `doc`
 
 Branch examples:
+
 ```
 feat/42-addSearchFilter
 fix/57-songCardCss
@@ -103,6 +107,7 @@ chore/61-versionBump
 Commit format: `<type> : <Korean description> (#issue-number)` (space before and after colon)
 
 Examples:
+
 ```
 feat : MarqueeText 자동 스크롤 텍스트 적용 (#42)
 fix : SongCard css 수정 (#57)
@@ -113,15 +118,37 @@ chore : 버전 2.3.0 (#61)
 
 ### #307 이달의 아티스트 (포인트 투표)
 
-코드는 완성됐으나 아래 수동 작업이 남아있어 실제로는 아직 동작하지 않는다.
+코드는 완성됐다. 남은 건 배포 설정과 실데이터 QA다.
 
-1. `apps/web/artist-vote-schema.sql`을 Supabase SQL Editor에서 실행 — `artists`(마스터), `artist_votes`, `monthly_artist_rankings` 테이블 + RLS 정책 생성. `artists`를 먼저 만들고 나머지 두 테이블이 `artist`를 그 `name`으로 FK 참조하는 순서라 반드시 이 파일 그대로 한 번에 실행해야 한다.
-2. `packages/crawling`에서 `pnpm backfill-artists`를 환경변수 없이(전체 스캔) 최초 1회 실행해 `artists`를 채운다 — 비어있으면 `artist_votes.artist`의 FK 제약 때문에 투표 자체가 전부 실패한다.
-3. 환경변수/시크릿 등록
-   - Vercel(`apps/web` 프로덕션): `SUPABASE_SERVICE_ROLE_KEY`(turbo.json엔 이미 선언돼 있으나 실제 값 미설정), `ARTIST_VOTE_FINALIZE_SECRET`(새로 발급)
-   - GitHub Actions repo secret: `ARTIST_VOTE_FINALIZE_SECRET` (`finalize_artist_of_month.yml`에서 사용, Vercel과 같은 값이어야 함)
-4. 위 설정 후 투표 → 월간 확정(`finalize_artist_of_month.yml`) → 곡 카드 배지 노출까지 전체 흐름을 수동 QA (테스트 스위트 없음)
-5. 아티스트 투표/검색 기능 동작 검증 — dev 서버 기동 및 `/popular` 응답까지는 확인했으나, 공개 API(`/api/artists/search`, `/api/artist-vote/rankings`, `/api/artist-vote/current-winner`) curl 스모크 테스트와 `/popular` 페이지 UI(투표 모달·검색) 브라우저 확인이 아직 안 끝났다. 로그인이 필요한 실제 투표(포인트 차감→랭킹 반영) 흐름은 카카오 로그인 기반이라 자동 검증이 어려워 수동 QA가 필요하다.
+**완료**
+
+- `apps/web/artist-vote-schema.sql` 실행 — 테이블 3종 + RLS 정책 + `artists.image_url`.
+  최초 버전에는 정책이 하나도 없어서 앱(anon 키)에서 모든 조회가 조용히 빈 배열로 돌아왔다.
+  파일 전체가 `if not exists` / `drop policy if exists`라 다시 실행해도 안전하다.
+- `pnpm backfill-artists`로 `artists` 적재 (13,869명).
+- 랭킹 화면: 1~3위 액자(1위 금 / 2·3위 황동) + 카드 위 우승 별(`WinStars`) + 득표 파이(1~10위).
+  화면 확인용 목업은 제거했다.
+
+**남은 작업**
+
+1. 환경변수/시크릿
+   - Vercel(`apps/web` 프로덕션): `SUPABASE_SERVICE_ROLE_KEY`, `ARTIST_VOTE_FINALIZE_SECRET`
+   - GitHub Actions repo secret: `ARTIST_VOTE_FINALIZE_SECRET`(Vercel과 같은 값),
+     `SUPABASE_URL`·`SUPABASE_KEY`(service_role) — 뒤 둘은 finalize 워크플로에 추가된
+     이미지 백필 단계가 쓴다. `continue-on-error`라 없어도 잡은 초록불이니 첫 실행 로그를 봐야 안다.
+2. 실데이터 QA (테스트 스위트 없음)
+   - 아티스트 검색 자동완성 — RLS 정책이 실제로 붙었는지 확인하는 가장 빠른 길
+   - `artists(name_ko, image_url)` 임베드 첫 조회에서 `PGRST200`이 나면 FK 힌트 문법을 명시해야 한다
+   - 투표(포인트 차감) → 월간 확정 → 곡 카드 배지까지. 카카오 로그인이라 자동 검증이 어렵다
+3. 아티스트 사진 — `artists.image_url`
+   - 채우는 주체는 `finalize_artist_of_month.yml`의 마지막 단계다.
+     확정된 그달 1~3위 중 사진이 없는 사람만 `pnpm backfill-artist-images`(`ARTIST_IMAGE_PODIUM=3`)로 채운다.
+     사진이 쓰이는 자리가 시상대뿐이라 13,000명을 미리 채우지 않는다.
+   - 이름 매칭은 MusicBrainz(별칭 사전) → Deezer(사진) 순이다. 우리 DB는 TJ 표기(한글·원어)인데
+     음원 서비스 등록은 로마자라("방탄소년단" ↔ "BTS"), 이 다리가 없으면 사진이 있는데도 못 찾는다.
+   - 태연·잔나비·폴킴 3명은 이 다리를 붙이기 전에 채워져 팬 수 20~60짜리 중복 등록에서 온 사진이다.
+     정품으로 바꾸려면 `update public.artists set image_url = null where name in (...)` 후 다시 돌려야 한다
+     (`image_url is null`인 행만 대상이라 그냥 두면 갱신되지 않는다).
 
 ### 태그 기능 제거 (완료 — 참고용)
 
