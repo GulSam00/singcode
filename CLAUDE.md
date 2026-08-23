@@ -42,9 +42,10 @@ packages/
   query/    — Shared TanStack Query hooks for open-api (@repo/query)
   api/      — Internal API utilities (@repo/api), built with tsup
   ui/       — Shared UI components (@repo/ui)
-  constants/ — Shared domain constants & rules (@repo/constants). 아티스트 별칭(`artistAlias`)과
-              이름 정규화 규칙(`artistName.ts`)이 있다. 백필(`packages/crawling`)과 웹(이달의
-              아티스트 배지 매칭)이 같은 규칙을 써야 해 여기 둔다 — 한쪽만 고치면 규칙이 어긋난다.
+  constants/ — Shared domain constants & rules (@repo/constants). 아티스트 별칭(`artistAlias`),
+              이름 정규화(`artistName.ts`), 투표 집계 규칙(`rankArtistVotes.ts`), KST 월 계산
+              (`kstMonth.ts`)이 있다. 배치(`packages/crawling`)와 웹이 같은 규칙을 써야 해
+              여기 둔다 — 한쪽만 고치면 화면에 적힌 순위와 저장된 순위가 어긋난다.
   eslint-config/   — Shared ESLint config (@repo/eslint-config)
   format-config/   — Shared Prettier config (@repo/format-config)
   typescript-config/ — Shared tsconfig bases
@@ -131,24 +132,31 @@ chore : 버전 2.3.0 (#61)
 
 **남은 작업**
 
-1. 환경변수/시크릿
-   - Vercel(`apps/web` 프로덕션): `SUPABASE_SERVICE_ROLE_KEY`, `ARTIST_VOTE_FINALIZE_SECRET`
-   - GitHub Actions repo secret: `ARTIST_VOTE_FINALIZE_SECRET`(Vercel과 같은 값),
-     `SUPABASE_URL`·`SUPABASE_KEY`(service_role) — 뒤 둘은 finalize 워크플로에 추가된
-     이미지 백필 단계가 쓴다. `continue-on-error`라 없어도 잡은 초록불이니 첫 실행 로그를 봐야 안다.
+1. GitHub Actions repo secret 확인 — `SUPABASE_URL`, `SUPABASE_KEY`(service_role).
+   `finalize_artist_of_month.yml`이 확정과 사진 백필 양쪽에 쓴다. 다른 크롤링 워크플로가
+   이미 쓰는 값이라 등록돼 있을 가능성이 높지만, 이 워크플로에서는 처음 참조한다.
+   **Vercel 쪽에 추가로 넣을 환경변수는 없다.**
 2. 실데이터 QA (테스트 스위트 없음)
    - 아티스트 검색 자동완성 — RLS 정책이 실제로 붙었는지 확인하는 가장 빠른 길
    - `artists(name_ko, image_url)` 임베드 첫 조회에서 `PGRST200`이 나면 FK 힌트 문법을 명시해야 한다
    - 투표(포인트 차감) → 월간 확정 → 곡 카드 배지까지. 카카오 로그인이라 자동 검증이 어렵다
 3. 아티스트 사진 — `artists.image_url`
-   - 채우는 주체는 `finalize_artist_of_month.yml`의 마지막 단계다.
-     확정된 그달 1~3위 중 사진이 없는 사람만 `pnpm backfill-artist-images`(`ARTIST_IMAGE_PODIUM=3`)로 채운다.
-     사진이 쓰이는 자리가 시상대뿐이라 13,000명을 미리 채우지 않는다.
+   - `finalize_artist_of_month.yml`의 마지막 단계가 채운다. 확정된 그달 1~3위 중 사진이 없는
+     사람만 `ARTIST_IMAGE_PODIUM=3`으로 처리한다. 사진이 쓰이는 자리가 시상대뿐이라
+     13,000명을 미리 채우지 않는다.
    - 이름 매칭은 MusicBrainz(별칭 사전) → Deezer(사진) 순이다. 우리 DB는 TJ 표기(한글·원어)인데
      음원 서비스 등록은 로마자라("방탄소년단" ↔ "BTS"), 이 다리가 없으면 사진이 있는데도 못 찾는다.
    - 태연·잔나비·폴킴 3명은 이 다리를 붙이기 전에 채워져 팬 수 20~60짜리 중복 등록에서 온 사진이다.
      정품으로 바꾸려면 `update public.artists set image_url = null where name in (...)` 후 다시 돌려야 한다
      (`image_url is null`인 행만 대상이라 그냥 두면 갱신되지 않는다).
+
+**월간 확정이 도는 자리**
+
+`packages/crawling`의 `pnpm finalize-artist`다. 원래는 웹앱 API 라우트
+(`/api/artist-vote/finalize`)였는데, 인증 없는 공개 URL이 순위를 지우고 다시 쓰는 구조라
+공유 시크릿으로 잠가야 했다. 배치로 옮기면서 그 엔드포인트와 `ARTIST_VOTE_FINALIZE_SECRET`,
+Vercel의 `SUPABASE_SERVICE_ROLE_KEY`가 모두 없어졌다. **확정 로직을 웹으로 되돌리지 말 것** —
+공개 엔드포인트가 다시 생긴다.
 
 ### 태그 기능 제거 (완료 — 참고용)
 
