@@ -8,17 +8,28 @@ import { useArtistVotersQuery } from '@/queries/artistVoteQuery';
 interface ArtistVotersDialogProps {
   month: string;
   artist: string;
+  artistKo: string | null;
   onClose: () => void;
 }
 
-export default function ArtistVotersDialog({ month, artist, onClose }: ArtistVotersDialogProps) {
+export default function ArtistVotersDialog({
+  month,
+  artist,
+  artistKo,
+  onClose,
+}: ArtistVotersDialogProps) {
   const { data: voters, isPending } = useArtistVotersQuery(month, artist, true);
 
   return (
     <Dialog open onOpenChange={open => !open && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{artist} 투표자</DialogTitle>
+          <DialogTitle className="flex flex-col items-start">
+            <span>{artist} 투표자</span>
+            {!!artistKo && artistKo !== artist && (
+              <span className="text-muted-foreground/70 text-xs font-normal">{artistKo}</span>
+            )}
+          </DialogTitle>
         </DialogHeader>
 
         {isPending ? (

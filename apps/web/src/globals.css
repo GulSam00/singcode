@@ -48,6 +48,9 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -103,11 +106,17 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.75 0.2 145);
-  --chart-1: oklch(0.75 0.2 145);
-  --chart-2: oklch(0.65 0.2 350);
-  --chart-3: oklch(0.696 0.17 162.48);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.627 0.265 303.9);
+  /* 차트 카테고리 팔레트 8칸 — 색각 이상 분리도/명도 대역 검증을 통과한 조합이다.
+     순서를 바꾸거나 중간 색을 갈아끼우면 인접 조각이 구분되지 않으니 순서대로만 쓴다.
+     여덟 칸이 한계다. 아홉 번째 색을 새로 만들지 말고 질감(빗금)을 얹어 구분한다. */
+  --chart-1: #2a78d6;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
+  --chart-6: #008300;
+  --chart-7: #4a3aa7;
+  --chart-8: #e34948;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.75 0.2 145);
@@ -143,11 +152,15 @@
   --border: oklch(0.3 0.01 260);
   --input: oklch(0.25 0.01 260);
   --ring: oklch(0.75 0.2 145);
-  --chart-1: oklch(0.75 0.2 145);
-  --chart-2: oklch(0.65 0.2 350);
-  --chart-3: oklch(0.696 0.17 162.48);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.627 0.265 303.9);
+  /* 다크 표면에 맞춰 다시 고른 같은 계열 8색 (밝기만 뒤집은 값이 아니다) */
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+  --chart-6: #008300;
+  --chart-7: #9085e9;
+  --chart-8: #e66767;
   --sidebar: oklch(0.18 0.01 260);
   --sidebar-foreground: oklch(0.9 0 0);
   --sidebar-primary: oklch(0.75 0.2 145);
@@ -213,9 +226,35 @@ button {
   animation: character-shake 0.3s ease-in-out 2;
 }
 
+/* 액자 몰딩 광택 (React Bits의 ShinyText 기법을 테두리에 옮긴 것).
+   배경을 두 겹으로 깔고 첫 겹(하이라이트 띠)의 위치만 흘린다. 금속 결 자체가 흐르면
+   테가 미끄러지는 것처럼 보이지만, 결은 고정하고 빛만 지나가면 광택으로 읽힌다.
+   background-position만 움직이므로 레이아웃 계산이 없다. */
+@keyframes frame-sheen {
+  from {
+    background-position:
+      150% center,
+      center;
+  }
+  to {
+    background-position:
+      -50% center,
+      center;
+  }
+}
+
+.animate-frame-sheen {
+  background-size:
+    200% auto,
+    auto;
+  background-repeat: no-repeat;
+  animation: frame-sheen 4.5s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-character-bounce,
-  .animate-character-shake {
+  .animate-character-shake,
+  .animate-frame-sheen {
     animation: none;
   }
 }

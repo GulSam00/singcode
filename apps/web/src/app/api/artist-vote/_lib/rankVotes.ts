@@ -1,3 +1,6 @@
+/** 확정 저장하는 순위 개수. monthly_artist_rankings의 rank check 제약과 같아야 한다. */
+export const TOP_RANK_LIMIT = 30;
+
 export interface VoteRow {
   user_id: string;
   artist: string;
@@ -14,7 +17,7 @@ export interface ArtistAggregate {
 }
 
 /**
- * 아티스트별로 득표를 합산해 상위 10명을 반환한다.
+ * 아티스트별로 득표를 합산해 상위 30명을 반환한다.
  * 동점이면 그 달에 먼저 득표를 모으기 시작한 아티스트가 우선, 그래도 같으면 이름순.
  */
 export function rankTopArtists(votes: VoteRow[]): ArtistAggregate[] {
@@ -52,5 +55,5 @@ export function rankTopArtists(votes: VoteRow[]): ArtistAggregate[] {
       }
       return a.artist.localeCompare(b.artist);
     })
-    .slice(0, 10);
+    .slice(0, TOP_RANK_LIMIT);
 }
