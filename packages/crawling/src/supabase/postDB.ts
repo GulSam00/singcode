@@ -165,3 +165,38 @@ export async function updateArtistImageDB(name: string, imageUrl: string) {
   }
   return true;
 }
+
+export interface MonthlyRankingInsert {
+  vote_month: string;
+  rank: number;
+  artist: string;
+  total_votes: number;
+  top_voter_user_id: string;
+  top_voter_amount: number;
+}
+
+/**
+ * 그달 순위를 통째로 갈아끼운다.
+ *
+ * 지우고 넣는 사이에 트랜잭션이 없어 그 틈에 조회하면 결과가 비어 보인다.
+ * 이 스크립트가 하루 한 번, 단일 워크플로에서만 도는 전제라 그 틈을 감수한다 —
+ * 여러 곳에서 동시에 부를 수 있게 되면 그때는 RPC(단일 트랜잭션)로 바꿔야 한다.
+ */
+export async function replaceMonthlyRankingsDB(month: string, rows: MonthlyRankingInsert[]) {
+  const supabase = getClient();
+
+  const { error: deleteError } = await supabase
+    .from('monthly_artist_rankings')
+    .delete()
+    .eq('vote_month', month);
+
+  if (deleteError) throw deleteError;
+
+  if (rows.length === 0) return 0;
+
+  const { error: insertError } = await supabase.from('monthly_artist_rankings').insert(rows);
+
+  if (insertError) throw insertError;
+
+  return rows.length;
+}

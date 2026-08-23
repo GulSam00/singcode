@@ -14,5 +14,8 @@
     "@types/node": "^22.13.10",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0"
   }
 }

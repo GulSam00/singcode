@@ -1,3 +1,10 @@
+/**
+ * 아티스트 투표 집계 규칙.
+ *
+ * 확정 배치(packages/crawling)와 웹이 같은 규칙을 봐야 해서 공유 패키지에 둔다 —
+ * 순위 개수나 동점 처리가 한쪽만 바뀌면 화면에 적힌 순위와 저장된 순위가 어긋난다.
+ */
+
 /** 확정 저장하는 순위 개수. monthly_artist_rankings의 rank check 제약과 같아야 한다. */
 export const TOP_RANK_LIMIT = 30;
 

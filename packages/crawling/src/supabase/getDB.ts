@@ -1,3 +1,5 @@
+import { VoteRow } from '@repo/constants';
+
 import { ArtistBackfillSongRow, ArtistImageTarget, TransSong } from '@/types';
 import { containsJapanese } from '@/utils/parseString';
 
@@ -275,4 +277,19 @@ export async function getLatestPodiumArtistNamesDB(topN: number): Promise<string
   if (error) throw error;
 
   return (data ?? []).map(row => row.artist as string);
+}
+
+/** 그달 투표 전체. 집계는 rankTopArtists(@repo/constants)가 한다. */
+export async function getArtistVotesByMonthDB(month: string): Promise<VoteRow[]> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('artist_votes')
+    .select('user_id, artist, amount, created_at')
+    .eq('vote_month', month)
+    .returns<VoteRow[]>();
+
+  if (error) throw error;
+
+  return data ?? [];
 }
