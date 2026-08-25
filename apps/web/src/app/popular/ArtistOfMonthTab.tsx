@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useArtistRankingsQuery } from '@/queries/artistVoteQuery';
 import { cn } from '@/utils/cn';
-import { getCurrentMonthFirstDayKST, getPrevMonthFirstDayKST } from '@/utils/kst';
+import { getCurrentMonthFirstDayKST } from '@/utils/kst';
 
 import ArtistRankingBoard from './ArtistRankingBoard';
 import ArtistRankingChart from './ArtistRankingChart';
@@ -21,8 +21,10 @@ const shiftMonth = (month: string, delta: number) =>
   format(startOfMonth(addMonths(parseISO(month), delta)), MONTH_FORMAT);
 
 export default function ArtistOfMonthTab() {
-  // 순위는 월말에 확정되므로 인기곡 차트와 똑같이 전월을 기본으로 본다.
-  const [month, setMonth] = useState(getPrevMonthFirstDayKST);
+  // 탭에 들어오면 바로 투표할 수 있도록 이번 달을 기본으로 본다.
+  // 인기곡 차트(전월 기본)와 다른데, 여기서는 확정된 순위를 보는 것보다 투표가 주된 행동이다.
+  // 지난 달 결과는 월 선택기의 이전 버튼으로 간다.
+  const [month, setMonth] = useState(getCurrentMonthFirstDayKST);
   // 같은 순위 데이터를 순위표로 볼지, 득표 비중 파이로 볼지 고르는 스위치
   const [view, setView] = useState<'list' | 'chart'>('list');
 
