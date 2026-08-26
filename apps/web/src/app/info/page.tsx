@@ -36,8 +36,8 @@ const menuItems = [
   },
   {
     id: 'reports',
-    title: '내 신고 내역',
-    description: '내가 신고한 곡 오류를 확인하고 삭제합니다',
+    title: '수정 요청 내역',
+    description: '내가 수정 요청한 곡을 확인하고 삭제합니다',
     icon: <Flag className="h-5 w-5" />,
   },
 ];

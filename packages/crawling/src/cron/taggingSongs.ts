@@ -1,62 +1,65 @@
-import { getSongTagSongIdsDB, getSongsAllDB } from '@/supabase/getDB';
-import { postSongTagsDB } from '@/supabase/postDB';
-import { autoTagSong, getTagsForPrompt } from '@/utils/getSongTag';
-
-const resultsLog = {
-  success: 0,
-  failed: 0,
-  skipped: 0,
-};
-
-// 1. 전체 곡 조회 + 이미 태그된 곡 ID + 태그 프롬프트 로드
-const [allSongs, taggedSongIds, tagsPrompt] = await Promise.all([
-  getSongsAllDB(),
-  getSongTagSongIdsDB(),
-  getTagsForPrompt(),
-]);
-
-console.log('전체 곡 수:', allSongs.length);
-console.log('이미 태그된 곡 수:', taggedSongIds.size);
-
-let processedCount = 0;
-for (const song of allSongs) {
-  if (processedCount >= 20000) break;
-  if (taggedSongIds.has(song.id)) {
-    resultsLog.skipped++;
-    continue;
-  }
-
-  try {
-    const tagId = await autoTagSong(song.title, song.artist, tagsPrompt);
-
-    if (tagId === null) {
-      resultsLog.failed++;
-      console.log(`[FAIL] ${song.title} - ${song.artist}: 태그 없음`);
-      continue;
-    }
-
-    const success = await postSongTagsDB(song.id, [tagId]);
-    if (success) {
-      resultsLog.success++;
-      console.log(`[OK] ${song.title} - ${song.artist}: [${tagId}]`);
-    } else {
-      resultsLog.failed++;
-    }
-  } catch (error) {
-    resultsLog.failed++;
-    console.error(`[ERROR] ${song.title} - ${song.artist}:`, error);
-  }
-
-  processedCount++;
-
-  // OpenAI rate limit 대비 딜레이
-  await new Promise(resolve => setTimeout(resolve, 200));
-}
-
-// 3. 결과 출력
-console.log(`
-  총 ${allSongs.length}곡 중:
-  - 스킵 (이미 태그됨): ${resultsLog.skipped}곡
-  - 성공: ${resultsLog.success}곡
-  - 실패: ${resultsLog.failed}곡
-`);
+// 태그 기능 비활성화로 전체 주석처리. tags/song_tags 테이블 자체는 남아있지만
+// 이 스크립트로 새로 태그를 등록하지는 않는다.
+//
+// import { getSongTagSongIdsDB, getSongsAllDB } from '@/supabase/getDB';
+// import { postSongTagsDB } from '@/supabase/postDB';
+// import { autoTagSong, getTagsForPrompt } from '@/utils/getSongTag';
+//
+// const resultsLog = {
+//   success: 0,
+//   failed: 0,
+//   skipped: 0,
+// };
+//
+// // 1. 전체 곡 조회 + 이미 태그된 곡 ID + 태그 프롬프트 로드
+// const [allSongs, taggedSongIds, tagsPrompt] = await Promise.all([
+//   getSongsAllDB(),
+//   getSongTagSongIdsDB(),
+//   getTagsForPrompt(),
+// ]);
+//
+// console.log('전체 곡 수:', allSongs.length);
+// console.log('이미 태그된 곡 수:', taggedSongIds.size);
+//
+// let processedCount = 0;
+// for (const song of allSongs) {
+//   if (processedCount >= 20000) break;
+//   if (taggedSongIds.has(song.id)) {
+//     resultsLog.skipped++;
+//     continue;
+//   }
+//
+//   try {
+//     const tagId = await autoTagSong(song.title, song.artist, tagsPrompt);
+//
+//     if (tagId === null) {
+//       resultsLog.failed++;
+//       console.log(`[FAIL] ${song.title} - ${song.artist}: 태그 없음`);
+//       continue;
+//     }
+//
+//     const success = await postSongTagsDB(song.id, [tagId]);
+//     if (success) {
+//       resultsLog.success++;
+//       console.log(`[OK] ${song.title} - ${song.artist}: [${tagId}]`);
+//     } else {
+//       resultsLog.failed++;
+//     }
+//   } catch (error) {
+//     resultsLog.failed++;
+//     console.error(`[ERROR] ${song.title} - ${song.artist}:`, error);
+//   }
+//
+//   processedCount++;
+//
+//   // OpenAI rate limit 대비 딜레이
+//   await new Promise(resolve => setTimeout(resolve, 200));
+// }
+//
+// // 3. 결과 출력
+// console.log(`
+//   총 ${allSongs.length}곡 중:
+//   - 스킵 (이미 태그됨): ${resultsLog.skipped}곡
+//   - 성공: ${resultsLog.success}곡
+//   - 실패: ${resultsLog.failed}곡
+// `);

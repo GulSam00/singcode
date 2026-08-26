@@ -10,11 +10,7 @@ import { SearchSong, SearchType } from '@/types/song';
 
 type SaveModalType = '' | 'POST' | 'PATCH';
 
-export default function useSaveSongModal(
-  query: string,
-  queryType: SearchType,
-  languageTag?: number,
-) {
+export default function useSaveSongModal(query: string, queryType: SearchType) {
   const { isAuthenticated } = useAuthStore();
   const { setFooterAnimateKey } = useFooterAnimateStore();
 
@@ -44,7 +40,7 @@ export default function useSaveSongModal(
     }
 
     setFooterAnimateKey('INFO');
-    postSong({ songId, folderName, query, searchType: queryType, languageTag });
+    postSong({ songId, folderName, query, searchType: queryType });
   };
 
   const patchSaveSong = async (songId: string, folderId: string) => {

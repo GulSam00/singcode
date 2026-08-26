@@ -21,7 +21,6 @@ import { cn } from '@/utils/cn';
 import AddFolderModal from './AddFolderModal';
 // import ChatBot from './ChatBot';
 import JpnArtistList from './JpnArtistList';
-import LanguageTagFilter from './LanguageTagFilter';
 import NumberKeypad from './NumberKeypad';
 import PopularSearchHistory from './PopularSearchHistory';
 import SearchAutocomplete from './SearchAutocomplete';
@@ -38,8 +37,6 @@ export default function SearchPage() {
     autoCompleteList,
     query,
     queryType,
-    languageTag,
-    queryLanguageTag,
 
     searchResults,
     isPendingSearch,
@@ -49,7 +46,6 @@ export default function SearchPage() {
     isError,
 
     handleSearchTypeChange,
-    handleLanguageTagChange,
     handleSearch,
     handleToggleToSing,
     handleToggleLike,
@@ -64,7 +60,7 @@ export default function SearchPage() {
     handleToggleSave,
     postSaveSong,
     patchSaveSong,
-  } = useSaveSongModal(query, queryType, queryLanguageTag);
+  } = useSaveSongModal(query, queryType);
 
   const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
   const [isFocusAuto, setIsFocusAuto] = useState(false);
@@ -187,11 +183,6 @@ export default function SearchPage() {
     if (value === 'number' || searchType === 'number') {
       setSearch('');
       setIsNumberKeypadOpen(false);
-    }
-    // 번호 검색에서는 언어 필터를 숨기는데, 값이 남아 있으면 화면에 보이지 않는 채로
-    // 결과가 걸러져 "번호가 맞는데 안 나온다"가 된다. 상태까지 비운다.
-    if (value === 'number') {
-      handleLanguageTagChange(undefined);
     }
     handleSearchTypeChange(value as SearchType);
   };
@@ -359,14 +350,6 @@ export default function SearchPage() {
             </div>
           )}
         </div>
-
-        {/* 번호 검색에는 언어 필터가 의미가 없다.
-            값이 남아 있으면 번호가 맞는데도 결과가 걸러져 원인을 알기 어렵다. */}
-        {searchType !== 'number' && (
-          <div data-tour="language-filter">
-            <LanguageTagFilter value={languageTag} onChange={handleLanguageTagChange} />
-          </div>
-        )}
       </div>
       <div ref={setScrollRef} className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {isTourDemo && (

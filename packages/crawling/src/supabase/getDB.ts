@@ -1,4 +1,6 @@
-import { TransSong } from '@/types';
+import { VoteRow } from '@repo/constants';
+
+import { ArtistBackfillSongRow, ArtistImageTarget, TransSong } from '@/types';
 import { containsJapanese } from '@/utils/parseString';
 
 import { getClient } from './getClient';
@@ -152,6 +154,28 @@ export async function getArtistKoMapDB(): Promise<Map<string, string>> {
   return map;
 }
 
+// 아티스트 백필용 조회. sinceIso가 있으면 그 시각 이후 등록되었거나 수정된 곡만
+// (월간 증분 갱신 — updated_at도 봐야 기존 곡의 artist 오타 수정 같은 걸 놓치지 않는다),
+// 없으면 전체 곡을 대상으로 한다(최초 백필).
+export async function getSongsForArtistBackfillDB(
+  sinceIso?: string,
+): Promise<ArtistBackfillSongRow[]> {
+  const supabase = getClient();
+
+  let query = supabase.from('songs').select('artist, artist_ko').limit(200000);
+
+  if (sinceIso) {
+    // sinceIso는 서버가 계산한 값이라 사용자 입력이 섞이지 않는다 — or() 필터 문자열 조립이 안전하다.
+    query = query.or(`created_at.gte.${sinceIso},updated_at.gte.${sinceIso}`);
+  }
+
+  const { data, error } = await query;
+
+  if (error) throw error;
+
+  return data as ArtistBackfillSongRow[];
+}
+
 export async function getSongTagSongIdsDB(): Promise<Set<string>> {
   const supabase = getClient();
 
@@ -186,4 +210,86 @@ export async function getSongsBadgeNullDB(limit: number = 1000, afterNumTj?: str
   if (error) throw error;
 
   return data;
+}
+
+/**
+ * 사진이 아직 비어 있는 아티스트를 이름순으로 가져온다.
+ * 이름순인 이유는 여러 번 나눠 돌려도 매번 같은 자리에서 이어지게 하기 위함이다.
+ */
+export async function getArtistsWithoutImageDB(limit: number): Promise<ArtistImageTarget[]> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('artists')
+    .select('name, name_ko')
+    .is('image_url', null)
+    .order('name', { ascending: true })
+    .limit(limit);
+
+  if (error) throw error;
+
+  return data as ArtistImageTarget[];
+}
+
+/**
+ * 이름을 콕 집어 가져온다. 사진 백필을 특정 아티스트로 시험해 볼 때 쓴다.
+ * 이름순 조회는 한 글자 이름("건", "결"…)부터 걸려서 표본으로 삼기에 나쁘다.
+ */
+export async function getArtistsByNamesDB(names: string[]): Promise<ArtistImageTarget[]> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('artists')
+    .select('name, name_ko')
+    .in('name', names)
+    .is('image_url', null);
+
+  if (error) throw error;
+
+  return data as ArtistImageTarget[];
+}
+
+/**
+ * 가장 최근에 확정된 달의 상위 N명 이름을 가져온다.
+ * 사진이 실제로 쓰이는 자리가 시상대(1~3위)뿐이라, 월간 확정 직후 그 이름만 채우면 된다.
+ */
+export async function getLatestPodiumArtistNamesDB(topN: number): Promise<string[]> {
+  const supabase = getClient();
+
+  const { data: latest, error: latestError } = await supabase
+    .from('monthly_artist_rankings')
+    .select('vote_month')
+    .order('vote_month', { ascending: false })
+    .limit(1);
+
+  if (latestError) throw latestError;
+
+  const month = latest?.[0]?.vote_month as string | undefined;
+  if (!month) return [];
+
+  const { data, error } = await supabase
+    .from('monthly_artist_rankings')
+    .select('artist')
+    .eq('vote_month', month)
+    .lte('rank', topN)
+    .order('rank', { ascending: true });
+
+  if (error) throw error;
+
+  return (data ?? []).map(row => row.artist as string);
+}
+
+/** 그달 투표 전체. 집계는 rankTopArtists(@repo/constants)가 한다. */
+export async function getArtistVotesByMonthDB(month: string): Promise<VoteRow[]> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from('artist_votes')
+    .select('user_id, artist, amount, created_at')
+    .eq('vote_month', month)
+    .returns<VoteRow[]>();
+
+  if (error) throw error;
+
+  return data ?? [];
 }

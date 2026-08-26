@@ -1,4 +1,4 @@
-import { LogData, Song, TjChartRankingInsert } from '@/types';
+import { ArtistUpsert, LogData, Song, TjChartRankingInsert } from '@/types';
 
 import { getClient } from './getClient';
 
@@ -108,6 +108,25 @@ export async function postTjChartRankingsDB(rows: TjChartRankingInsert[]) {
   return true;
 }
 
+export async function upsertArtistsDB(rows: ArtistUpsert[], chunkSize: number = 500) {
+  const supabase = getClient();
+
+  let upserted = 0;
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    const chunk = rows.slice(i, i + chunkSize);
+
+    const { error } = await supabase.from('artists').upsert(chunk, { onConflict: 'name' });
+
+    if (error) {
+      console.error('upsertArtistsDB error:', error);
+      continue;
+    }
+    upserted += chunk.length;
+  }
+
+  return { upserted, failed: rows.length - upserted };
+}
+
 export async function postInvalidKYSongsDB(song: Song) {
   const supabase = getClient();
 
@@ -125,4 +144,59 @@ export async function postInvalidKYSongsDB(song: Song) {
     console.error('catch - postInvalidKYSongsDB error : ', error);
     return error;
   }
+}
+
+/**
+ * 아티스트 사진 URL을 채운다.
+ * 이미 채워진 행은 건드리지 않는다 — 손으로 골라 넣은 사진을 자동 백필이 덮어쓰면 안 된다.
+ */
+export async function updateArtistImageDB(name: string, imageUrl: string) {
+  const supabase = getClient();
+
+  const { error } = await supabase
+    .from('artists')
+    .update({ image_url: imageUrl })
+    .eq('name', name)
+    .is('image_url', null);
+
+  if (error) {
+    console.error('updateArtistImageDB error:', name, error);
+    return false;
+  }
+  return true;
+}
+
+export interface MonthlyRankingInsert {
+  vote_month: string;
+  rank: number;
+  artist: string;
+  total_votes: number;
+  top_voter_user_id: string;
+  top_voter_amount: number;
+}
+
+/**
+ * 그달 순위를 통째로 갈아끼운다.
+ *
+ * 지우고 넣는 사이에 트랜잭션이 없어 그 틈에 조회하면 결과가 비어 보인다.
+ * 이 스크립트가 하루 한 번, 단일 워크플로에서만 도는 전제라 그 틈을 감수한다 —
+ * 여러 곳에서 동시에 부를 수 있게 되면 그때는 RPC(단일 트랜잭션)로 바꿔야 한다.
+ */
+export async function replaceMonthlyRankingsDB(month: string, rows: MonthlyRankingInsert[]) {
+  const supabase = getClient();
+
+  const { error: deleteError } = await supabase
+    .from('monthly_artist_rankings')
+    .delete()
+    .eq('vote_month', month);
+
+  if (deleteError) throw deleteError;
+
+  if (rows.length === 0) return 0;
+
+  const { error: insertError } = await supabase.from('monthly_artist_rankings').insert(rows);
+
+  if (insertError) throw insertError;
+
+  return rows.length;
 }

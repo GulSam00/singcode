@@ -103,3 +103,19 @@ export interface TjChartRankingInsert {
   rank: number;
   song_id: string;
 }
+
+export interface ArtistBackfillSongRow {
+  artist: string;
+  artist_ko: string | null;
+}
+
+/** 사진을 아직 못 채운 아티스트. 이미지 백필의 대상이다. */
+export interface ArtistImageTarget {
+  name: string;
+  name_ko: string | null;
+}
+
+export interface ArtistUpsert {
+  name: string;
+  name_ko: string | null;
+}

@@ -1,5 +1,10 @@
+'use client';
+
+import { getPrimaryArtistName } from '@repo/constants';
+
 import MarqueeText from '@/components/MarqueeText';
 import SongBadges from '@/components/SongBadges';
+import { useCurrentArtistOfMonthQuery } from '@/queries/artistVoteQuery';
 import { Song } from '@/types/song';
 import { cn } from '@/utils/cn';
 
@@ -26,6 +31,12 @@ export default function SongSummary({ song, className }: SongSummaryProps) {
   const hasKoTitle = !!title_ko && title_ko !== title;
   const hasKoArtist = !!artist_ko && artist_ko !== artist;
 
+  // songs.artist는 "IU(Feat.최백호)"처럼 원문 그대로라, artists 마스터에 등록된 정규화된
+  // 이름과 곧이곧대로 비교하면 우승 아티스트의 피처링·듀엣 곡에 배지가 빠진다.
+  // 맨 앞에 적힌 주 아티스트만 뽑아 비교한다.
+  const { data: artistOfMonth } = useCurrentArtistOfMonthQuery();
+  const isArtistOfMonth = !!artistOfMonth && artistOfMonth.artist === getPrimaryArtistName(artist);
+
   return (
     <div className={cn('flex w-full items-start justify-between gap-3', className)}>
       {/* min-w-0가 없으면 MarqueeText가 부모를 밀어내 번호 영역이 잘린다 */}
@@ -40,6 +51,13 @@ export default function SongSummary({ song, className }: SongSummaryProps) {
         <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
         {hasKoArtist && (
           <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+        )}
+        {isArtistOfMonth && (
+          <span className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400">
+            {/* month는 'YYYY-MM-DD'(매월 1일)라 앞 7자리만 잘라 쓴다.
+                "이달"이 언제인지는 곡 카드만 보면 알 수 없어 선정된 달을 함께 적는다. */}
+            🏆 {artistOfMonth.month.slice(0, 7)} 이달의 아티스트
+          </span>
         )}
       </div>
 

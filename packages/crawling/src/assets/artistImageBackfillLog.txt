@@ -1,0 +1,56 @@
+
+===== 아티스트 이미지 백필(Deezer) 실행: 2026-08-23T09:44:07.541Z =====
+대상 10명 (DRY RUN — DB에 쓰지 않음)
+사진이 비어 있는 아티스트: 10명
+[없음] 건 — 사진 있는 동일 이름 없음 · 후보: GuNN | 건희
+[없음] 결 — 사진 있는 동일 이름 없음 · 후보: KYUL
+[없음] 겸 — 사진 있는 동일 이름 없음 · 후보: GYE0M
+[없음] 길 — 사진 있는 동일 이름 없음 · 후보: Gill
+[없음] 넬 — 사진 있는 동일 이름 없음 · 후보: Nell
+[없음] 뉴 — 사진 있는 동일 이름 없음 · 후보: NEW (THE BOYZ) | New | NU'EST | 뉴이스트 W | 뉴 크리에이션 워십 New Creation Worship | 뉴제너레이션워십 New Generation Worship
+[없음] 던 — 사진 있는 동일 이름 없음 · 후보: Dawn | DAWN 던
+[없음] 딘 — 사진 있는 동일 이름 없음 · 후보: Dean | Dean
+[없음] 란 — 사진 있는 동일 이름 없음 · 후보: Ran | Ran | Ran | Ran
+[없음] 렌 — 사진 있는 동일 이름 없음 · 후보: LEN | REN | LEN | ReN | REN
+결과 — 채움: 0명, 사진 못 찾음: 10명, 실패: 0명
+
+===== 아티스트 이미지 백필(Deezer) 실행: 2026-08-23T09:45:14.973Z =====
+대상 지정 15명 (DRY RUN — DB에 쓰지 않음)
+사진이 비어 있는 아티스트: 10명
+[없음] 싸이 — 사진 있는 동일 이름 없음 · 후보: 싸이 (PSY) | Psy | Psy | Simons | Ciipher | xikers (싸이커스) | Sizer
+[찾음] 태연 → 태연 (팬 66) https://cdn-images.dzcdn.net/images/artist/0c3af2f07d2afe670691d72742bcbcf9/1000x1000-000000-80-0-0.jpg
+[찾음] 폴킴 → 폴킴 (팬 17) https://cdn-images.dzcdn.net/images/artist/06b09294f5a59e641c69ce6928a68b4b/1000x1000-000000-80-0-0.jpg
+[없음] 임영웅 — 사진 있는 동일 이름 없음 · 후보: Lim Young Woong | LIM YOUNG MIN | Lim Youngwoong | im young woong
+[찾음] 잔나비 → 잔나비 (팬 21) https://cdn-images.dzcdn.net/images/artist/21a64bdc3fd7a2f3bb7f7b625520c3da/1000x1000-000000-80-0-0.jpg
+[없음] 방탄소년단 — 사진 있는 동일 이름 없음 · 후보: BTS | Supreme Boi
+[없음] 볼빨간사춘기 — 사진 있는 동일 이름 없음 · 후보: BOL4
+[찾음] IU → IU (팬 305837) https://cdn-images.dzcdn.net/images/artist/c619e4cef93d6fa98a38018d92106bb6/1000x1000-000000-80-0-0.jpg
+[찾음] YOASOBI → YOASOBI (팬 126490) https://cdn-images.dzcdn.net/images/artist/2cbfaf626a591e162bfcc2b4b0214217/1000x1000-000000-80-0-0.jpg
+[없음] 米津玄師 — 사진 있는 동일 이름 없음 · 후보: 결과 없음
+결과 — 채움: 0명, 사진 못 찾음: 5명, 실패: 0명
+
+===== 아티스트 이미지 백필(Deezer) 실행: 2026-08-23T09:48:01.729Z =====
+대상 지정 5명
+사진이 비어 있는 아티스트: 5명
+[찾음] 태연 → 태연 (팬 66) https://cdn-images.dzcdn.net/images/artist/0c3af2f07d2afe670691d72742bcbcf9/1000x1000-000000-80-0-0.jpg
+[찾음] 폴킴 → 폴킴 (팬 17) https://cdn-images.dzcdn.net/images/artist/06b09294f5a59e641c69ce6928a68b4b/1000x1000-000000-80-0-0.jpg
+[찾음] 잔나비 → 잔나비 (팬 21) https://cdn-images.dzcdn.net/images/artist/21a64bdc3fd7a2f3bb7f7b625520c3da/1000x1000-000000-80-0-0.jpg
+[찾음] IU → IU (팬 305837) https://cdn-images.dzcdn.net/images/artist/c619e4cef93d6fa98a38018d92106bb6/1000x1000-000000-80-0-0.jpg
+[찾음] YOASOBI → YOASOBI (팬 126490) https://cdn-images.dzcdn.net/images/artist/2cbfaf626a591e162bfcc2b4b0214217/1000x1000-000000-80-0-0.jpg
+결과 — 채움: 5명, 사진 못 찾음: 0명, 실패: 0명
+
+===== 아티스트 이미지 백필(Deezer) 실행: 2026-08-23T09:57:32.741Z =====
+대상 지정 10명 (DRY RUN — DB에 쓰지 않음)
+사진이 비어 있는 아티스트: 5명
+[찾음] 싸이 → Psy (팬 893608) https://cdn-images.dzcdn.net/images/artist/fff83cade2015634a283e3c955871162/1000x1000-000000-80-0-0.jpg
+[찾음] 임영웅 → Lim Young Woong (팬 829) https://cdn-images.dzcdn.net/images/artist/243dd9e39fd2c303b8da825197ded197/1000x1000-000000-80-0-0.jpg
+[찾음] 방탄소년단 → BTS (팬 3850357) https://cdn-images.dzcdn.net/images/artist/b5c64fa8216ca158e52b4d88bd9388ff/1000x1000-000000-80-0-0.jpg
+[찾음] 볼빨간사춘기 → BOL4 (팬 16648) https://cdn-images.dzcdn.net/images/artist/b4b21c7205dc80813c88a742e82e9154/1000x1000-000000-80-0-0.jpg
+[찾음] 米津玄師 → Kenshi Yonezu (팬 67445) https://cdn-images.dzcdn.net/images/artist/29288251d9b8a8bd9c8497fb7b4fbcec/1000x1000-000000-80-0-0.jpg
+결과 — 채움: 0명, 사진 못 찾음: 0명, 실패: 0명
+
+===== 아티스트 이미지 백필(Deezer) 실행: 2026-08-23T10:04:25.158Z =====
+대상 시상대 3명 (DRY RUN — DB에 쓰지 않음)
+최근 확정 월 상위 3명: 없음
+사진이 비어 있는 아티스트: 0명
+결과 — 채움: 0명, 사진 못 찾음: 0명, 실패: 0명
