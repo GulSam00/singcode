@@ -30,7 +30,7 @@ export default function MyReportsPage() {
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-2xl font-bold">내 신고 내역</h1>
+        <h1 className="text-2xl font-bold">수정 요청 내역</h1>
       </div>
 
       <div className="flex h-[48px] items-center justify-between p-2">

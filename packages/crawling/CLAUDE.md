@@ -19,6 +19,9 @@ pnpm tj-badges         # TJ 반주 버전 뱃지(MV/MR/LV/60) 수집 (badges가 
 pnpm remove-dead-songs # TJ에서 사라진 번호의 곡 정리 (기본 미리보기, DEAD_SONGS_APPLY=true로 실행)
 pnpm tj-chart          # TJ 공식 차트(TOP100) 전월분 수집
 pnpm tj-chart-backfill # TJ 공식 차트 과거 월 일괄 백필 (기간은 스크립트 상수로 지정)
+pnpm backfill-artists  # songs.artist에서 artists 마스터 테이블 백필
+pnpm backfill-artist-images # artists.image_url을 Deezer 공개 API로 채움 (키 불필요)
+pnpm finalize-artist   # 이달의 아티스트 월간 확정 (지난달 투표 집계 → 순위 저장)
 pnpm tag-songs         # AI 기반 곡 자동 태깅
 pnpm trans-jpn         # J-POP 곡 제목/아티스트 한국어 번역
 pnpm test              # vitest 실행
@@ -99,14 +102,15 @@ findKYByOpen.ts
 
 ### Supabase 테이블
 
-| 테이블             | 용도                             |
-| ------------------ | -------------------------------- |
-| `songs`            | 메인 곡 데이터 (TJ/KY 번호 포함) |
-| `invalid_ky_songs` | KY 번호 수집 실패 목록           |
-| `tags`             | 태그 마스터 (id, name, category) |
-| `song_tags`        | 곡-태그 매핑 (song_id, tag_id)   |
-| `verify_ky_songs`  | KY 번호 검증 완료 목록           |
-| `chart_rankings`   | TJ 공식 차트 월별/장르별 순위    |
+| 테이블             | 용도                                       |
+| ------------------ | ------------------------------------------ |
+| `songs`            | 메인 곡 데이터 (TJ/KY 번호 포함)           |
+| `invalid_ky_songs` | KY 번호 수집 실패 목록                     |
+| `tags`             | 태그 마스터 (id, name, category)           |
+| `song_tags`        | 곡-태그 매핑 (song_id, tag_id)             |
+| `verify_ky_songs`  | KY 번호 검증 완료 목록                     |
+| `chart_rankings`   | TJ 공식 차트 월별/장르별 순위              |
+| `artists`          | 아티스트 마스터 (name, name_ko, image_url) |
 
 ### AI 유틸
 
@@ -176,14 +180,15 @@ crawlTjBadges.ts (pnpm tj-badges)
 
 ### GitHub Actions 워크플로우
 
-| 워크플로우 파일           | 스케줄 (UTC)      | 실행 스크립트        |
-| ------------------------- | ----------------- | -------------------- |
-| `crawl_recent_tj.yml`     | 매일 14:00        | `pnpm recent-tj`     |
-| `crawl_tj_chart.yml`      | 매달 1일 01:00    | `pnpm tj-chart`      |
-| `tagging_song.yml`        | 매일 07:00        | `pnpm tag-songs`     |
-| `translation_jpn.yml`     | 매일 10:00        | `pnpm trans-jpn`     |
-| `update_ky_youtube.yml`   | 매일 14:00        | `pnpm ky-youtube`    |
-| `verify_ky_youtube.yml`   | 매주 월요일 14:00 | `pnpm ky-verify`     |
-| `crawl_tj_all_number.yml` | 수동 전용         | `pnpm tj-all-number` |
+| 워크플로우 파일                | 스케줄 (UTC)      | 실행 스크립트                                          |
+| ------------------------------ | ----------------- | ------------------------------------------------------ |
+| `crawl_recent_tj.yml`          | 매일 14:00        | `pnpm recent-tj`                                       |
+| `crawl_tj_chart.yml`           | 매달 1일 01:00    | `pnpm tj-chart`                                        |
+| `tagging_song.yml`             | 매일 07:00        | `pnpm tag-songs`                                       |
+| `translation_jpn.yml`          | 매일 10:00        | `pnpm trans-jpn`                                       |
+| `update_ky_youtube.yml`        | 매일 14:00        | `pnpm ky-youtube`                                      |
+| `verify_ky_youtube.yml`        | 매주 월요일 14:00 | `pnpm ky-verify`                                       |
+| `crawl_tj_all_number.yml`      | 수동 전용         | `pnpm tj-all-number`                                   |
+| `finalize_artist_of_month.yml` | 매일 15:10        | `pnpm finalize-artist` + `pnpm backfill-artist-images` |
 
 `crawl_tj_all_number.yml`을 제외한 모든 워크플로우는 스케줄 + `workflow_dispatch`(수동) 양쪽으로 실행 가능하다. `crawl_tj_all_number.yml`은 번호 구간을 `matrix`로 병렬 분할해 수동으로만 실행한다.
