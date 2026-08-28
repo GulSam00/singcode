@@ -44,6 +44,7 @@ Supabase를 활용한 자체 DB를 통해 금영, TJ 노래방의 번호를 한 
 sing-code/
 ├── apps/                   # 실제 서비스 앱이 위치하는 디렉토리
 │   └── web/                # 웹 애플리케이션 (Next.js)
+│   └── twa/                # bubblewrap을 활용해 PWA 사이트를 WebView 로 감싼 Android App 번들링
 ├── packages/               # 앱에서 공통으로 사용하는 패키지 모음
 │   ├── crawling/           # DB에 입력 데이터 크롤링 패키지
 │   ├── open-api/           # 노래방 번호 제공하는 OPEN API 모듈 패키지 (국내 곡 한정)
