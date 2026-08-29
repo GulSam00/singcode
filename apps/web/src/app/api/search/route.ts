@@ -6,11 +6,6 @@ import { SearchSong, Song } from '@/types/song';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 
 interface DBSong extends Song {
-  thumb_logs:
-    | {
-        thumb_count: number;
-      }[]
-    | null;
   tosings: {
     user_id: string;
   }[];
@@ -235,8 +230,8 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
     const supabase = await createClient();
 
     const selectClause = authenticated
-      ? `*, thumb_logs(*), tosings(user_id), like_activities(user_id), save_activities(user_id)`
-      : `*, thumb_logs(*)`;
+      ? `*, tosings(user_id), like_activities(user_id), save_activities(user_id)`
+      : `*`;
 
     const result = await executeSearchQueries(supabase, selectClause, query, type, order, from, to);
 
@@ -273,7 +268,6 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Se
       isSave: authenticated
         ? (song.save_activities?.some(save => save.user_id === userId) ?? false)
         : false,
-      thumb: song.thumb_logs?.reduce((sum, log) => sum + log.thumb_count, 0) ?? 0,
     }));
 
     return NextResponse.json({
