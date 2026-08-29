@@ -22,11 +22,6 @@ async function deleteByIds(table: string, column: string, ids: string[]) {
   return { deleted, failed: 0 };
 }
 
-/** song_tags는 songs를 참조하므로 곡보다 먼저 지워야 한다. */
-export async function deleteSongTagsBySongIdsDB(songIds: string[]) {
-  return deleteByIds('song_tags', 'song_id', songIds);
-}
-
 // invalid_ky_songs / verify_ky_songs는 별도 song_id 컬럼 없이
 // PK인 id가 곧 songs.id를 참조한다 (FK: invalid_ky_song_id_fkey).
 export async function deleteKyLogsBySongIdsDB(songIds: string[]) {

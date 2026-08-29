@@ -116,44 +116,6 @@ export async function getSongsAllWithTjDB(max: number = 100000) {
   return data;
 }
 
-export async function getJpopSongsForTranslationDB() {
-  const supabase = getClient();
-
-  const { data, error } = await supabase
-    .from('songs')
-    .select('id, title, artist, title_ko, artist_ko, song_tags!inner(tag_id)')
-    .eq('song_tags.tag_id', 101)
-    .limit(100000);
-
-  if (error) throw error;
-
-  return data;
-}
-
-// J-POP 곡 중 이미 번역된 artist → artist_ko 맵
-// DB 는 아티스트당 단일 artist_ko 로 정규화되어 있으므로 먼저 만난 값을 사용
-export async function getArtistKoMapDB(): Promise<Map<string, string>> {
-  const supabase = getClient();
-
-  const { data, error } = await supabase
-    .from('songs')
-    .select('artist, artist_ko, song_tags!inner(tag_id)')
-    .eq('song_tags.tag_id', 101)
-    .not('artist_ko', 'is', null)
-    .limit(100000);
-
-  if (error) throw error;
-
-  const map = new Map<string, string>();
-  for (const row of data) {
-    if (!row.artist || !row.artist_ko) continue;
-    if (!map.has(row.artist)) {
-      map.set(row.artist, row.artist_ko);
-    }
-  }
-  return map;
-}
-
 // 아티스트 백필용 조회. sinceIso가 있으면 그 시각 이후 등록되었거나 수정된 곡만
 // (월간 증분 갱신 — updated_at도 봐야 기존 곡의 artist 오타 수정 같은 걸 놓치지 않는다),
 // 없으면 전체 곡을 대상으로 한다(최초 백필).
@@ -174,16 +136,6 @@ export async function getSongsForArtistBackfillDB(
   if (error) throw error;
 
   return data as ArtistBackfillSongRow[];
-}
-
-export async function getSongTagSongIdsDB(): Promise<Set<string>> {
-  const supabase = getClient();
-
-  const { data, error } = await supabase.from('song_tags').select('song_id').limit(100000);
-
-  if (error) throw error;
-
-  return new Set(data.map(row => row.song_id));
 }
 
 // 뱃지를 아직 수집하지 않은 곡을 청크 단위로 조회한다.
