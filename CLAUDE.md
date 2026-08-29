@@ -158,9 +158,13 @@ chore : 버전 2.3.0 (#61)
 Vercel의 `SUPABASE_SERVICE_ROLE_KEY`가 모두 없어졌다. **확정 로직을 웹으로 되돌리지 말 것** —
 공개 엔드포인트가 다시 생긴다.
 
-### 태그 기능 제거 (완료 — 참고용)
+### 태그·추천(thumb) 기능 제거 (완료 — 참고용)
 
-검색 언어 태그 필터가 오작동해 관련 코드를 전부 걷어냈다: 프론트(`LanguageTagFilter.tsx` 등)와 `api/search`의 `song_tags` 조인, `artists.language_tag_id` 참조(추후 대시보드에서 컬럼 수동 삭제 예정)를 제거했고, `packages/crawling`의 `taggingSongs.ts`/`translationJpn.ts`는 삭제 대신 전체 주석처리했다. `tagging_song.yml`/`translation_jpn.yml`은 `schedule` 트리거만 비활성화(주석)했고 `workflow_dispatch`로 수동 실행은 여전히 가능하다. `tags`/`song_tags` 테이블 자체는 DB에 남아있지만 앱은 더 이상 참조하지 않는다.
+**태그** — 검색 언어 태그 필터가 오작동해 관련 코드를 전부 걷어냈다. 1차로 프론트(`LanguageTagFilter.tsx` 등)와 `api/search`의 `song_tags` 조인, `artists.language_tag_id` 참조를 제거하고 배치 스크립트는 주석처리만 해뒀다가, 2차로 주석 잔재까지 삭제했다: `taggingSongs.ts`/`translationJpn.ts`와 전용 유틸(`getSongTag.ts`, `getSongFullTag.ts`, `translateJpnToKo.ts`), DB 헬퍼(`postSongTagsDB`, `deleteSongTagsBySongIdsDB`, `getSongTagSongIdsDB`, `getJpopSongsForTranslationDB`, `getArtistKoMapDB`), `tag-songs`/`trans-jpn` 스크립트, `tagging_song.yml`/`translation_jpn.yml` 워크플로.
+
+**추천(thumb)** — `#295`에서 검색 화면의 추천 진입점이 사라진 뒤 `ThumbUpModal`이 아무 데서도 import되지 않는 고아 컴포넌트로 남아 있었다. 화면 로직은 이미 없었지만 `api/search`가 여전히 `thumb_logs(*)`를 select 절에 조인하고 있어, 테이블만 지우면 검색 전체가 `PGRST200`으로 깨지는 상태였다. 조인·모달·훅·API 라우트(`/api/songs/thumb-up`)·타입(`Song.thumb`, `ThumbUpSong`)을 모두 제거했다.
+
+**남은 일** — 코드에는 참조가 없으니 Supabase 대시보드에서 `tags` · `song_tags` · `thumb_logs` 테이블과 `artists.language_tag_id` 컬럼을 수동 삭제하면 된다. `thumb_logs` 드롭은 **위 `api/search` 수정이 배포된 뒤에** 해야 한다.
 
 ## Self-Maintenance
 
