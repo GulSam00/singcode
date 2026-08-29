@@ -136,6 +136,9 @@ export default function SearchTour({
       zIndex: 10000,
       showProgress: true,
       buttons: TOOLTIP_BUTTONS,
+      // 라이브러리 기본값 'close'는 continuous 모드에서 X를 눌러도 다음 단계로 넘어갈 뿐 투어가 끝나지 않는다.
+      // 'skip'이어야 상태가 SKIPPED가 되어 투어가 종료되고 '다시 보지 않기'까지 저장된다.
+      closeButtonAction: 'skip' as const,
       skipBeacon: true,
       // 라이브러리 기본값(고정 380px)은 375px 이하 모바일 화면에서 좌우로 넘친다.
       // 뷰포트보다 넓어지지 않되, 넓은 화면에서는 기존 380px 상한을 유지한다.
