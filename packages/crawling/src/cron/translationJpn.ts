@@ -14,8 +14,9 @@ import { translateJpnToKo } from '@/utils/translateJpnToKo';
  *
  *   1) 한글이 있으면 한국곡 — 태그 배치(autoTagSong)가 쓰던 첫 규칙 그대로다.
  *   2) 가나가 있으면 일본곡 — 확정 신호.
- *   3) 가나가 없으면 이미 번역된 아티스트인지 본다. 米津玄師처럼 한자뿐인 이름이
- *      여기서 걸린다. 모르는 아티스트면 건드리지 않는다.
+ *   3) 가나가 없으면 아는 일본 아티스트인지 본다 — artistAlias(수동 사전)에 있거나
+ *      이미 번역된 곡이 있는 아티스트. 米津玄師처럼 한자뿐인 이름이 여기서 걸린다.
+ *      둘 다 아니면 건드리지 않는다.
  *
  * 3단계를 넘기지 않는 게 핵심이다. 한자 범위에는 중국어가 함께 들어와서
  * (刘德华·费玉清 같은 이름이 후보의 대부분이다) 일본어 번역 프롬프트에 그대로 넣으면
@@ -69,9 +70,12 @@ for (const song of songs) {
     continue;
   }
 
-  // 가나도 없고 번역 이력도 없는 아티스트면 일본곡이라는 근거가 없다 — 중국곡일 가능성이 높다
+  // 가나가 없으면 일본곡이라는 근거를 아티스트에서 찾는다. 근거가 없으면 중국곡일 가능성이 높다.
+  // artistAlias 를 함께 보는 이유: 사람이 직접 고른 J-POP 전용 사전이라 번역 이력보다 강한 신호다.
+  // 사전에 새 아티스트를 넣고도 이름이 한자뿐이라 안 잡히는 일이 없어야 한다.
   const knownArtistKo = dbArtistKoMap.get(song.artist);
-  if (!KANA_REGEX.test(titleAndArtist) && !knownArtistKo) {
+  const isKnownJpArtist = Boolean(knownArtistKo) || artistAliasMap.has(song.artist);
+  if (!KANA_REGEX.test(titleAndArtist) && !isKnownJpArtist) {
     resultsLog.skippedUnknownLang++;
     continue;
   }
@@ -136,7 +140,7 @@ for (const song of songs) {
 console.log(`
   후보 ${songs.length}곡 중:
   - 스킵 (한글 포함 — 한국곡): ${resultsLog.skippedKorean}곡
-  - 스킵 (가나 없음 + 번역 이력 없는 아티스트): ${resultsLog.skippedUnknownLang}곡
+  - 스킵 (가나 없음 + 모르는 아티스트): ${resultsLog.skippedUnknownLang}곡
   - 성공 (AI 번역): ${resultsLog.success}곡
   - 성공 (artist_ko alias 적용): ${resultsLog.usedAlias}곡
   - 성공 (artist_ko DB 재사용): ${resultsLog.usedDbArtist}곡
