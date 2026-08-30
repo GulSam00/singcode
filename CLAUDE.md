@@ -160,7 +160,9 @@ Vercel의 `SUPABASE_SERVICE_ROLE_KEY`가 모두 없어졌다. **확정 로직을
 
 ### 태그·추천(thumb) 기능 제거 (완료 — 참고용)
 
-**태그** — 검색 언어 태그 필터가 오작동해 관련 코드를 전부 걷어냈다. 1차로 프론트(`LanguageTagFilter.tsx` 등)와 `api/search`의 `song_tags` 조인, `artists.language_tag_id` 참조를 제거하고 배치 스크립트는 주석처리만 해뒀다가, 2차로 주석 잔재까지 삭제했다: `taggingSongs.ts`/`translationJpn.ts`와 전용 유틸(`getSongTag.ts`, `getSongFullTag.ts`, `translateJpnToKo.ts`), DB 헬퍼(`postSongTagsDB`, `deleteSongTagsBySongIdsDB`, `getSongTagSongIdsDB`, `getJpopSongsForTranslationDB`, `getArtistKoMapDB`), `tag-songs`/`trans-jpn` 스크립트, `tagging_song.yml`/`translation_jpn.yml` 워크플로.
+**태그** — 검색 언어 태그 필터가 오작동해 관련 코드를 전부 걷어냈다. 1차로 프론트(`LanguageTagFilter.tsx` 등)와 `api/search`의 `song_tags` 조인, `artists.language_tag_id` 참조를 제거하고 배치 스크립트는 주석처리만 해뒀다가, 2차로 주석 잔재까지 삭제했다: `taggingSongs.ts`와 전용 유틸(`getSongTag.ts`, `getSongFullTag.ts`), DB 헬퍼(`postSongTagsDB`, `deleteSongTagsBySongIdsDB`, `getSongTagSongIdsDB`), `tag-songs` 스크립트, `tagging_song.yml` 워크플로.
+
+**일본곡 번역은 유지한다** — 태그를 걷어낼 때 `translationJpn.ts`도 같이 지웠다가 복구했다. `title_ko`·`artist_ko`는 검색이 함께 훑는 컬럼이라("요네즈 켄시"로 米津玄師가 잡히는 이유) 신규 유입곡에 계속 채워져야 한다. 대상 선정만 바뀌었다: `song_tags.tag_id=101` 조인 대신 **미번역(`title_ko is null`) + 가나·한자 포함**을 PostgREST `match`(정규식) 연산자로 서버에서 거르고, 일본곡 판별은 스크립트가 한 번 더 한다 — ① 한글 있으면 한국곡 스킵 ② 가나 있으면 일본곡 ③ 가나가 없으면 이미 번역된 아티스트일 때만(米津玄師처럼 한자뿐인 이름) 번역. ③을 넘기면 안 된다. 한자 범위에 중국곡이 함께 걸려(후보 2,312곡 중 2,120곡이 刘德华·费玉清류다) 일본어 프롬프트에 넣으면 엉뚱한 표기가 DB에 박힌다.
 
 **추천(thumb)** — `#295`에서 검색 화면의 추천 진입점이 사라진 뒤 `ThumbUpModal`이 아무 데서도 import되지 않는 고아 컴포넌트로 남아 있었다. 화면 로직은 이미 없었지만 `api/search`가 여전히 `thumb_logs(*)`를 select 절에 조인하고 있어, 테이블만 지우면 검색 전체가 `PGRST200`으로 깨지는 상태였다. 조인·모달·훅·API 라우트(`/api/songs/thumb-up`)·타입(`Song.thumb`, `ThumbUpSong`)을 모두 제거했다.
 

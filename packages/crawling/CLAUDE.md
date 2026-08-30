@@ -22,8 +22,7 @@ pnpm tj-chart-backfill # TJ 공식 차트 과거 월 일괄 백필 (기간은 �
 pnpm backfill-artists  # songs.artist에서 artists 마스터 테이블 백필
 pnpm backfill-artist-images # artists.image_url을 Deezer 공개 API로 채움 (키 불필요)
 pnpm finalize-artist   # 이달의 아티스트 월간 확정 (지난달 투표 집계 → 순위 저장)
-pnpm tag-songs         # AI 기반 곡 자동 태깅
-pnpm trans-jpn         # J-POP 곡 제목/아티스트 한국어 번역
+pnpm trans-jpn         # 일본곡 제목/아티스트 한국어 번역 (TRANS_JPN_DRY_RUN=1로 미리보기)
 pnpm test              # vitest 실행
 pnpm lint              # ESLint
 pnpm format            # Prettier 포맷
