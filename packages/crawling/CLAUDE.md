@@ -22,8 +22,7 @@ pnpm tj-chart-backfill # TJ 공식 차트 과거 월 일괄 백필 (기간은 �
 pnpm backfill-artists  # songs.artist에서 artists 마스터 테이블 백필
 pnpm backfill-artist-images # artists.image_url을 Deezer 공개 API로 채움 (키 불필요)
 pnpm finalize-artist   # 이달의 아티스트 월간 확정 (지난달 투표 집계 → 순위 저장)
-pnpm tag-songs         # AI 기반 곡 자동 태깅
-pnpm trans-jpn         # J-POP 곡 제목/아티스트 한국어 번역
+pnpm trans-jpn         # 일본곡 제목/아티스트 한국어 번역 (TRANS_JPN_DRY_RUN=1로 미리보기)
 pnpm test              # vitest 실행
 pnpm lint              # ESLint
 pnpm format            # Prettier 포맷
@@ -106,8 +105,6 @@ findKYByOpen.ts
 | ------------------ | ------------------------------------------ |
 | `songs`            | 메인 곡 데이터 (TJ/KY 번호 포함)           |
 | `invalid_ky_songs` | KY 번호 수집 실패 목록                     |
-| `tags`             | 태그 마스터 (id, name, category)           |
-| `song_tags`        | 곡-태그 매핑 (song_id, tag_id)             |
 | `verify_ky_songs`  | KY 번호 검증 완료 목록                     |
 | `chart_rankings`   | TJ 공식 차트 월별/장르별 순위              |
 | `artists`          | 아티스트 마스터 (name, name_ko, image_url) |
@@ -115,19 +112,6 @@ findKYByOpen.ts
 ### AI 유틸
 
 - `utils/validateSongMatch.ts` — `gpt-4o-mini`로 두 (제목, 아티스트) 쌍이 같은 곡인지 판단. `temperature: 0`, 완전 일치 시 API 호출 생략.
-- `utils/transChatGPT.ts` — `gpt-4-turbo`로 일본어 → 한국어 번역.
-- `utils/translateJpnToKo.ts` — `gpt-5.4-mini`로 J-POP 곡 제목/아티스트 한국어 번역.
-- `utils/getSongTag.ts` — 곡에 언어 태그(100~199) 1개를 자동 할당. 한글/가나 감지 시 즉시 분류, 동일 아티스트 태그 재사용, 영문 전용 곡만 `gpt-5.4-mini`로 판별.
-
-### 곡 태깅 파이프라인
-
-```
-taggingSongs.ts
-  └─ getSongsAllDB()              # 전체 곡 조회
-  └─ getSongTagSongIdsDB()        # 이미 태그된 곡 ID Set 로드 (스킵 처리)
-  └─ autoTagSong(title, artist, tagsPrompt)  # 언어 태그 1개 반환 (한글/가나 → 즉시, 영문 → LLM)
-  └─ postSongTagsDB(songId, [tagId])  # song_tags 테이블에 insert
-```
 
 ### TJ 공식 차트 파이프라인
 
@@ -176,7 +160,7 @@ crawlTjBadges.ts (pnpm tj-badges)
 
 `removeDeadTjSongs.ts`는 후보를 `badges is null`로 추리되 **삭제 직전에 TJ로 다시 조회**한다. 살아 있으면 지우지 않고 뱃지를 채워주고, 조회 자체가 실패하면 건드리지 않는다. 재확인 전에 **차트에 오른 곡**(번호 검색에는 없어도 차트에는 오른다)과 **`num_ky` 보유 곡**(금영으로는 부를 수 있다)은 아예 제외한다.
 
-`songs`를 참조하는 `song_tags` · `invalid_ky_songs` · `verify_ky_songs`를 먼저 지워야 FK 제약에 걸리지 않는다. `invalid_ky_songs`와 `verify_ky_songs`는 별도 `song_id` 컬럼 없이 PK인 `id`가 곧 `songs.id`다.
+`songs`를 참조하는 `invalid_ky_songs` · `verify_ky_songs`를 먼저 지워야 FK 제약에 걸리지 않는다. `invalid_ky_songs`와 `verify_ky_songs`는 별도 `song_id` 컬럼 없이 PK인 `id`가 곧 `songs.id`다.
 
 ### GitHub Actions 워크플로우
 
@@ -184,8 +168,6 @@ crawlTjBadges.ts (pnpm tj-badges)
 | ------------------------------ | ----------------- | ------------------------------------------------------ |
 | `crawl_recent_tj.yml`          | 매일 14:00        | `pnpm recent-tj`                                       |
 | `crawl_tj_chart.yml`           | 매달 1일 01:00    | `pnpm tj-chart`                                        |
-| `tagging_song.yml`             | 매일 07:00        | `pnpm tag-songs`                                       |
-| `translation_jpn.yml`          | 매일 10:00        | `pnpm trans-jpn`                                       |
 | `update_ky_youtube.yml`        | 매일 14:00        | `pnpm ky-youtube`                                      |
 | `verify_ky_youtube.yml`        | 매주 월요일 14:00 | `pnpm ky-verify`                                       |
 | `crawl_tj_all_number.yml`      | 수동 전용         | `pnpm tj-all-number`                                   |

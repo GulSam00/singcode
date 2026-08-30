@@ -15,7 +15,6 @@ export const TOUR_DEMO_SONG: SearchSong = {
   num_tj: '10101',
   num_ky: '20202',
   badges: [],
-  thumb: 0,
   isToSing: false,
   isLike: false,
   isSave: false,

@@ -2,11 +2,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
-import {
-  deleteKyLogsBySongIdsDB,
-  deleteSongTagsBySongIdsDB,
-  deleteSongsByIdsDB,
-} from '@/supabase/deleteDB';
+import { deleteKyLogsBySongIdsDB, deleteSongsByIdsDB } from '@/supabase/deleteDB';
 import { getClient } from '@/supabase/getClient';
 import { updateSongBadgesDB } from '@/supabase/updateDB';
 import { fetchBadgeRow } from '@/utils/tjBadge';
@@ -29,7 +25,7 @@ dotenv.config();
  */
 const APPLY = process.env.DEAD_SONGS_APPLY === 'true';
 // 실행마다 다른 파일에 쓴다. 삭제 도중 실패해 재실행할 때 앞선 백업을 덮어쓰면
-// 이미 지워진 참조 테이블(song_tags 등)의 기록이 사라진다.
+// 이미 지워진 참조 테이블(invalid_ky_songs 등)의 기록이 사라진다.
 const BACKUP_FILE = path.join(
   'src',
   'assets',
@@ -119,25 +115,10 @@ if (targets.length === 0) {
 const ids = targets.map(song => song.id as string);
 
 // 삭제 전 백업. 되돌릴 일이 생기면 이 파일로 복구한다.
-// in() 필터는 쿼리스트링에 실리므로 id를 100개씩 나눠 모은다.
-const tagRows: { song_id: string; tag_id: number }[] = [];
-for (let i = 0; i < ids.length; i += 100) {
-  const { data } = await supabase
-    .from('song_tags')
-    .select('song_id, tag_id')
-    .in('song_id', ids.slice(i, i + 100));
-  if (data) tagRows.push(...(data as { song_id: string; tag_id: number }[]));
-}
-
-fs.writeFileSync(BACKUP_FILE, JSON.stringify({ songs: targets, songTags: tagRows }, null, 1));
-console.log(`💾 백업 저장: ${BACKUP_FILE} (곡 ${targets.length} / 태그 ${tagRows.length})`);
+fs.writeFileSync(BACKUP_FILE, JSON.stringify({ songs: targets }, null, 1));
+console.log(`💾 백업 저장: ${BACKUP_FILE} (곡 ${targets.length})`);
 
 // songs를 참조하는 테이블을 먼저 비운다.
-const tagResult = await deleteSongTagsBySongIdsDB(ids);
-console.log(
-  `🏷️  song_tags 삭제: ${tagResult.deleted}건${tagResult.failed ? `, 실패 ${tagResult.failed}` : ''}`,
-);
-
 const kyResult = await deleteKyLogsBySongIdsDB(ids);
 console.log(
   `🧾 invalid_ky_songs ${kyResult.invalid.deleted}건 / verify_ky_songs ${kyResult.verified.deleted}건 삭제`,

@@ -44,7 +44,6 @@ export interface Song {
   // 값: 'MV' | 'MR' | 'LV' | '60' (packages/crawling 과 의도적으로 중복 정의)
   badges?: string[] | null;
 
-  thumb?: number;
   release?: string;
   created_at?: string;
 }
@@ -109,8 +108,4 @@ export interface AddListModalSong extends Song {
   id: string;
   song_id: string;
   user_id: string;
-}
-
-export interface ThumbUpSong extends Song {
-  thumb_count: number;
 }
