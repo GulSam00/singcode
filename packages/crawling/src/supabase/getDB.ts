@@ -1,6 +1,11 @@
 import { VoteRow } from '@repo/constants';
 
-import { ArtistBackfillSongRow, ArtistImageTarget, TransSong } from '@/types';
+import {
+  ArtistBackfillSongRow,
+  ArtistImageTarget,
+  JpopTranslationTarget,
+  TransSong,
+} from '@/types';
 import { containsJapanese } from '@/utils/parseString';
 
 import { getClient } from './getClient';
@@ -114,6 +119,74 @@ export async function getSongsAllWithTjDB(max: number = 100000) {
   if (error) throw error;
 
   return data;
+}
+
+// PostgREST의 match(정규식) 연산자에 그대로 넘기는 CJK 범위 — 가나와 한자.
+// 예전에는 song_tags.tag_id=101(일본어 태그)로 J-POP을 골랐지만 태그 기능을 걷어내면서
+// 그 조인이 사라져, 문자 범위로 후보를 좁히는 방식으로 바꿨다.
+const CJK_PATTERN = '[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9faf]';
+const CJK_FILTER = `title.match.${CJK_PATTERN},artist.match.${CJK_PATTERN}`;
+
+// PostgREST 한 번에 받아오는 행 수. 후보가 수천 건이라 페이지로 끊어 받는다.
+const CJK_PAGE_SIZE = 1000;
+
+/**
+ * 아직 번역되지 않은(title_ko가 비어 있는) 곡 중 제목이나 아티스트에 가나·한자가 있는 곡.
+ *
+ * 한자까지 포함하는 범위라 중국어 곡도 함께 딸려 온다. 실제 일본어 판별은 호출부
+ * (translationJpn)가 가나 여부와 기존 번역 이력으로 한 번 더 하므로 여기서는 넓게 가져온다.
+ */
+export async function getJpopCandidateSongsDB(): Promise<JpopTranslationTarget[]> {
+  const supabase = getClient();
+  const rows: JpopTranslationTarget[] = [];
+
+  for (let from = 0; ; from += CJK_PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from('songs')
+      .select('id, title, artist, title_ko, artist_ko')
+      .is('title_ko', null)
+      .or(CJK_FILTER)
+      .range(from, from + CJK_PAGE_SIZE - 1);
+
+    if (error) throw error;
+
+    rows.push(...(data as JpopTranslationTarget[]));
+    if (data.length < CJK_PAGE_SIZE) break;
+  }
+
+  return rows;
+}
+
+/**
+ * 이미 번역된 곡에서 artist → artist_ko 맵을 만든다. 아티스트당 먼저 만난 값을 쓴다.
+ *
+ * 같은 아티스트 표기를 매번 새로 번역하지 않으려는 게 1차 목적이고, 동시에
+ * "이 아티스트는 일본 아티스트"라는 판별 근거로도 쓴다 — 태그가 하던 역할을 대신한다.
+ * 米津玄師처럼 가나가 하나도 없는 이름은 이 맵에 걸려야 번역 대상으로 잡힌다.
+ */
+export async function getArtistKoMapDB(): Promise<Map<string, string>> {
+  const supabase = getClient();
+  const map = new Map<string, string>();
+
+  for (let from = 0; ; from += CJK_PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from('songs')
+      .select('artist, artist_ko')
+      .not('artist_ko', 'is', null)
+      .or(CJK_FILTER)
+      .range(from, from + CJK_PAGE_SIZE - 1);
+
+    if (error) throw error;
+
+    for (const row of data) {
+      if (!row.artist || !row.artist_ko) continue;
+      if (!map.has(row.artist)) map.set(row.artist, row.artist_ko);
+    }
+
+    if (data.length < CJK_PAGE_SIZE) break;
+  }
+
+  return map;
 }
 
 // 아티스트 백필용 조회. sinceIso가 있으면 그 시각 이후 등록되었거나 수정된 곡만
