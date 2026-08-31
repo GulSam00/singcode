@@ -63,14 +63,14 @@ export default function useSearchSong() {
       return;
     }
 
-    let parsedSearch = trimSearch;
-
-    if (autoCompleteList.length === 1) {
-      if (autoCompleteList[0].label === trimSearch) {
-        // 자동완성 리스트가 하나(정확히 일치하면)고 label도 일치하면 해당 alias의 value로 자동 치환
-        parsedSearch = autoCompleteList[0].value;
-      }
-    }
+    // 입력한 말이 별칭과 정확히 겹치면 그 별칭의 공식 명칭으로 바꿔 검색한다.
+    // 후보 개수로 판단하면("리스트가 하나일 때만") 같은 아티스트의 별칭끼리 접두가
+    // 겹치는 순간 치환이 통째로 건너뛰어졌다 — "원오크"는 "원오크락"과 함께 걸려
+    // 후보가 2개가 되는데, ONE OK ROCK은 artist_ko가 비어 있어 치환 없이는 0건이었다.
+    const exactMatch = autoCompleteList.find(
+      candidate => candidate.label.toLowerCase() === trimSearch.toLowerCase(),
+    );
+    const parsedSearch = exactMatch ? exactMatch.value : trimSearch;
     // 중간 띄어쓰기는 제거하지 않고 그대로 전달한다.
     // 검색어의 공백 처리(토큰 분리 → %로 치환)는 검색 API(/api/search)가 담당한다.
 
