@@ -1,4 +1,4 @@
-import { useCallback, useDeferredValue, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { usePostSearchLogMutation } from '@/queries/searchLogQuery';
@@ -47,16 +47,15 @@ export default function useSearchSong() {
   const { addToHistory } = useSearchHistoryStore();
   const { addGuestToSingSong, removeGuestToSingSong } = useGuestToSingStore();
 
-  const deferredSearch = useDeferredValue(search);
+  // handleSearch가 이 목록에서 별칭 치환을 하므로 search를 그대로 따라가야 한다.
+  // useDeferredValue를 끼우면 목록이 한 박자 늦어, 붙여넣기 직후 엔터처럼 지연이 큰
+  // 순간에 "검색할 문자열"과 "그 문자열의 후보"가 어긋나 치환이 조용히 빠진다.
+  // 사전 규모가 수백 개라 미룰 만큼 무겁지도 않다.
+  const autoCompleteList = useMemo(() => getAutoCompleteSuggestions(search), [search]);
 
-  const autoCompleteList = useMemo(
-    () => getAutoCompleteSuggestions(deferredSearch),
-    [deferredSearch],
-  );
-
-  const handleSearch = (termOverride?: string, typeOverride?: SearchType) => {
+  const handleSearch = () => {
     // trim 제거
-    const trimSearch = (termOverride ?? search).trim();
+    const trimSearch = search.trim();
 
     if (!trimSearch) {
       setQuery('');
@@ -77,7 +76,7 @@ export default function useSearchSong() {
     if (parsedSearch) {
       setQuery(parsedSearch);
       setSearch(parsedSearch);
-      setQueryType(typeOverride ?? searchType);
+      setQueryType(searchType);
       addToHistory(parsedSearch);
       postSearchLog(parsedSearch);
     }
