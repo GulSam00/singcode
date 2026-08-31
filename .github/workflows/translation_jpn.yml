@@ -1,13 +1,16 @@
 name: Translation J-POP Songs
 
 on:
-  # 태그 기능 비활성화로 스케줄 실행 중단. 필요하면 workflow_dispatch로 수동 실행.
-  # schedule:
-  #   - cron: "0 10 * * *" # 매일 한국 시간 19:00 실행 (UTC+9 → UTC 10:00)
+  schedule:
+    - cron: "0 10 * * *" # 매일 한국 시간 19:00 실행 (UTC+9 → UTC 10:00)
   workflow_dispatch:
+    inputs:
+      limit:
+        description: "이번 실행에서 번역할 최대 곡 수 (비워두면 10000)"
+        required: false
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   run-npm-task:
@@ -41,4 +44,6 @@ jobs:
 
       - name: Run translation script - translationJpn.ts
         working-directory: packages/crawling
+        env:
+          TRANS_JPN_LIMIT: ${{ inputs.limit }}
         run: pnpm run trans-jpn

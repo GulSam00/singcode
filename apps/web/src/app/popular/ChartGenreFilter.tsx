@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { STR_TYPE_EMOJI, STR_TYPE_LABEL, StrType } from '@/types/tjChart';
+import { STR_TYPE_LABEL, StrType } from '@/types/tjChart';
 
 // 장르가 12종이라 줄바꿈 없이 한 줄로 두고 가로 스크롤로 훑게 한다.
 // TabsTrigger 기본 스타일의 flex-1(균등 분할)은 flex-none으로 해제해야 칩 너비가 라벨에 맞는다.
@@ -57,7 +57,6 @@ export default function ChartGenreFilter({ value, onChange }: ChartGenreFilterPr
       <TabsList ref={listRef} className={LIST_CLASSES}>
         {Object.values(StrType).map(type => (
           <TabsTrigger key={type} value={type} className={CHIP_CLASSES}>
-            <span aria-hidden="true">{STR_TYPE_EMOJI[type]}</span>
             {STR_TYPE_LABEL[type]}
           </TabsTrigger>
         ))}

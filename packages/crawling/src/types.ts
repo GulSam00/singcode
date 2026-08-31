@@ -119,3 +119,12 @@ export interface ArtistUpsert {
   name: string;
   name_ko: string | null;
 }
+
+/** 일본어 번역 후보 곡. title_ko가 비어 있고 제목이나 아티스트에 가나·한자가 섞인 곡이다. */
+export interface JpopTranslationTarget {
+  id: string;
+  title: string;
+  artist: string;
+  title_ko: string | null;
+  artist_ko: string | null;
+}

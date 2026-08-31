@@ -137,118 +137,118 @@ export default function ArtistVotePanel() {
     );
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="flex h-64 flex-col items-center justify-center gap-2">
-        <p className="text-muted-foreground text-xl">로그인하고 투표해보세요</p>
-        <p className="text-muted-foreground text-sm">
-          보유 포인트로 이달의 아티스트를 뽑을 수 있어요.
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="text-muted-foreground shrink-0 text-sm">
-        보유 포인트 <span className="text-foreground font-bold">{point}P</span>
-        {changedRows.length > 0 && (
-          <span className={isOverPoint ? 'text-destructive' : ''}>
-            {' '}
-            → 저장 후 {remainingPoint}P
-          </span>
-        )}
-      </div>
-
-      <div className="relative shrink-0">
-        <Input
-          placeholder="아티스트 검색"
-          value={query}
-          onChange={event => handleChangeQuery(event.target.value)}
-          onFocus={() => setIsFocusAuto(true)}
-          onBlur={() => setIsFocusAuto(false)}
-        />
-        {isFocusAuto && (
-          <SearchAutocomplete autoCompleteList={autoCompleteList} onSelect={handleSelectArtist} />
-        )}
-      </div>
-
-      {isSearchEmpty && (
-        <p className="text-muted-foreground shrink-0 text-sm">
-          &lsquo;{query.trim()}&rsquo; 검색 결과가 없어요.
-        </p>
-      )}
-
-      <ScrollArea className="min-h-0 flex-1">
-        <div className="flex flex-col gap-2 pr-2">
-          {rows.length === 0 ? (
-            <p className="text-muted-foreground py-8 text-center text-sm">
-              검색해서 투표할 아티스트를 담아보세요.
-            </p>
-          ) : (
-            rows.map(row => (
-              <ArtistVoteRow
-                key={row.artist}
-                artist={row.artist}
-                artistKo={row.artistKo}
-                amount={row.amount}
-                savedAmount={row.savedAmount}
-                step={STEP}
-                disabled={isPending}
-                onChange={amount => handleChange(row.artist, amount)}
-                onSubmit={handleSubmit}
-                onDelete={() => handleDelete(row.artist)}
-              />
-            ))
+    <div className="relative flex min-h-0 flex-1 flex-col">
+      {/* 비로그인이어도 투표 화면이 어떤 모습인지는 그대로 보여주고 안내 문구만 위에 덮는다.
+          inert는 아래 UI의 클릭·포커스·접근성 트리 노출을 한 번에 막아, 로그인 없이 조작되는 일이 없다. */}
+      <div className="flex min-h-0 flex-1 flex-col gap-3" inert={!isAuthenticated}>
+        <div className="text-muted-foreground shrink-0 text-sm">
+          보유 포인트 <span className="text-foreground font-bold">{point}P</span>
+          {changedRows.length > 0 && (
+            <span className={isOverPoint ? 'text-destructive' : ''}>
+              {' '}
+              → 저장 후 {remainingPoint}P
+            </span>
           )}
         </div>
-      </ScrollArea>
 
-      <div className="flex shrink-0 flex-col gap-2">
-        {isOverPoint && (
-          <p className="text-destructive text-sm">
-            포인트가 {-remainingPoint}P 부족해요. 투표값을 줄여주세요.
+        <div className="relative shrink-0">
+          <Input
+            placeholder="아티스트 검색"
+            value={query}
+            onChange={event => handleChangeQuery(event.target.value)}
+            onFocus={() => setIsFocusAuto(true)}
+            onBlur={() => setIsFocusAuto(false)}
+          />
+          {isFocusAuto && (
+            <SearchAutocomplete autoCompleteList={autoCompleteList} onSelect={handleSelectArtist} />
+          )}
+        </div>
+
+        {isSearchEmpty && (
+          <p className="text-muted-foreground shrink-0 text-sm">
+            &lsquo;{query.trim()}&rsquo; 검색 결과가 없어요.
           </p>
         )}
-        <Button className="w-full" disabled={!canSave} onClick={handleSubmit}>
-          {changedRows.length > 0 ? `변경사항 ${changedRows.length}건 저장` : '변경사항 없음'}
-        </Button>
+
+        <ScrollArea className="min-h-0 flex-1">
+          <div className="flex flex-col gap-2 pr-2">
+            {rows.length === 0 ? (
+              <p className="text-muted-foreground py-8 text-center text-sm">
+                검색해서 투표할 아티스트를 담아보세요.
+              </p>
+            ) : (
+              rows.map(row => (
+                <ArtistVoteRow
+                  key={row.artist}
+                  artist={row.artist}
+                  artistKo={row.artistKo}
+                  amount={row.amount}
+                  savedAmount={row.savedAmount}
+                  step={STEP}
+                  disabled={isPending}
+                  onChange={amount => handleChange(row.artist, amount)}
+                  onSubmit={handleSubmit}
+                  onDelete={() => handleDelete(row.artist)}
+                />
+              ))
+            )}
+          </div>
+        </ScrollArea>
+
+        <div className="flex shrink-0 flex-col gap-2">
+          {isOverPoint && (
+            <p className="text-destructive text-sm">
+              포인트가 {-remainingPoint}P 부족해요. 투표값을 줄여주세요.
+            </p>
+          )}
+          <Button className="w-full" disabled={!canSave} onClick={handleSubmit}>
+            {changedRows.length > 0 ? `변경사항 ${changedRows.length}건 저장` : '변경사항 없음'}
+          </Button>
+        </div>
+
+        <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>투표를 반영할까요?</DialogTitle>
+              <DialogDescription>
+                저장하면 차액만큼 포인트가 차감되거나 환불돼요. 이번 달에는 언제든 다시 조정할 수
+                있어요.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex max-h-[40vh] flex-col gap-1 overflow-y-auto">
+              {changedRows.map(row => (
+                <div key={row.artist} className="flex items-center justify-between gap-2 text-sm">
+                  <ArtistName name={row.artist} artistKo={row.artistKo} className="flex-1" />
+                  <span className="text-muted-foreground shrink-0 tabular-nums">
+                    {row.savedAmount}P → {row.amount}P
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between border-t pt-3 text-sm font-medium">
+              <span>{spending >= 0 ? '차감 포인트' : '환불 포인트'}</span>
+              <span className="tabular-nums">{Math.abs(spending)}P</span>
+            </div>
+
+            <DialogFooter className="flex space-x-2">
+              <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>
+                취소
+              </Button>
+              <Button onClick={handleConfirm}>확인</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
-      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>투표를 반영할까요?</DialogTitle>
-            <DialogDescription>
-              저장하면 차액만큼 포인트가 차감되거나 환불돼요. 이번 달에는 언제든 다시 조정할 수
-              있어요.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex max-h-[40vh] flex-col gap-1 overflow-y-auto">
-            {changedRows.map(row => (
-              <div key={row.artist} className="flex items-center justify-between gap-2 text-sm">
-                <ArtistName name={row.artist} artistKo={row.artistKo} className="flex-1" />
-                <span className="text-muted-foreground shrink-0 tabular-nums">
-                  {row.savedAmount}P → {row.amount}P
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between border-t pt-3 text-sm font-medium">
-            <span>{spending >= 0 ? '차감 포인트' : '환불 포인트'}</span>
-            <span className="tabular-nums">{Math.abs(spending)}P</span>
-          </div>
-
-          <DialogFooter className="flex space-x-2">
-            <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>
-              취소
-            </Button>
-            <Button onClick={handleConfirm}>확인</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {!isAuthenticated && (
+        <div className="bg-background/70 absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-lg backdrop-blur-[2px]">
+          <p className="text-foreground text-xl font-medium">로그인하면 참여할 수 있어요</p>
+          <p className="text-muted-foreground text-sm">이 달의 아티스트를 직접 뽑아주세요.</p>
+        </div>
+      )}
     </div>
   );
 }
