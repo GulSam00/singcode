@@ -13,6 +13,7 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import useAuthStore from '@/stores/useAuthStore';
 import { SearchSong } from '@/types/song';
+import { splitDisplay } from '@/utils/songDisplay';
 
 import SongActionButtons from './SongActionButtons';
 
@@ -41,10 +42,8 @@ function SearchResultCard({
   onClickSave,
 }: SearchResultCardProps) {
   const { id, title, artist, title_ko, artist_ko, num_tj, num_ky, badges } = song;
-  const hasKoTitle = !!title_ko && title_ko !== title;
-  const hasKoArtist = !!artist_ko && artist_ko !== artist;
-  const displayTitle = hasKoTitle ? title_ko : title;
-  const displayArtist = hasKoArtist ? artist_ko : artist;
+  const titleParts = splitDisplay(title_ko, title);
+  const artistParts = splitDisplay(artist_ko, artist);
 
   const { isAuthenticated } = useAuthStore();
 
@@ -89,11 +88,11 @@ function SearchResultCard({
               <SongBadges badges={badges} className="mb-0.5" />
               <MarqueeText
                 className="hover:text-accent cursor-pointer text-base font-medium hover:underline hover:underline-offset-4"
-                onClick={() => handleCopy(displayTitle)}
+                onClick={() => handleCopy(titleParts.primary)}
               >
-                {displayTitle}
+                {titleParts.primary}
               </MarqueeText>
-              {hasKoTitle && (
+              {titleParts.secondary && (
                 <MarqueeText
                   className="text-muted-foreground hover:text-accent cursor-pointer text-xs hover:underline hover:underline-offset-4"
                   onClick={() => handleCopy(title)}
@@ -103,11 +102,11 @@ function SearchResultCard({
               )}
               <MarqueeText
                 className="text-muted-foreground hover:text-accent mt-0.5 cursor-pointer text-sm hover:underline hover:underline-offset-4"
-                onClick={() => handleCopy(displayArtist)}
+                onClick={() => handleCopy(artistParts.primary)}
               >
-                {displayArtist}
+                {artistParts.primary}
               </MarqueeText>
-              {hasKoArtist && (
+              {artistParts.secondary && (
                 <MarqueeText
                   className="text-muted-foreground/70 hover:text-accent cursor-pointer text-xs hover:underline hover:underline-offset-4"
                   onClick={() => handleCopy(artist)}

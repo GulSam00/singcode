@@ -7,6 +7,7 @@ import SongBadges from '@/components/SongBadges';
 import { useCurrentArtistOfMonthQuery } from '@/queries/artistVoteQuery';
 import { Song } from '@/types/song';
 import { cn } from '@/utils/cn';
+import { splitDisplay } from '@/utils/songDisplay';
 
 type SummarySong = Pick<
   Song,
@@ -28,8 +29,8 @@ interface SongSummaryProps {
 export default function SongSummary({ song, className }: SongSummaryProps) {
   const { title, artist, title_ko, artist_ko, num_tj, num_ky, badges } = song;
 
-  const hasKoTitle = !!title_ko && title_ko !== title;
-  const hasKoArtist = !!artist_ko && artist_ko !== artist;
+  const titleParts = splitDisplay(title_ko, title);
+  const artistParts = splitDisplay(artist_ko, artist);
 
   // songs.artist는 "IU(Feat.최백호)"처럼 원문 그대로라, artists 마스터에 등록된 정규화된
   // 이름과 곧이곧대로 비교하면 우승 아티스트의 피처링·듀엣 곡에 배지가 빠진다.
@@ -43,14 +44,18 @@ export default function SongSummary({ song, className }: SongSummaryProps) {
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <SongBadges badges={badges} className="mb-0.5" />
 
-        <MarqueeText className="text-base font-medium">{title}</MarqueeText>
-        {hasKoTitle && (
-          <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
+        <MarqueeText className="text-base font-medium">{titleParts.primary}</MarqueeText>
+        {titleParts.secondary && (
+          <MarqueeText className="text-muted-foreground text-xs">
+            {titleParts.secondary}
+          </MarqueeText>
         )}
 
-        <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
-        {hasKoArtist && (
-          <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+        <MarqueeText className="text-muted-foreground text-sm">{artistParts.primary}</MarqueeText>
+        {artistParts.secondary && (
+          <MarqueeText className="text-muted-foreground/70 text-xs">
+            {artistParts.secondary}
+          </MarqueeText>
         )}
         {isArtistOfMonth && (
           <span className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400">

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useSongPromotionsQuery } from '@/queries/songPromotionQuery';
+import { splitDisplay } from '@/utils/songDisplay';
 
 const ALLOWED_PATHS = ['/', '/popular', '/recent', '/tosing'];
 const COLLAPSED_STORAGE_KEY = 'promotion-banner-collapsed';
@@ -49,8 +50,8 @@ export default function PromotionBanner() {
   if (promotions.length === 0) return null;
 
   const current = promotions[currentIndex];
-  const hasKoTitle = current.title_ko && current.title_ko !== current.title;
-  const hasKoArtist = current.artist_ko && current.artist_ko !== current.artist;
+  const titleParts = splitDisplay(current.title_ko, current.title);
+  const artistParts = splitDisplay(current.artist_ko, current.artist);
 
   return (
     <div className="border-border bg-card relative overflow-hidden rounded-lg border px-4 py-3">
@@ -98,20 +99,20 @@ export default function PromotionBanner() {
                 >
                   <div className="flex flex-col gap-0.5">
                     <div className="flex flex-col">
-                      <span className="truncate text-sm font-semibold">{current.title}</span>
-                      {hasKoTitle && (
+                      <span className="truncate text-sm font-semibold">{titleParts.primary}</span>
+                      {titleParts.secondary && (
                         <span className="text-muted-foreground truncate text-xs">
-                          {current.title_ko}
+                          {titleParts.secondary}
                         </span>
                       )}
                     </div>
                     <div className="flex flex-col">
                       <span className="text-muted-foreground truncate text-sm">
-                        {current.artist}
+                        {artistParts.primary}
                       </span>
-                      {hasKoArtist && (
+                      {artistParts.secondary && (
                         <span className="text-muted-foreground/70 truncate text-xs">
-                          {current.artist_ko}
+                          {artistParts.secondary}
                         </span>
                       )}
                     </div>
