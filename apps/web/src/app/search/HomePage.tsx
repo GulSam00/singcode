@@ -6,9 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-// import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-// import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TOUR_DEMO_SEARCH_TERM, TOUR_DEMO_SONG } from '@/constants/tourDemoSong';
 import useSaveSongModal from '@/hooks/useSaveSongModal';
@@ -19,7 +17,6 @@ import { SearchSong, SearchType } from '@/types/song';
 import { cn } from '@/utils/cn';
 
 import AddFolderModal from './AddFolderModal';
-// import ChatBot from './ChatBot';
 import JpnArtistList from './JpnArtistList';
 import NumberKeypad from './NumberKeypad';
 import PopularSearchHistory from './PopularSearchHistory';
@@ -65,11 +62,6 @@ export default function SearchPage() {
   const [isJpnArtistModalOpen, setIsJpnArtistModalOpen] = useState(false);
   const [isFocusAuto, setIsFocusAuto] = useState(false);
   const [isNumberKeypadOpen, setIsNumberKeypadOpen] = useState(false);
-  // const [isChatBotEnabled, setIsChatBotEnabled] = useState(() => {
-  //   if (typeof window === 'undefined') return true;
-  //   const stored = localStorage.getItem('chatbot-enabled');
-  //   return stored === null ? true : stored === 'true';
-  // });
 
   const [scrollRef, setScrollRef] = useState<HTMLDivElement | null>(null);
   const { ref, inView } = useInView({
@@ -78,11 +70,6 @@ export default function SearchPage() {
   });
 
   const { guestToSingSongs } = useGuestToSingStore();
-
-  // const handleToggleChatBot = (checked: boolean) => {
-  //   setIsChatBotEnabled(checked);
-  //   localStorage.setItem('chatbot-enabled', String(checked));
-  // };
 
   const guestToSingIds = useMemo(
     () => new Set(guestToSingSongs?.map(item => item.songs.id)),
@@ -398,7 +385,7 @@ export default function SearchPage() {
           <div className="flex h-full flex-col gap-2">
             <div className="text-muted-foreground flex items-center gap-2">
               <Info className="h-4 w-4" />
-              <span className="m-2">전체 문장보다는 단어 단위로 검색해보세요</span>
+              <span className="m-2">단어 단위로 검색해주세요</span>
             </div>
 
             <div className="flex h-full flex-col justify-center gap-2">
@@ -418,9 +405,6 @@ export default function SearchPage() {
           patchSaveSong={patchSaveSong}
         />
       )}
-
-      {/* 챗봇 위젯 */}
-      {/* {isChatBotEnabled && <ChatBot setInputSearch={setSearch} />} */}
 
       <SearchTour
         onPrepareExampleSearch={handlePrepareExampleSearch}
