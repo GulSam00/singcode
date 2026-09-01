@@ -38,7 +38,7 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
             variant="ghost"
             size="icon"
             className={`h-13 flex-1 flex-col items-center justify-center`}
-            aria-label="삭제"
+            aria-label="최상위로 이동"
             onClick={onMoveToTop}
           >
             <ChevronsUp className="h-5 w-5" />
@@ -60,7 +60,7 @@ export default function SongCard({ song, onDelete, onMoveToTop, onMoveToBottom }
             variant="ghost"
             size="icon"
             className={`h-13 flex-1 flex-col items-center justify-center`}
-            aria-label="삭제"
+            aria-label="최하위로 이동"
             onClick={onMoveToBottom}
           >
             <ChevronsDown className="h-5 w-5" />

@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/select';
 import { useSaveSongFolderQuery } from '@/queries/saveSongFolderQuery';
 import { SaveSongFolderList, SearchSong } from '@/types/song';
+import { splitDisplay } from '@/utils/songDisplay';
 
 interface IProps {
   modalType: '' | 'POST' | 'PATCH';
@@ -47,6 +48,8 @@ export default function AddFolderModal({
   const [isExistingPlaylist, setIsExistingPlaylist] = useState(false);
 
   const { id: songId, title, artist, title_ko, artist_ko } = song;
+  const titleParts = splitDisplay(title_ko, title);
+  const artistParts = splitDisplay(artist_ko, artist);
 
   const LOGIC_TEXT = modalType === 'POST' ? '저장' : '수정';
 
@@ -113,13 +116,17 @@ export default function AddFolderModal({
 
         {/* 곡 정보 */}
         <div className="bg-muted mb-4 rounded-md p-3">
-          <MarqueeText className="text-base font-medium">{title}</MarqueeText>
-          {title_ko && title_ko !== title && (
-            <MarqueeText className="text-muted-foreground text-xs">{title_ko}</MarqueeText>
+          <MarqueeText className="text-base font-medium">{titleParts.primary}</MarqueeText>
+          {titleParts.secondary && (
+            <MarqueeText className="text-muted-foreground text-xs">
+              {titleParts.secondary}
+            </MarqueeText>
           )}
-          <MarqueeText className="text-muted-foreground text-sm">{artist}</MarqueeText>
-          {artist_ko && artist_ko !== artist && (
-            <MarqueeText className="text-muted-foreground/70 text-xs">{artist_ko}</MarqueeText>
+          <MarqueeText className="text-muted-foreground text-sm">{artistParts.primary}</MarqueeText>
+          {artistParts.secondary && (
+            <MarqueeText className="text-muted-foreground/70 text-xs">
+              {artistParts.secondary}
+            </MarqueeText>
           )}
         </div>
 
