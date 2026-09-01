@@ -30,6 +30,14 @@ export async function postToSingSongArray(body: { songIds: string[] }) {
   return response.data;
 }
 
+export async function postToSingSongMerge(body: { songIds: string[] }) {
+  const response = await instance.post<ApiResponse<{ merged: number }>>(
+    '/songs/tosing/merge',
+    body,
+  );
+  return response.data;
+}
+
 export async function deleteToSingSong(body: { songId: string }) {
   const response = await instance.delete<ApiResponse<void>>('/songs/tosing', { data: body });
   return response.data;

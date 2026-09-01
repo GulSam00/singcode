@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import useMergeGuestToSing from '@/hooks/useMergeGuestToSing';
 import useAuthStore from '@/stores/useAuthStore';
 
 const ALLOW_PATHS = [
@@ -23,6 +24,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const pathname = usePathname();
   const { checkAuth } = useAuthStore();
   const [isAuthChecked, setIsAuthChecked] = useState(false);
+
+  useMergeGuestToSing();
 
   useEffect(() => {
     const isPublicPath = ALLOW_PATHS.includes(pathname);
