@@ -1,5 +1,6 @@
 import { ReportCardField } from '@/types/report';
 import { cn } from '@/utils/cn';
+import { splitDisplay } from '@/utils/songDisplay';
 
 interface ReportFieldCardProps {
   title: string;
@@ -10,16 +11,6 @@ interface ReportFieldCardProps {
   num_ky?: string;
   activeField: ReportCardField | null;
   newValue: string | null;
-}
-
-function splitDisplay(
-  translated: string | undefined,
-  original: string,
-): { primary: string; secondary: string | null } {
-  if (translated && translated !== original) {
-    return { primary: translated, secondary: original };
-  }
-  return { primary: original || '-', secondary: null };
 }
 
 function NewValueIndicator({
@@ -73,7 +64,9 @@ export default function ReportFieldCard({
         >
           <div className="flex min-w-0 flex-col gap-0.5">
             <div className="flex min-w-0 items-center gap-2">
-              <span className="min-w-0 truncate text-base font-medium">{titleParts.primary}</span>
+              <span className="min-w-0 truncate text-base font-medium">
+                {titleParts.primary || '-'}
+              </span>
               <NewValueIndicator
                 isVisible={isFieldActive('title')}
                 value={newValue}
@@ -95,7 +88,7 @@ export default function ReportFieldCard({
           <div className="flex min-w-0 flex-col gap-0.5">
             <div className="flex min-w-0 items-center gap-2">
               <span className="text-muted-foreground min-w-0 truncate text-sm">
-                {artistParts.primary}
+                {artistParts.primary || '-'}
               </span>
               <NewValueIndicator
                 isVisible={isFieldActive('artist')}

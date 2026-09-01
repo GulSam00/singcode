@@ -5,6 +5,7 @@ import {
   getToSingSong,
   patchToSingSong,
   postToSingSongArray,
+  postToSingSongMerge,
 } from '@/lib/api/tosing';
 import { ToSingSong } from '@/types/song';
 
@@ -42,6 +43,24 @@ export function usePostToSingSongMutation() {
     onError: error => {
       console.error('error', error);
       alert(error.message ?? 'POST 실패');
+    },
+  });
+}
+
+// 게스트로 담아둔 곡을 로그인 계정으로 병합
+// 실패해도 로컬을 비우지 않아야 재시도가 가능하므로, 성공 판정은 호출부에서 한다.
+export function useMergeGuestToSingMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (songIds: string[]) => postToSingSongMerge({ songIds }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['toSingSong'] });
+      queryClient.invalidateQueries({ queryKey: ['searchSong'] });
+    },
+    onError: error => {
+      // 사용자가 시킨 동작이 아니라 배경에서 도는 병합이라 alert로 막지 않는다
+      console.error('게스트 부를 곡 병합 실패:', error);
     },
   });
 }

@@ -21,6 +21,7 @@ import { useDeleteUserPromotionMutation, useUserPromotionsQuery } from '@/querie
 import useAuthStore from '@/stores/useAuthStore';
 import { SongPromotion } from '@/types/promotion';
 import { getTodayKST } from '@/utils/kst';
+import { splitDisplay } from '@/utils/songDisplay';
 
 function PromotionItem({
   promotion,
@@ -34,8 +35,8 @@ function PromotionItem({
   const todayKST = getTodayKST();
   const canCancel = promotion.start_date > todayKST;
   const { title, artist, title_ko, artist_ko } = promotion;
-  const hasKoTitle = title_ko && title_ko !== title;
-  const hasKoArtist = artist_ko && artist_ko !== artist;
+  const titleParts = splitDisplay(title_ko, title);
+  const artistParts = splitDisplay(artist_ko, artist);
 
   const statusLabel = (() => {
     if (promotion.end_date < todayKST)
@@ -70,11 +71,13 @@ function PromotionItem({
       <div className="flex items-center gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex flex-col gap-0.5">
-            <p className="truncate text-base font-medium">{title}</p>
-            {hasKoTitle && <p className="text-muted-foreground truncate text-xs">{title_ko}</p>}
-            <p className="text-muted-foreground truncate text-sm">{artist}</p>
-            {hasKoArtist && (
-              <p className="text-muted-foreground/70 truncate text-xs">{artist_ko}</p>
+            <p className="truncate text-base font-medium">{titleParts.primary}</p>
+            {titleParts.secondary && (
+              <p className="text-muted-foreground truncate text-xs">{titleParts.secondary}</p>
+            )}
+            <p className="text-muted-foreground truncate text-sm">{artistParts.primary}</p>
+            {artistParts.secondary && (
+              <p className="text-muted-foreground/70 truncate text-xs">{artistParts.secondary}</p>
             )}
           </div>
           <p className="bg-muted/50 text-foreground mt-2 rounded-md px-3 py-2 text-sm leading-relaxed whitespace-pre-line">
@@ -175,10 +178,10 @@ export default function MyPromotionsPage() {
           {confirmTarget && (
             <div className="space-y-2 py-2 text-sm">
               <p className="font-medium">
-                {confirmTarget.title_ko ?? confirmTarget.title}
+                {splitDisplay(confirmTarget.title_ko, confirmTarget.title).primary}
                 <span className="text-muted-foreground font-normal">
                   {' · '}
-                  {confirmTarget.artist_ko ?? confirmTarget.artist}
+                  {splitDisplay(confirmTarget.artist_ko, confirmTarget.artist).primary}
                 </span>
               </p>
               <p className="text-muted-foreground">

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { SaveSongFolder } from '@/types/song';
+import { splitDisplay } from '@/utils/songDisplay';
 
 interface IProps {
   folder: SaveSongFolder;
@@ -96,33 +97,42 @@ export default function FolderCard({
           <div className="px-4">
             {folder.songList.length > 0 ? (
               <div className="space-y-2">
-                {folder.songList.map(song => (
-                  <div
-                    key={song.song_id}
-                    className="flex items-center gap-3 border-b py-2 last:border-0"
-                  >
-                    <Checkbox
-                      id={`song-${song.song_id}`}
-                      checked={!!selectedSongs[song.song_id]}
-                      onCheckedChange={() => toggleSongSelection(song.song_id)}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <Music className="text-muted-foreground h-4 w-4 shrink-0" />
-                        <div>
-                          <p className="text-sm font-medium">{song.title}</p>
-                          {song.title_ko && song.title_ko !== song.title && (
-                            <p className="text-muted-foreground text-xs">{song.title_ko}</p>
-                          )}
-                          <p className="text-muted-foreground text-xs">{song.artist}</p>
-                          {song.artist_ko && song.artist_ko !== song.artist && (
-                            <p className="text-muted-foreground/70 text-xs">{song.artist_ko}</p>
-                          )}
+                {folder.songList.map(song => {
+                  const titleParts = splitDisplay(song.title_ko, song.title);
+                  const artistParts = splitDisplay(song.artist_ko, song.artist);
+
+                  return (
+                    <div
+                      key={song.song_id}
+                      className="flex items-center gap-3 border-b py-2 last:border-0"
+                    >
+                      <Checkbox
+                        id={`song-${song.song_id}`}
+                        checked={!!selectedSongs[song.song_id]}
+                        onCheckedChange={() => toggleSongSelection(song.song_id)}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <Music className="text-muted-foreground h-4 w-4 shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium">{titleParts.primary}</p>
+                            {titleParts.secondary && (
+                              <p className="text-muted-foreground text-xs">
+                                {titleParts.secondary}
+                              </p>
+                            )}
+                            <p className="text-muted-foreground text-xs">{artistParts.primary}</p>
+                            {artistParts.secondary && (
+                              <p className="text-muted-foreground/70 text-xs">
+                                {artistParts.secondary}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-muted-foreground py-4 text-center">

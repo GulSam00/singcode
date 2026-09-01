@@ -8,6 +8,7 @@ import { DateRange } from 'react-day-picker';
 import { usePostSongPromotionMutation } from '@/queries/songPromotionQuery';
 import { useUserQuery } from '@/queries/userQuery';
 import { getTomorrowKSTDate } from '@/utils/kst';
+import { splitDisplay } from '@/utils/songDisplay';
 
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
@@ -47,8 +48,8 @@ export default function SongPromotionModal({
   const canAfford = point >= cost;
   const canSubmit = days > 0 && content.trim().length > 0 && canAfford;
 
-  const displayTitle = title_ko && title_ko !== title ? title_ko : title;
-  const displayArtist = artist_ko && artist_ko !== artist ? artist_ko : artist;
+  const displayTitle = splitDisplay(title_ko, title).primary;
+  const displayArtist = splitDisplay(artist_ko, artist).primary;
 
   const handleProceed = () => {
     if (!canSubmit || !range?.from) return;
