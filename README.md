@@ -9,15 +9,6 @@
 Singcode는 평소 노래방에서 부르고 싶던 노래 번호를 저장하고, 당신만의 노래 리스트를 만들고, 좋아하는 곡을 저장할 수 있습니다. <br/>
 Supabase를 활용한 자체 DB를 통해 금영, TJ 노래방의 번호를 한 눈에 확인할 수 있습니다.
 
-<div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-
-<img width="1080" height="1350" alt="feed1 1" src="https://github.com/user-attachments/assets/2587f3cf-ad3b-43fe-bea8-6dfa3d1f0157" />
-
-<img width="880" height="1800" alt="search_autocomplete_over_results" src="https://github.com/user-attachments/assets/aaabd920-cbf6-480b-9982-f3e86e00de1f" />
-
-
-</div>
-
 ---
 
 ## 📦 배포
