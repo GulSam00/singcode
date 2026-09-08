@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { usePostSearchLogMutation } from '@/queries/searchLogQuery';
@@ -43,6 +43,10 @@ export default function useSearchSong() {
 
   const { mutate: postSearchLog } = usePostSearchLogMutation();
 
+  // 검색 결과 도착을 기다리는 인기 검색어 로그 후보
+  const [pendingLog, setPendingLog] = useState<{ text: string; seq: number } | null>(null);
+  const seqRef = useRef(0);
+
   const { setFooterAnimateKey } = useFooterAnimateStore();
   const { addToHistory } = useSearchHistoryStore();
   const { addGuestToSingSong, removeGuestToSingSong } = useGuestToSingStore();
@@ -78,9 +82,29 @@ export default function useSearchSong() {
       setSearch(parsedSearch);
       setQueryType(searchType);
       addToHistory(parsedSearch);
-      postSearchLog(parsedSearch);
+      // 인기 검색어 로그는 여기서 바로 남기지 않는다.
+      // 결과가 0건인 오타·존재하지 않는 곡까지 집계되면 인기 검색어가 오염된다.
+      // 검색 결과가 도착한 뒤 1건이라도 있을 때만 아래 effect가 기록한다.
+      // seq는 같은 검색어를 연달아 검색해도 effect가 다시 돌게 하는 용도다.
+      seqRef.current += 1;
+      setPendingLog({ text: parsedSearch, seq: seqRef.current });
     }
   };
+
+  // 검색 결과가 1건 이상일 때만 인기 검색어 로그를 남긴다.
+  useEffect(() => {
+    if (!pendingLog) return;
+    // 이번 검색어의 결과가 아직 도착하지 않았으면 대기한다.
+    if (query !== pendingLog.text || isPendingSearch) return;
+
+    setPendingLog(null);
+    if (isError) return;
+
+    const hasResult = searchResults?.pages.some(page => page.data.length > 0) ?? false;
+    if (hasResult) {
+      postSearchLog(pendingLog.text);
+    }
+  }, [pendingLog, query, isPendingSearch, isError, searchResults, postSearchLog]);
 
   const handleSearchTypeChange = (value: SearchType) => {
     setSearchType(value);
