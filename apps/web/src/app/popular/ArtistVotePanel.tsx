@@ -244,7 +244,7 @@ export default function ArtistVotePanel() {
       </div>
 
       {!isAuthenticated && (
-        <div className="bg-background/70 absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-lg backdrop-blur-[2px]">
+        <div className="bg-background/10 absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-lg backdrop-blur-[1px]">
           <p className="text-foreground text-xl font-medium">로그인하면 참여할 수 있어요</p>
           <p className="text-muted-foreground text-sm">이 달의 아티스트를 직접 뽑아주세요.</p>
         </div>

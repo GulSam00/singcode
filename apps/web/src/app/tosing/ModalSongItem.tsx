@@ -2,6 +2,7 @@ import MarqueeText from '@/components/MarqueeText';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AddListModalSong } from '@/types/song';
 import { cn } from '@/utils/cn';
+import { splitDisplay } from '@/utils/songDisplay';
 
 // 노래 항목 컴포넌트
 export default function ModalSongItem({
@@ -13,6 +14,9 @@ export default function ModalSongItem({
   isSelected: boolean;
   onToggleSelect: (id: string) => void;
 }) {
+  const titleParts = splitDisplay(song.title_ko, song.title);
+  const artistParts = splitDisplay(song.artist_ko, song.artist);
+
   return (
     <div
       className={cn(
@@ -27,13 +31,17 @@ export default function ModalSongItem({
         disabled={song.isInToSingList}
       />
       <div className="min-w-0 flex-1">
-        <MarqueeText className="text-sm font-medium">{song.title}</MarqueeText>
-        {song.title_ko && song.title_ko !== song.title && (
-          <MarqueeText className="text-muted-foreground text-xs">{song.title_ko}</MarqueeText>
+        <MarqueeText className="text-sm font-medium">{titleParts.primary}</MarqueeText>
+        {titleParts.secondary && (
+          <MarqueeText className="text-muted-foreground text-xs">
+            {titleParts.secondary}
+          </MarqueeText>
         )}
-        <MarqueeText className="text-muted-foreground text-xs">{song.artist}</MarqueeText>
-        {song.artist_ko && song.artist_ko !== song.artist && (
-          <MarqueeText className="text-muted-foreground/70 text-xs">{song.artist_ko}</MarqueeText>
+        <MarqueeText className="text-muted-foreground text-xs">{artistParts.primary}</MarqueeText>
+        {artistParts.secondary && (
+          <MarqueeText className="text-muted-foreground/70 text-xs">
+            {artistParts.secondary}
+          </MarqueeText>
         )}
       </div>
     </div>
