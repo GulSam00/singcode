@@ -51,11 +51,20 @@ export default function useSearchSong() {
   const { addToHistory } = useSearchHistoryStore();
   const { addGuestToSingSong, removeGuestToSingSong } = useGuestToSingStore();
 
+  // 아티스트 별칭 사전이라 제목·번호 탭에서는 후보를 만들지 않는다.
+  // 드롭다운만 숨기면 절반만 막힌다 — handleSearch의 별칭 치환은 이 목록을 직접 보므로,
+  // 제목 탭에서 "원오크"를 직접 타이핑해 엔터를 눌러도 ONE OK ROCK으로 바뀌어 0건이 됐다.
+  // 목록 자체를 비워 드롭다운과 치환을 한 곳에서 함께 끈다.
+  const canUseArtistAlias = searchType === 'all' || searchType === 'artist';
+
   // handleSearch가 이 목록에서 별칭 치환을 하므로 search를 그대로 따라가야 한다.
   // useDeferredValue를 끼우면 목록이 한 박자 늦어, 붙여넣기 직후 엔터처럼 지연이 큰
   // 순간에 "검색할 문자열"과 "그 문자열의 후보"가 어긋나 치환이 조용히 빠진다.
   // 사전 규모가 수백 개라 미룰 만큼 무겁지도 않다.
-  const autoCompleteList = useMemo(() => getAutoCompleteSuggestions(search), [search]);
+  const autoCompleteList = useMemo(
+    () => (canUseArtistAlias ? getAutoCompleteSuggestions(search) : []),
+    [search, canUseArtistAlias],
+  );
 
   const handleSearch = () => {
     // trim 제거

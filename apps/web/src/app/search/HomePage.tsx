@@ -308,7 +308,8 @@ export default function SearchPage() {
               onFocus={() => setIsFocusAuto(true)}
               onBlur={() => setIsFocusAuto(false)}
             />
-            {isFocusAuto && searchType !== 'number' && (
+            {/* 검색 타입별 노출 여부는 useSearchSong이 autoCompleteList를 비우는 것으로 정한다 */}
+            {isFocusAuto && (
               <SearchAutocomplete
                 autoCompleteList={autoCompleteList}
                 onSelect={handleAutocompleteClick}
