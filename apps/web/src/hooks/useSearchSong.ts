@@ -66,9 +66,11 @@ export default function useSearchSong() {
     [search, canUseArtistAlias],
   );
 
-  const handleSearch = () => {
+  // overrideText: 자동완성 후보를 키보드/마우스로 고른 경우 그 값으로 바로 검색한다.
+  // setSearch 는 다음 렌더에야 반영되므로, 인자로 받지 않으면 직전 입력값으로 검색이 나간다.
+  const handleSearch = (overrideText?: string) => {
     // trim 제거
-    const trimSearch = search.trim();
+    const trimSearch = (overrideText ?? search).trim();
 
     if (!trimSearch) {
       setQuery('');
