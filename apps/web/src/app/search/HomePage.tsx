@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TOUR_DEMO_SEARCH_TERM, TOUR_DEMO_SONG } from '@/constants/tourDemoSong';
+import useAutocompleteNavigation from '@/hooks/useAutocompleteNavigation';
 import useSaveSongModal from '@/hooks/useSaveSongModal';
 import useSearchSong from '@/hooks/useSearchSong';
 import useSearchTourController from '@/hooks/useSearchTourController';
@@ -25,6 +26,8 @@ import SearchHistory from './SearchHistory';
 import SearchResultCard from './SearchResultCard';
 import SearchStatus from './SearchStatus';
 import SearchTour from './SearchTour';
+
+const AUTOCOMPLETE_LISTBOX_ID = 'search-autocomplete-listbox';
 
 export default function SearchPage() {
   const {
@@ -114,12 +117,27 @@ export default function SearchPage() {
   const isNumberKeypadVisible =
     searchType === 'number' && (isNumberKeypadOpen || searchSongs.length === 0);
 
-  // 엔터 키 처리
+  const isAutocompleteOpen = isFocusAuto && autoCompleteList.length > 0;
+
+  const { activeCandidate, handleKeyDown, inputAriaProps, listboxProps } =
+    useAutocompleteNavigation({
+      listboxId: AUTOCOMPLETE_LISTBOX_ID,
+      candidates: autoCompleteList,
+      isOpen: isAutocompleteOpen,
+      onClose: () => setIsFocusAuto(false),
+    });
+
+  // 엔터 키 처리 — 활성 후보가 있으면 그 후보로, 없으면 입력값 그대로 검색한다.
   const handleKeyUp = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key !== 'Enter') return;
+
+    if (activeCandidate) {
+      setSearch(activeCandidate.value);
+      handleSearch(activeCandidate.value);
+    } else {
       handleSearch();
-      setIsFocusAuto(false);
     }
+    setIsFocusAuto(false);
   };
 
   const handleSearchClick = () => {
@@ -304,14 +322,18 @@ export default function SearchPage() {
               className="pl-8"
               value={search}
               onChange={handleChangeSearch}
+              onKeyDown={handleKeyDown}
               onKeyUp={handleKeyUp}
               onFocus={() => setIsFocusAuto(true)}
               onBlur={() => setIsFocusAuto(false)}
+              {...inputAriaProps}
             />
-            {isFocusAuto && searchType !== 'number' && (
+            {/* 검색 타입별 노출 여부는 useSearchSong이 autoCompleteList를 비우는 것으로 정한다 */}
+            {isFocusAuto && (
               <SearchAutocomplete
                 autoCompleteList={autoCompleteList}
                 onSelect={handleAutocompleteClick}
+                {...listboxProps}
               />
             )}
           </div>
