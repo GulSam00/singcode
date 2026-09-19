@@ -23,11 +23,12 @@ export async function GET(
     const supabase = await createClient();
     const searchParams = request.nextUrl.searchParams;
 
-    // 1) 확정된 월 목록 조회 (1위 행만 봐도 그 월이 확정됐는지 알 수 있다)
+    // 1) 확정된 월 목록 조회.
+    //    1위 행만 보고 판단하면, 그 행이 빠진 달은 나머지 순위가 남아 있어도 통째로
+    //    "확정 전"으로 취급돼 화면에서 사라진다. 행이 있는 달은 모두 확정된 달로 본다.
     const { data: monthRows, error: monthError } = await supabase
       .from('monthly_artist_rankings')
       .select('vote_month')
-      .eq('rank', 1)
       .order('vote_month', { ascending: false });
 
     if (monthError) throw monthError;
