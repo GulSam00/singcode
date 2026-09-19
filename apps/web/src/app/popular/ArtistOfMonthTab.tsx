@@ -1,7 +1,7 @@
 'use client';
 
 import { addMonths, format, parseISO, startOfMonth } from 'date-fns';
-import { ChartPie, Construction, List } from 'lucide-react';
+import { ChartPie, Construction, List, Loader2, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 
 import StaticLoading from '@/components/StaticLoading';
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useArtistRankingsQuery } from '@/queries/artistVoteQuery';
 import { cn } from '@/utils/cn';
-import { getCurrentMonthFirstDayKST } from '@/utils/kst';
+import { getCurrentMonthFirstDayKST, getPrevMonthFirstDayKST } from '@/utils/kst';
 
 import ArtistRankingBoard from './ArtistRankingBoard';
 import ArtistRankingChart from './ArtistRankingChart';
@@ -21,21 +21,40 @@ const shiftMonth = (month: string, delta: number) =>
   format(startOfMonth(addMonths(parseISO(month), delta)), MONTH_FORMAT);
 
 export default function ArtistOfMonthTab() {
-  // 탭에 들어오면 바로 투표할 수 있도록 이번 달을 기본으로 본다.
-  // 인기곡 차트(전월 기본)와 다른데, 여기서는 확정된 순위를 보는 것보다 투표가 주된 행동이다.
-  // 지난 달 결과는 월 선택기의 이전 버튼으로 간다.
-  const [month, setMonth] = useState(getCurrentMonthFirstDayKST);
+  // 탭에 들어오면 확정된 순위부터 보여준다. 이번 달은 집계 전이라 순위가 없어서,
+  // 이번 달을 기본으로 두면 결과를 보러 온 사람이 매번 이전 달로 한 번 더 이동해야 했다.
+  // 어느 달까지 확정됐는지는 서버만 아니까, 처음에는 달을 지정하지 않고 서버가 고른 달(가장 최근
+  // 확정 월 = 보통 직전 달)을 따른다. 사용자가 월을 고르면 그때부터 그 값이 주인이 된다.
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   // 같은 순위 데이터를 순위표로 볼지, 득표 비중 파이로 볼지 고르는 스위치
   const [view, setView] = useState<'list' | 'chart'>('list');
 
+  const { data, isPending, isError, isPlaceholderData, refetch } = useArtistRankingsQuery(
+    selectedMonth ?? undefined,
+  );
+
   const currentMonth = getCurrentMonthFirstDayKST();
+  // 응답 전에도 월 선택기에 쓸 값이 있어야 해서 직전 달로 받쳐 둔다.
+  const month = selectedMonth ?? data?.month ?? getPrevMonthFirstDayKST();
   // 이번 달은 아직 집계 전이라 순위 대신 내 투표를 편집하는 화면을 보여준다.
   const isVotingMonth = month === currentMonth;
 
-  const { data, isPending, isPlaceholderData } = useArtistRankingsQuery(month);
-
   if (isPending) {
     return <StaticLoading />;
+  }
+
+  // 조회가 실패했을 때 결과가 없는 것처럼 보이면 안 된다.
+  // 확정된 데이터가 있는데도 "아직 확정된 결과가 없어요"로 읽히면 원인을 찾을 길이 없다.
+  if (isError) {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center gap-4">
+        <TriangleAlert className="text-muted-foreground h-16 w-16" />
+        <p className="text-muted-foreground text-xl">순위를 불러오지 못했어요</p>
+        <Button variant="outline" onClick={() => refetch()}>
+          다시 시도
+        </Button>
+      </div>
+    );
   }
 
   const availableMonths = data?.availableMonths ?? [];
@@ -56,9 +75,9 @@ export default function ArtistOfMonthTab() {
         selectableMonths={selectableMonths}
         canGoPrev={canGoPrev}
         canGoNext={canGoNext}
-        onPrev={() => setMonth(shiftMonth(month, -1))}
-        onNext={() => setMonth(shiftMonth(month, 1))}
-        onChange={setMonth}
+        onPrev={() => setSelectedMonth(shiftMonth(month, -1))}
+        onNext={() => setSelectedMonth(shiftMonth(month, 1))}
+        onChange={setSelectedMonth}
       />
 
       {isVotingMonth ? (
@@ -69,7 +88,7 @@ export default function ArtistOfMonthTab() {
             <div className="flex shrink-0 items-center justify-end gap-2">
               {/* 지난 달 결과를 보다가 바로 이번 달 투표로 넘어갈 수 있게 둔다.
                   월 선택기의 다음 달 버튼으로도 갈 수 있지만 그건 눈에 잘 띄지 않는다. */}
-              <Button size="sm" variant="outline" onClick={() => setMonth(currentMonth)}>
+              <Button size="sm" variant="outline" onClick={() => setSelectedMonth(currentMonth)}>
                 투표하러 가기
               </Button>
 
@@ -101,10 +120,23 @@ export default function ArtistOfMonthTab() {
           <ScrollArea className="min-h-0 flex-1">
             <div className={cn('transition-opacity', isPlaceholderData && 'opacity-50')}>
               {items.length === 0 ? (
-                <div className="flex h-64 flex-col items-center justify-center gap-4">
-                  <Construction className="text-muted-foreground h-16 w-16" />
-                  <p className="text-muted-foreground text-xl">아직 확정된 결과가 없어요</p>
-                </div>
+                isPlaceholderData ? (
+                  // 이 비어 있음은 직전에 보던 달의 응답이다. 지금 고른 달이 미확정이라는
+                  // 근거가 못 되므로, 응답이 오기 전까지 단정하지 않고 기다리는 중임만 알린다.
+                  <div className="flex h-64 items-center justify-center">
+                    <Loader2 className="text-muted-foreground h-16 w-16 animate-spin" />
+                  </div>
+                ) : (
+                  <div className="flex h-64 flex-col items-center justify-center gap-4">
+                    <Construction className="text-muted-foreground h-16 w-16" />
+                    {/* 확정된 달이 아예 없는 것과, 고른 달만 비어 있는 것은 다른 상황이다. */}
+                    <p className="text-muted-foreground text-xl">
+                      {availableMonths.length === 0
+                        ? '아직 확정된 결과가 없어요'
+                        : `${Number(month.slice(5, 7))}월 결과는 아직 확정되지 않았어요`}
+                    </p>
+                  </div>
+                )
               ) : view === 'chart' ? (
                 <ArtistRankingChart items={items} />
               ) : (

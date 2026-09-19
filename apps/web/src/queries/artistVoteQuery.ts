@@ -1,5 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { useEffect } from 'react';
 
 import {
   getArtistRankings,
@@ -58,16 +59,37 @@ export const useSaveArtistVotesMutation = () => {
   });
 };
 
+/**
+ * month를 넘기지 않으면 서버가 가장 최근 확정 월을 골라 돌려준다.
+ * 실패를 null로 삼키면 화면에서 "확정된 결과가 없는 달"과 구분되지 않아, 조회 오류가
+ * 빈 결과처럼 보인다. 그래서 던져서 isError로 남긴다.
+ */
 export const useArtistRankingsQuery = (month?: string) => {
-  return useQuery({
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
     queryKey: ['artistRankings', month],
     queryFn: async () => {
       const response = await getArtistRankings(month);
-      if (!response.success) return null;
+      if (!response.success) throw new Error(response.error ?? '순위를 불러오지 못했어요');
       return response.data;
     },
     placeholderData: keepPreviousData,
   });
+
+  // 첫 조회는 month 없이 나가므로 응답이 ['artistRankings', undefined] 키에만 쌓인다.
+  // 그대로 두면 다른 달을 봤다가 이 달로 돌아올 때 캐시가 비어 다시 네트워크를 타고,
+  // 그동안 keepPreviousData가 넘겨주는 직전 달 데이터가 화면에 섞인다.
+  // 응답이 알려준 실제 월 키에도 같은 값을 심어 복귀를 캐시 히트로 만든다.
+  const resolvedMonth = query.data?.month;
+  const { data, isPlaceholderData } = query;
+
+  useEffect(() => {
+    if (month || !resolvedMonth || isPlaceholderData || !data) return;
+    queryClient.setQueryData(['artistRankings', resolvedMonth], data);
+  }, [month, resolvedMonth, isPlaceholderData, data, queryClient]);
+
+  return query;
 };
 
 export const useArtistVotersQuery = (month: string, artist: string, enabled: boolean) => {
