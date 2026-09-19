@@ -2,7 +2,13 @@ import withBundleAnalyzer from '@next/bundle-analyzer';
 import withSerwistInit from '@serwist/next';
 import type { NextConfig } from 'next';
 
+// 개발 배지(Next.js 인디케이터 / React Query Devtools)는 기본으로 숨긴다.
+// 켜고 싶으면 .env.development.local 에 NEXT_PUBLIC_SHOW_DEV_BADGES=true 를 넣는다.
+const showDevBadges = process.env.NEXT_PUBLIC_SHOW_DEV_BADGES === 'true';
+
 const nextConfig: NextConfig = {
+  devIndicators: showDevBadges ? undefined : false,
+
   async headers() {
     return [
       {
