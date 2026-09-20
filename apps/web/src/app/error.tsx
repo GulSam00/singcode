@@ -43,7 +43,7 @@ export default function Error({ error }: ErrorPageProps) {
   // }, [error]);
 
   return (
-    <div className="container flex h-dvh items-center justify-center px-4 py-8">
+    <div className="flex min-h-full items-center justify-center">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl font-bold">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import SearchAutocomplete from '@/app/search/SearchAutocomplete';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import useAutocompleteNavigation from '@/hooks/useAutocompleteNavigation';
 import { useMyArtistVotesQuery, useSaveArtistVotesMutation } from '@/queries/artistVoteQuery';
 import { useArtistSearchQuery } from '@/queries/artistsQuery';
 import { useUserQuery } from '@/queries/userQuery';
@@ -24,6 +25,8 @@ import ArtistName from './ArtistName';
 import ArtistVoteRow from './ArtistVoteRow';
 
 const STEP = 10;
+
+const ARTIST_VOTE_LISTBOX_ID = 'artist-vote-autocomplete-listbox';
 
 /**
  * 이번 달(아직 확정되지 않은 달) 화면. 랭킹 대신 내가 이번 달에 투표한 아티스트를 편집한다.
@@ -50,14 +53,20 @@ export default function ArtistVotePanel() {
   const { mutate: saveVotes, isPending } = useSaveArtistVotesMutation();
   const { data: searchResults = [], isFetching: isSearching } = useArtistSearchQuery(query);
 
-  const autoCompleteList = searchResults.map(artist => ({
-    // 한국어 표기가 원어 표기와 같으면(예: 'IVE') 같은 글자를 두 번 보여줄 뿐이라 생략한다.
-    label:
-      artist.name_ko && artist.name_ko !== artist.name
-        ? `${artist.name} (${artist.name_ko})`
-        : artist.name,
-    value: artist.name,
-  }));
+  // useMemo 로 참조를 고정한다. 매 렌더 새 배열을 만들면
+  // useAutocompleteNavigation 이 목록이 바뀐 것으로 보고 활성 후보를 계속 지운다.
+  const autoCompleteList = useMemo(
+    () =>
+      searchResults.map(artist => ({
+        // 한국어 표기가 원어 표기와 같으면(예: 'IVE') 같은 글자를 두 번 보여줄 뿐이라 생략한다.
+        label:
+          artist.name_ko && artist.name_ko !== artist.name
+            ? `${artist.name} (${artist.name_ko})`
+            : artist.name,
+        value: artist.name,
+      })),
+    [searchResults],
+  );
   // 자동완성은 결과가 없으면 아무것도 그리지 않아 검색이 동작하는지조차 알기 어렵다.
   // 검색어를 넣었는데 후보가 없으면 그 사실을 그대로 알려준다.
   const isSearchEmpty = query.trim().length > 0 && !isSearching && autoCompleteList.length === 0;
@@ -88,6 +97,16 @@ export default function ArtistVotePanel() {
     setIsFocusAuto(true);
   };
 
+  const isAutocompleteOpen = isFocusAuto && autoCompleteList.length > 0;
+
+  const { activeCandidate, handleKeyDown, inputAriaProps, listboxProps } =
+    useAutocompleteNavigation({
+      listboxId: ARTIST_VOTE_LISTBOX_ID,
+      candidates: autoCompleteList,
+      isOpen: isAutocompleteOpen,
+      onClose: () => setIsFocusAuto(false),
+    });
+
   const handleSelectArtist = (name: string) => {
     setQuery('');
     setIsFocusAuto(false);
@@ -96,6 +115,12 @@ export default function ArtistVotePanel() {
 
     const selected = searchResults.find(artist => artist.name === name);
     setAddedArtists(prev => [...prev, selected ?? { name, name_ko: null }]);
+  };
+
+  // 엔터는 키보드로 고른 후보를 목록에 담는다. 고른 후보가 없으면 아무 일도 하지 않는다.
+  const handleKeyUp = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Enter' || !activeCandidate) return;
+    handleSelectArtist(activeCandidate.value);
   };
 
   const handleChange = (artist: string, amount: number) => {
@@ -157,11 +182,18 @@ export default function ArtistVotePanel() {
             placeholder="아티스트 검색"
             value={query}
             onChange={event => handleChangeQuery(event.target.value)}
+            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
             onFocus={() => setIsFocusAuto(true)}
             onBlur={() => setIsFocusAuto(false)}
+            {...inputAriaProps}
           />
           {isFocusAuto && (
-            <SearchAutocomplete autoCompleteList={autoCompleteList} onSelect={handleSelectArtist} />
+            <SearchAutocomplete
+              autoCompleteList={autoCompleteList}
+              onSelect={handleSelectArtist}
+              {...listboxProps}
+            />
           )}
         </div>
 
