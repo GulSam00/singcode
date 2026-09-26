@@ -7,7 +7,7 @@ export default function HomePage() {
   return (
     <div className="bg-background flex h-full flex-col">
       <div className="mb-6 flex shrink-0 items-center justify-between">
-        <h1 className="text-2xl font-bold">노래방 플레이리스트</h1>
+        <h1 className="text-2xl font-bold">플레이리스트</h1>
         <AddSongButton />
       </div>
       <ScrollArea className="min-h-0 flex-1 py-4">
