@@ -7,8 +7,6 @@ import { usePostToSingSongMutation } from '@/queries/tosingSongQuery';
 export type TabType = 'like' | 'save';
 
 export default function useAddSongList() {
-  const [activeTab, setActiveTab] = useState<TabType>('like');
-
   const [songSelected, setSongSelected] = useState<string[]>([]);
 
   const { mutate: postToSingSong } = usePostToSingSongMutation();
@@ -27,8 +25,6 @@ export default function useAddSongList() {
   const totalSelectedCount = songSelected.length;
 
   return {
-    activeTab,
-    setActiveTab,
     songSelected,
     handleToggleSelect,
     handleConfirmAdd,
