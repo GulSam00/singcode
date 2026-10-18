@@ -1,4 +1,4 @@
-import { addDays, addHours } from 'date-fns';
+import { addDays, addHours, addMonths, format, parseISO, startOfMonth } from 'date-fns';
 
 // 월 계산은 확정 배치(packages/crawling)와 같은 규칙을 써야 해 @repo/constants로 옮겼다.
 // 기존 import 경로를 유지하려고 여기서 재수출한다.
@@ -13,4 +13,9 @@ export function getTomorrowKST(): string {
 export function getTomorrowKSTDate(): Date {
   const [y, m, d] = getTomorrowKST().split('-').map(Number);
   return new Date(y, m - 1, d);
+}
+
+/** 'yyyy-MM-dd' 월 첫날 문자열을 delta개월 이동한 월 첫날 문자열로 반환 */
+export function shiftMonth(month: string, delta: number): string {
+  return format(startOfMonth(addMonths(parseISO(month), delta)), 'yyyy-MM-dd');
 }

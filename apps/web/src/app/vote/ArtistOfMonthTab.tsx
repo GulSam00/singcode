@@ -1,24 +1,19 @@
 'use client';
 
-import { addMonths, format, parseISO, startOfMonth } from 'date-fns';
 import { ChartPie, Construction, List, Loader2, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 
+import MonthSelector from '@/components/MonthSelector';
 import StaticLoading from '@/components/StaticLoading';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useArtistRankingsQuery } from '@/queries/artistVoteQuery';
 import { cn } from '@/utils/cn';
-import { getCurrentMonthFirstDayKST, getPrevMonthFirstDayKST } from '@/utils/kst';
+import { getCurrentMonthFirstDayKST, getPrevMonthFirstDayKST, shiftMonth } from '@/utils/kst';
 
 import ArtistRankingBoard from './ArtistRankingBoard';
 import ArtistRankingChart from './ArtistRankingChart';
 import ArtistVotePanel from './ArtistVotePanel';
-import MonthSelector from './MonthSelector';
-
-const MONTH_FORMAT = 'yyyy-MM-dd';
-const shiftMonth = (month: string, delta: number) =>
-  format(startOfMonth(addMonths(parseISO(month), delta)), MONTH_FORMAT);
 
 export default function ArtistOfMonthTab() {
   // 탭에 들어오면 확정된 순위부터 보여준다. 이번 달은 집계 전이라 순위가 없어서,

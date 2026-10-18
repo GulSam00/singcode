@@ -9,6 +9,13 @@ const showDevBadges = process.env.NEXT_PUBLIC_SHOW_DEV_BADGES === 'true';
 const nextConfig: NextConfig = {
   devIndicators: showDevBadges ? undefined : false,
 
+  async redirects() {
+    return [
+      { source: '/recent', destination: '/chart/recent', permanent: true },
+      { source: '/popular', destination: '/vote', permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       {
