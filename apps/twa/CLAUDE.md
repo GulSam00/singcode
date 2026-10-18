@@ -167,6 +167,12 @@ pnpm --filter twa run build:android
 
 <a id="target-sdk"></a>
 
+#### minSdkVersion 24 (Play 자동 보호 요구사항)
+
+Play 자동 보호를 쓰려면 `minSdkVersion`이 24 이상이어야 한다. Bubblewrap 기본값은 21이라,
+`twa-manifest.json`의 `minSdkVersion`을 24로 두고 빌드 시 재생성 프롬프트에 `Yes`로 답해 반영한다.
+`check-sdk`가 `app/build.gradle`의 값을 함께 검사한다.
+
 #### targetSdkVersion 36 (Google Play 요구사항)
 
 Google Play는 **2026-08-31**부터 API 36(Android 16) 미만을 타겟하는 앱의 업데이트를 거부한다.
