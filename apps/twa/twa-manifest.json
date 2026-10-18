@@ -21,8 +21,8 @@
     "path": "./android.keystore",
     "alias": "singcode"
   },
-  "appVersionName": "14",
-  "appVersionCode": 14,
+  "appVersionName": "16",
+  "appVersionCode": 16,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://www.singcode.kr/manifest.webmanifest",
@@ -35,7 +35,7 @@
   "isChromeOSOnly": false,
   "isMetaQuest": false,
   "fullScopeUrl": "https://www.singcode.kr/",
-  "minSdkVersion": 21,
+  "minSdkVersion": 24,
   "orientation": "portrait",
   "fingerprints": [],
   "additionalTrustedOrigins": [],
@@ -44,5 +44,5 @@
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [],
-  "appVersion": "14"
+  "appVersion": "16"
 }
