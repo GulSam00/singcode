@@ -8,10 +8,12 @@ import useAuthStore from '@/stores/useAuthStore';
 
 const ALLOW_PATHS = [
   '/',
-  '/popular',
+  '/vote',
   '/login',
   '/signup',
-  '/recent',
+  '/chart',
+  '/chart/recent',
+  '/chart/popular',
   '/tosing',
   '/update-password',
   '/patch-notes',

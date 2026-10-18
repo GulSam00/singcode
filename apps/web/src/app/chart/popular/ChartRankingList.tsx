@@ -1,37 +1,19 @@
 'use client';
 
-import { addMonths, format, parseISO, startOfMonth } from 'date-fns';
 import { Construction } from 'lucide-react';
 import { useState } from 'react';
 
-import SongSummary from '@/components/SongSummary';
+import MonthSelector from '@/components/MonthSelector';
 import StaticLoading from '@/components/StaticLoading';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTjChartQuery } from '@/queries/tjChartQuery';
 import { StrType } from '@/types/tjChart';
 import { cn } from '@/utils/cn';
-import { getPrevMonthFirstDayKST } from '@/utils/kst';
+import { getPrevMonthFirstDayKST, shiftMonth } from '@/utils/kst';
+
+import ChartRankItem from '../ChartRankItem';
 
 import ChartGenreFilter from './ChartGenreFilter';
-import MonthSelector from './MonthSelector';
-
-const MONTH_FORMAT = 'yyyy-MM-dd';
-
-const getRankStyle = (rank: number) => {
-  switch (rank) {
-    case 1:
-      return 'bg-amber-500 text-white font-bold';
-    case 2:
-      return 'bg-gray-300 text-white font-bold';
-    case 3:
-      return 'bg-amber-700 text-white font-bold';
-    default:
-      return 'bg-muted text-muted-foreground';
-  }
-};
-
-const shiftMonth = (month: string, delta: number) =>
-  format(startOfMonth(addMonths(parseISO(month), delta)), MONTH_FORMAT);
 
 export default function ChartRankingList() {
   const [genre, setGenre] = useState<StrType>(StrType.All);
@@ -81,23 +63,7 @@ export default function ChartRankingList() {
               <p className="text-muted-foreground text-xl">데이터를 준비중이에요</p>
             </div>
           ) : (
-            items.map(item => (
-              <div
-                key={item.id}
-                className="flex items-start gap-4 border-b px-4 py-3 last:border-0"
-              >
-                <div
-                  className={cn(
-                    'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
-                    getRankStyle(item.rank),
-                  )}
-                >
-                  {item.rank}
-                </div>
-                {/* 순위 뱃지와 같은 행이라 min-w-0이 없으면 긴 곡 제목·가수가 번호 영역을 밀어낸다 */}
-                <SongSummary song={item} className="min-w-0 flex-1" />
-              </div>
-            ))
+            items.map(item => <ChartRankItem key={item.id} item={item} />)
           )}
         </div>
       </ScrollArea>

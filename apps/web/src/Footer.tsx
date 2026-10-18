@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { ChartColumn, Crown, ListMusic, type LucideIcon, Search, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -12,16 +13,17 @@ interface Navigation {
   name: string;
   href: string;
   key: FooterKey;
+  icon: LucideIcon;
 }
 
 const navigation: Navigation[] = [
-  { name: '최신 곡', href: '/recent', key: 'RECENT' },
+  { name: '차트', href: '/chart', key: 'CHART', icon: ChartColumn },
 
-  { name: '부를 곡', href: '/tosing', key: 'TOSING' },
-  { name: '검색', href: '/', key: 'SEARCH' },
+  { name: '부를 곡', href: '/tosing', key: 'TOSING', icon: ListMusic },
+  { name: '검색', href: '/', key: 'SEARCH', icon: Search },
 
-  { name: '인기 차트', href: '/popular', key: 'POPULAR' },
-  { name: '정보', href: '/info', key: 'INFO' },
+  { name: '투표', href: '/vote', key: 'VOTE', icon: Crown },
+  { name: '정보', href: '/info', key: 'INFO', icon: User },
 ];
 
 export default function Footer() {
@@ -30,10 +32,11 @@ export default function Footer() {
   const navPath = pathname.split('/')[1];
 
   return (
-    <footer className="bg-background flex h-10 w-full max-w-md shrink-0 justify-between border-t">
+    <footer className="bg-background flex h-14 w-full max-w-md shrink-0 justify-between border-t">
       {navigation.map(item => {
         const isActive = '/' + navPath === item.href;
         const isAnimating = footerAnimateKey === item.key;
+        const Icon = item.icon;
 
         return (
           <div key={item.name} className="relative flex-1">
@@ -49,17 +52,18 @@ export default function Footer() {
             <Button
               asChild
               className={cn(
-                'h-full w-full px-0 text-sm',
+                'h-full w-full px-0 text-xs',
                 isActive && 'bg-accent text-accent-foreground',
               )}
               variant="ghost"
             >
               <Link href={item.href}>
                 <motion.span
-                  className="inline-block"
+                  className="flex flex-col items-center gap-0.5"
                   animate={isAnimating ? { scale: 1.4 } : { scale: 1 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
+                  <Icon className="size-5" />
                   {item.name}
                 </motion.span>
               </Link>

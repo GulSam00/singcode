@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -62,7 +62,7 @@ export default function MonthSelector({
         disabled={!canGoPrev}
         onClick={onPrev}
       >
-        <ChevronLeft className="size-6" />
+        <ArrowLeft className="size-6" />
       </Button>
 
       <div className="flex items-center gap-1 whitespace-nowrap">
@@ -101,7 +101,7 @@ export default function MonthSelector({
         disabled={!canGoNext}
         onClick={onNext}
       >
-        <ChevronRight className="size-6" />
+        <ArrowRight className="size-6" />
       </Button>
     </div>
   );

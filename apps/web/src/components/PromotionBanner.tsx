@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { useSongPromotionsQuery } from '@/queries/songPromotionQuery';
 import { splitDisplay } from '@/utils/songDisplay';
 
-const ALLOWED_PATHS = ['/', '/popular', '/recent', '/tosing'];
+const ALLOWED_PATHS = ['/', '/vote', '/chart', '/chart/recent', '/chart/popular', '/tosing'];
 const COLLAPSED_STORAGE_KEY = 'promotion-banner-collapsed';
 
 export default function PromotionBanner() {
