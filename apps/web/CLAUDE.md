@@ -58,7 +58,7 @@ Three different Supabase clients for different contexts:
 
 ### Auth
 
-`src/auth.tsx` is a client-side `AuthProvider` wrapping the app. It checks auth on every route change via `useAuthStore`. Public routes (no auth required): `/`, `/popular`, `/login`, `/signup`, `/recent`, `/tosing`, `/update-password`. All other routes redirect to `/login?alert=login`.
+`src/auth.tsx` is a client-side `AuthProvider` wrapping the app. It checks auth on every route change via `useAuthStore`. Public routes (no auth required): `/`, `/vote`, `/chart`, `/chart/recent`, `/chart/popular`, `/login`, `/signup`, `/tosing`, `/update-password`. All other routes redirect to `/login?alert=login`.
 
 ### State Management (Zustand)
 
@@ -70,8 +70,10 @@ Three different Supabase clients for different contexts:
 ### Pages / Routes
 
 - `/` → Song search (main feature, `src/app/search/HomePage.tsx`)
-- `/popular` → Popular songs
-- `/recent` → Recently added songs
+- `/chart` → 노래방 차트 허브 (최신곡·인기곡 미리보기)
+- `/chart/recent` → 월별 최신곡 전체 보기 (옛 `/recent`는 리다이렉트)
+- `/chart/popular` → 인기곡 전체 보기 (월·장르 필터)
+- `/vote` → 이달의 아티스트 포인트 투표 (옛 `/popular`는 리다이렉트)
 - `/tosing` → User's "to-sing" list
 - `/info` → User profile/info
 - `/info/like` → Liked songs
