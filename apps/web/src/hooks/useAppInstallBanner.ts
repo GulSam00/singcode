@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const DISMISSED_AT_KEY = 'app-install-banner-dismissed-at';
-const HIDE_DAYS = 7;
+const HIDE_DAYS = 1;
 const HIDE_MS = HIDE_DAYS * 24 * 60 * 60 * 1000;
 
 // TWA(Play 스토어 앱)는 첫 진입 referrer가 android-app://, 설치형 PWA는 display-mode가 standalone이다.
