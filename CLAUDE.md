@@ -91,6 +91,8 @@ See [apps/web/CLAUDE.md](apps/web/CLAUDE.md) for full detail. Key points:
 - `/red` ~ `/refactor` 는 상황에 따라 생략 가능하나, `/verify` → `/commit` 은 항상 실행한다.
 - PR 생성 후: `/pr` → `/review-brief` 로 리뷰 이슈를 확인한다.
 
+이슈 관리는 issues 스킬(`.claude/skills/issues`)을 따른다.
+
 ## Git Conventions
 
 Branch format: `<type>/<issue-number>-<camelCaseName>` — flow: `feat/*` → `develop` → `main`
