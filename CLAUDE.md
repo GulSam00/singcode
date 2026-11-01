@@ -93,6 +93,23 @@ See [apps/web/CLAUDE.md](apps/web/CLAUDE.md) for full detail. Key points:
 
 이슈 관리는 issues 스킬(`.claude/skills/issues`)을 따른다.
 
+### 이슈 단위 작업 규칙
+
+`docs/issues/`의 이슈 하나를 착수할 때(사용자가 "이 이슈 진행해줘"라고 하거나 `status: doing`으로 바꿀 때)는 아래를 따른다.
+
+1. **fresh 세션 + 서브에이전트로 진행한다.** 이슈 하나당 서브에이전트(Agent 도구) 하나를 새 컨텍스트로 띄워 맡긴다. 현재 세션의 대화 맥락을 넘기지 말고, 프롬프트에는 아래만 담아 자급자족하게 한다.
+   - 이슈 파일 경로 (`docs/issues/<id>.md`) — 맥락과 완료 조건은 서브에이전트가 직접 읽는다
+   - 이 `CLAUDE.md`와 관련 하위 `CLAUDE.md`를 따를 것
+   - 작업 브랜치 이름, 끝났을 때 돌려줄 보고 항목(변경 파일, 검증 결과, 남은 일)
+   - 여러 이슈는 서로 파일이 겹치지 않을 때만 병렬로 띄운다. 겹치면 순서대로 한다.
+2. **작업 단위마다 자동으로 커밋하고 푸시한다.** 완료 조건 항목 하나(또는 논리적으로 끝난 한 덩어리)가 끝날 때마다 사용자에게 묻지 않고 커밋하고 현재 작업 브랜치에 push한다.
+   - 코드를 바꿨다면 커밋 전에 `/verify` 수준(build·lint·format·test)을 통과시킨다. 실패하면 커밋하지 말고 원인을 보고한다.
+   - 이슈 파일(체크리스트·상태·로그) 변경은 관련 코드와 같은 커밋에 넣는다. 이슈만 바뀌면 `chore(issues): ...`.
+   - 커밋은 작업 종류별로 나눈다(`feat`/`fix`/`chore`/`doc` 등, Git Conventions 형식).
+3. **푸시 대상은 작업 브랜치뿐이다.** `develop`·`main`에 직접 push하지 않는다. 브랜치는 `<type>/<이슈 id의 slug>` 형식(예: `chore/twa-rebuild-upload`)으로 `develop`에서 새로 딴다. PR 생성과 머지는 사용자가 요청할 때만 한다.
+4. **끝나면 이슈를 갱신한다.** 완료 조건을 모두 채우면 `status: done`과 로그 한 줄을 남기고(파일은 삭제하지 않는다), 서브에이전트의 보고를 사용자에게 요약해 전달한다.
+5. **자동 푸시의 예외.** 비밀값이 섞였을 가능성이 있거나(.env, 토큰), 되돌리기 어려운 변경(DB 스키마 변경, 외부 서비스 게시, force push)은 푸시하지 말고 사용자에게 먼저 묻는다. 사용자가 직접 해야 하는 작업(Supabase SQL 실행, Meta 토큰 발급, Play Console 업로드 등)은 이슈 로그에 "사용자 작업 대기"로 남기고 멈춘다.
+
 ## Git Conventions
 
 Branch format: `<type>/<issue-number>-<camelCaseName>` — flow: `feat/*` → `develop` → `main`
