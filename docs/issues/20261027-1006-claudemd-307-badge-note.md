@@ -1,7 +1,7 @@
 ---
 id: 20261027-1006-claudemd-307-badge-note
 title: CLAUDE.md #307 섹션에서 곡 카드 배지 언급 제거
-status: later
+status: done
 priority: low
 created: 2026-10-27
 external:
@@ -13,8 +13,9 @@ external:
 
 ## 완료 조건
 
-- [ ] 해당 문구 삭제 또는 현재 상태로 수정
+- [x] 해당 문구 삭제 또는 현재 상태로 수정
 
 ## 로그
 
 - 2026-10-27: 등록
+- 2026-11-04: QA 문구를 "투표(포인트 차감) → 월간 확정까지."로 수정. 같은 섹션에 다른 배지 언급 없음. 완료
