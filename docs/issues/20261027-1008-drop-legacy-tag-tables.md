@@ -21,3 +21,4 @@ external:
 ## 로그
 
 - 2026-10-27: 등록
+- 2026-11-12: 삭제 SQL 초안 `apps/web/drop-legacy-tag-tables.sql` 작성 (사전 점검·백업·트랜잭션 삭제). origin/main에 thumb_logs·song_tags 참조 없음 확인. 사용자 작업 대기 — Vercel 프로덕션 배포 커밋 확인 후 SQL Editor에서 섹션별 실행
