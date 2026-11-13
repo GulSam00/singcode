@@ -6,7 +6,6 @@ import {
   getUserPointLogs,
   getUserPromotions,
   patchUserCheckIn,
-  patchUserPoint,
 } from '@/lib/api/user';
 
 export const useUserQuery = () => {
@@ -25,32 +24,24 @@ export const useUserQuery = () => {
   });
 };
 
+/**
+ * 출석 체크. 앱 진입 시 useAutoCheckIn이 자동으로 부른다.
+ * 서버가 KST 하루 한 번만 적립하고 나머지는 awarded=false로 성공시키므로 여러 번 불러도 안전하다.
+ * 화면에 띄우는 오류는 없다 — 백그라운드 호출이라 실패하면 다음 진입 때 다시 시도한다.
+ */
 export const usePatchUserCheckInMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => patchUserCheckIn(),
-    onSuccess: () => {
+    onSuccess: response => {
+      if (!response.success) return;
       queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
-      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
+      if (response.data.awarded) {
+        queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
+      }
     },
     onError: error => {
-      console.error('error', error);
-      alert(error.message ?? 'PATCH 실패');
-    },
-  });
-};
-
-export const usePatchSetPointMutation = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (body: { amount: number; description: string }) => patchUserPoint(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userCheckIn'] });
-      queryClient.invalidateQueries({ queryKey: ['pointLogs'] });
-    },
-    onError: error => {
-      console.error('error', error);
-      alert(error.message ?? 'PATCH 실패');
+      console.error('출석 체크 실패:', error);
     },
   });
 };
