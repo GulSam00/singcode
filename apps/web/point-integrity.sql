@@ -430,6 +430,9 @@ revoke all on function public.cancel_song_promotion(public.song_promotions.id%ty
 grant execute on function public.cancel_song_promotion(public.song_promotions.id%type)
   to authenticated;
 
+-- PostgREST가 새 함수를 바로 보도록 스키마 캐시를 다시 읽힌다 (Supabase는 보통 자동이지만 확실히 하려고).
+notify pgrst, 'reload schema';
+
 -- ============================================================================
 -- 2. 권한 회수 — 웹 배포 직후 실행
 -- ============================================================================
