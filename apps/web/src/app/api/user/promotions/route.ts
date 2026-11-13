@@ -1,11 +1,10 @@
-import { differenceInCalendarDays } from 'date-fns';
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
 import { ApiResponse } from '@/types/apiRoute';
 import { SongPromotion } from '@/types/promotion';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
-import { getTodayKST } from '@/utils/kst';
+import { INVALID_TEXT_REPRESENTATION, toPointRpcErrorResponse } from '@/utils/pointRpcError';
 
 export async function GET(): Promise<NextResponse<ApiResponse<SongPromotion[]>>> {
   try {
@@ -64,7 +63,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<SongPromotion[]>>>
 export async function DELETE(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
     const supabase = await createClient();
-    const userId = await getAuthenticatedUser(supabase);
+    await getAuthenticatedUser(supabase);
 
     const { id } = await request.json();
 
@@ -72,52 +71,30 @@ export async function DELETE(request: Request): Promise<NextResponse<ApiResponse
       return NextResponse.json({ success: false, error: 'id is required' }, { status: 400 });
     }
 
-    const { data: promotion, error: fetchError } = await supabase
-      .from('song_promotions')
-      .select('id, user_id, start_date, end_date, songs(title, artist)')
-      .eq('id', id)
-      .single();
+    // 소유·시작일 검사, 삭제, 환불은 cancel_song_promotion RPC가 홍보 행을 잠근 채 한 번에 처리한다.
+    // 따로 하면 같은 취소를 동시에 두 번 보냈을 때 두 번 환불된다.
+    const { error: rpcError } = await supabase.rpc('cancel_song_promotion', {
+      p_promotion_id: id,
+    });
 
-    if (fetchError || !promotion) {
+    // id 형식이 컬럼 타입(uuid 등)과 맞지 않으면 형변환 단계에서 22P02로 실패한다 — 없는 홍보와 같다.
+    if (rpcError?.code === INVALID_TEXT_REPRESENTATION) {
       return NextResponse.json(
         { success: false, error: '홍보를 찾을 수 없습니다.' },
         { status: 404 },
       );
     }
 
-    if (promotion.user_id !== userId) {
-      return NextResponse.json(
-        { success: false, error: '본인의 홍보만 취소할 수 있습니다.' },
-        { status: 403 },
-      );
+    if (rpcError) {
+      const mapped = toPointRpcErrorResponse(rpcError);
+      if (mapped) {
+        return NextResponse.json(
+          { success: false, error: mapped.error },
+          { status: mapped.status },
+        );
+      }
+      throw rpcError;
     }
-
-    const todayKST = getTodayKST();
-    if (promotion.start_date <= todayKST) {
-      return NextResponse.json(
-        { success: false, error: '이미 시작된 홍보는 취소할 수 없습니다.' },
-        { status: 400 },
-      );
-    }
-
-    const days =
-      differenceInCalendarDays(new Date(promotion.end_date), new Date(promotion.start_date)) + 1;
-    const refund = days * 15;
-
-    const { error: deleteError } = await supabase.from('song_promotions').delete().eq('id', id);
-
-    if (deleteError) throw deleteError;
-
-    const song = promotion.songs as unknown as { title: string; artist: string } | null;
-    const description = `홍보 취소: ${song?.title ?? ''} - ${song?.artist ?? ''}`;
-
-    const { error: pointError } = await supabase.rpc('record_point_change', {
-      p_user_id: userId,
-      p_amount: refund,
-      p_description: description,
-    });
-
-    if (pointError) throw pointError;
 
     return NextResponse.json({ success: true });
   } catch (error) {

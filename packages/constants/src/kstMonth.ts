@@ -10,9 +10,14 @@ import { addHours, format, startOfMonth, subMonths } from 'date-fns';
  * 서버 타임존이 무엇이든 같은 값을 내도록 UTC에 9시간을 더해 KST 벽시계를 만든 뒤 자른다.
  */
 
+/** 주어진 시각의 KST 날짜를 'YYYY-MM-DD' 문자열로 반환 (예: 서버가 준 last_check_in) */
+export function toKSTDateString(date: Date | string): string {
+  return addHours(new Date(date), 9).toISOString().split('T')[0];
+}
+
 /** 오늘 KST 날짜를 'YYYY-MM-DD' 문자열로 반환 */
 export function getTodayKST(): string {
-  return addHours(new Date(), 9).toISOString().split('T')[0];
+  return toKSTDateString(new Date());
 }
 
 /** 이전 달 1일 'YYYY-MM-DD' (KST 기준). 월 단위 집계의 대상 월이다. */
