@@ -81,15 +81,11 @@ create policy "artist_votes_select_own_or_finalized" on public.artist_votes
     )
   );
 
--- 투표 등록/수정/삭제는 본인 행만. upsert가 insert와 update 정책을 모두 타므로 둘 다 필요하다.
+-- 투표 등록/수정/삭제 정책은 두지 않는다. 쓰기는 포인트 차감과 한 트랜잭션으로 묶인
+-- cast_artist_vote() (SECURITY DEFINER, point-integrity.sql)로만 한다.
+-- 예전에는 본인 행 insert/update/delete를 허용해, anon 키로 PostgREST를 직접 부르면
+-- 포인트 차감 없이 원하는 amount로 투표를 넣을 수 있었다. 다시 실행해도 정책이 되살아나지 않도록
+-- 남아 있는 옛 정책을 지우기만 한다.
 drop policy if exists "artist_votes_insert_own" on public.artist_votes;
-create policy "artist_votes_insert_own" on public.artist_votes
-  for insert with check (auth.uid() = user_id);
-
 drop policy if exists "artist_votes_update_own" on public.artist_votes;
-create policy "artist_votes_update_own" on public.artist_votes
-  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
-
 drop policy if exists "artist_votes_delete_own" on public.artist_votes;
-create policy "artist_votes_delete_own" on public.artist_votes
-  for delete using (auth.uid() = user_id);

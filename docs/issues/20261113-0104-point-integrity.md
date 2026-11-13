@@ -59,3 +59,4 @@ external:
 - 2026-11-13: 등록 (익명 사용 검토 중 발견)
 - 2026-11-13: artist_votes 직접 쓰기 정책 문제 추가
 - 2026-11-13: 착수(doing). 자동 출석 체크를 범위에 추가
+- 2026-11-13: `apps/web/point-integrity.sql` 작성 — 출석·투표·홍보 등록/취소 RPC(SECURITY DEFINER, `auth.uid()`, users 행 잠금), record_point_change·users.point·artist_votes·song_promotions·point_logs 쓰기 권한 회수, 과거 악용 감사 쿼리
