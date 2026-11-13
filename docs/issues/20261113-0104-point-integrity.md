@@ -46,7 +46,7 @@ external:
 ## 완료 조건
 
 - [x] `PATCH /api/user/point` 라우트와 `patchUserPoint`·`usePatchSetPointMutation` 제거
-- [ ] 자동 출석: 로그인 상태로 앱 진입 시 출석 API 자동 호출, 적립 시 토스트, 자동 모달 제거, 헤더 버튼은 상태 표시용으로 유지
+- [x] 자동 출석: 로그인 상태로 앱 진입 시 출석 API 자동 호출, 적립 시 토스트, 자동 모달 제거, 헤더 버튼은 상태 표시용으로 유지
 - [ ] 출석을 RPC 하나로 묶기: KST 오늘 이미 출석했으면 거절하고, `last_check_in` 갱신과 +30P를 한 트랜잭션으로 처리
 - [ ] 투표·곡 홍보 차감을 RPC 하나로 묶기: `select ... for update`로 잔액을 잠그고 검사·기록·차감을 원자적으로 처리
 - [ ] Supabase에서 `record_point_change` 정의·EXECUTE 권한, `users` RLS(update 정책·컬럼 범위) 확인 → 필요하면 `revoke execute ... from anon, authenticated`, `point` 컬럼 update 차단
@@ -61,3 +61,5 @@ external:
 - 2026-11-13: 착수(doing). 자동 출석 체크를 범위에 추가
 - 2026-11-13: `apps/web/point-integrity.sql` 작성 — 출석·투표·홍보 등록/취소 RPC(SECURITY DEFINER, `auth.uid()`, users 행 잠금), record_point_change·users.point·artist_votes·song_promotions·point_logs 쓰기 권한 회수, 과거 악용 감사 쿼리
 - 2026-11-13: `PATCH /api/user/point`·`patchUserPoint`·`usePatchSetPointMutation` 제거. 출석·투표·홍보 등록·홍보 취소 라우트가 새 RPC(`daily_check_in`·`cast_artist_vote`·`create_song_promotion`·`cancel_song_promotion`)를 부르도록 변경 (오류 매핑: `src/utils/pointRpcError.ts`)
+- 2026-11-13: 자동 출석 — `useAutoCheckIn`(auth.tsx에 마운트, (사용자, KST 날짜)당 1회 + 탭 복귀 시 재확인), 적립 시에만 토스트, Header 자동 모달 제거, CheckInModal은 상태 표시용(적립 버튼 제거). 출석 여부는 서버 `last_check_in`을 KST로 판정(`isCheckedInTodayKST`)
+- 2026-11-13: 사용자 작업 대기 — `apps/web/point-integrity.sql` 실행. 순서: 섹션 0 확인 → 섹션 1(새 함수) → **웹 배포**(새 라우트가 RPC를 부르므로 섹션 1이 반드시 먼저) → 섹션 2(권한 회수, 배포 직후) → 섹션 3 감사 조회
