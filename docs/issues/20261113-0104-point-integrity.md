@@ -63,3 +63,4 @@ external:
 - 2026-11-13: `PATCH /api/user/point`·`patchUserPoint`·`usePatchSetPointMutation` 제거. 출석·투표·홍보 등록·홍보 취소 라우트가 새 RPC(`daily_check_in`·`cast_artist_vote`·`create_song_promotion`·`cancel_song_promotion`)를 부르도록 변경 (오류 매핑: `src/utils/pointRpcError.ts`)
 - 2026-11-13: 자동 출석 — `useAutoCheckIn`(auth.tsx에 마운트, (사용자, KST 날짜)당 1회 + 탭 복귀 시 재확인), 적립 시에만 토스트, Header 자동 모달 제거, CheckInModal은 상태 표시용(적립 버튼 제거). 출석 여부는 서버 `last_check_in`을 KST로 판정(`isCheckedInTodayKST`)
 - 2026-11-13: 사용자 작업 대기 — `apps/web/point-integrity.sql` 실행. 순서: 섹션 0 확인 → 섹션 1(새 함수) → **웹 배포**(새 라우트가 RPC를 부르므로 섹션 1이 반드시 먼저) → 섹션 2(권한 회수, 배포 직후) → 섹션 3 감사 조회
+- 2026-11-13: 신규 가입 시 users 행 생성 흐름 보강 (insertUser await, 조회 오류와 행 없음 구분, 중복 생성 23505 재조회)
