@@ -65,3 +65,5 @@ external:
 - 2026-11-13: 사용자 작업 대기 — `apps/web/point-integrity.sql` 실행. 순서: 섹션 0 확인 → 섹션 1(새 함수) → **웹 배포**(새 라우트가 RPC를 부르므로 섹션 1이 반드시 먼저) → 섹션 2(권한 회수, 배포 직후) → 섹션 3 감사 조회
 - 2026-11-13: 신규 가입 시 users 행 생성 흐름 보강 (insertUser await, 조회 오류와 행 없음 구분, 중복 생성 23505 재조회)
 - 2026-11-20: 0-1 확인 — record_point_change는 SECURITY INVOKER(uuid,integer,text). 잔액 부족·point null이면 update 0행인데 예외 없이 point_logs를 balance_after=null로 남긴다 → 감사 3-6 추가
+- 2026-11-20: 0-2 확인 — record_point_change EXECUTE가 anon·authenticated 모두 true. 로그인 사용자는 자기 포인트를 임의 적립 가능(확정)
+- 2026-11-20: 0-3 확인 — 남의 포인트 변경은 불가(users UPDATE가 auth.uid()=id). 대신 users INSERT with check(true), UPDATE with check(true), point_logs SELECT using(true)(전체 공개)·DELETE 본인 허용. 실제 정책 이름이 artist-vote-schema.sql과 달라 섹션 2를 실제 이름 기준으로 수정

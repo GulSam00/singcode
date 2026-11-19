@@ -457,6 +457,9 @@ end;
 $$;
 
 -- 2-2. users: point / last_check_in 을 브라우저가 고치지 못하게 한다.
+--      0-3 결과(2026-11-20): UPDATE 정책 "Enable update for authenticated using   auth.uid() = id"는
+--      using (auth.uid() = id) / with check (true) 라서 본인 행의 모든 컬럼(point 포함)을 고칠 수 있고,
+--      with check가 true라 id를 남의 값으로 바꾸는 update도 통과한다.
 --      테이블 단위 UPDATE가 남아 있으면 컬럼 단위 revoke는 효과가 없으므로(0-4 참고),
 --      테이블 단위로 회수한 뒤 브라우저가 실제로 고치는 컬럼만 다시 준다.
 --      브라우저가 users를 고치는 곳은 useAuthStore.changeNickname(nickname) 하나다.
@@ -464,30 +467,59 @@ $$;
 revoke update on table public.users from anon, authenticated;
 grant update (nickname) on table public.users to authenticated;
 
---      가입 직후 useAuthStore.insertUser가 { id }만 insert한다. point/last_check_in을 실어
---      처음부터 많은 포인트로 가입하는 길을 막는다. 나머지 컬럼은 기본값으로 채워진다.
+drop policy if exists "Enable update for authenticated using   auth.uid() = id" on public.users;
+drop policy if exists "users_update_own" on public.users;
+create policy "users_update_own" on public.users
+  for update to authenticated
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
+
+--      0-3 결과: INSERT 정책 "Enable insert for authenticated users only"는 with check (true)라
+--      로그인한 누구나 아무 id로, 아무 point로 users 행을 만들 수 있었다.
+--      가입 직후 useAuthStore.insertUser가 { id }만 insert하므로 id 컬럼만 허용하고, 본인 id만 받는다.
 --      [확인 필요: 0-6] users에 NOT NULL이면서 기본값 없는 컬럼이 있으면 insertUser가 이미 실패하고
---      있을 테니 그 상태와 같다. 0-3 insert 정책이 auth.uid() = id 를 검사하는지도 본다.
+--      있을 테니 그 상태와 같다.
 revoke insert on table public.users from anon, authenticated;
 grant insert (id) on table public.users to authenticated;
 
-revoke truncate on table public.users from anon, authenticated;
+drop policy if exists "Enable insert for authenticated users only" on public.users;
+drop policy if exists "users_insert_own" on public.users;
+create policy "users_insert_own" on public.users
+  for insert to authenticated
+  with check (auth.uid() = id);
+
+revoke truncate, delete on table public.users from anon, authenticated;
 
 -- 2-3. artist_votes: 쓰기는 cast_artist_vote(SECURITY DEFINER)로만. select 정책은 유지한다.
+--      0-3 결과: 실제 DB의 쓰기 정책 이름은 artist-vote-schema.sql과 다르다(대시보드에서 만든 것으로 보인다).
+--      권한 회수만으로도 막히지만(권한 검사가 RLS보다 먼저다), 남겨두면 나중에 권한을 되돌릴 때 같이 살아나므로 지운다.
+drop policy if exists "Enable insert for users based on user_id" on public.artist_votes;
+drop policy if exists "Policy with table joins" on public.artist_votes;
+drop policy if exists "Enable delete for users based on user_id" on public.artist_votes;
 drop policy if exists "artist_votes_insert_own" on public.artist_votes;
 drop policy if exists "artist_votes_update_own" on public.artist_votes;
 drop policy if exists "artist_votes_delete_own" on public.artist_votes;
 revoke insert, update, delete, truncate on table public.artist_votes from anon, authenticated;
 
 -- 2-4. song_promotions: 등록·취소는 create/cancel_song_promotion으로만. 조회는 그대로 둔다.
---      지금은 브라우저가 anon 키로 song_promotions에 직접 insert하면 포인트 차감 없이 홍보가 걸린다
---      (artist_votes와 같은 구조). 정책 이름을 몰라도 되도록 권한으로 막는다.
---      [확인 필요: 0-3] 남은 insert/update/delete 정책은 권한이 없으면 쓰이지 않는다. 정리하려면 0-3에서
---      이름을 보고 drop policy 한다.
+--      지금은 브라우저가 anon 키로 song_promotions에 직접 insert하면 포인트 차감 없이 홍보가 걸리고,
+--      직접 delete하면 환불 없이 지워진다(artist_votes와 같은 구조).
+drop policy if exists "Enable insert for users based on user_id" on public.song_promotions;
+drop policy if exists "Enable delete for users based on user_id" on public.song_promotions;
 revoke insert, update, delete, truncate on table public.song_promotions from anon, authenticated;
 
 -- 2-5. point_logs: 기록은 함수(소유자 권한)만 남긴다. 사용자는 본인 기록 조회만.
---      [확인 필요: 0-3] point_logs select 정책이 auth.uid() = user_id 로 본인 행만 보이는지 확인한다.
+--      0-3 결과: SELECT 정책이 using (true) 라 로그인하지 않은 사람(anon)까지 모든 사용자의 포인트 내역을
+--      읽을 수 있었다. 앱에서 point_logs를 읽는 곳은 GET /api/user/point-logs(본인 행만, .eq('user_id'))뿐이고
+--      배치는 service_role이라 RLS를 타지 않는다. 그래서 본인 행만 보이게 좁힌다.
+--      DELETE 정책 때문에 사용자가 자기 기록을 지울 수도 있었다 → 섹션 3 감사가 불완전할 수 있다(3-4가 그 흔적을 잡는다).
+drop policy if exists "Enable insert for users based on user_id" on public.point_logs;
+drop policy if exists "Enable delete for users based on user_id" on public.point_logs;
+drop policy if exists "Enable read access for all users" on public.point_logs;
+drop policy if exists "point_logs_select_own" on public.point_logs;
+create policy "point_logs_select_own" on public.point_logs
+  for select to authenticated
+  using (auth.uid() = user_id);
 revoke insert, update, delete, truncate on table public.point_logs from anon, authenticated;
 
 -- ============================================================================
@@ -600,8 +632,14 @@ order by created_at desc;
 -- -- 2-1 되돌리기 (0-2에서 authenticated가 true였던 경우에만)
 -- -- grant execute on function public.record_point_change(<0-1의 시그니처 인자>) to authenticated;
 --
--- -- 2-2 되돌리기
--- -- grant update, insert, truncate on table public.users to anon, authenticated;
+-- -- 2-2 되돌리기 (0-3 원래 정책 복원)
+-- -- grant update, insert, delete, truncate on table public.users to anon, authenticated;
+-- -- drop policy if exists "users_update_own" on public.users;
+-- -- drop policy if exists "users_insert_own" on public.users;
+-- -- create policy "Enable update for authenticated using   auth.uid() = id" on public.users
+-- --   for update to authenticated using (auth.uid() = id) with check (true);
+-- -- create policy "Enable insert for authenticated users only" on public.users
+-- --   for insert to authenticated with check (true);
 --
 -- -- 2-3 되돌리기 (artist-vote-schema.sql 이전 버전의 정책)
 -- -- grant insert, update, delete, truncate on table public.artist_votes to anon, authenticated;
@@ -611,6 +649,10 @@ order by created_at desc;
 -- --   for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
 -- -- create policy "artist_votes_delete_own" on public.artist_votes
 -- --   for delete using (auth.uid() = user_id);
+--
+-- -- 2-5 SELECT 되돌리기
+-- -- drop policy if exists "point_logs_select_own" on public.point_logs;
+-- -- create policy "Enable read access for all users" on public.point_logs for select using (true);
 --
 -- -- 2-4, 2-5 되돌리기
 -- -- grant insert, update, delete, truncate on table public.song_promotions to anon, authenticated;
