@@ -82,14 +82,13 @@ See [apps/web/CLAUDE.md](apps/web/CLAUDE.md) for full detail. Key points:
 | `/refactor`     | 코드 품질 개선 (동작 변경 X)             | 생략 가능 |
 | `/verify`       | build, lint, format, test 전체 검증      | **필수**  |
 | `/commit`       | 커밋 메시지 생성 및 커밋                 | **필수**  |
-| `/pr`           | PR 생성 및 Qodo AI 리뷰 요청             | 권장      |
-| `/check-review` | Qodo 리뷰 코멘트 읽기 및 이슈 브리핑     | 권장      |
+| `/pr`           | PR 생성                                  | 권장      |
 
 ### 단축 사이클
 
 - 긴급 핫픽스: `/start` → `/spsc` → `/green` → `/verify` → `/commit`
 - `/red` ~ `/refactor` 는 상황에 따라 생략 가능하나, `/verify` → `/commit` 은 항상 실행한다.
-- PR 생성 후: `/pr` → `/review-brief` 로 리뷰 이슈를 확인한다.
+- PR 생성: `/commit` 후 필요하면 `/pr` 로 PR을 만든다.
 
 이슈 관리는 issues 스킬(`.claude/skills/issues`)을 따른다.
 
@@ -158,7 +157,7 @@ chore : 버전 2.3.0 (#61)
 2. 실데이터 QA (테스트 스위트 없음)
    - 아티스트 검색 자동완성 — RLS 정책이 실제로 붙었는지 확인하는 가장 빠른 길
    - `artists(name_ko, image_url)` 임베드 첫 조회에서 `PGRST200`이 나면 FK 힌트 문법을 명시해야 한다
-   - 투표(포인트 차감) → 월간 확정 → 곡 카드 배지까지. 카카오 로그인이라 자동 검증이 어렵다
+   - 투표(포인트 차감) → 월간 확정까지. 카카오 로그인이라 자동 검증이 어렵다
 3. 아티스트 사진 — `artists.image_url`
    - `finalize_artist_of_month.yml`의 마지막 단계가 채운다. 확정된 그달 1~3위 중 사진이 없는
      사람만 `ARTIST_IMAGE_PODIUM=3`으로 처리한다. 사진이 쓰이는 자리가 시상대뿐이라
