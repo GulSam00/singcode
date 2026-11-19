@@ -579,6 +579,18 @@ where not exists (
 )
 order by p.start_date desc;
 
+-- 3-6. 차감이 조용히 실패한 기록. 0-1에서 확인한 기존 record_point_change는
+--      "where id = p_user_id and (point + p_amount) >= 0"으로 update하고, 0행이어도 예외 없이
+--      point_logs를 insert한다(balance_after = null). 즉 잔액이 부족하거나(동시 요청으로 먼저 깎인 경우 포함)
+--      users.point가 null이면 포인트는 안 깎였는데 투표·홍보는 이미 반영된 상태로 남는다.
+--      amount < 0 이면서 balance_after가 null인 줄이 "공짜로 반영된 투표·홍보" 후보다.
+--      (point_logs.balance_after가 NOT NULL이면 이 경우 insert가 실패해 라우트가 500을 냈고,
+--       그 직전에 반영된 artist_votes upsert / song_promotions insert는 그대로 남았다 → 3-2·3-5로 잡힌다.)
+select user_id, created_at, amount, description
+from public.point_logs
+where balance_after is null
+order by created_at desc;
+
 -- ============================================================================
 -- 4. 되돌리기 (필요할 때만 주석을 풀어 실행)
 -- ============================================================================
