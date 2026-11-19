@@ -30,3 +30,4 @@ external:
 ## 로그
 
 - 2026-11-19: 등록 (1007 작업 중 발견, actions 실행 목록으로 재확인 — 11-18 run 84 등 모두 failure)
+- 2026-11-20: Billing 확인 — singcode Actions Linux 14,829분, Gross $88.98 / Billed $0(공개 레포 할인). 사용량 요금이 원인은 아님 → Budgets and alerts($0 예산·Stop usage)와 결제 실패 내역 확인 필요
