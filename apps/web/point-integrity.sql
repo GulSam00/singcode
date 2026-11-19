@@ -127,12 +127,12 @@ create or replace function public.apply_point_change_internal(
   p_amount integer,
   p_description text
 )
-returns integer
+returns bigint  -- users.point 타입(bigint, 0-6)을 따른다
 language plpgsql
 set search_path = public
 as $$
 declare
-  v_balance integer;
+  v_balance bigint;  -- users.point가 bigint다(0-6)
 begin
   update public.users
      set point = coalesce(point, 0) + p_amount
@@ -173,7 +173,7 @@ declare
   v_now timestamptz := now();
   v_today date := (now() at time zone 'Asia/Seoul')::date;
   v_last timestamptz;
-  v_balance integer;
+  v_balance bigint;  -- users.point가 bigint다(0-6)
 begin
   if v_uid is null then
     raise exception 'not_authenticated';
@@ -218,7 +218,7 @@ declare
   v_uid uuid := auth.uid();
   v_artist text := btrim(p_artist);
   v_month date := date_trunc('month', now() at time zone 'Asia/Seoul')::date;
-  v_balance integer;
+  v_balance bigint;  -- users.point가 bigint다(0-6)
   v_current integer;
   v_diff integer;
 begin
@@ -306,7 +306,7 @@ declare
   v_title text;
   v_artist text;
   v_cost integer;
-  v_balance integer;
+  v_balance bigint;  -- users.point가 bigint다(0-6)
   v_id public.song_promotions.id%type;
 begin
   if v_uid is null then
@@ -383,7 +383,7 @@ declare
   v_title text;
   v_artist text;
   v_refund integer;
-  v_balance integer;
+  v_balance bigint;  -- users.point가 bigint다(0-6)
 begin
   if v_uid is null then
     raise exception 'not_authenticated';
@@ -431,6 +431,14 @@ grant execute on function public.cancel_song_promotion(public.song_promotions.id
   to authenticated;
 
 -- PostgREST가 새 함수를 바로 보도록 스키마 캐시를 다시 읽힌다 (Supabase는 보통 자동이지만 확실히 하려고).
+-- 1-5. 신규 가입자의 첫날 출석.
+--      0-6 결과: users.last_check_in 기본값이 now()라 가입하는 순간 "오늘 출석함"으로 기록된다.
+--      그래서 daily_check_in이 가입 첫날엔 awarded=false를 돌려준다(예전 수동 출석도 첫날엔 막혀 있었다).
+--      기본값을 없애 신규 가입자는 null로 시작하게 하고, 첫 진입 때 자동 출석으로 30P를 받게 한다.
+--      기존 행의 값은 바뀌지 않는다. 웹은 null을 "아직 출석 안 함"으로 다룬다(Header·useCheckInTimer).
+--      가입 보너스는 users.point 기본값 100P로 그대로 유지된다.
+alter table public.users alter column last_check_in drop default;
+
 notify pgrst, 'reload schema';
 
 -- ============================================================================
@@ -589,16 +597,18 @@ where amount > 0
   and description not like '홍보 취소: %'
 order by amount desc, created_at desc;
 
--- 3-4. 잔액과 기록 합계가 맞지 않는 사용자: users.point를 REST로 직접 고친 흔적.
---      users.point 기본값(0-6)이 0이 아니면 diff에서 그만큼 빼고 본다.
+-- 3-4. 잔액과 기록 합계가 맞지 않는 사용자: users.point를 REST로 직접 고친 흔적, 또는 자기 기록을 지운 흔적.
+--      0-6 결과: users.point 기본값이 100(가입 보너스, point_logs에 기록 없음)이라 시작값 100을 빼고 본다.
+--      가입 시 point를 직접 실어 insert한 경우(INSERT 정책이 with check(true)였다)도 여기서 잡힌다.
+--      한계: 기본값이 100이 아니던 시절에 가입한 사용자가 있다면 그 차이만큼 오탐이 난다.
 select u.id, u.nickname, u.point,
        coalesce(sum(l.amount), 0) as logged_total,
-       u.point - coalesce(sum(l.amount), 0) as diff
+       coalesce(u.point, 0) - 100 - coalesce(sum(l.amount), 0) as diff
 from public.users u
 left join public.point_logs l on l.user_id = u.id
 group by u.id, u.nickname, u.point
-having u.point <> coalesce(sum(l.amount), 0)
-order by abs(u.point - coalesce(sum(l.amount), 0)) desc;
+having coalesce(u.point, 0) - 100 <> coalesce(sum(l.amount), 0)
+order by abs(coalesce(u.point, 0) - 100 - coalesce(sum(l.amount), 0)) desc;
 
 -- 3-5. 포인트 차감 기록이 없는 홍보 (song_promotions 직접 insert 악용).
 select p.id, p.user_id, p.start_date, p.end_date, p.content
@@ -657,6 +667,9 @@ order by created_at desc;
 -- -- 2-4, 2-5 되돌리기
 -- -- grant insert, update, delete, truncate on table public.song_promotions to anon, authenticated;
 -- -- grant insert, update, delete, truncate on table public.point_logs to anon, authenticated;
+--
+-- -- 1-5 되돌리기
+-- -- alter table public.users alter column last_check_in set default now();
 --
 -- -- 섹션 1 함수 삭제
 -- -- drop function if exists public.cancel_song_promotion(public.song_promotions.id%type);

@@ -67,3 +67,5 @@ external:
 - 2026-11-20: 0-1 확인 — record_point_change는 SECURITY INVOKER(uuid,integer,text). 잔액 부족·point null이면 update 0행인데 예외 없이 point_logs를 balance_after=null로 남긴다 → 감사 3-6 추가
 - 2026-11-20: 0-2 확인 — record_point_change EXECUTE가 anon·authenticated 모두 true. 로그인 사용자는 자기 포인트를 임의 적립 가능(확정)
 - 2026-11-20: 0-3 확인 — 남의 포인트 변경은 불가(users UPDATE가 auth.uid()=id). 대신 users INSERT with check(true), UPDATE with check(true), point_logs SELECT using(true)(전체 공개)·DELETE 본인 허용. 실제 정책 이름이 artist-vote-schema.sql과 달라 섹션 2를 실제 이름 기준으로 수정
+- 2026-11-20: 0-4~0-6 확인 — 테이블 권한은 Supabase 기본값(ALL). users.point는 bigint 기본 100, last_check_in은 timestamptz 기본 now()(가입 당일 출석 불가 원인), point_logs.balance_after nullable. SQL 반영: 잔액 변수 bigint, 1-5 last_check_in 기본값 제거(신규 가입 첫날 출석), 3-4 시작값 100 보정
+- 2026-11-20: 로컬 Postgres 16에 0-1~0-6 결과대로 모의 스키마를 만들어 섹션 1→2→3 실행 검증. 섹션 2 전 임의 적립·직접 수정 재현, 섹션 2 후 모두 permission denied. 출석 멱등·투표 차감/환불·포인트 부족·홍보 등록/취소(타인 취소·이중 환불 차단)·신규 가입 첫 출석·동시 투표 직렬화·재실행(멱등) 통과
