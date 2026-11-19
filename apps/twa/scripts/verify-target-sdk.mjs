@@ -18,6 +18,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REQUIRED_TARGET_SDK = 36;
+// Play 자동 보호(Play Integrity)를 쓰려면 minSdkVersion이 24 이상이어야 한다. Bubblewrap 기본값은 21이다.
+const REQUIRED_MIN_SDK = 24;
 
 const twaRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const gradlePath = join(twaRoot, 'app', 'build.gradle');
@@ -66,6 +68,7 @@ if (!existsSync(gradlePath)) {
 
 const gradleSource = readFileSync(gradlePath, 'utf8');
 const gradleTargetSdk = Number(gradleSource.match(/targetSdkVersion\s+(\d+)/)?.[1]);
+const gradleMinSdk = Number(gradleSource.match(/minSdkVersion\s+(\d+)/)?.[1]);
 const gradleVersionCode = Number(gradleSource.match(/versionCode\s+(\d+)/)?.[1]);
 const { appVersionCode } = JSON.parse(readFileSync(manifestPath, 'utf8'));
 
@@ -73,6 +76,14 @@ if (gradleTargetSdk !== REQUIRED_TARGET_SDK) {
   fail(
     `app/build.gradle의 targetSdkVersion이 ${gradleTargetSdk}입니다 (필요: ${REQUIRED_TARGET_SDK}).\n` +
       `   @bubblewrap/cli가 1.25.0 이상인지 확인하고, 빌드 중 재생성 프롬프트에 Yes로 답하세요.`,
+  );
+}
+
+if (gradleMinSdk < REQUIRED_MIN_SDK) {
+  fail(
+    `app/build.gradle의 minSdkVersion이 ${gradleMinSdk}입니다 (필요: ${REQUIRED_MIN_SDK} 이상).
+` +
+      `   twa-manifest.json의 minSdkVersion을 올리고, build 중 재생성 프롬프트에 Yes로 답하세요.`,
   );
 }
 
@@ -92,4 +103,4 @@ if (apkTargetSdk === null) {
   log(`산출물 검증 통과: apk targetSdkVersion ${apkTargetSdk}.`);
 }
 
-log(`✅ targetSdk ${REQUIRED_TARGET_SDK}, versionCode ${appVersionCode} 확인.`);
+log(`✅ targetSdk ${REQUIRED_TARGET_SDK}, minSdk ${gradleMinSdk}, versionCode ${appVersionCode} 확인.`);

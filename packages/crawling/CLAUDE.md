@@ -23,6 +23,7 @@ pnpm backfill-artists  # songs.artist에서 artists 마스터 테이블 백필
 pnpm backfill-artist-images # artists.image_url을 Deezer 공개 API로 채움 (키 불필요)
 pnpm finalize-artist   # 이달의 아티스트 월간 확정 (지난달 투표 집계 → 순위 저장)
 pnpm trans-jpn         # 일본곡 제목/아티스트 한국어 번역 (TRANS_JPN_DRY_RUN=1로 미리보기)
+pnpm ig-recent-images  # 최근 3일 TJ 신곡으로 인스타그램용 TJ·KY 이미지 생성 (IG_POST_DATE로 게시일 지정, 신곡이 없으면 건너뜀)
 pnpm test              # vitest 실행
 pnpm lint              # ESLint
 pnpm format            # Prettier 포맷
@@ -161,6 +162,40 @@ crawlTjBadges.ts (pnpm tj-badges)
 `removeDeadTjSongs.ts`는 후보를 `badges is null`로 추리되 **삭제 직전에 TJ로 다시 조회**한다. 살아 있으면 지우지 않고 뱃지를 채워주고, 조회 자체가 실패하면 건드리지 않는다. 재확인 전에 **차트에 오른 곡**(번호 검색에는 없어도 차트에는 오른다)과 **`num_ky` 보유 곡**(금영으로는 부를 수 있다)은 아예 제외한다.
 
 `songs`를 참조하는 `invalid_ky_songs` · `verify_ky_songs`를 먼저 지워야 FK 제약에 걸리지 않는다. `invalid_ky_songs`와 `verify_ky_songs`는 별도 `song_id` 컬럼 없이 PK인 `id`가 곧 `songs.id`다.
+
+### 인스타그램 신곡 이미지
+
+최근 3일간 `songs.release`가 들어 있는 곡(= `crawlRecentTJ`가 그날 발견한 신곡)으로 1080x1350 JPEG를 만든다. 인스타그램 API는 JPEG만 받는다. 게시는 아직 붙지 않았고 이미지 생성까지만 한다.
+
+```
+cron/makeInstagramRecentImages.ts (pnpm ig-recent-images)
+  └─ isPostingDay() / getPeriod()  # instagram/schedule.ts — 3일 주기 게시일 판정, 신곡 기간 계산
+  └─ 번호 종류(TJ, KY)마다 songs 조회 (release가 기간 안, 해당 번호 not null)
+  └─ buildRecentSongPosts()   # instagram/recentSongPosts.ts — 일본곡/그 외 분리, 장 나누기 (단위 테스트 있음)
+  └─ renderSlideJpeg()        # instagram/renderSlide.ts — satori로 SVG → sharp로 JPEG
+  └─ out/instagram/YYYY-MM-DD/{TJ|KY}-{jpop|general}-N.jpg + manifest.json (out/은 gitignore)
+```
+
+- **3일마다 한 번, TJ용과 KY용을 같은 날 함께 올린다.** 신곡 기간은 게시일 전날부터 3일 전까지다(게시일 당일 신곡은 그날 밤 크롤링이 돌아야 들어오므로 넣지 않는다). 연속한 두 게시일의 기간은 겹치지도 비지도 않는다. 이미지 상단에는 날짜 대신 기간(`10.6–8`)이 크게 나온다.
+- **게시일은 스크립트가 계산한다.** GitHub Actions cron의 `*/3`은 매달 1일에 다시 시작해 월말에 간격이 깨지므로, 워크플로우는 매일 돌리고 `IG_ENFORCE_CYCLE=true`로 기준일(`IG_CYCLE_ANCHOR`, 기본 2026-10-19)부터 3일 배수인 날에만 동작하게 한다. 게시는 번역 배치(KST 19:00) 이후에 돌려야 일본곡 원어 줄이 채워진다.
+- **TJ용과 KY용은 따로 만든다.** 한 이미지에는 한 종류의 번호만 나오고, 어느 번호인지는 날짜 옆 `TJ`/`KY` 이니셜로 밝힌다. KY용은 그날 신곡 중 `num_ky`가 채워진 곡만 담는다(신곡은 TJ 기준이라 KY 번호는 나중에 채워지고, 최근 신곡의 약 10%만 있다).
+- **일본곡과 그 외는 서로 다른 게시물**이다. 같은 이미지에 섞지 않고, "그 외" 같은 구분 라벨도 쓰지 않는다. 일본곡 게시물만 요약 줄에 "J-POP 신곡"이라고 쓴다.
+- 해당 번호의 신곡이 없으면 그 번호는 건너뛴다. 모두 없으면 아무것도 만들지 않는다.
+- 한 장에 최대 5곡, 게시물당 최대 6장(30곡)이다. 장 수를 먼저 정해 곡을 고르게 나눠서 마지막 장에 1~2곡만 남지 않게 한다. 넘치는 곡은 마지막 장 하단에 "외 N곡"으로 표시한다.
+- 곡 한 줄의 높이는 곡 수와 상관없이 고정이다(`ROW_HEIGHT`). 일본곡 원어 줄이 들어가는 높이이고 5곡이 한 장에 꼭 맞는다. 값을 바꾸면 한 장 최대 곡 수도 함께 확인한다.
+- 번역된 일본곡은 한국어 제목·가수 아래에 원어 줄을 덧붙인다. 한국어로 바뀐 항목만 원문을 보여준다.
+- 일본곡 판별(`isJapaneseSong`): 제목·아티스트에 가나가 있거나 `title_ko`·`artist_ko`가 채워진 곡. 한자만 있는 곡은 번역 배치가 돈 뒤에 잡힌다.
+- 디자인은 라임 배경과 잉크(검정) 두 색에 굵은 구분선만 쓴다. 상자·둥근 모서리·알약 라벨·번호별 색 구분은 쓰지 않는다.
+- 폰트는 `pretendard-jp`(한글·가나·한자 모두 포함)를 `node_modules`에서 읽는다. 저장소에 폰트 파일을 넣지 않는다.
+- satori는 `box-sizing`이 content-box처럼 동작해, 루트에 padding을 주면 `boxSizing: 'border-box'`가 없을 때 오른쪽·아래가 잘린다.
+
+**데이터 기록과 재생성.** 이미지를 만들 때마다 같은 폴더에 `manifest.json`이 남는다. 이미지에 실제로 그려진 곡 정보(id, 제목, 가수, 번역, TJ·KY 번호)를 장별로, 조회 조건과 생성 시각과 함께 담는다. 곡 정보를 JSON에서 고친 뒤 DB 조회 없이 같은 파일명으로 이미지를 다시 만들 수 있다.
+
+```bash
+IG_FROM_MANIFEST=out/instagram/2026-10-08/manifest.json pnpm ig-recent-images
+```
+
+환경변수: `IG_POST_DATE`(게시일, 기본 오늘 KST), `IG_ENFORCE_CYCLE`, `IG_CYCLE_DAYS`(기본 3), `IG_CYCLE_ANCHOR`, `IG_EDITIONS`(기본 `TJ,KY`), `IG_OUT_DIR`, `IG_FROM_MANIFEST`. `out/`은 로컬 임시 폴더라서, GitHub Actions에서 돌릴 때는 `manifest.json`을 아티팩트나 DB에 따로 보관해야 한다(아직 연결되지 않았다).
 
 ### GitHub Actions 워크플로우
 

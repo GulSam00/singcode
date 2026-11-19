@@ -1,6 +1,5 @@
 'use client';
 
-import { format } from 'date-fns';
 import { CalendarCheck, MessageCircleQuestion, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
@@ -9,6 +8,7 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useUserQuery } from '@/queries/userQuery';
+import { isCheckedInTodayKST } from '@/utils/kst';
 
 import Sidebar from './Sidebar';
 import CheckInModal from './components/CheckInModal';
@@ -58,9 +58,9 @@ export default function Header() {
 
   const { data: user, isLoading } = useUserQuery();
 
-  const lastCheckIn = user?.last_check_in ?? new Date();
-  const today = format(new Date(), 'yyyy-MM-dd');
-  const isCheckedIn = format(new Date(lastCheckIn), 'yyyy-MM-dd') >= today;
+  // 출석은 앱 진입 시 자동으로 된다(useAutoCheckIn). 여기서는 서버가 준 last_check_in을 KST로 읽어 상태만 보여준다.
+  const lastCheckIn = user?.last_check_in ?? null;
+  const isCheckedIn = isCheckedInTodayKST(lastCheckIn);
 
   const handleClickContact = () => {
     const contactUrl = 'https://walla.my/survey/K79c5bC6alDqc1qiaaES';
@@ -80,12 +80,6 @@ export default function Header() {
       setExpanded(key);
     }
   };
-
-  useEffect(() => {
-    if (!isLoading && !!user && !isCheckedIn) {
-      setOpen(true);
-    }
-  }, [isLoading, user, isCheckedIn]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

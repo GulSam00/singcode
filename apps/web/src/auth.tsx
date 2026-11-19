@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import useAutoCheckIn from '@/hooks/useAutoCheckIn';
 import useMergeGuestToSing from '@/hooks/useMergeGuestToSing';
 import useAuthStore from '@/stores/useAuthStore';
 
@@ -28,6 +29,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useMergeGuestToSing();
+  // 출석 체크는 화면(Header)이 아니라 인증 상태에 묶는다 — 로그인 직후에도 같은 자리에서 한 번 돈다.
+  useAutoCheckIn();
 
   useEffect(() => {
     const isPublicPath = ALLOW_PATHS.includes(pathname);
