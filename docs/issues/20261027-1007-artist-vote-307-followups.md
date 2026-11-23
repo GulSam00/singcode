@@ -27,3 +27,4 @@ external:
 - 2026-11-19: 운영 비로그인 API 확인 — `/api/artists/search?q=BTS`·`방탄소년단` 결과 있음(RLS 정상), `/api/artist-vote/rankings` 임베드 정상(PGRST200 없음, image_url 채워짐)
 - 2026-11-19: 발견 — 2026-11-05부터 레포의 모든 Actions run이 러너 배정 없이 실패(runner_id 0, 로그 없음). 계정 결제/한도 확인 필요, 12-01 확정 전에 해결해야 한다
 - 2026-11-19: 사용자 작업 대기 — docs/qa/artist-vote-307.md 체크리스트(투표 QA는 PR #352 배포 후) / artist-image-reset.sql
+- 2026-11-23: #354 배포 후 운영에서 투표(포인트 차감) 확인(사용자). 남은 것: 12-01 이후 11월 월간 확정 결과 확인, 사진 3명 교체 결정
