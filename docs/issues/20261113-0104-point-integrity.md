@@ -47,10 +47,10 @@ external:
 
 - [x] `PATCH /api/user/point` 라우트와 `patchUserPoint`·`usePatchSetPointMutation` 제거
 - [x] 자동 출석: 로그인 상태로 앱 진입 시 출석 API 자동 호출, 적립 시 토스트, 자동 모달 제거, 헤더 버튼은 상태 표시용으로 유지
-- [ ] 출석을 RPC 하나로 묶기: KST 오늘 이미 출석했으면 거절하고, `last_check_in` 갱신과 +30P를 한 트랜잭션으로 처리
-- [ ] 투표·곡 홍보 차감을 RPC 하나로 묶기: `select ... for update`로 잔액을 잠그고 검사·기록·차감을 원자적으로 처리
-- [ ] Supabase에서 `record_point_change` 정의·EXECUTE 권한, `users` RLS(update 정책·컬럼 범위) 확인 → 필요하면 `revoke execute ... from anon, authenticated`, `point` 컬럼 update 차단
-- [ ] `artist_votes` insert/update/delete RLS 정책 제거 — 쓰기는 차감 RPC(SECURITY DEFINER)로만
+- [x] 출석을 RPC 하나로 묶기: KST 오늘 이미 출석했으면 거절하고, `last_check_in` 갱신과 +30P를 한 트랜잭션으로 처리
+- [x] 투표·곡 홍보 차감을 RPC 하나로 묶기: `select ... for update`로 잔액을 잠그고 검사·기록·차감을 원자적으로 처리
+- [x] Supabase에서 `record_point_change` 정의·EXECUTE 권한, `users` RLS(update 정책·컬럼 범위) 확인 → 필요하면 `revoke execute ... from anon, authenticated`, `point` 컬럼 update 차단
+- [x] `artist_votes` insert/update/delete RLS 정책 제거 — 쓰기는 차감 RPC(SECURITY DEFINER)로만
 - [ ] 기존 `artist_votes`에서 `point_logs` 차감 기록과 금액이 맞지 않는 투표가 있는지 조회
 - [ ] 기존 `point_logs`에서 비정상 적립(출석 하루 2회 이상, 출처 불명 대량 적립)이 있었는지 조회
 
@@ -70,3 +70,4 @@ external:
 - 2026-11-20: 0-4~0-6 확인 — 테이블 권한은 Supabase 기본값(ALL). users.point는 bigint 기본 100, last_check_in은 timestamptz 기본 now()(가입 당일 출석 불가 원인), point_logs.balance_after nullable. SQL 반영: 잔액 변수 bigint, 1-5 last_check_in 기본값 제거(신규 가입 첫날 출석), 3-4 시작값 100 보정
 - 2026-11-20: 로컬 Postgres 16에 0-1~0-6 결과대로 모의 스키마를 만들어 섹션 1→2→3 실행 검증. 섹션 2 전 임의 적립·직접 수정 재현, 섹션 2 후 모두 permission denied. 출석 멱등·투표 차감/환불·포인트 부족·홍보 등록/취소(타인 취소·이중 환불 차단)·신규 가입 첫 출석·동시 투표 직렬화·재실행(멱등) 통과
 - 2026-11-20: 섹션 0-7·0-8 결과 없음 확인. 사용자가 섹션 1 실행 완료(Success). 다음: #352 머지 → 릴리즈 → 배포 직후 섹션 2
+- 2026-11-23: #354 릴리즈 머지, 프로덕션 배포 확인(PATCH /api/user/point → 404). 사용자가 섹션 2 실행 완료. 상태 쿼리 5 / true / false / false / true → 함수 5개, last_check_in 기본값 제거, record_point_change·users UPDATE 회수, point_logs 본인만 조회 확인
