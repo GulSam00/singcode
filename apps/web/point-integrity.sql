@@ -595,12 +595,20 @@ where amount > 0
   and description <> '출석 체크'
   and description not like '아티스트 투표 조정: %'
   and description not like '홍보 취소: %'
+  -- 관리자가 수동으로 지급한 신고 승인 보상(코드 경로 없음, 2026-11-23 감사에서 확인).
+  and description <> '신고 승인 보상'
 order by amount desc, created_at desc;
 
 -- 3-4. 잔액과 기록 합계가 맞지 않는 사용자: users.point를 REST로 직접 고친 흔적, 또는 자기 기록을 지운 흔적.
 --      0-6 결과: users.point 기본값이 100(가입 보너스, point_logs에 기록 없음)이라 시작값 100을 빼고 본다.
 --      가입 시 point를 직접 실어 insert한 경우(INSERT 정책이 with check(true)였다)도 여기서 잡힌다.
 --      한계: 기본값이 100이 아니던 시절에 가입한 사용자가 있다면 그 차이만큼 오탐이 난다.
+--      2026-11-23 운영 감사 결과 오탐 유형:
+--        - point 0 / 기록 0 / diff -100: 가입 보너스가 0이던 시절 가입자
+--        - diff가 +30의 배수: point_logs 도입 이전에 받은 출석(잔액에만 남음)
+--        - 기록 없는 소액 감소(-10, -12 등): 기록을 남기지 않던 예전 기능의 차감
+--        - 그 밖의 큰 차이: 관리자 테스트 계정 직접 수정
+--      외부 사용자의 악용 흔적은 없었다. 이 쿼리는 그 이후 새로 생긴 불일치를 볼 때 의미가 있다.
 select u.id, u.nickname, u.point,
        coalesce(sum(l.amount), 0) as logged_total,
        coalesce(u.point, 0) - 100 - coalesce(sum(l.amount), 0) as diff
