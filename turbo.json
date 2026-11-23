@@ -29,7 +29,14 @@
     "ARTIST_IMAGE_PODIUM",
     "ARTIST_IMAGE_DRY_RUN",
     "TRANS_JPN_LIMIT",
-    "TRANS_JPN_DRY_RUN"
+    "TRANS_JPN_DRY_RUN",
+    "IG_POST_DATE",
+    "IG_ENFORCE_CYCLE",
+    "IG_CYCLE_DAYS",
+    "IG_CYCLE_ANCHOR",
+    "IG_OUT_DIR",
+    "IG_EDITIONS",
+    "IG_FROM_MANIFEST"
   ],
   "tasks": {
     "build": {

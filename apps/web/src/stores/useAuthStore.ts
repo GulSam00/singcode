@@ -22,7 +22,7 @@ interface AuthState {
   authKaKaoLogin: () => Promise<boolean>;
   logout: () => Promise<boolean>;
   checkAuth: () => Promise<boolean>;
-  insertUser: (id: string) => Promise<void>;
+  insertUser: (id: string) => Promise<boolean>;
 
   changeNickname: (nickname: string) => Promise<boolean>;
   sendPasswordResetLink: (email: string) => Promise<void>;
@@ -141,35 +141,76 @@ const useAuthStore = create(
       if (error) return false;
       if (!get().user) {
         const id = data.user.id;
-        const { data: existingUser } = await supabase
+        // maybeSingle: 행이 없으면 error 없이 null이다. 그래서 error는 "조회 자체가 실패"만 뜻한다.
+        // 예전처럼 single()의 "행 없음" 오류와 네트워크 오류를 같이 null로 보면, 이미 가입한 사람에게
+        // insert를 시도해 중복 키로 실패하고 로그인 상태가 반쯤 걸린 채 남는다.
+        const { data: existingUser, error: selectError } = await supabase
           .from('users')
           .select('*')
           .eq('id', id)
-          .single();
+          .maybeSingle<User>();
 
-        if (!existingUser) get().insertUser(id);
-        else {
+        // 세션은 유효하므로 true를 유지한다(false면 auth.tsx가 로그인 화면으로 보낸다).
+        // isAuthenticated는 false로 남아 회원 기능·자동 출석이 돌지 않고, 다음 라우트 이동 때 다시 시도한다.
+        if (selectError) {
+          console.error('users 조회 오류:', selectError);
+          return true;
+        }
+
+        if (existingUser) {
           set(state => {
             state.user = existingUser;
             state.isAuthenticated = true;
           });
+        } else {
+          // 신규 가입. insertUser가 users 행을 만든 뒤에야 isAuthenticated를 켜므로,
+          // 자동 출석(useAutoCheckIn)은 행이 생긴 다음에 daily_check_in을 부른다(user_not_found 없음).
+          // await로 checkAuth가 끝나는 시점도 상태 반영 이후로 맞춘다.
+          // 결과와 관계없이 세션은 유효하므로 true. 실패하면 isAuthenticated가 false로 남는다.
+          await get().insertUser(id);
         }
       }
       return true;
     },
     insertUser: async (id: string) => {
-      try {
-        const supabase = getSupabase();
+      const supabase = getSupabase();
 
-        const { data: user, error } = await supabase.from('users').insert({ id }).select().single();
-        if (error) throw error;
+      const { data: user, error } = await supabase
+        .from('users')
+        .insert({ id })
+        .select()
+        .single<User>();
+
+      if (!error) {
         set(state => {
           state.user = user;
           state.isAuthenticated = true;
         });
-      } catch (error) {
-        console.error('insertUser 오류:', error);
+        return true;
       }
+
+      // 23505(unique_violation): 다른 탭이나 카카오 리다이렉트 직후의 중복 checkAuth가 먼저 행을 만들었다.
+      // 실패가 아니라 "이미 있음"이므로 다시 읽어서 이어간다.
+      if (error.code === '23505') {
+        const { data: existingUser, error: retryError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', id)
+          .single<User>();
+
+        if (!retryError) {
+          set(state => {
+            state.user = existingUser;
+            state.isAuthenticated = true;
+          });
+          return true;
+        }
+        console.error('users 재조회 오류:', retryError);
+        return false;
+      }
+
+      console.error('insertUser 오류:', error);
+      return false;
     },
     changeNickname: async (nickname: string) => {
       return await withLoading(set, get, async () => {

@@ -21,6 +21,7 @@
     "backfill-artists": "tsx src/cron/backfillArtists.ts",
     "backfill-artist-images": "tsx src/cron/backfillArtistImages.ts",
     "finalize-artist": "tsx src/cron/finalizeArtistOfMonth.ts",
+    "ig-recent-images": "tsx src/cron/makeInstagramRecentImages.ts",
     "lint": "eslint .",
     "test": "vitest run",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
@@ -34,13 +35,17 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "openai": "^4.96.0",
-    "puppeteer": "^24.7.2"
+    "pretendard-jp": "^1.3.9",
+    "puppeteer": "^24.7.2",
+    "satori": "^0.62.0",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/node": "^22.14.1",
     "ts-node": "^10.9.2",
     "tsup": "^8.4.0",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^5.0.5"
   }
 }

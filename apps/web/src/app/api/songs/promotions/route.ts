@@ -1,4 +1,3 @@
-import { differenceInCalendarDays } from 'date-fns';
 import { NextResponse } from 'next/server';
 
 import createClient from '@/lib/supabase/server';
@@ -6,6 +5,7 @@ import { ApiResponse } from '@/types/apiRoute';
 import { SongPromotion } from '@/types/promotion';
 import { getAuthenticatedUser } from '@/utils/getAuthenticatedUser';
 import { getTodayKST, getTomorrowKST } from '@/utils/kst';
+import { INVALID_TEXT_REPRESENTATION, toPointRpcErrorResponse } from '@/utils/pointRpcError';
 
 export async function GET(): Promise<NextResponse<ApiResponse<SongPromotion[]>>> {
   try {
@@ -59,7 +59,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<SongPromotion[]>>>
 export async function POST(request: Request): Promise<NextResponse<ApiResponse<void>>> {
   try {
     const supabase = await createClient();
-    const userId = await getAuthenticatedUser(supabase);
+    await getAuthenticatedUser(supabase);
 
     const { song_id, content, start_date, end_date } = await request.json();
 
@@ -113,51 +113,33 @@ export async function POST(request: Request): Promise<NextResponse<ApiResponse<v
       );
     }
 
-    const days = differenceInCalendarDays(new Date(end_date), new Date(start_date)) + 1;
-    const cost = days * 15;
+    // 비용 계산(일수 × 15P)·잔액 잠금·검사·등록·차감은 create_song_promotion RPC가 한 트랜잭션으로 처리한다.
+    // 위 검사는 사용자에게 빨리 원인을 알려주려는 것이고, 같은 검사를 RPC가 다시 한다.
+    const { error: rpcError } = await supabase.rpc('create_song_promotion', {
+      p_song_id: song_id,
+      p_content: content,
+      p_start_date: start_date,
+      p_end_date: end_date,
+    });
 
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('point')
-      .eq('id', userId)
-      .single();
-
-    if (userError || !userData) throw userError ?? new Error('User not found');
-
-    if (userData.point < cost) {
+    // id 형식이 컬럼 타입(uuid 등)과 맞지 않으면 형변환 단계에서 22P02로 실패한다 — 없는 곡와 같다.
+    if (rpcError?.code === INVALID_TEXT_REPRESENTATION) {
       return NextResponse.json(
-        {
-          success: false,
-          error: `포인트가 부족합니다. 필요: ${cost}P, 보유: ${userData.point}P`,
-        },
+        { success: false, error: '존재하지 않는 곡입니다.' },
         { status: 400 },
       );
     }
 
-    const { data: inserted, error: insertError } = await supabase
-      .from('song_promotions')
-      .insert({
-        song_id,
-        user_id: userId,
-        content,
-        start_date,
-        end_date,
-      })
-      .select('id, songs(title, artist)')
-      .single();
-
-    if (insertError || !inserted) throw insertError ?? new Error('Failed to insert promotion');
-
-    const song = inserted.songs as unknown as { title: string; artist: string } | null;
-    const description = `홍보 등록: ${song?.title ?? ''} - ${song?.artist ?? ''}`;
-
-    const { error: pointError } = await supabase.rpc('record_point_change', {
-      p_user_id: userId,
-      p_amount: -cost,
-      p_description: description,
-    });
-
-    if (pointError) throw pointError;
+    if (rpcError) {
+      const mapped = toPointRpcErrorResponse(rpcError);
+      if (mapped) {
+        return NextResponse.json(
+          { success: false, error: mapped.error },
+          { status: mapped.status },
+        );
+      }
+      throw rpcError;
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
